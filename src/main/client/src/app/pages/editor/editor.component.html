@@ -1,0 +1,135 @@
+<div class="app-fxLayout app-column app-fill">
+  <div class="app-topbar app-fxLayout app-row app-center-v app-pl-4 app-pr-4">
+    <div class="app-breadcrumbs app-fxFlex app-fxLayout app-row app-center-v">
+      <mat-icon class="app-mr-2" color="primary">home</mat-icon>
+      <a routerLink="/">Home</a>
+      <mat-icon class="app-separator">navigate_next</mat-icon>
+      {{ state.selectedFile }}
+    </div>
+    
+    <input #copyText type="text" id="copyText" style="visibility: hidden;" />
+    <button mat-icon-button (click)="openSettings()"><mat-icon color="primary">settings</mat-icon></button>
+    <!-- <button mat-icon-button (click)="saveFileSettings()"><mat-icon>save</mat-icon></button> -->
+    <!-- <div class="app-breadcrumbs app-fxFlex app-fxLayout app-row app-center-v app-pl-4 app-pr-4">
+      <div>{{ selectedFile }} | <input [(ngModel)]="currentPage" (change)="getPage()" type="number" min="1"
+          max="numPages" />
+        <button mat-button (click)="prevPage()">prev</button> <button mat-button (click)="nextPage()">next</button>
+      </div>
+    </div>
+    <button mat-icon-button (click)="openSettings()"><mat-icon>settings</mat-icon></button>
+    <button mat-icon-button (click)="saveFileSettings()"><mat-icon>save</mat-icon></button> -->
+  </div>
+
+  <as-split direction="horizontal" unit="percent" #splitArea (dragEnd)="splitChanged($event)">
+    <as-split-area [size]="50">
+      <app-viewer *ngIf="state.selectedFile" [file]="state.selectedFile" [selectedAlto]="state.selectedAlto" [width]="viewerWidth" 
+        (selectionEvent)="setSelectedArea($event)" (onSetField)="setField($event)" (onCopyToClipboard)="copyToClipBoard($event)"></app-viewer>
+    </as-split-area>
+    <as-split-area [size]="50">
+      <div class="app-fxLayout app-column app-fill">
+        <div class="app-controlbar app-fxLayout app-row app-center-v">
+          <div class="app-fxFlex">
+            <button mat-icon-button (click)="changeView('fields')" [class.app-active]="view == 'fields'" [matTooltip]="'Fields' | translate"><mat-icon color="primary">text_fields</mat-icon></button>
+            <button mat-icon-button (click)="changeView('letters')" [class.app-active]="view == 'letters'" [matTooltip]="'Letters' | translate"><mat-icon color="primary">mark_as_unread</mat-icon></button>
+            <!-- <button mat-icon-button (click)="changeView('search')" [class.app-active]="view == 'search'" [matTooltip]="'Search' | translate"><mat-icon color="primary">search</mat-icon></button> -->
+          </div>
+          <div>
+            <button mat-icon-button (click)="newLetter()" [matTooltip]="'Add' | translate"><mat-icon>add_circle</mat-icon></button>
+            <button  [disabled]="!letter" mat-icon-button (click)="saveLetter()" [matTooltip]="'Save' | translate"><mat-icon>save</mat-icon></button>
+            <!-- <button mat-icon-button (click)="prevResult()" [matTooltip]="'Previous' | translate"><mat-icon>navigate_before</mat-icon></button>
+            <button mat-icon-button (click)="nextResult()" [matTooltip]="'Next' | translate"><mat-icon>navigate_next</mat-icon></button> -->
+            <!-- <button mat-icon-button (click)="toggleIgnoreAndNext()" [matTooltip]="'ignore' | translate"><mat-icon>gpp_bad</mat-icon></button> -->
+            <button [disabled]="!letter" mat-icon-button (click)="removeLetter()" [matTooltip]="'remove' | translate"><mat-icon>delete_forever</mat-icon></button>
+            <button [disabled]="!letter" mat-icon-button (click)="exportLetter()" [matTooltip]="'export' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
+          </div>
+        </div>
+        <div *ngIf="view == 'letters'" class="app-fxFlex app-p-4 app-oa-y">
+          <mat-list>
+            <div mat-subheader>Letters: ({{letters?.length}})</div>
+            <mat-list-item *ngFor="let l of letters; let idx = index;" [class.app-selected]="selectedResult === idx" (click)="selectResult(l, true, idx)">
+              <div matListItemTitle [class.app-ignore]="ignored[l.id]">
+                {{ idx }} .- Page(s): {{ l.data.startPage }} <ng-container *ngIf="l.data.endPage"> - {{ l.data.endPage }}</ng-container> 
+                
+              </div>
+              <div matListItemLine>{{l.data.full_text.substring(0, 100)}}...</div>
+              <div matListItemLine>{{l.data.incipit}}</div>
+              <div matListItemLine>{{ l.data.date_year }}</div>
+            </mat-list-item>
+          </mat-list>
+        </div>
+        <div *ngIf="view == 'fields'" class="app-fxFlex app-p-4 app-oa-y">
+          <app-letter-fields [letter]="letter" (onSetField)="setField($event)"></app-letter-fields>
+        </div>
+        <div *ngIf="view == 'search'" class="app-fxFlex app-p-4 app-oa-y">
+          <div>
+            <button mat-flat-button color="primary" (click)="findSimilar()" class="app-mr-4">Similar</button>
+            <mat-checkbox id="onlyBox" type="checkbox" [(ngModel)]="onlyBox" class="app-mr-4">Only box</mat-checkbox>
+            <mat-checkbox id="twoCols" type="checkbox" [(ngModel)]="twoCols" >Two columns</mat-checkbox>
+            <!-- <label for="onlyBox">Only box</label><input id="onlyBox" type="checkbox" [(ngModel)]="onlyBox" />
+            <label for="twoCols">Two columns</label><input id="twoCols" type="checkbox" [(ngModel)]="twoCols" /> -->
+          </div>
+          <mat-divider class="app-mt-4"></mat-divider>
+          <mat-list>
+            <div mat-subheader>Results: ({{results?.length}})</div>
+            <mat-list-item *ngFor="let doc of results; let idx = index;" [class.app-selected]="selectedResult === idx">
+              <mat-icon matListItemIcon (click)="toggleIgnore(doc.id)" class="app-cursor-pointer">delete_forever</mat-icon>
+              <div matListItemTitle (click)="selectResult(doc, false, idx)" [class.app-ignore]="ignored[doc.id]">page: {{ doc.page }}</div>
+              <div matListItemLine *ngFor="let line of doc.lines">{{ state.getLineText(line) }}</div>
+            </mat-list-item>
+          </mat-list>
+
+
+          <!-- <div>Results: ({{results?.length}})</div>
+          <ul>
+            <li *ngFor="let doc of results; let idx = index;" [class.app-selected]="selectedResult === idx">
+              <mat-icon matPrefix (click)="toggleIgnore(doc.id)">delete</mat-icon>
+              <div (click)="selectResult(doc, true, idx)" class="app-fxFlex app-result"
+                [class.app-ignore]="ignored[doc.id]">
+                page: {{ doc.page }}
+                <div *ngFor="let line of doc.lines">
+                  {{ getLineText(line) }}
+                </div>
+              </div>
+              <hr />
+            </li>
+          </ul> -->
+        </div>
+      </div>
+     
+
+     <!--  <mat-tab-group>
+        <mat-tab label="Fields">
+          <h3>Editace zaznamu</h3>
+          <button mat-button (click)="newLetter()">{{'add'}}</button>
+          <button mat-button (click)="saveLetter()">save</button>
+          <button mat-button (click)="prevResult()">prev</button>
+          <button mat-button (click)="nextResult()">next</button>
+          <button mat-button (click)="toggleIgnoreAndNext()">ignore</button>
+          <app-letter-fields [letter]="letter" (onSetField)="setField($event)"></app-letter-fields>
+        </mat-tab>
+        <mat-tab label="Search">
+          <div>
+            <button mat-button (click)="findSimilar()">Similar</button>
+            <label for="onlyBox">Only box</label><input id="onlyBox" type="checkbox" [(ngModel)]="onlyBox" />
+            <label for="twoCols">Two columns</label><input id="twoCols" type="checkbox" [(ngModel)]="twoCols" />
+          </div>
+          <hr />
+          <div>Results: ({{results?.length}})</div>
+          <ul>
+            <li *ngFor="let doc of results; let idx = index;" [class.app-selected]="selectedResult === idx">
+              <mat-icon matPrefix (click)="toggleIgnore(doc.id)">delete</mat-icon>
+              <div (click)="selectResult(doc, true, idx)" class="app-fxFlex app-result"
+                [class.app-ignore]="ignored[doc.id]">
+                page: {{ doc.page }}
+                <div *ngFor="let line of doc.lines">
+                  {{ getLineText(line) }}
+                </div>
+              </div>
+              <hr />
+            </li>
+          </ul>
+        </mat-tab>
+      </mat-tab-group> -->
+    </as-split-area>
+  </as-split>
+</div>

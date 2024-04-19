@@ -1,0 +1,15 @@
+.mat-mdc-list {
+  .mat-mdc-list-item {
+    border-bottom: 1px solid var(--app-gray-3);
+
+    &.app-selected {
+      background-color: #eaf4ff;
+    }
+
+    .mat-icon {
+      &:hover {
+        color: var(--app-color-primary);
+      }
+    }
+  }
+}

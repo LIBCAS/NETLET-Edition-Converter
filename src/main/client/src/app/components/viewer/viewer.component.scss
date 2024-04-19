@@ -1,0 +1,15 @@
+.app-context-menu {
+	padding: 16px 8px;
+	background-color: var(--app-color-lightnes);
+
+	.cdk-menu-item {
+		padding: 0 8px;
+
+		&:focus {
+			outline-style: solid;
+			outline-width: 1px;
+			outline-color: var(--app-gray-4);
+			background-color: var(--app-gray-1);
+		}
+	}
+}

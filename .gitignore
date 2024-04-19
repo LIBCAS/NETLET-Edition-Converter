@@ -1,0 +1,11 @@
+target/
+nbactions.xml
+
+# system files
+.DS_Store
+web/src/.DS_Store
+web/.DS_Store
+
+solr/**/data
+solr/userfiles
+solr/filestore

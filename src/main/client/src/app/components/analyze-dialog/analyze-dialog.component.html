@@ -1,0 +1,114 @@
+<h1 mat-dialog-title>{{ 'Analysis' | translate }}</h1>
+<div mat-dialog-content class="app-letter">
+    <div *ngIf="loading" class="app-fxLayout app-row ">
+        <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+    </div>
+
+    <div class="app-mb-4">
+        <mat-form-field class="app-w-100" appearance="outline">
+            <mat-label>{{ 'field.full_text' | translate}}</mat-label>
+            <textarea rows="5" matInput [(ngModel)]="data.text" name="full_text"></textarea>
+        </mat-form-field>
+    </div>
+    <div class="app-mb-4">
+        <mat-form-field class="app-w-100">
+            <mat-label>{{ 'field.prompt' | translate}}</mat-label>
+            <textarea rows="3" matInput [(ngModel)]="data.prompt" name="prompt"></textarea>
+        </mat-form-field>
+    </div>
+    <button mat-flat-button color="primary" (click)="analyze()" class="app-mb-4">
+        <mat-icon class="material-icons-outlined">search_insights</mat-icon>
+        Analyze
+    </button>
+    <mat-divider class="app-mt-4"></mat-divider>
+
+    <div class="app-fxLayout app-row app-mb-4" *ngIf="translation?.lang">
+      <strong>{{ 'Detected language' | translate }}</strong>:{{ translation.lang }}
+    </div>
+    <div class="app-mb-4" *ngIf="translation?.text">
+        <mat-form-field class="app-w-100" appearance="outline">
+            <mat-label>{{ 'Translation' | translate}}</mat-label>
+            <textarea rows="5" matInput [value]="translation.text" name="translation_text"></textarea>
+        </mat-form-field>
+    </div>
+
+    <mat-divider class="app-mt-4"></mat-divider>
+
+    <div class="app-fxLayout app-row app-center-v app-mb-4">
+        <mat-form-field class="app-fxFlex" appearance="outline">
+            <mat-label>{{ 'field.author' | translate}}</mat-label>
+            <input matInput [(ngModel)]="author" name="author" /><span matSuffix></span>
+        </mat-form-field>
+
+        <mat-form-field class="app-fxFlex" appearance="outline">
+            <mat-label>{{ 'field.recipient' | translate}}</mat-label>
+            <input matInput [(ngModel)]="recipient" name="recipient"><span matSuffix></span>
+        </mat-form-field>
+    </div>
+
+    <div class="app-mb-4">
+        <mat-form-field class="app-w-100">
+            <mat-label>{{ 'field.origin' | translate}}</mat-label>
+            <input matInput [(ngModel)]="origin" name="origin" />
+        </mat-form-field>
+    </div>
+
+    <div class="app-mb-4">
+        <mat-form-field class="app-fxFlex" *ngIf="!datum">
+            <mat-label>{{ 'field.date' | translate}}</mat-label>
+            <input matInput [(ngModel)]="date" name="date" />
+        </mat-form-field>
+
+        <mat-form-field class="app-fxFlex" *ngIf="datum">
+            <mat-label>{{ 'field.date' | translate}}</mat-label>
+            <input matInput [(ngModel)]="datum" [value]="datum | date : 'dd.MM.yyyy' " name="datum" />
+        </mat-form-field>
+    </div>
+
+    <div class="app-mb-4">
+        <mat-form-field class="app-w-100">
+            <mat-label>{{ 'field.incipit' | translate}}</mat-label>
+            <input rows="5" matInput [(ngModel)]="incipit" name="incipit" />
+        </mat-form-field>
+    </div>
+
+    <div class="app-mb-4">
+        <mat-form-field class="app-w-100">
+            <mat-label>{{ 'field.explicit' | translate}}</mat-label>
+            <input rows="2" matInput [(ngModel)]="explicit" name="explicit" />
+        </mat-form-field>
+    </div>
+
+    <div class="app-mb-4">
+        <mat-form-field class="app-w-100">
+            <mat-label>{{ 'field.abstract' | translate}}</mat-label>
+            <textarea rows="5" matInput [(ngModel)]="abstract_cs" name="abstract"></textarea>
+        </mat-form-field>
+    </div>
+
+    <mat-tab-group>
+        <mat-tab label="HIKO">
+            <div class="app-pt-4 app-pb-4 app-pr-4">
+                <div *ngFor="let entity of entities">
+                    <mat-checkbox [id]="entity.id" [name]="entity.id" type="checkbox" [(ngModel)]="entity.selected">{{
+                        entity.key_cze }} ({{ entity.tenant }} - {{entity.type}})</mat-checkbox>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="NameTag">
+            <div class="app-pt-4 app-pb-4 app-pr-4">
+                <div *ngFor="let entity of nametags; let idx = index;">
+                    <mat-checkbox [id]="'nametag_' + idx" [name]="'nametag_' + idx" type="checkbox"
+                        [(ngModel)]="entity.selected">{{entity.text}} ({{ 'tags.' + entity.type |
+                        translate}})</mat-checkbox>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+
+</div>
+
+<div mat-dialog-actions>
+    <button mat-flat-button (click)="save()" color="primary">{{ 'Save' | translate }}</button>
+    <button mat-flat-button [mat-dialog-close]="false">{{ 'Close' | translate }}</button>
+</div>

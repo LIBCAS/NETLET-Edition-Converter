@@ -1,0 +1,13 @@
+.mat-toolbar {
+  //height: $app-navbar-height;
+
+  .mdc-button {
+    padding-left: 16px;
+    padding-right: 16px;
+
+    &:hover, &.active {
+      color: inherit;
+      //background-color: $app-navbar-active-item-color;
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<h1 mat-dialog-title>{{ 'File settings' | translate }}</h1>
+<div mat-dialog-content class="app-letter">
+  <div *ngIf="fileConfig">
+    <div class="app-mb-4">
+      <mat-form-field class="app-w-100" appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" name="name" [(ngModel)]="fileConfig.name">
+      </mat-form-field>
+    </div>
+    <div class="app-fxLayout app-row app-center-v app-mb-4">
+      <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>Default Autor</mat-label>
+        <input matInput name="def_author" [(ngModel)]="fileConfig.def_author">
+      </mat-form-field>
+      <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>Default recipient</mat-label>
+        <input matInput name="def_recipient" [(ngModel)]="fileConfig.def_recipient">
+      </mat-form-field>
+    </div>
+    <div class="app-mb-4">
+      <mat-form-field class="app-w-100" appearance="outline">
+        <mat-label>Columns</mat-label>
+        <input matInput type="number" name="def_author" [(ngModel)]="fileConfig.columns">
+      </mat-form-field>
+    </div>
+    <div class="app-mb-4">
+    <mat-form-field class="app-w-100">
+      <mat-label>{{ 'field.prompt' | translate}}</mat-label>
+      <textarea rows="3" matInput [(ngModel)]="fileConfig.prompt" name="prompt"></textarea>
+    </mat-form-field>
+    </div>
+  </div>
+  <div class="app-mt-4"><strong>{{ 'Replacements' | translate }}</strong>:</div>
+  <ul class="app-mt-0">
+    <li *ngFor="let r of fileConfig.replacements">{{ r.orig }} ==> {{ r.dest }}</li>
+  </ul>
+  <!-- <mat-list role="list">
+    <mat-list-item *ngFor="let r of fileConfig.replacements" role="listitem">{{ r.orig }} ==> {{ r.dest }}</mat-list-item>
+  </mat-list> -->
+</div>
+
+<div mat-dialog-actions>
+  <button mat-flat-button color="primary" (click)="save()" cdkFocusInitial>{{ 'Save' | translate }}</button>
+  <button mat-button [mat-dialog-close]="null">{{ 'Close' | translate }}</button>
+</div>

@@ -1,0 +1,21 @@
+<div class="app-p-4">
+  <h3>List of processed PDFs:</h3>
+  <ul>
+    <li *ngFor="let file of files">
+      <a [routerLink]="['/editor', file.dir]">{{ file.config?.name ? file.config.name : file.dir }}</a>
+    </li>
+  </ul>
+</div>
+<div>
+  <input type="file" #fileUpload ng2FileSelect [uploader]="uploader" style="display:none;" (change)="onFileSelected($event)">
+  <div class="app-fxLayout app-row app-center-v">
+    <mat-form-field appearance="outline" class="app-fxFlex app-form-field-center-v-fix">
+      <input matInput type="text" name="selectedCover" [(ngModel)]="selectedFile">
+      <button matPrefix mat-stroked-button color="primary" class="app-mr-2 app-ml-2" (click)="fileUpload.click()">{{ 'Vybrat soubor' | translate }}</button>
+    </mat-form-field>
+  </div>
+  <mat-progress-bar mode="indeterminate" [value]="uploader.progress" *ngIf="uploader.isUploading"></mat-progress-bar>
+  <div>{{ progressMsg }}</div>
+  <button mat-flat-button color="primary" (click)="uploadFile()" class="app-mt-4">{{ 'Nahrat' | translate }}</button>
+</div>
+

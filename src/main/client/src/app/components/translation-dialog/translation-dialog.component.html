@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>{{ 'Translation' | translate }}</h1>
+<div mat-dialog-content>
+    <div *ngIf="loading" class="app-fxLayout app-row ">
+       <!-- <mat-spinner class="app-center-v "diameter="30"></mat-spinner> -->
+       <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+    </div>
+  <div class="app-fxLayout app-row" *ngIf="resp"><strong>{{ 'Detected language' | translate }}</strong>:{{ resp.lang }}</div>
+  <div class="app-fxLayout app-row" *ngIf="resp">
+    {{ resp.text }}
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="null">{{ 'Close' | translate }}</button>
+</div>

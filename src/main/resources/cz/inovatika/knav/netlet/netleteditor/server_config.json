@@ -1,0 +1,48 @@
+{
+    "python_exe": "C:\\Users\\alberto\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", 
+    "python_script": "c:\\Users\\alberto\\Projects\\NETLET\\pero-ocr-0.6.1\\user_scripts\\pero-ocr.py",
+    "data_dir": "c:\\Users\\alberto\\Projects\\NETLET\\data",
+    "images_dir": "images",
+    "alto_dir": "alto",
+    "txt_dir": "txt",
+
+    "sources_dir": "c:\\Users\\alberto\\Projects\\NETLET\\sources",
+    "geo_dir": "c:\\Users\\alberto\\Projects\\NETLET\\geo",
+
+    "maxPixels": 20000000,
+    "maxMedium": 2000,
+
+    "solr": "http://localhost:8983/solr",
+    "dbKeywordTables": ["keywords", "professions"],
+    "nametagUrl": "http://lindat.mff.cuni.cz/services/nametag/api/",
+    "translationUrl": "https://lindat.mff.cuni.cz/services/translation/api/v2/languages/",
+    "annotator": {
+        "model": "gpt-3.5-turbo",
+        "messages": [
+            {
+                "role": "system",
+                "content": "The text is a historical letter. Create summary (max. 3 phrases). Extract sender, recipient, location, date, incipit, explicit. Date must be in ISO format. Response must be in Czech. Odpoved musi byt v JSON formate."
+            },
+            {
+                "role": "user",
+                "content": ""
+            }
+        ],
+        "temperature": 0.7,
+        "max_tokens": 1024,
+        "top_p": 0.9,
+        "frequency_penalty": 0,
+        "presence_penalty": 0
+    },
+    "openAIKey" :"",
+    "file_config" : {
+        "name": "",
+        "columns": 1,
+        "def_author": "",
+        "def_recipient": "",
+        "replacements": [],
+        "searchParams": {},
+        "ignored": {},
+        "prompt":"Jsi pomocník, který dostane korespondenci (dopis) a musí vytvořit stručné shrunutí (přibližně 3 věty), o čem dopis je, kdo je odesilatel, kdo je adresat, kde a kdy byl napsan, jaky je incipit a explicit. Incipit a explicit musi byt max 8 slov. Shrnutí musí být 1 paragraf. Shrnutí musí být v češtině. Odpoved musi byt v JSON formate. Datum musi byt v ISO format"
+      }
+}

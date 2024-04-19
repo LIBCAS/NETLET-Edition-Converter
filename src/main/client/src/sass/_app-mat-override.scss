@@ -1,0 +1,45 @@
+// --- MATERIAL OVERRIDE ---
+
+// paginator
+.mat-mdc-paginator {
+  .mat-mdc-form-field-infix {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    min-height: var(--app-paginator-form-field) !important;
+  }
+
+  .mat-mdc-icon-button {
+    &.mat-mdc-button-base {
+      --mdc-icon-button-state-layer-size: 36px;
+      width: var(--mdc-icon-button-state-layer-size);
+      height: var(--mdc-icon-button-state-layer-size);
+      padding: 6px;
+    }
+  }
+}
+
+// form field
+.mat-mdc-form-field {
+  // clear bottom margin
+  .mat-mdc-form-field-subscript-wrapper {
+    line-height: 0;
+    height: 0;
+  }
+}
+
+// dialog
+.mat-mdc-dialog-container {
+  .mat-mdc-dialog-title {
+    margin: 0;
+    padding: 0 16px 8px 16px;
+  }
+
+  .mat-mdc-dialog-content {
+    padding: 16px !important;
+  }
+
+  .mat-mdc-dialog-actions {
+    padding: 0 16px 16px 16px !important;
+  }
+}
+
