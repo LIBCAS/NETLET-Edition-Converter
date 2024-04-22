@@ -14,7 +14,9 @@
     "explicit": "Explicit", 
     "full_text": "Text dopisu",
     "abstract": "Abstract",
-    "prompt": "GPT vstup"
+    "prompt": "GPT vstup",
+    "startPage": "První strana",
+    "endPage": "Poslední strana"
   },
   "action": {
     "set_block": "Nastavit text z bloku (+ctrl přidat)",

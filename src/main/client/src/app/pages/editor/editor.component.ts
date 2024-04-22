@@ -386,7 +386,9 @@ export class EditorComponent {
     if (!this.letter.startPage) {
       this.letter.startPage = this.state.currentPage;
     } 
-    this.letter.endPage = this.state.currentPage;
+    if (!this.letter.endPage) {
+      this.letter.endPage = this.state.currentPage;
+    } 
     this.service.saveLetter(this.state.selectedFile, this.letter).subscribe((res: any) => {
 
     });

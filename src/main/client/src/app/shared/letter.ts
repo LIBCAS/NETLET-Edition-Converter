@@ -40,6 +40,7 @@ export class Letter {
     id: string;
     startPage: number;
     endPage: number;
+    date: string;
 
     l_author: number;
     author: string;

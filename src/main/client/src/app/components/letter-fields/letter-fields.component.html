@@ -1,4 +1,15 @@
-<div *ngIf="letter" class="app-letter">
+<div *ngIf="_letter" class="app-letter">
+  <div class="app-fxLayout app-row app-center-v app-mb-4">
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'field.startPage' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.startPage" name="startPage" />
+    </mat-form-field>
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'field.endPage' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.endPage" name="endPage">
+    </mat-form-field>
+  </div>
+
   <button mat-flat-button color="primary" (click)="analyze()" class="app-mb-4">
     <mat-icon class="material-icons-outlined">search_insights</mat-icon>
     Analyze
@@ -7,7 +18,7 @@
   <div class="app-mb-4">
     <mat-form-field class="app-w-100" appearance="outline">
       <mat-label>{{ 'field.full_text' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="letter.full_text" name="full_text"></textarea>
+      <textarea rows="5" matInput [(ngModel)]="_letter.full_text" name="full_text"></textarea>
       <div class="app-pt-4 app-mb-n2 app-text-right">
         <ng-container *ngTemplateOutlet="icons; context:{ field: 'full_text' }"></ng-container>
       </div>
@@ -17,75 +28,82 @@
   <div class="app-fxLayout app-row app-center-v app-mb-4">
     <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>{{ 'field.author' | translate}}</mat-label>
-      <input matInput [(ngModel)]="letter.author" name="author" /><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.author" name="author" /><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'author' }"></ng-container>
     </mat-form-field>
     <mat-icon (click)="switchAuthors()" class="app-ml-2 app-mr-2">sync_alt</mat-icon>
     <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>{{ 'field.recipient' | translate}}</mat-label>
-      <input matInput [(ngModel)]="letter.recipient" name="recipient"><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.recipient" name="recipient"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'recipient' }"></ng-container>
     </mat-form-field>
   </div>
   <div class="app-mb-4">
-    <mat-form-field class="app-w-100" appearance="outline">
+    <!-- <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>{{ 'field.date_year' | translate}}</mat-label>
-      <input matInput [(ngModel)]="letter.date_year" name="date_year"><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.date_year" name="date_year"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'date_year' }"></ng-container>
+    </mat-form-field> -->
+    <mat-form-field class="app-fxFlex" appearance="outline" *ngIf="datum">
+      <mat-label>{{ 'field.date' | translate}}</mat-label>
+      <input matInput [matDatepicker]="picker" [formControl]="datum" >
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <!-- <input matInput [value]="datum | date : 'dd.MM.yyyy' " name="datum" /> -->
     </mat-form-field>
   </div>
   <div class="app-mb-4">
     <mat-form-field class="app-w-100" appearance="outline">
       <mat-label>{{ 'field.origin' | translate}}</mat-label>
-      <input matInput [(ngModel)]="letter.origin" name="origin"><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.origin" name="origin"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'origin' }"></ng-container>
     </mat-form-field>
   </div>
   <div class="app-mb-4">
     <mat-form-field class="app-w-100" appearance="outline">
       <mat-label>{{ 'field.incipit' | translate}}</mat-label>
-      <input matInput [(ngModel)]="letter.incipit" name="incipit"><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.incipit" name="incipit"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'incipit' }"></ng-container>
     </mat-form-field>
   </div>
   <div class="app-mb-4">
     <mat-form-field class="app-w-100" appearance="outline">
       <mat-label>{{ 'field.explicit' | translate}}</mat-label>
-      <input matInput [(ngModel)]="letter.explicit" name="explicit"><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.explicit" name="explicit"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'explicit' }"></ng-container>
     </mat-form-field>
   </div>
     
-  <!-- <button mat-flat-button color="primary" [disabled]="!letter.full_text" (click)="findTags()" class="app-mb-4">
+  <!-- <button mat-flat-button color="primary" [disabled]="!_letter.full_text" (click)="findTags()" class="app-mb-4">
     <mat-icon class="material-icons-outlined">system_update_alt</mat-icon>
     Extract entities
   </button>&#160;
-  <button mat-flat-button color="primary" [disabled]="!letter.full_text" (click)="detectLang()" class="app-mb-4">
+  <button mat-flat-button color="primary" [disabled]="!_letter.full_text" (click)="detectLang()" class="app-mb-4">
     <mat-icon class="material-icons-outlined">lang</mat-icon>
     {{ 'detect_lang' | translate}}
   </button>&#160;
-  <button mat-flat-button color="primary" [disabled]="!letter.full_text" (click)="translate()" class="app-mb-4">
+  <button mat-flat-button color="primary" [disabled]="!_letter.full_text" (click)="translate()" class="app-mb-4">
     <mat-icon class="material-icons-outlined">translate</mat-icon>
     {{ 'translate' | translate}}
   </button>
-  <button mat-flat-button color="primary" [disabled]="!letter.full_text" (click)="annotate()" class="app-mb-4">
+  <button mat-flat-button color="primary" [disabled]="!_letter.full_text" (click)="annotate()" class="app-mb-4">
     <mat-icon class="material-icons-outlined">summarize</mat-icon>
     {{ 'annotate' | translate}}
   </button> -->
     <mat-form-field class="app-w-100" appearance="outline">
       <mat-label>{{ 'field.abstract' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="letter.abstract_cs" name="abstract" #abstract></textarea>
+      <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract" #abstract></textarea>
     </mat-form-field>
   <mat-tab-group>
     <mat-tab label="HIKO">
       <div class="app-pt-4 app-pb-4 app-pr-4">
-        <div *ngFor="let entity of letter.entities">
+        <div *ngFor="let entity of _letter.entities">
           <mat-checkbox [id]="entity.id" [name]="entity.id" type="checkbox" [(ngModel)]="entity.selected" >{{ entity.key_cze }} ({{ entity.tenant }} - {{entity.type}})</mat-checkbox>
         </div>
       </div>
       <!-- <div class="app-fields-row">
         <mat-list role="list">
-          <mat-list-item *ngFor="let entity of letter.entities" role="listitem">
+          <mat-list-item *ngFor="let entity of _letter.entities" role="listitem">
             <input [id]="entity.id" [name]="entity.id" type="checkbox" [(ngModel)]="entity.selected" />
             <label [for]="entity.id">{{ entity.key_cze }} ({{ entity.tenant }} - {{entity.type}})</label>
           </mat-list-item>
@@ -94,7 +112,7 @@
     </mat-tab>
     <mat-tab label="NameTag">
       <div class="app-pt-4 app-pb-4 app-pr-4">
-        <div *ngFor="let entity of letter.nametags; let idx = index;">
+        <div *ngFor="let entity of _letter.nametags; let idx = index;">
           <mat-checkbox [id]="'nametag_' + idx" [name]="'nametag_' + idx" type="checkbox" [(ngModel)]="entity.selected">{{entity.text}} ({{ 'tags.' + entity.type | translate}})</mat-checkbox>
         </div>
       </div>

@@ -12,6 +12,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule } from '@ngx-translate/core';
+import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { Entity } from 'src/app/shared/letter';
 
@@ -46,6 +47,7 @@ export class AnalyzeDialogComponent {
   constructor(
     private dialogRef: MatDialogRef<AnalyzeDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {text: string, prompt: string},
+    public state: AppState,
     private service: AppService
   ) { }
 
@@ -98,6 +100,27 @@ export class AnalyzeDialogComponent {
         // this.datum = content.misto_a_datum.datum;
         this.author = content.sender;
         this.recipient = content.recipient;
+        if (!this.author || this.author === 'neuvedeno') {
+          if (this.recipient) {
+            if (this.recipient.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
+              this.author = this.state.fileConfig.def_recipient;
+            } else if (this.recipient.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()){
+              this.author = this.state.fileConfig.def_author;
+            } 
+          } else {
+            this.author = this.state.fileConfig.def_author;
+          }
+          
+        }
+        if (!this.recipient || this.recipient === 'neuvedeno') {
+          if (this.author.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
+            this.recipient = this.state.fileConfig.def_author;
+          } else if (this.author.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()){
+            this.recipient = this.state.fileConfig.def_recipient;
+          } else {
+            this.recipient = this.state.fileConfig.def_recipient;
+          }
+        }
         this.abstract_cs = content.summary;
         this.origin = content.location || content.place;
         this.date = content.date;

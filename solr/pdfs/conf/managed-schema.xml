@@ -70,15 +70,6 @@
   <fieldType name="rank" class="solr.RankField"/>
   <fieldType name="string" class="solr.StrField" sortMissingLast="true" docValues="true"/>
   <fieldType name="strings" class="solr.StrField" sortMissingLast="true" docValues="true" multiValued="true"/>
-  <fieldType name="text_ar" class="solr.TextField" positionIncrementGap="100">
-    <analyzer>
-      <tokenizer name="standard"/>
-      <filter name="lowercase"/>
-      <filter name="stop" ignoreCase="true" words="lang/stopwords_ar.txt"/>
-      <filter name="arabicNormalization"/>
-      <filter name="arabicStem"/>
-    </analyzer>
-  </fieldType>
   <fieldType name="text_cz" class="solr.TextField" positionIncrementGap="100">
     <analyzer>
       <tokenizer name="standard"/>

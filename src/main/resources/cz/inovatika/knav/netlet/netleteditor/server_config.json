@@ -24,13 +24,17 @@
                 "content": "The text is a historical letter. Create summary (max. 3 phrases). Extract sender, recipient, location, date, incipit, explicit. Date must be in ISO format. Response must be in Czech. Odpoved musi byt v JSON formate."
             },
             {
+                "role": "system",
+                "content": "The JSON format definition is { summary: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string }"
+            },
+            {
                 "role": "user",
                 "content": ""
             }
         ],
-        "temperature": 0.7,
-        "max_tokens": 1024,
-        "top_p": 0.9,
+        "temperature": 0.2,
+        "max_tokens": 2048,
+        "top_p": 0.1,
         "frequency_penalty": 0,
         "presence_penalty": 0
     },

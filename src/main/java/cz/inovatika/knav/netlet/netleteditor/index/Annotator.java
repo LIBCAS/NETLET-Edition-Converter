@@ -108,7 +108,7 @@ public class Annotator {
         try {
             JSONObject reqBody = Options.getInstance().getJSONObject("annotator");
             reqBody.getJSONArray("messages").getJSONObject(0).put("content", prompt);
-            reqBody.getJSONArray("messages").getJSONObject(1).put("content", text);
+            reqBody.getJSONArray("messages").getJSONObject(2).put("content", text);
             String r = request(reqBody.toString());
             ret = new JSONObject(r);
 

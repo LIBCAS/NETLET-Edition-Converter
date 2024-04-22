@@ -1,6 +1,6 @@
-import { NgIf, NgTemplateOutlet, NgFor } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { NgIf, NgTemplateOutlet, NgFor, DatePipe } from '@angular/common';
+import { Component, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,19 +18,37 @@ import { AnalyzeDialogComponent } from '../analyze-dialog/analyze-dialog.compone
 import { AppState } from 'src/app/app-state';
 import { AltoBlock, AltoLine } from 'src/app/shared/alto';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-letter-fields',
   templateUrl: './letter-fields.component.html',
   styleUrls: ['./letter-fields.component.scss'],
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'cs'},
+  ],
   standalone: true,
-  imports: [FormsModule, NgIf, RouterModule, TranslateModule,
+  imports: [FormsModule, ReactiveFormsModule, NgIf, RouterModule, TranslateModule, DatePipe,
+    MatDatepickerModule, MatNativeDateModule, 
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatListModule, MatTooltipModule,
     MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, MatCheckboxModule]
 })
 export class LetterFieldsComponent {
 
-  @Input() letter: Letter;
+  _letter: Letter;
+  @Input() set letter(value: Letter) {
+    if (!value) {
+      return;
+    }
+    this._letter = value;
+    if (!isNaN(Date.parse(this._letter.date))) {
+      this.datum.setValue(this._letter.date);
+    } else {
+      this.datum.setValue(null);
+    }
+
+  }
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
 
   @ViewChild('abstract') abstract: any;
@@ -39,25 +57,37 @@ export class LetterFieldsComponent {
   nametag: string;
   nametags: NameTag[];
 
+  datum = new FormControl();
+
   constructor(
+    private _adapter: DateAdapter<any>,
+    @Inject(MAT_DATE_LOCALE) private _locale: string,
     private route: ActivatedRoute,
     private service: AppService,
     public state: AppState,
     public dialog: MatDialog) { }
 
+  ngOnInit() {
+    this._locale = 'cs';
+    this._adapter.setLocale(this._locale);
+    
+  }
+
+
+
   findTags() {
-    this.service.findTags(this.letter.full_text).subscribe((resp: any) => {
+    this.service.findTags(this._letter.full_text).subscribe((resp: any) => {
       this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
       // console.log(this.nametags)
-      this.letter.entities = this.entities;
-      this.letter.nametags = this.nametags;
+      this._letter.entities = this.entities;
+      this._letter.nametags = this.nametags;
     });
   }
 
   detectLang() {
-    this.service.detectLang(this.letter.full_text).subscribe((resp: any) => {
+    this.service.detectLang(this._letter.full_text).subscribe((resp: any) => {
       alert(resp.lang)
     });
   }
@@ -66,11 +96,11 @@ export class LetterFieldsComponent {
 
     const dialogRef = this.dialog.open(TranslationDialogComponent, {
       width: '800px',
-      data: this.letter.full_text,
+      data: this._letter.full_text,
     });
 
 
-    // this.service.translate(this.letter.full_text).subscribe((resp: any) => {
+    // this.service.translate(this._letter.full_text).subscribe((resp: any) => {
     //   const dialogRef = this.dialog.open(TranslationDialogComponent, {
     //     data: resp,
     //   });
@@ -79,47 +109,52 @@ export class LetterFieldsComponent {
 
   annotate() {
     this.abstract.nativeElement.focus();
-    const orig = this.letter.abstract_cs;
-    this.letter.abstract_cs = 'processing...';
-    this.service.annotate(this.letter.full_text).subscribe((resp: any) => {
+    const orig = this._letter.abstract_cs;
+    this._letter.abstract_cs = 'processing...';
+    this.service.annotate(this._letter.full_text).subscribe((resp: any) => {
       console.log(resp);
       if (resp.error) {
-        this.letter.abstract_cs = orig;
+        this._letter.abstract_cs = orig;
       } else {
-        this.letter.abstract_cs = resp.response?.choices[0].message.content;
+        this._letter.abstract_cs = resp.response?.choices[0].message.content;
       }
 
     });
   }
 
   analyze() {
-    if (!this.letter.full_text) {
+    if (!this._letter.full_text) {
       if (this.state.selectedBlocks.length === 0) {
         const tBlocks: AltoBlock[] = this.state.alto.Layout.Page.PrintSpace.TextBlock;
         this.state.selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
           return true;
         });
-        this.letter.full_text = this.state.getBlockText();
+        this._letter.full_text = this.state.getBlockText();
       }
     }
-    // console.log(this.letter.full_text);
+    // console.log(this._letter.full_text);
     const dialogRef = this.dialog.open(AnalyzeDialogComponent, {
       width: '1200px',
-      data: { text: this.letter.full_text, prompt: this.state.fileConfig.prompt }
+      data: { text: this._letter.full_text, prompt: this.state.fileConfig.prompt }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       // console.log(result);
       if (result) {
-        const id = this.letter.id;
-        const sp = this.letter.startPage;
-        const ep = this.letter.endPage;
-        this.letter = result;
-        this.letter.id = id;
-        this.letter.startPage = sp;
-        this.letter.endPage = ep;
+        const id = this._letter.id;
+        const sp = this._letter.startPage;
+        const ep = this._letter.endPage;
+        this._letter = result;
+        this._letter.id = id;
+        this._letter.startPage = sp;
+        this._letter.endPage = ep;
+        if (!isNaN(Date.parse(this._letter.date))) {
+          this.datum.setValue(this._letter.date);
+        } else {
+          this.datum.setValue(null);
+        }
         if (result.datum) {
-          this.letter.date_year = result.datum.getFullYear();
+          this._letter.date_year = result.datum.getFullYear();
         }
 
         this.saveLetter();
@@ -128,12 +163,12 @@ export class LetterFieldsComponent {
   }
 
   saveLetter() {
-    if (!this.letter.startPage) {
-      this.letter.startPage = this.state.currentPage;
+    if (!this._letter.startPage) {
+      this._letter.startPage = this.state.currentPage;
     } else {
-      this.letter.endPage = this.state.currentPage;
+      this._letter.endPage = this.state.currentPage;
     }
-    this.service.saveLetter(this.state.selectedFile, this.letter).subscribe((res: any) => {
+    this.service.saveLetter(this.state.selectedFile, this._letter).subscribe((res: any) => {
 
     });
   }
@@ -152,9 +187,9 @@ export class LetterFieldsComponent {
 
       console.log(this.state.selectedBlocks)
       if (append) {
-        this.letter.full_text += '\n' + this.state.getBlockText();
+        this._letter.full_text += '\n' + this.state.getBlockText();
       } else {
-        this.letter.full_text = this.state.getBlockText();
+        this._letter.full_text = this.state.getBlockText();
       }
 
     } else {
@@ -165,11 +200,12 @@ export class LetterFieldsComponent {
 
   switchAuthors() {
 
-    const a = this.letter.author;
-    const r = this.letter.recipient;
-    this.letter.author = r;
-    this.letter.recipient = a;
+    const a = this._letter.author;
+    const r = this._letter.recipient;
+    this._letter.author = r;
+    this._letter.recipient = a;
 
   }
+
 
 }
