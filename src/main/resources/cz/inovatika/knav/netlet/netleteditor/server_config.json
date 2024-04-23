@@ -5,6 +5,11 @@
     "images_dir": "images",
     "alto_dir": "alto",
     "txt_dir": "txt",
+    
+    "PERO": {
+        "server_url": "https://pero-ocr.fit.vutbr.cz/api/",
+        "api_key": ""
+    },
 
     "sources_dir": "c:\\Users\\alberto\\Projects\\NETLET\\sources",
     "geo_dir": "c:\\Users\\alberto\\Projects\\NETLET\\geo",

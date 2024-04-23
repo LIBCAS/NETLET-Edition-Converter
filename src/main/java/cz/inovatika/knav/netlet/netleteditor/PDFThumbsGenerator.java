@@ -136,19 +136,16 @@ public class PDFThumbsGenerator {
             for (String img : imgs) {
                 String imgNum = img.split("\\.")[0];
                 String alto = pdfDir + Options.getInstance().getString("alto_dir") + File.separator + imgNum + ".xml";
-                File imgF = new File(alto);
-                if (overwrite || !imgF.exists()) {
-                    LOGGER.log(Level.INFO, "processing {0}", img);
-                    boolean sucess = OCRGenerator.fromFile(pdfDir, imgNum);
+                File altoFile = new File(alto);
+                if (overwrite || !altoFile.exists()) {
+                    // boolean sucess = OCRGenerator.fromFile(pdfDir, imgNum);
+                    boolean sucess = PERORequester.generate(pdfDir, imgNum);
+                    ret.put(imgNum + "", sucess);
                 } else {
+                    // LOGGER.log(Level.INFO, "file {0} exists -> {1}", new Object[]{alto, altoFile.exists()});
                     LOGGER.log(Level.INFO, "page {0} skipped", imgNum);
                 }
             }
-
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, fileName + " has error: {0}", ex);
-            LOGGER.log(Level.SEVERE, null, ex);
-            ret.put("error", ex);
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, fileName + " has error: {0}", ex);
             LOGGER.log(Level.SEVERE, null, ex);
@@ -163,7 +160,6 @@ public class PDFThumbsGenerator {
         float height = mediaBox.getHeight();
         if (width * height > maxPixels) {
             LOGGER.log(Level.WARNING, "Big image {0} x {1}", new Object[]{width, height});
-            // writeSkipped(page, id, String.format("%f x %f", width, height));
             return null;
         } else {
             float ratio = Math.max(getRenderRatio(width), getRenderRatio(height));

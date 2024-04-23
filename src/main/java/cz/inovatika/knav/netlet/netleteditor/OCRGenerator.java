@@ -27,7 +27,12 @@ public class OCRGenerator {
     new File(dir + Options.getInstance().getString("images_dir")).mkdirs();
     new File(dir + Options.getInstance().getString("txt_dir")).mkdirs();
     new File(dir + Options.getInstance().getString("alto_dir")).mkdirs();
-    String line = String.format("%s %s -i %s -oO %s -oA %s", Options.getInstance().getString("python_exe"), Options.getInstance().getString("python_script"), file, output, alto);
+    String line = String.format("%s %s -i %s -oO %s -oA %s", 
+            Options.getInstance().getString("python_exe"), 
+            Options.getInstance().getString("python_script"), 
+            file, 
+            output, 
+            alto);
     
     LOGGER.log(Level.INFO, "proccessing {0}", line);
     CommandLine cmdLine = CommandLine.parse(line);
