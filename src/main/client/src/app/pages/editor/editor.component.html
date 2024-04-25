@@ -34,6 +34,7 @@
             <!-- <button mat-icon-button (click)="changeView('search')" [class.app-active]="view == 'search'" [matTooltip]="'Search' | translate"><mat-icon color="primary">search</mat-icon></button> -->
           </div>
           <div>
+            <button mat-icon-button (click)="getLetters()" [matTooltip]="'Refresh' | translate"><mat-icon>refresh</mat-icon></button>
             <button mat-icon-button (click)="newLetter()" [matTooltip]="'Add' | translate"><mat-icon>add_circle</mat-icon></button>
             <button  [disabled]="!letter" mat-icon-button (click)="saveLetter()" [matTooltip]="'Save' | translate"><mat-icon>save</mat-icon></button>
             <!-- <button mat-icon-button (click)="prevResult()" [matTooltip]="'Previous' | translate"><mat-icon>navigate_before</mat-icon></button>

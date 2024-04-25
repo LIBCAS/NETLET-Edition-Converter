@@ -135,6 +135,7 @@ export class LetterFieldsComponent {
     // console.log(this._letter.full_text);
     const dialogRef = this.dialog.open(AnalyzeDialogComponent, {
       width: '1200px',
+      disableClose: true,
       data: { text: this._letter.full_text, prompt: this.state.fileConfig.prompt }
     });
 

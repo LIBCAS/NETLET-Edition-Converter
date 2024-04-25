@@ -1,6 +1,5 @@
 package cz.inovatika.knav.netlet.netleteditor;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
@@ -87,6 +86,13 @@ public class ConvertServlet extends HttpServlet {
                 String filename = req.getParameter("file");
                 boolean overwrite = Boolean.parseBoolean(req.getParameter("overwrite"));
                 return PDFThumbsGenerator.generateAlto(filename, overwrite);
+
+            }
+        },
+        CHECK {
+            @Override
+            JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
+                return PDFThumbsGenerator.check();
 
             }
         };

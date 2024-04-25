@@ -368,6 +368,7 @@ export class EditorComponent {
   openSettings() {
     const dialogRef = this.dialog.open(SettingsComponent, {
       data: this.state.fileConfig,
+      width: '800px'
     });
 
     dialogRef.afterClosed().subscribe(result => {

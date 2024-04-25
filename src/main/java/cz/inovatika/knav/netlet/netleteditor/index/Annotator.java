@@ -1,9 +1,14 @@
 
 package cz.inovatika.knav.netlet.netleteditor.index;
 
+import com.knuddels.jtokkit.Encodings;
+import com.knuddels.jtokkit.api.Encoding;
+import com.knuddels.jtokkit.api.EncodingRegistry;
+import com.knuddels.jtokkit.api.ModelType;
 import cz.inovatika.knav.netlet.netleteditor.Options;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.HttpEntity;
@@ -13,6 +18,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -98,9 +104,25 @@ public class Annotator {
         
         JSONObject ret = new JSONObject();
         try {
+            EncodingRegistry registry = Encodings.newLazyEncodingRegistry();
+            Encoding encoding = registry.getEncodingForModel(ModelType.GPT_3_5_TURBO_16K);
+            
             JSONObject reqBody = Options.getInstance().getJSONObject("annotator");
-            reqBody.getJSONArray("messages").getJSONObject(0).put("content", prompt);
-            reqBody.getJSONArray("messages").getJSONObject(2).put("content", text);
+            JSONArray messages = Options.getInstance().getJSONArray("chatGPTMessages");
+            messages.getJSONObject(0).put("content", prompt);
+            int tokenCount2 = encoding.countTokens(messages.toString());
+            messages.getJSONObject(2).put("content", text);
+            
+            reqBody.put("messages", messages);
+            
+            int tokenCount = encoding.countTokens(text);
+            ret.put("text_tokens", tokenCount)
+                        .put("messages_tokens", tokenCount2)
+                        .put("messages", messages.toString().length())
+                        .put("text", text.length());
+            if (tokenCount > Options.getInstance().getJSONObject("chatGPT").getInt("max_tokens")) {
+                return ret.put("error", "big");
+            } 
             String r = request(reqBody.toString());
             ret = new JSONObject(r);
 

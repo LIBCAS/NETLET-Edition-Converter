@@ -12,6 +12,7 @@ import net.coobird.thumbnailator.ThumbnailParameter;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.filters.Canvas;
 import net.coobird.thumbnailator.geometry.Positions;
+import org.apache.commons.io.FileUtils;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -32,6 +33,30 @@ public class PDFThumbsGenerator {
     public static int maxPixels;
     public static int maxMedium;
 
+    public static JSONObject check() throws IOException {
+        JSONObject ret = new JSONObject();
+        
+        File f = new File(Storage.pdfsDir());
+                String[] dirs = f.list(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File current, String name) {
+                        return new File(current, name).isDirectory();
+                    }
+                });
+                for (String dir : dirs) {
+                    File config = new File(Storage.pdfsDir() + File.separator + dir + File.separator + "config.json");
+                    JSONObject c = new JSONObject();
+                    if (config.exists()) {
+                        c = new JSONObject(FileUtils.readFileToString(config, "UTF-8"));
+                    }
+                    ret.append("dirs", new JSONObject()
+                            .put("dir", dir)
+                            .put("config", c));
+                }
+                
+        return ret;
+        
+    }
     public static JSONObject processFile(String fileName) {
         File f = new File(fileName);
         maxPixels = Options.getInstance().getInt("maxPixels", maxPixels);

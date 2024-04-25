@@ -60,7 +60,7 @@ Managed external dictionaries
     <field name="filename" type="string" indexed="true" stored="true"  />
     <field name="startPage" type="pint" indexed="true" stored="true"  />
     <field name="alto_id" type="string" indexed="true" stored="true"  />
-    <field name="data" type="string" indexed="true" stored="true"/>
+    <field name="data" type="string_big" indexed="false" stored="true"/>
     <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW" />
 	
 
@@ -91,6 +91,11 @@ Managed external dictionaries
        single-valued and either required or have a default value.
       -->
     <fieldType name="string" class="solr.StrField" sortMissingLast="true" docValues="true" />
+	  <fieldType name="string_big" class="solr.TextField" omitNorms="true" sortMissingLast="true">
+		<analyzer>
+		  <tokenizer class="solr.KeywordTokenizerFactory"/>
+		</analyzer>
+	  </fieldType>
     <fieldType name="strings" class="solr.StrField" sortMissingLast="true" multiValued="true" docValues="true" />
 
     <!-- boolean type: "true" or "false" -->
