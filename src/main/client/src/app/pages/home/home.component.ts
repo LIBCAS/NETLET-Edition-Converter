@@ -23,7 +23,7 @@ import { FileConfig } from 'src/app/shared/file-config';
       MatDividerModule, MatProgressBarModule]
 })
 export class HomeComponent {
-  files: {dir: string[], config: FileConfig}[] = [];
+  files: {dir: string[], config: FileConfig, imgs: number, txt: number, alto: number}[] = [];
   public uploader: FileUploader = new FileUploader({ url: 'api/lf?action=UPLOAD' });
   selectedFile: string;
   progressMsg: string;
