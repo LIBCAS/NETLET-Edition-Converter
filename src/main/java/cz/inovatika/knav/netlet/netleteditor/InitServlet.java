@@ -2,6 +2,8 @@ package cz.inovatika.knav.netlet.netleteditor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -27,6 +29,8 @@ public class InitServlet extends HttpServlet {
 
   //Default config directory in webapp
   public static String DEFAULT_I18N_DIR = "/assets/i18n";
+  
+  Timer timer;
 
 
   /**
@@ -60,6 +64,14 @@ public class InitServlet extends HttpServlet {
     } else {
       CONFIG_DIR = System.getProperty("user.home") + File.separator + CONFIG_DIR;
     }
+    
+    // Set timer for update 
+    TimerTask task = new UpdaterTask();
+    timer = new Timer("Timer");
+
+    long delay = 1000L;
+    long period = 1000L * 60L * 60L * 24L; // jednou denne
+    timer.scheduleAtFixedRate(task, delay, period);
     
     LOGGER.log(Level.INFO, "CONFIG_DIR is -> {0}", CONFIG_DIR);
   }

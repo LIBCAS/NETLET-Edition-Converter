@@ -138,26 +138,7 @@ public class DataServlet extends HttpServlet {
         DOCUMENTS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                JSONObject ret = new JSONObject();
-                File f = new File(Storage.pdfsDir());
-                String[] dirs = f.list(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File current, String name) {
-                        return new File(current, name).isDirectory();
-                    }
-                });
-                for (String dir : dirs) {
-                    File config = new File(Storage.pdfsDir() + File.separator + dir + File.separator + "config.json");
-                    JSONObject c = new JSONObject();
-                    if (config.exists()) {
-                        c = new JSONObject(FileUtils.readFileToString(config, "UTF-8"));
-                    }
-                    ret.append("dirs", new JSONObject()
-                            .put("dir", dir)
-                            .put("config", c));
-                }
-                // ret.put("dirs", dirs);
-                return ret;
+                return PDFThumbsGenerator.getDocuments();
             }
         },
         DOCUMENT {

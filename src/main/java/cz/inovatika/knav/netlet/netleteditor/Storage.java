@@ -5,12 +5,26 @@
 package cz.inovatika.knav.netlet.netleteditor;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 
 /**
  *
  * @author alberto
  */
 public class Storage {
+
+    public static String[] getDocuments() throws IOException {
+        File f = new File(pdfsDir());
+        return f.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File current, String name) {
+                return new File(current, name).isDirectory();
+            }
+        });
+    }
   
   public static String pdfsDir() {
     return Options.getInstance().getString("data_dir") + File.separator;
@@ -26,6 +40,10 @@ public class Storage {
   
   public static String altoDir(String filename) {
     return pdfDir(filename) + Options.getInstance().getString("alto_dir") + File.separator;
+  }
+  
+  public static String txtDir(String filename) {
+    return pdfDir(filename) + Options.getInstance().getString("txt_dir") + File.separator;
   }
   
   public static String altoPageFileName(String filename, int page) {

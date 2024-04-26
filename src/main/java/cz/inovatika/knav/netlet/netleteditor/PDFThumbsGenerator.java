@@ -33,30 +33,44 @@ public class PDFThumbsGenerator {
     public static int maxPixels;
     public static int maxMedium;
 
+    public static JSONObject getDocuments() throws IOException {
+        JSONObject ret = new JSONObject();
+
+        String[] dirs = Storage.getDocuments();
+        for (String dir : dirs) {
+            File config = new File(Storage.pdfsDir() + File.separator + dir + File.separator + "config.json");
+            JSONObject c = new JSONObject();
+            if (config.exists()) {
+                c = new JSONObject(FileUtils.readFileToString(config, "UTF-8"));
+            }
+
+            ret.append("dirs", new JSONObject()
+                    .put("dir", dir)
+                    .put("config", c)
+                    .put("imgs", new File(Storage.imagesDir(dir)).list().length)
+                    .put("alto", new File(Storage.altoDir(dir)).list().length)
+                    .put("txt", new File(Storage.txtDir(dir)).list().length));
+        }
+
+        return ret;
+
+    }
+
     public static JSONObject check() throws IOException {
         JSONObject ret = new JSONObject();
-        
-        File f = new File(Storage.pdfsDir());
-                String[] dirs = f.list(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File current, String name) {
-                        return new File(current, name).isDirectory();
-                    }
-                });
-                for (String dir : dirs) {
-                    File config = new File(Storage.pdfsDir() + File.separator + dir + File.separator + "config.json");
-                    JSONObject c = new JSONObject();
-                    if (config.exists()) {
-                        c = new JSONObject(FileUtils.readFileToString(config, "UTF-8"));
-                    }
-                    ret.append("dirs", new JSONObject()
-                            .put("dir", dir)
-                            .put("config", c));
-                }
-                
+        String[] dirs = Storage.getDocuments();
+        for (String dir : dirs) {
+            int imgs = new File(Storage.imagesDir(dir)).list().length;
+            int alto = new File(Storage.altoDir(dir)).list().length;
+            if (alto < imgs) {
+                LOGGER.log(Level.INFO, "Running alto for {0}", dir);
+                ret.put(dir, generateAlto(dir, false));
+            }
+        }
         return ret;
-        
+
     }
+
     public static JSONObject processFile(String fileName) {
         File f = new File(fileName);
         maxPixels = Options.getInstance().getInt("maxPixels", maxPixels);
