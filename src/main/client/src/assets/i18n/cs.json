@@ -4,6 +4,7 @@
   "detect_lang": "Detekce jazyka",
   "translate": "Překlad",
   "annotate": "Anotace",
+  "analyze": "Analyzovat",
   "field": {
     "author": "Autor", 
     "recipient": "Příjemce", 

@@ -21,11 +21,11 @@
   </div>
 
   <as-split direction="horizontal" unit="percent" #splitArea (dragEnd)="splitChanged($event)">
-    <as-split-area [size]="50">
+    <as-split-area [size]="40">
       <app-viewer *ngIf="state.selectedFile" [file]="state.selectedFile" [selectedAlto]="state.selectedAlto" [width]="viewerWidth" 
         (selectionEvent)="setSelectedArea($event)" (onSetField)="setField($event)" (onCopyToClipboard)="copyToClipBoard($event)"></app-viewer>
     </as-split-area>
-    <as-split-area [size]="50">
+    <as-split-area [size]="60">
       <div class="app-fxLayout app-column app-fill">
         <div class="app-controlbar app-fxLayout app-row app-center-v">
           <div class="app-fxFlex">
@@ -59,7 +59,7 @@
           </mat-list>
         </div>
         <div *ngIf="view == 'fields'" class="app-fxFlex app-p-4 app-oa-y">
-          <app-letter-fields [letter]="letter" (onSetField)="setField($event)"></app-letter-fields>
+          <app-letter-fields [letter]="letter" (onSetField)="setField($event)" (onShouldRefresh)="refreshLetters($event)"></app-letter-fields>
         </div>
         <div *ngIf="view == 'search'" class="app-fxFlex app-p-4 app-oa-y">
           <div>

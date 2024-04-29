@@ -26,11 +26,11 @@ import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/
   templateUrl: './letter-fields.component.html',
   styleUrls: ['./letter-fields.component.scss'],
   providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'cs'},
+    { provide: MAT_DATE_LOCALE, useValue: 'cs' },
   ],
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, NgIf, RouterModule, TranslateModule, DatePipe,
-    MatDatepickerModule, MatNativeDateModule, 
+    MatDatepickerModule, MatNativeDateModule,
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatListModule, MatTooltipModule,
     MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, MatCheckboxModule]
 })
@@ -50,6 +50,7 @@ export class LetterFieldsComponent {
 
   }
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
+  @Output() onShouldRefresh = new EventEmitter<boolean>();
 
   @ViewChild('abstract') abstract: any;
 
@@ -70,7 +71,7 @@ export class LetterFieldsComponent {
   ngOnInit() {
     this._locale = 'cs';
     this._adapter.setLocale(this._locale);
-    
+
   }
 
 
@@ -135,42 +136,35 @@ export class LetterFieldsComponent {
     // console.log(this._letter.full_text);
     const dialogRef = this.dialog.open(AnalyzeDialogComponent, {
       width: '1200px',
+      // height: '600px',
       disableClose: true,
-      data: { text: this._letter.full_text, prompt: this.state.fileConfig.prompt }
+      panelClass: 'my-custom-panel',
+      data: { letter: this._letter, text: this._letter.full_text, prompt: this.state.fileConfig.prompt }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       // console.log(result);
       if (result) {
-        const id = this._letter.id;
-        const sp = this._letter.startPage;
-        const ep = this._letter.endPage;
-        this._letter = result;
-        this._letter.id = id;
-        this._letter.startPage = sp;
-        this._letter.endPage = ep;
-        if (!isNaN(Date.parse(this._letter.date))) {
+        if (!isNaN(Date.parse(result.date))) {
           this.datum.setValue(this._letter.date);
         } else {
           this.datum.setValue(null);
         }
-        if (result.datum) {
-          this._letter.date_year = result.datum.getFullYear();
-        }
-
-        this.saveLetter();
       }
+      this.onShouldRefresh.emit(true);
     })
   }
 
   saveLetter() {
     if (!this._letter.startPage) {
       this._letter.startPage = this.state.currentPage;
-    } else {
+    }
+    
+    if (!this._letter.endPage) {
       this._letter.endPage = this.state.currentPage;
     }
     this.service.saveLetter(this.state.selectedFile, this._letter).subscribe((res: any) => {
-
+      this.onShouldRefresh.emit(true);
     });
   }
 
@@ -186,7 +180,6 @@ export class LetterFieldsComponent {
 
       }
 
-      console.log(this.state.selectedBlocks)
       if (append) {
         this._letter.full_text += '\n' + this.state.getBlockText();
       } else {

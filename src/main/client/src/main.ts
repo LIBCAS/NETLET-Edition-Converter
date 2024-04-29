@@ -13,6 +13,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient, withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
 import { AppConfiguration } from './app/app-configuration';
 import { AppState } from './app/app-state';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -33,7 +34,8 @@ bootstrapApplication(AppComponent, {
         { provide: APP_INITIALIZER, useFactory: (config: AppConfiguration) => () => config.load(), deps: [AppConfiguration], multi: true },
         TranslateService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideAnimations()
+        provideAnimations(),
+        importProvidersFrom(MatSnackBarModule),
     ]
 })
   .catch(err => console.error(err));

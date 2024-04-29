@@ -2,14 +2,32 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AltoBlock } from './shared/alto';
+import { TranslateService } from '@ngx-translate/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private translateService: TranslateService,
+    private snackBar: MatSnackBar) { }
+
+    showSnackBar(s: string, r: string = '', error: boolean = false) {
+      const right = r !== '' ? this.translateService.instant(r) : '';
+      const clazz = error ? 'app-snack-error' : 'app-snack-success';
+      this.snackBar.open(this.translateService.instant(s), right, {
+        duration: 2000,
+        verticalPosition: 'top',
+        panelClass: clazz
+      });
+    }
+
+    showSnackBarError(s: string, r: string = '') {
+      this.showSnackBar(s, r, true);
+    }
   
   private get<T>(url: string, params: HttpParams = new HttpParams(), responseType?: any): Observable<T> {
     // const r = re ? re : 'json';

@@ -1,4 +1,6 @@
-<h1 mat-dialog-title>{{ 'Analysis' | translate }}</h1>
+<h1 mat-dialog-title cdkDrag
+cdkDragRootElement=".cdk-overlay-pane" 
+cdkDragHandle >{{ 'Analysis' | translate }}</h1>
 <div mat-dialog-content class="app-letter">
     <div *ngIf="loading" class="app-fxLayout app-row ">
         <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
@@ -18,7 +20,11 @@
     </div>
     <button mat-flat-button color="primary" (click)="analyze()" class="app-mb-4">
         <mat-icon class="material-icons-outlined">search_insights</mat-icon>
-        Analyze
+        {{ 'analyze' | translate}}
+    </button>
+    <button mat-flat-button color="primary" (click)="translate()" class="app-mb-4">
+      <mat-icon class="material-icons-outlined">translate</mat-icon>
+      {{ 'translate' | translate}}
     </button>
     <mat-divider class="app-mt-4"></mat-divider>
 
@@ -28,7 +34,7 @@
     <div class="app-mb-4" *ngIf="translation?.text">
         <mat-form-field class="app-w-100" appearance="outline">
             <mat-label>{{ 'Translation' | translate}}</mat-label>
-            <textarea rows="5" matInput [value]="translation.text" name="translation_text"></textarea>
+            <textarea rows="5" matInput [value]="translation.text" name="translation_text" #preklad></textarea>
         </mat-form-field>
     </div>
 

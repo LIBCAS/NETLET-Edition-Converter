@@ -37,7 +37,7 @@ export class EditorComponent {
 
   @ViewChild('splitArea') splitArea: any;
 
-  
+
   onlyBox: boolean;
   twoCols: boolean;
 
@@ -53,7 +53,7 @@ export class EditorComponent {
 
   entities: Entity[] = [];
   nametag: string;
-  nametags: {pos: number[], text: string, type: string, selected: boolean}[];
+  nametags: { pos: number[], text: string, type: string, selected: boolean }[];
 
   searchParams: SearchParams;
   ignored: { [id: string]: boolean } = {};
@@ -117,7 +117,11 @@ export class EditorComponent {
 
   }
 
-  setField(data: {field: string, textBox: string, append: boolean}) {
+  refreshLetters(c: boolean) {
+    this.getLetters();
+  }
+
+  setField(data: { field: string, textBox: string, append: boolean }) {
     let text = '';
     switch (data.textBox) {
       case 'block':
@@ -158,14 +162,14 @@ export class EditorComponent {
     }
 
     copyText.value = text;
-  
+
     // Select the text field
     copyText.select();
     copyText.setSelectionRange(0, 99999); // For mobile devices
-  
-     // Copy the text inside the text field
+
+    // Copy the text inside the text field
     navigator.clipboard.writeText(copyText.value);
-  
+
     // Alert the copied text
     // alert("Copied the text: " + copyText.value);
   }
@@ -280,14 +284,14 @@ export class EditorComponent {
     this.service.findSimilar(this.searchParams).subscribe((resp: any) => {
       this.results = resp.response.docs;
       this.selectFirstNotIgnored(0);
-      
+
     });
   }
 
   getLetters() {
     this.service.getLetters(this.state.selectedFile).subscribe((resp: any) => {
       this.letters = resp.response.docs;
-      
+
     });
   }
 
@@ -327,7 +331,7 @@ export class EditorComponent {
         } else {
           this.state.currentPage = this.letter.startPage;
         }
-        
+
       } else {
         this.newLetter();
         this.letter.id = doc.id;
@@ -386,12 +390,12 @@ export class EditorComponent {
   saveLetter() {
     if (!this.letter.startPage) {
       this.letter.startPage = this.state.currentPage;
-    } 
+    }
     if (!this.letter.endPage) {
       this.letter.endPage = this.state.currentPage;
-    } 
+    }
     this.service.saveLetter(this.state.selectedFile, this.letter).subscribe((res: any) => {
-
+      this.refreshLetters(true);
     });
   }
 
@@ -399,7 +403,7 @@ export class EditorComponent {
     this.service.removeLetter(this.state.selectedFile, this.letter.id).subscribe((res: any) => {
       this.getLetters();
     });
-    
+
   }
 
   exportLetter() {
@@ -408,14 +412,14 @@ export class EditorComponent {
 
   nextResult() {
     if (this.selectedResult > -1) {
-      this.selectFirstNotIgnored(this.selectedResult+1);
+      this.selectFirstNotIgnored(this.selectedResult + 1);
       // this.selectResult(this.results[this.selectedResult+1], true, this.selectedResult+1)
     }
   }
 
   prevResult() {
     if (this.selectedResult > 0) {
-      this.selectResult(this.results[this.selectedResult-1], true, this.selectedResult-1)
+      this.selectResult(this.results[this.selectedResult - 1], true, this.selectedResult - 1)
     }
   }
 
@@ -430,7 +434,7 @@ export class EditorComponent {
   }
 
   toggleIgnoreAndNext() {
-    
+
     if (this.selectedResult > -1) {
       this.toggleIgnore(this.results[this.selectedResult].id)
     }

@@ -309,6 +309,7 @@ public class Indexer {
             idoc.setField("startPage", data.optInt("startPage", 0));
             solr.add("letters", idoc);
             solr.commit("letters");
+            ret.put("msg", "letter saved!");
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
