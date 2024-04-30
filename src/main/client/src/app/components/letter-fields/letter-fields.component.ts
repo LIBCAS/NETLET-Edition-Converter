@@ -71,10 +71,7 @@ export class LetterFieldsComponent {
   ngOnInit() {
     this._locale = 'cs';
     this._adapter.setLocale(this._locale);
-
   }
-
-
 
   findTags() {
     this.service.findTags(this._letter.full_text).subscribe((resp: any) => {

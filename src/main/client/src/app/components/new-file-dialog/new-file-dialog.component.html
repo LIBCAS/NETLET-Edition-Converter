@@ -1,0 +1,47 @@
+<h1 mat-dialog-title cdkDrag
+cdkDragRootElement=".cdk-overlay-pane" 
+cdkDragHandle >{{ 'new_file' | translate }}</h1>
+<div mat-dialog-content class="app-letter">
+
+  <div class="app-mb-4">
+    <mat-form-field class="app-w-100" appearance="outline">
+      <mat-label>{{ 'book_name' | translate }}</mat-label>
+      <input matInput type="text" name="name" [(ngModel)]="name">
+    </mat-form-field>
+  </div>
+  <div class="app-fxLayout app-row app-center-v app-mb-4">
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'def_author' | translate }}</mat-label>
+      <input matInput name="def_author" [(ngModel)]="def_author">
+    </mat-form-field>
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'def_recipient' | translate }}</mat-label>
+      <input matInput name="def_recipient" [(ngModel)]="def_recipient">
+    </mat-form-field>
+  </div>
+  <div class="app-mb-4">
+    <mat-form-field class="app-w-100" appearance="outline">
+      <mat-label>Columns</mat-label>
+      <input matInput type="number" name="def_author" [(ngModel)]="columns">
+    </mat-form-field>
+  </div>
+
+  <mat-divider class="app-mt-4"></mat-divider>
+
+  <input type="file" #fileUpload ng2FileSelect [uploader]="uploader" style="display:none;" (change)="onFileSelected($event)" accept="application/pdf">
+  <div class="app-fxLayout app-row app-center-v">
+    <mat-form-field appearance="outline" class="app-fxFlex app-form-field-center-v-fix">
+      <input matInput type="text" name="selectedCover" [(ngModel)]="selectedFile">
+      <button matPrefix mat-stroked-button color="primary" class="app-mr-2 app-ml-2" (click)="fileUpload.click()">{{ 'Vybrat soubor' | translate }}</button>
+    </mat-form-field>
+  </div>
+  <mat-progress-bar mode="indeterminate" [value]="uploader.progress" *ngIf="uploader.isUploading"></mat-progress-bar>
+  <div>{{ progressMsg }}</div>
+
+</div>
+
+<div mat-dialog-actions>
+    <button [disabled]="!selectedFile" mat-flat-button color="primary" (click)="uploadFile()">{{ 'Nahrat' | translate }}</button>
+    <!-- <button mat-flat-button (click)="save()" color="primary">{{ 'Save' | translate }}</button> -->
+    <button mat-flat-button [mat-dialog-close]="false">{{ 'Close' | translate }}</button>
+</div>

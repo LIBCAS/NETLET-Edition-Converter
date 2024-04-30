@@ -11,6 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { FileConfig } from 'src/app/shared/file-config';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { NewFileDialogComponent } from 'src/app/components/new-file-dialog/new-file-dialog.component';
 
 @Component({
     selector: 'app-home',
@@ -20,25 +22,17 @@ import { FileConfig } from 'src/app/shared/file-config';
     imports: [RouterLink, FileUploadModule,
       CommonModule, TranslateModule, FormsModule,
       MatFormFieldModule, MatInputModule, MatButtonModule,
-      MatDividerModule, MatProgressBarModule]
+      MatDividerModule, MatProgressBarModule, MatDialogModule]
 })
 export class HomeComponent {
   files: {dir: string[], config: FileConfig, imgs: number, txt: number, alto: number}[] = [];
-  public uploader: FileUploader = new FileUploader({ url: 'api/lf?action=UPLOAD' });
-  selectedFile: string;
-  progressMsg: string;
 
-  constructor(private service: AppService) {}
+  constructor(
+    public dialog: MatDialog,
+    private service: AppService) {}
 
   ngOnInit() {
     this.getFiles();
-  }
-
-  onFileSelected(e: any) {
-    const file: File = e.target.files[0];
-    if (file) {
-      this.selectedFile = file.name;
-    }
   }
 
   getFiles() {
@@ -47,16 +41,18 @@ export class HomeComponent {
     });
   }
 
-  uploadFile() {
-    this.progressMsg = 'uploading...'
-    this.uploader.setOptions({ url: 'api/data/pdf' });
-    this.uploader.onSuccessItem = (item: any, response: any, status: any, headers: any) => this.fileUploaded();
-    this.uploader.uploadAll();
-  }
-
-  fileUploaded() {
-    this.progressMsg = 'file uploaded';
-    this.getFiles();
+  newFile() {
+    const dialogRef = this.dialog.open(NewFileDialogComponent, {
+      width: '800px',
+      // height: '600px',
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      // console.log(result);
+      if (result) {
+        
+      }
+    })
   }
 
 }

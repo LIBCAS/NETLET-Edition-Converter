@@ -5,6 +5,10 @@
   "translate": "Překlad",
   "annotate": "Anotace",
   "analyze": "Analyzovat",
+  "new_file": "Přidat nový soubor",
+  "book_name": "Název knihy",
+  "def_author": "Výchozí autor", 
+  "def_recipient": "Výchozí příjemce", 
   "field": {
     "author": "Autor", 
     "recipient": "Příjemce", 

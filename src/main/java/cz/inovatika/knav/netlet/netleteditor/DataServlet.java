@@ -83,7 +83,6 @@ public class DataServlet extends HttpServlet {
         PDF {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-
                 JSONObject ret = new JSONObject();
                 // Create a factory for disk-based file items
                 DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -98,6 +97,9 @@ public class DataServlet extends HttpServlet {
 
 // Parse the request
                 List<FileItem> items = upload.parseRequest(req);
+                
+                JSONObject fileSettings = new JSONObject();
+                String filename = null;
 
                 // Process the uploaded items
                 Iterator<FileItem> iter = items.iterator();
@@ -105,8 +107,12 @@ public class DataServlet extends HttpServlet {
                     FileItem item = iter.next();
                     if (item.isFormField()) {
                         // neni
+                        fileSettings.put(item.getFieldName(),item.getString("UTF-8"));
                     } else {
-                        String pdfDir = Storage.pdfDir(item.getName());
+                        filename = item.getName();
+                        String pdfDir = Storage.pdfDir(filename);
+                        File d = new File(pdfDir);
+                        d.mkdirs();
                         String fileName = pdfDir + File.separator + item.getName();
                         File uploadedFile = new File(fileName);
                         if (uploadedFile.exists()) {
@@ -123,14 +129,17 @@ public class DataServlet extends HttpServlet {
                         File f2 = new File(fileName);
                         item.write(f2);
                         if (f2.exists()) {
-                            
                             new Thread(()-> PDFThumbsGenerator.processFile(fileName)).start();
-                            // ret = PDFThumbsGenerator.processFile(uploadedFile);
                             ret.put("msg", "process started");
                         } else {
                             ret.put("msg", "not exists");
                         }
                     }
+                }
+                if (filename != null) {
+                    File f = Storage.configFile(filename);
+                    fileSettings.put("prompt", Options.getInstance().getString("defaultPrompt").replace("###NAME###", "z knihy \"" + fileSettings.optString("name", "") + "\""));
+                    FileUtils.writeStringToFile(f, fileSettings.toString(), "UTF-8");
                 }
                 return ret;
             }
@@ -185,12 +194,13 @@ public class DataServlet extends HttpServlet {
                     String json = FileUtils.readFileToString(f, "UTF-8");
                     ret = new JSONObject(json);
                     if (!ret.has("prompt")) {
-                        ret.put("prompt", Options.getInstance().getJSONObject("file_config").getString("prompt"));
+                        ret.put("prompt", Options.getInstance().getString("defaultPrompt").replace("###NAME###", ""));
                     }
                 } else {
                     // ret.put("error", "File not found");
                     LOGGER.log(Level.INFO, "No config. Creating empty");
                     ret = Options.getInstance().getJSONObject("file_config");
+                    ret.put("prompt", Options.getInstance().getString("defaultPrompt").replace("###NAME###", ""));
                 }
                 return ret;
             }

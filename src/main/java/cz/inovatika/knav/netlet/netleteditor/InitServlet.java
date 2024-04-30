@@ -75,6 +75,11 @@ public class InitServlet extends HttpServlet {
     
     LOGGER.log(Level.INFO, "CONFIG_DIR is -> {0}", CONFIG_DIR);
   }
+  
+  @Override
+  public void destroy() {
+      timer.cancel();
+  }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
   /**
