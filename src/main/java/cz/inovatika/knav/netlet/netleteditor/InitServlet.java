@@ -31,6 +31,8 @@ public class InitServlet extends HttpServlet {
   public static String DEFAULT_I18N_DIR = "/assets/i18n";
   
   Timer timer;
+  TimerTask task;
+  public static boolean taskRunning;
 
 
   /**
@@ -66,19 +68,49 @@ public class InitServlet extends HttpServlet {
     }
     
     // Set timer for update 
-    TimerTask task = new UpdaterTask();
+    task = new UpdaterTask();
     timer = new Timer("Timer");
+    taskRunning = true;
 
     long delay = 1000L;
     long period = 1000L * 60L * 60L * 24L; // jednou denne
     timer.scheduleAtFixedRate(task, delay, period);
+    
+    
+//    ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+//
+//    ScheduledFuture<?> future = executor.scheduleAtFixedRate(new Runnable() {
+//        int i = 0;
+//        public void run() {
+//            int j = i++;
+//            System.err.println("Run " + j);
+//
+//            try {
+//                Thread.sleep(5000L);
+//            } catch (InterruptedException e) {
+//                System.err.println("Interrupted " + j);
+//            }
+//        }
+//
+//    }, 1000L, 2000L, TimeUnit.MILLISECONDS);
+//
+//    Thread.sleep(10000L);
+//    System.err.println("Canceled " + future.cancel(true));
+//
+//    Thread.sleep(20000L);
+//
+//    executor.shutdownNow();
+//    System.err.println("Finished");
+//    
     
     LOGGER.log(Level.INFO, "CONFIG_DIR is -> {0}", CONFIG_DIR);
   }
   
   @Override
   public void destroy() {
+      taskRunning = false;
       timer.cancel();
+      
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

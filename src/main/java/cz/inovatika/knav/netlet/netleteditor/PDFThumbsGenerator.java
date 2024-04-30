@@ -56,7 +56,7 @@ public class PDFThumbsGenerator {
 
     }
 
-    public static JSONObject check() throws IOException {
+    public static JSONObject check(boolean isTask) throws IOException {
         JSONObject ret = new JSONObject();
         String[] dirs = Storage.getDocuments();
         for (String dir : dirs) {
@@ -64,7 +64,7 @@ public class PDFThumbsGenerator {
             int alto = new File(Storage.altoDir(dir)).list().length;
             if (alto < imgs) {
                 LOGGER.log(Level.INFO, "Running alto for {0}", dir);
-                ret.put(dir, generateAlto(dir, false));
+                ret.put(dir, generateAlto(dir, false, isTask));
             }
         }
         return ret;
@@ -164,7 +164,7 @@ public class PDFThumbsGenerator {
         return ret;
     }
 
-    public static JSONObject generateAlto(String fileName, boolean overwrite) {
+    public static JSONObject generateAlto(String fileName, boolean overwrite, boolean isTask) {
         //File f = new File(pdfDir + fileName);
         LOGGER.log(Level.INFO, "Generating alto for pdf {0}", fileName);
         JSONObject ret = new JSONObject();
@@ -183,6 +183,10 @@ public class PDFThumbsGenerator {
                 } else {
                     // LOGGER.log(Level.INFO, "file {0} exists -> {1}", new Object[]{alto, altoFile.exists()});
                     LOGGER.log(Level.INFO, "page {0} skipped", imgNum);
+                }
+                if (!InitServlet.taskRunning && isTask) {
+                     LOGGER.log(Level.INFO, "Task stopped");
+                    return ret;
                 }
             }
         } catch (Exception ex) {

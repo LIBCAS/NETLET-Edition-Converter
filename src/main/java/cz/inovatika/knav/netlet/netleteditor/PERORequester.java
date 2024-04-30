@@ -73,6 +73,16 @@ public class PERORequester {
                 } catch (InterruptedException e) {
                     LOGGER.log(Level.SEVERE, null, e);
                 }
+
+                if (!InitServlet.taskRunning) {
+                    LOGGER.log(Level.INFO, "Task stopped");
+                    return false;
+                } 
+                
+                if (Thread.interrupted()){
+                    LOGGER.log(Level.INFO, "Task stopped");
+                    return false;
+                }
             }
         } while (!processingResult.equals("PROCESSED"));
         return true;
@@ -171,8 +181,8 @@ public class PERORequester {
             } else if (response.getStatusLine().getStatusCode() >= 400) {
                 JSONObject jsonResponse = new JSONObject(EntityUtils.toString(entity));
 
-                LOGGER.log(Level.SEVERE, "The request returned status code {0}. The message is: {1}",
-                        new Object[]{response.getStatusLine().getStatusCode(), jsonResponse.getString("message")});
+//                LOGGER.log(Level.INFO, "The request returned status code {0}. The message is: {1}",
+//                        new Object[]{response.getStatusLine().getStatusCode(), jsonResponse.getString("message")});
 
                 if (jsonResponse.getString("message").contains("not processed yet")) {
                     return "UNPROCESSED";

@@ -340,9 +340,8 @@ public class DataServlet extends HttpServlet {
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
-                        json = SolrTaggerAnalyzer.getTagsJSON(text, "key_tagger_cze");
-
                         json.put("nametag", NameTag.recognize(text));
+                        json = SolrTaggerAnalyzer.getTagsJSON(text, "key_tagger_cze");
                     }
 
                 } catch (Exception ex) {

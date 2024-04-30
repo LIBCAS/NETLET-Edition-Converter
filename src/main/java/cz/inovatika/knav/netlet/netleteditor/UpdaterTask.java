@@ -13,9 +13,9 @@ public class UpdaterTask extends TimerTask {
 
   @Override
   public void run() {
-    
     try {
-      PDFThumbsGenerator.check();
+      PDFThumbsGenerator.check(true);
+      this.cancel();
     } catch (Exception ex) {
       LOGGER.log(Level.SEVERE, null, ex);
     }

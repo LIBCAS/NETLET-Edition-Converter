@@ -85,14 +85,14 @@ public class ConvertServlet extends HttpServlet {
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
                 String filename = req.getParameter("file");
                 boolean overwrite = Boolean.parseBoolean(req.getParameter("overwrite"));
-                return PDFThumbsGenerator.generateAlto(filename, overwrite);
+                return PDFThumbsGenerator.generateAlto(filename, overwrite, false);
 
             }
         },
         CHECK {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                return PDFThumbsGenerator.check();
+                return PDFThumbsGenerator.check(false);
 
             }
         };
