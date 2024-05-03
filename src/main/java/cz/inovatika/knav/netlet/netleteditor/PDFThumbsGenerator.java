@@ -4,8 +4,7 @@ import cz.inovatika.knav.netlet.netleteditor.index.Indexer;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.IOException; 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.coobird.thumbnailator.ThumbnailParameter;
@@ -50,6 +49,8 @@ public class PDFThumbsGenerator {
                     .put("imgs", new File(Storage.imagesDir(dir)).list().length)
                     .put("alto", new File(Storage.altoDir(dir)).list().length)
                     .put("txt", new File(Storage.txtDir(dir)).list().length));
+            
+            ret.put("totals", Indexer.getLettersTotals().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("filename"));
         }
 
         return ret;
@@ -57,6 +58,7 @@ public class PDFThumbsGenerator {
     }
 
     public static JSONObject check(boolean isTask) throws IOException {
+                LOGGER.log(Level.INFO, "Running check");
         JSONObject ret = new JSONObject();
         String[] dirs = Storage.getDocuments();
         for (String dir : dirs) {
@@ -67,6 +69,15 @@ public class PDFThumbsGenerator {
                 ret.put(dir, generateAlto(dir, false, isTask));
             }
         }
+        return ret;
+
+    }
+
+    public static JSONObject stop(boolean isTask) throws IOException {
+                LOGGER.log(Level.INFO, "Running check");
+        JSONObject ret = new JSONObject();
+        InitServlet.stopFuture();
+        ret.put("msg", "Checking ALTO stopped");
         return ret;
 
     }

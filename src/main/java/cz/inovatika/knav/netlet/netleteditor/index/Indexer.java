@@ -241,12 +241,43 @@ public class Indexer {
             jsonResponse = (String) qresp.get("response");
             ret = new JSONObject(jsonResponse);
 
+        } catch (Exception ex) { 
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        return ret;
+    }
+    
+    public static JSONObject getLettersTotals() {
+        JSONObject ret = new JSONObject();
+        try {
+            Http2SolrClient solr = (Http2SolrClient) getClient();
+            SolrQuery query = new SolrQuery("*")
+                    .setRows(0)
+                    .setFacet(true)
+                    .addFacetField("filename")
+                    .setParam("json.nl", "map")
+                    .setFacetMinCount(0)
+                    .setFacetLimit(1000);
+            query.set("wt", "json");
+            String jsonResponse;
+
+            QueryRequest qreq = new QueryRequest(query);
+            // qreq.setPath();
+            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
+            dontMessWithSolr.setWriterType("json");
+            solr.setParser(dontMessWithSolr);
+            NamedList<Object> qresp = solr.request(qreq, "letters");
+            jsonResponse = (String) qresp.get("response");
+            ret = new JSONObject(jsonResponse);
+
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
             ret.put("error", ex);
         }
         return ret;
     }
+    
     
     public static JSONObject removeLetter(String id) {
         JSONObject ret = new JSONObject();
