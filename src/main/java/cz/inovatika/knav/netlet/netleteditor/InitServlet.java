@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -30,8 +33,11 @@ public class InitServlet extends HttpServlet {
   //Default config directory in webapp
   public static String DEFAULT_I18N_DIR = "/assets/i18n";
   
-  Timer timer;
-  TimerTask task;
+  // Timer timer;
+  // TimerTask task;
+  
+  public static ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+  public static ScheduledFuture<?> future;
   public static boolean taskRunning;
 
 
@@ -68,48 +74,47 @@ public class InitServlet extends HttpServlet {
     }
     
     // Set timer for update 
-    task = new UpdaterTask();
-    timer = new Timer("Timer");
-    taskRunning = true;
-
-    long delay = 1000L;
+    // task = new UpdaterTask();
+//    timer = new Timer("Timer");
+//    taskRunning = true;
+//
+//    long delay = 1000L;
     long period = 1000L * 60L * 60L * 24L; // jednou denne
-    timer.scheduleAtFixedRate(task, delay, period);
+//    timer.scheduleAtFixedRate(task, delay, period);
     
-    
-//    ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
-//
-//    ScheduledFuture<?> future = executor.scheduleAtFixedRate(new Runnable() {
-//        int i = 0;
-//        public void run() {
-//            int j = i++;
-//            System.err.println("Run " + j);
-//
-//            try {
-//                Thread.sleep(5000L);
-//            } catch (InterruptedException e) {
-//                System.err.println("Interrupted " + j);
-//            }
-//        }
-//
-//    }, 1000L, 2000L, TimeUnit.MILLISECONDS);
-//
-//    Thread.sleep(10000L);
-//    System.err.println("Canceled " + future.cancel(true));
-//
-//    Thread.sleep(20000L);
-//
-//    executor.shutdownNow();
-//    System.err.println("Finished");
-//    
+
+    future = executor.scheduleAtFixedRate(new Runnable() {
+
+        @Override
+        public void run() {
+
+            try {
+                LOGGER.log(Level.INFO, "Running future");
+                InitServlet.taskRunning = true;
+                PDFThumbsGenerator.check(true);
+                LOGGER.log(Level.INFO, "Future finished");
+            } catch (IOException ioe) {
+                LOGGER.log(Level.SEVERE, null, ioe);
+            }
+        }
+
+    }, 1000L, period, TimeUnit.MILLISECONDS);
     
     LOGGER.log(Level.INFO, "CONFIG_DIR is -> {0}", CONFIG_DIR);
   }
   
+  public static void stopFuture() { 
+      
+      InitServlet.taskRunning = false;
+      future.cancel(true);
+  }
+  
   @Override
   public void destroy() {
-      taskRunning = false;
-      timer.cancel();
+      InitServlet.taskRunning = false;
+      future.cancel(true);
+      executor.shutdownNow();
+      // timer.cancel();
       
   }
 

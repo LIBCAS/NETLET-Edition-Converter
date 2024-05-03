@@ -25,7 +25,7 @@ import { NewFileDialogComponent } from 'src/app/components/new-file-dialog/new-f
       MatDividerModule, MatProgressBarModule, MatDialogModule]
 })
 export class HomeComponent {
-  files: {dir: string[], config: FileConfig, imgs: number, txt: number, alto: number}[] = [];
+  files: {dir: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number}[] = [];
 
   constructor(
     public dialog: MatDialog,
@@ -38,6 +38,9 @@ export class HomeComponent {
   getFiles() {
     this.service.getDocuments().subscribe((res: any) => {
       this.files = res.dirs;
+      this.files.forEach(f => {
+        f.letters = res.totals[f.dir] ? res.totals[f.dir] : 0;
+      });
     });
   }
 

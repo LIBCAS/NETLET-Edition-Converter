@@ -71,16 +71,16 @@ public class PERORequester {
                 try {
                     TimeUnit.SECONDS.sleep(5);
                 } catch (InterruptedException e) {
-                    LOGGER.log(Level.SEVERE, null, e);
+                    LOGGER.log(Level.SEVERE, "Task interrupted!");
                 }
 
                 if (!InitServlet.taskRunning) {
-                    LOGGER.log(Level.INFO, "Task stopped");
+                    LOGGER.log(Level.INFO, "Task stopped"); 
                     return false;
-                } 
-                
-                if (Thread.interrupted()){
-                    LOGGER.log(Level.INFO, "Task stopped");
+                }
+
+                if (Thread.interrupted()) {
+                    LOGGER.log(Level.INFO, "Thread stopped");
                     return false;
                 }
             }
@@ -183,7 +183,6 @@ public class PERORequester {
 
 //                LOGGER.log(Level.INFO, "The request returned status code {0}. The message is: {1}",
 //                        new Object[]{response.getStatusLine().getStatusCode(), jsonResponse.getString("message")});
-
                 if (jsonResponse.getString("message").contains("not processed yet")) {
                     return "UNPROCESSED";
                 } else {
