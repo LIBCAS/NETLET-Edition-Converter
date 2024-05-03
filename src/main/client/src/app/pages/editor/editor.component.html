@@ -47,7 +47,7 @@
         <div *ngIf="view == 'letters'" class="app-fxFlex app-p-4 app-oa-y">
           <mat-list>
             <div mat-subheader>Letters: ({{letters?.length}})</div>
-            <mat-list-item *ngFor="let l of letters; let idx = index;" [class.app-selected]="selectedResult === idx" (click)="selectResult(l, true, idx)">
+            <mat-list-item *ngFor="let l of letters; let idx = index;" [class.app-selected]="selectedResult === idx" (click)="selectResult(l, false, idx)">
               <div matListItemTitle [class.app-ignore]="ignored[l.id]">
                 {{ idx }} .- Page(s): {{ l.data.startPage }} <ng-container *ngIf="l.data.endPage"> - {{ l.data.endPage }}</ng-container> 
                 
@@ -80,57 +80,10 @@
           </mat-list>
 
 
-          <!-- <div>Results: ({{results?.length}})</div>
-          <ul>
-            <li *ngFor="let doc of results; let idx = index;" [class.app-selected]="selectedResult === idx">
-              <mat-icon matPrefix (click)="toggleIgnore(doc.id)">delete</mat-icon>
-              <div (click)="selectResult(doc, true, idx)" class="app-fxFlex app-result"
-                [class.app-ignore]="ignored[doc.id]">
-                page: {{ doc.page }}
-                <div *ngFor="let line of doc.lines">
-                  {{ getLineText(line) }}
-                </div>
-              </div>
-              <hr />
-            </li>
-          </ul> -->
         </div>
       </div>
      
 
-     <!--  <mat-tab-group>
-        <mat-tab label="Fields">
-          <h3>Editace zaznamu</h3>
-          <button mat-button (click)="newLetter()">{{'add'}}</button>
-          <button mat-button (click)="saveLetter()">save</button>
-          <button mat-button (click)="prevResult()">prev</button>
-          <button mat-button (click)="nextResult()">next</button>
-          <button mat-button (click)="toggleIgnoreAndNext()">ignore</button>
-          <app-letter-fields [letter]="letter" (onSetField)="setField($event)"></app-letter-fields>
-        </mat-tab>
-        <mat-tab label="Search">
-          <div>
-            <button mat-button (click)="findSimilar()">Similar</button>
-            <label for="onlyBox">Only box</label><input id="onlyBox" type="checkbox" [(ngModel)]="onlyBox" />
-            <label for="twoCols">Two columns</label><input id="twoCols" type="checkbox" [(ngModel)]="twoCols" />
-          </div>
-          <hr />
-          <div>Results: ({{results?.length}})</div>
-          <ul>
-            <li *ngFor="let doc of results; let idx = index;" [class.app-selected]="selectedResult === idx">
-              <mat-icon matPrefix (click)="toggleIgnore(doc.id)">delete</mat-icon>
-              <div (click)="selectResult(doc, true, idx)" class="app-fxFlex app-result"
-                [class.app-ignore]="ignored[doc.id]">
-                page: {{ doc.page }}
-                <div *ngFor="let line of doc.lines">
-                  {{ getLineText(line) }}
-                </div>
-              </div>
-              <hr />
-            </li>
-          </ul>
-        </mat-tab>
-      </mat-tab-group> -->
     </as-split-area>
   </as-split>
 </div>

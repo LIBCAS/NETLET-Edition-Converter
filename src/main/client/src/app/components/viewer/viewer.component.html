@@ -1,6 +1,14 @@
 <div class="app-fxLayout app-column app-fill">
   <div class="app-controlbar app-fxLayout app-row app-pl-4 app-pr-4 app-center-v">
-    <div class="app-fxFlex"></div>
+    <div class="app-fxFlex">
+
+      
+      <button mat-icon-button (click)="zoomImg(1.4)"><mat-icon>zoom_in</mat-icon></button>
+      <button mat-icon-button (click)="zoomImg(.75)"><mat-icon>zoom_out</mat-icon></button>
+      <button mat-icon-button (click)="zoomImgReset()"><mat-icon>zoom_in_map</mat-icon></button>
+
+      
+    </div>
     <span class="app-label">{{ 'stránka' | translate }}:</span>
     <input [(ngModel)]="state.currentPage" (change)="getPage()" min="1" max="numPages" />
     <span class="app-ml-6 app-mr-4">{{ 'z celkového počtu ' | translate }}<strong>{{ state.numPages }}</strong></span>
@@ -9,7 +17,8 @@
   </div>
   <div class="app-fxFlex app-oa-y" #scroller>
     <div style="position: relative;" [cdkContextMenuTriggerFor]="context_menu">
-      <img [src]="config.context + 'api/img?filename=' + file + '&page=' + (state.currentPage-1)"  (load)="getInfo()" #image style="position: absolute; width: 100%;" />
+      <img [src]="config.context + 'api/img?filename=' + file + '&page=' + (state.currentPage-1)"  (load)="getInfo()" #image style="position: absolute; width: 100%;"
+      [style.width]="_imgW + '%'"  />
       <canvas id="autoCanvas" #autoCanvas></canvas>
       <canvas id="selCanvas" #selCanvas></canvas>
     </div>

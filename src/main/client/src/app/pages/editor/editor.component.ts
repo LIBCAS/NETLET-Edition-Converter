@@ -45,6 +45,7 @@ export class EditorComponent {
   results: any[];
   selectedResult: number = -1;
   viewerWidth: number;
+  imgW = 100;
 
   letters: any[];
   letter: Letter;
@@ -349,16 +350,16 @@ export class EditorComponent {
     this.state.currentPage = doc.data.startPage;
     this.getPage(keepSelection);
 
-    this.state.selectedBlocks = [{
-      HPOS: doc.HPOS,
-      VPOS: doc.VPOS,
-      WIDTH: doc.WIDTH,
-      HEIGHT: doc.HEIGHT,
-      ID: doc.blockid,
-      TextLine: []
-    }];
+    // this.state.selectedBlocks = [{
+    //   HPOS: doc.HPOS,
+    //   VPOS: doc.VPOS,
+    //   WIDTH: doc.WIDTH,
+    //   HEIGHT: doc.HEIGHT,
+    //   ID: doc.blockid,
+    //   TextLine: []
+    // }];
 
-    this.state.selectedLines = doc.lines;
+    // this.state.selectedLines = doc.lines;
     this.state.selectedWords = [];
     // this.state.selectedAlto = null;
     this.state.selectedAlto = { blocks: this.state.selectedBlocks, lines: this.state.selectedLines, words: this.state.selectedWords };

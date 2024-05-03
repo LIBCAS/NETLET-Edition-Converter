@@ -23,6 +23,18 @@ export class ViewerComponent {
   @Output() onCopyToClipboard = new EventEmitter<string>();
   @Input() file: string = '';
 
+  
+
+  public _imgW = 100;
+  // @Input() set imgW(value: number){
+  //   this._imgW = value;
+  //   if (this.canvasInited) {
+  //     setTimeout(() => {
+  //       this.getInfo();
+  //     }, 1)
+  //   }
+  // }
+
 
   @Input() set width(value: number) {
     if (this.canvasInited) {
@@ -371,6 +383,21 @@ export class ViewerComponent {
 
   copyToClipboard(textBox: string) {
     this.onCopyToClipboard.emit(textBox);
+  }
+
+
+  zoomImg(scale: number) {
+    this._imgW = this._imgW * scale;
+    setTimeout(() => {
+      this.getInfo();
+    }, 1)
+  }
+
+  zoomImgReset() {
+    this._imgW = 100;
+    setTimeout(() => {
+      this.getInfo();
+    }, 1)
   }
 
   

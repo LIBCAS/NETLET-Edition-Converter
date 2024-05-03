@@ -171,6 +171,7 @@ export class LetterFieldsComponent {
 
       if (this.state.selectedBlocks.length === 0) {
         const tBlocks: AltoBlock[] = this.state.alto.Layout.Page.PrintSpace.TextBlock;
+        console.log(tBlocks)
         this.state.selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
           return true;
         });
@@ -178,7 +179,7 @@ export class LetterFieldsComponent {
       }
 
       if (append) {
-        this._letter.full_text += '\n' + this.state.getBlockText();
+        this._letter.full_text += '\n\n' + this.state.getBlockText();
       } else {
         this._letter.full_text = this.state.getBlockText();
       }

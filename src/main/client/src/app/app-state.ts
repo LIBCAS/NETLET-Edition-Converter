@@ -47,7 +47,7 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
   getBlockText(): string {
     let ret = '-';
     const half = this.alto.Layout.Page.PrintSpace.WIDTH / this.fileConfig.columns;
-    console.log(half)
+    // console.log(half)
     // sort selected blocks
     this.selectedBlocks.sort((a, b) => {
       if (a.HPOS <= half && b.HPOS > half) {
@@ -73,7 +73,8 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
             ret += '\n' + this.getLineText(s);
           }
 
-        })
+        });
+        ret += '\n';
       }
     });
     return ret;
