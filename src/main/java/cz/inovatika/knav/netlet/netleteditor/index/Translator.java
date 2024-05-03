@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cz.inovatika.knav.netlet.netleteditor.index;
 
 import com.google.common.base.Optional;
@@ -30,6 +26,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.tika.langdetect.optimaize.OptimaizeLangDetector;
+import org.apache.tika.language.detect.LanguageResult;
 import org.json.JSONObject;
 
 /**
@@ -67,8 +65,15 @@ public class Translator {
     public static JSONObject translate(String text) {
         JSONObject ret = new JSONObject();
         try {
-            String src_lang = detectLang(text);
-            ret = new JSONObject().put("lang", src_lang);
+            List<LanguageResult> langs = detectLanguages(text);
+            String src_lang = langs.get(0).getLanguage();
+            // String src_lang = detectLang(text);
+            ret = new JSONObject()
+                    .put("lang", src_lang);
+            for (LanguageResult l : langs) {
+                ret.append("languages", l.getLanguage());
+            }
+                    
             if (!"cs".equals(src_lang)) {                
                 String r = request(text, src_lang, "cs");
                 ret.put("text", r);
@@ -98,5 +103,11 @@ public class Translator {
         TextObject textObject = textObjectFactory.forText(text);
         Optional<LdLocale> lang = languageDetector.detect(textObject);
         return lang.get().getLanguage();
+    }
+    
+    public static List<LanguageResult> detectLanguages(String text) throws IOException {
+        org.apache.tika.language.detect.LanguageDetector detector = new OptimaizeLangDetector().loadModels();
+        List<LanguageResult> result = detector.detectAll(text);
+        return result;
     }
 }

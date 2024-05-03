@@ -25,6 +25,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+import org.apache.tika.language.detect.LanguageResult;
 import org.json.JSONArray;
 import org.json.JSONML;
 import org.json.JSONObject;
@@ -97,7 +98,7 @@ public class DataServlet extends HttpServlet {
 
 // Parse the request
                 List<FileItem> items = upload.parseRequest(req);
-                
+
                 JSONObject fileSettings = new JSONObject();
                 String filename = null;
 
@@ -107,7 +108,7 @@ public class DataServlet extends HttpServlet {
                     FileItem item = iter.next();
                     if (item.isFormField()) {
                         // neni
-                        fileSettings.put(item.getFieldName(),item.getString("UTF-8"));
+                        fileSettings.put(item.getFieldName(), item.getString("UTF-8"));
                     } else {
                         filename = item.getName();
                         String pdfDir = Storage.pdfDir(filename);
@@ -129,7 +130,7 @@ public class DataServlet extends HttpServlet {
                         File f2 = new File(fileName);
                         item.write(f2);
                         if (f2.exists()) {
-                            new Thread(()-> PDFThumbsGenerator.processFile(fileName)).start();
+                            new Thread(() -> PDFThumbsGenerator.processFile(fileName)).start();
                             ret.put("msg", "process started");
                         } else {
                             ret.put("msg", "not exists");
@@ -340,8 +341,8 @@ public class DataServlet extends HttpServlet {
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
-                        json.put("nametag", NameTag.recognize(text));
                         json = SolrTaggerAnalyzer.getTagsJSON(text, "key_tagger_cze");
+                        json.put("nametag", NameTag.recognize(text));
                     }
 
                 } catch (Exception ex) {
@@ -394,7 +395,16 @@ public class DataServlet extends HttpServlet {
                     text = request.getParameter("text");
                 }
 
-                return ret.put("lang", Translator.detectLang(text));
+                List<LanguageResult> langs = Translator.detectLanguages(text);
+                String src_lang = langs.get(0).getLanguage();
+                // String src_lang = detectLang(text);
+                ret = new JSONObject()
+                        .put("lang", src_lang);
+                for (LanguageResult l : langs) {
+                    ret.append("languages", l.getLanguage());
+                }
+
+                return ret;
             }
         },
         ANNOTATE {

@@ -7,7 +7,8 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
 }) export class AppState {
 
   alto: any;
-  selectedFile: string;
+  files: {dir: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number}[] = [];
+  selectedFile: {dir: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number};
   fileConfig: FileConfig;
   currentPage: number = 100;
   numPages: number;

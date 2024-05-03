@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FileConfig } from 'src/app/shared/file-config';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NewFileDialogComponent } from 'src/app/components/new-file-dialog/new-file-dialog.component';
+import { AppState } from 'src/app/app-state';
 
 @Component({
     selector: 'app-home',
@@ -25,24 +26,17 @@ import { NewFileDialogComponent } from 'src/app/components/new-file-dialog/new-f
       MatDividerModule, MatProgressBarModule, MatDialogModule]
 })
 export class HomeComponent {
-  files: {dir: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number}[] = [];
 
   constructor(
     public dialog: MatDialog,
+    public state: AppState,
     private service: AppService) {}
 
   ngOnInit() {
-    this.getFiles();
+    // this.getFiles();
   }
 
-  getFiles() {
-    this.service.getDocuments().subscribe((res: any) => {
-      this.files = res.dirs;
-      this.files.forEach(f => {
-        f.letters = res.totals[f.dir] ? res.totals[f.dir] : 0;
-      });
-    });
-  }
+  
 
   newFile() {
     const dialogRef = this.dialog.open(NewFileDialogComponent, {

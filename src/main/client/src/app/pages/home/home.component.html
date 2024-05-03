@@ -1,14 +1,15 @@
 <div class="app-p-4">
-  <h3>List of processed PDFs:</h3>
+  <h3>{{ 'file_list' | translate }}:</h3>
   <ul>
-    <li *ngFor="let file of files">
+    <li *ngFor="let file of state.files">
       <a [routerLink]="['/editor', file.dir]">{{ file.config?.name ? file.config.name : file.dir }}</a>
-      <span> {{ file.imgs }} pages</span> <span> (generated:  {{ file.alto }} )</span>
-      <span> {{ file.letters }} letters</span>
+      <span> {{ file.imgs }} {{ 'pages' | translate }} </span> <span> ({{ 'generated' | translate }} : {{ file.alto }}
+        )</span>
+      <span> {{ file.letters }} {{ 'letters' | translate }} </span>
     </li>
   </ul>
+  
+  <div>
+    <button mat-flat-button (click)="newFile()" color="primary">{{ 'new_file' | translate }}</button>
+  </div>
 </div>
-<div>
-  <button mat-flat-button (click)="newFile()" color="primary">{{ 'new_file' | translate }}</button>
-</div>
-

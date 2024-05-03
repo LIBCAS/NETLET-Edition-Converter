@@ -31,6 +31,6 @@ export class SettingsComponent {
   ) { }
 
   save() {
-    this.service.saveFile(this.state.selectedFile, this.fileConfig).subscribe(res => {});
+    this.service.saveFile(this.state.selectedFile.dir, this.fileConfig).subscribe(res => {});
   }
 }

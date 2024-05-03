@@ -42,6 +42,7 @@ export class AnalyzeDialogComponent {
   incipit: string;
   explicit: string;
 
+  usage: any;
 
   entities: Entity[] = [];
   nametag: string;
@@ -87,6 +88,12 @@ export class AnalyzeDialogComponent {
       // this.loading = false;
     });
   }
+  
+  detectLang() {
+    this.service.detectLang(this.data.text).subscribe((resp: any) => {
+      alert(resp.languages)
+    });
+  }
 
   isDate(date: string) {
     return !isNaN(Date.parse(date));
@@ -101,7 +108,7 @@ export class AnalyzeDialogComponent {
         // this.letter.abstract_cs = orig;
       } else {
         const content = JSON.parse(resp.response?.choices[0].message.content);
-        console.log(content)
+        // console.log(content)
         // this.abstract_cs = content.shrnuti;
         // this.misto = content.misto_a_datum.misto;
         // this.datum = content.misto_a_datum.datum;
@@ -137,6 +144,7 @@ export class AnalyzeDialogComponent {
 
         this.incipit = content.incipit;
         this.explicit = content.explicit;
+        this.usage = resp.response?.usage;
         this.loading = false;
       }
 
@@ -163,6 +171,7 @@ export class AnalyzeDialogComponent {
 
     this.data.letter.entities = this.entities;
     this.data.letter.nametags = this.nametags;
+    this.data.letter.usage = this.usage;
 
     // if (!isNaN(Date.parse(this.data.letter.date))) {
     //   this.datum.setValue(this.data.letter.date);
@@ -174,7 +183,7 @@ export class AnalyzeDialogComponent {
       this.data.letter.date_year = this.datum.getFullYear();
     }
 
-    this.service.saveLetter(this.state.selectedFile, this.data.letter).subscribe((res: any) => {
+    this.service.saveLetter(this.state.selectedFile.dir, this.data.letter).subscribe((res: any) => {
       if (res.error) {
         this.service.showSnackBarError(res.error);
       } else {

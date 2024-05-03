@@ -1,6 +1,11 @@
 {
   "Ano": "Ano",
   "Ne": "Ne",
+  "file_list": "Seznam nahráných PDF",
+  "pages": "stránek",
+  "letters": "dopisy",
+  "Letters": "Dopisy",
+  "generated": "zpracované",
   "detect_lang": "Detekce jazyka",
   "translate": "Překlad",
   "annotate": "Anotace",
@@ -9,6 +14,11 @@
   "book_name": "Název knihy",
   "def_author": "Výchozí autor", 
   "def_recipient": "Výchozí příjemce", 
+  "Refresh": "Obnovit",
+  "Add": "Přidat",
+  "Save": "Uložit",
+  "Remove": "Odstranit",
+  "Export": "Export",
   "field": {
     "author": "Autor", 
     "recipient": "Příjemce", 

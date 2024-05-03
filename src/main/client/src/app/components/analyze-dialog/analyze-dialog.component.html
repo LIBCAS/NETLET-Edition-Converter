@@ -21,7 +21,12 @@ cdkDragHandle >{{ 'Analysis' | translate }}</h1>
     <button mat-flat-button color="primary" (click)="analyze()" class="app-mb-4">
         <mat-icon class="material-icons-outlined">search_insights</mat-icon>
         {{ 'analyze' | translate}}
-    </button>
+    </button>&#160;
+    <button mat-flat-button color="primary" (click)="detectLang()" class="app-mb-4">
+        <mat-icon class="material-icons-outlined">lang</mat-icon>
+        {{ 'detect_lang' | translate}}
+      </button>&#160;
+      
     <button mat-flat-button color="primary" (click)="translate()" class="app-mb-4">
       <mat-icon class="material-icons-outlined">translate</mat-icon>
       {{ 'translate' | translate}}

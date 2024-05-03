@@ -160,7 +160,7 @@ export class LetterFieldsComponent {
     if (!this._letter.endPage) {
       this._letter.endPage = this.state.currentPage;
     }
-    this.service.saveLetter(this.state.selectedFile, this._letter).subscribe((res: any) => {
+    this.service.saveLetter(this.state.selectedFile.dir, this._letter).subscribe((res: any) => {
       this.onShouldRefresh.emit(true);
     });
   }
@@ -171,7 +171,6 @@ export class LetterFieldsComponent {
 
       if (this.state.selectedBlocks.length === 0) {
         const tBlocks: AltoBlock[] = this.state.alto.Layout.Page.PrintSpace.TextBlock;
-        console.log(tBlocks)
         this.state.selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
           return true;
         });

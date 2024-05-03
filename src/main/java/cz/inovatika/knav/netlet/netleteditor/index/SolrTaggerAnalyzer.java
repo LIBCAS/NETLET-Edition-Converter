@@ -40,7 +40,7 @@ public class SolrTaggerAnalyzer {
 
   public static JSONObject getTagsJSON(String text, String field) {
     JSONObject ret = new JSONObject();
-    try (SolrClient solr = new HttpSolrClient.Builder(Options.getInstance().getString("solr.host", "http://localhost:8983/solr/")).build()) {
+    try (SolrClient solr = new HttpSolrClient.Builder(Options.getInstance().getString("solr")).build()) { 
       SolrQuery query = new SolrQuery();
       query.setRequestHandler("/tag");
       query.set("overlaps", "NO_SUB")

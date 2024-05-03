@@ -12,7 +12,7 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <context.name>/netleteditor/</context.name>
+        <context.name>/</context.name>
         <skipNg>false</skipNg>
     </properties>
     
@@ -83,6 +83,16 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.4</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-langdetect</artifactId>
+            <version>1.25</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-langdetect-optimaize</artifactId>
+            <version>2.0.0-ALPHA</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

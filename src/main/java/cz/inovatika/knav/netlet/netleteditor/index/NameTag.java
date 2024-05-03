@@ -1,7 +1,6 @@
 package cz.inovatika.knav.netlet.netleteditor.index;
 
 import cz.inovatika.knav.netlet.netleteditor.Options;
-import cz.inovatika.knav.netlet.netleteditor.Utils;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -14,14 +13,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONML;
 import org.json.JSONObject;
-import org.json.XML;
 
 /**
  *

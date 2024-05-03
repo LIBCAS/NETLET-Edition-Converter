@@ -71,11 +71,11 @@ export class EditorComponent {
   ngOnInit() {
     this.state.currentPage = 1;
     this.route.paramMap.subscribe((params: any) => {
-      this.state.selectedFile = params.get('file');
-      this.service.getDocument(this.state.selectedFile).subscribe((res: any) => {
+      this.state.selectedFile = this.state.files.find(f => f.dir === params.get('file'));
+      this.service.getDocument(this.state.selectedFile.dir).subscribe((res: any) => {
         this.state.numPages = res.pages;
       });
-      this.service.getConfig(this.state.selectedFile).subscribe((res: any) => {
+      this.service.getConfig(this.state.selectedFile.dir).subscribe((res: any) => {
         this.state.fileConfig = res;
         if (this.state.fileConfig.searchParams) {
           this.searchParams = this.state.fileConfig.searchParams;
@@ -94,6 +94,7 @@ export class EditorComponent {
 
   newLetter() {
     this.letter = new Letter();
+    this.letter.id = this.state.selectedFile.dir + new Date().getMilliseconds();
     this.letter.author = this.state.fileConfig.def_author;
     this.letter.recipient = this.state.fileConfig.def_recipient;
     this.view = 'fields';
@@ -188,7 +189,7 @@ export class EditorComponent {
     if (!keepSelection) {
       this.clearSelection();
     }
-    this.service.getAlto(this.state.selectedFile, (this.state.currentPage - 1) + '').subscribe((res: any) => {
+    this.service.getAlto(this.state.selectedFile.dir, (this.state.currentPage - 1) + '').subscribe((res: any) => {
       this.state.alto = res.alto;
       this.addIdx();
     });
@@ -276,7 +277,7 @@ export class EditorComponent {
 
   findSimilar() {
     this.onlyBox = true;
-    this.searchParams = { filename: this.state.selectedFile, page: (this.state.currentPage - 1), selection: this.state.selectedAlto, onlyBox: this.onlyBox, twoCols: this.twoCols };
+    this.searchParams = { filename: this.state.selectedFile.dir, page: (this.state.currentPage - 1), selection: this.state.selectedAlto, onlyBox: this.onlyBox, twoCols: this.twoCols };
     this.state.fileConfig.searchParams = this.searchParams;
     this.findLetters();
   }
@@ -290,7 +291,7 @@ export class EditorComponent {
   }
 
   getLetters() {
-    this.service.getLetters(this.state.selectedFile).subscribe((resp: any) => {
+    this.service.getLetters(this.state.selectedFile.dir).subscribe((resp: any) => {
       this.letters = resp.response.docs;
 
     });
@@ -382,7 +383,7 @@ export class EditorComponent {
   }
 
   saveFileSettings() {
-    this.service.saveFile(this.state.selectedFile, this.state.fileConfig).subscribe(result => {
+    this.service.saveFile(this.state.selectedFile.dir, this.state.fileConfig).subscribe(result => {
 
 
     });
@@ -395,13 +396,13 @@ export class EditorComponent {
     if (!this.letter.endPage) {
       this.letter.endPage = this.state.currentPage;
     }
-    this.service.saveLetter(this.state.selectedFile, this.letter).subscribe((res: any) => {
+    this.service.saveLetter(this.state.selectedFile.dir, this.letter).subscribe((res: any) => {
       this.refreshLetters(true);
     });
   }
 
   removeLetter() {
-    this.service.removeLetter(this.state.selectedFile, this.letter.id).subscribe((res: any) => {
+    this.service.removeLetter(this.state.selectedFile.dir, this.letter.id).subscribe((res: any) => {
       this.getLetters();
     });
 

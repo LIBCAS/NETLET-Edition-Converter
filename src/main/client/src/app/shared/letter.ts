@@ -95,5 +95,6 @@ export class Letter {
 
 
     authors_meta: AutorMeta[];
-    places_meta: PlaceMeta[]
+    places_meta: PlaceMeta[];
+    usage: any;
 }
