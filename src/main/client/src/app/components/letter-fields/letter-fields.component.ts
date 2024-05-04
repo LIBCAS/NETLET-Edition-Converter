@@ -120,6 +120,28 @@ export class LetterFieldsComponent {
     });
   }
 
+  wordCount(str: string) {
+    if (!str) {
+      return 0;
+    }
+    return str.split(' ')
+      .filter(function (n) { return n != '' })
+      .length;
+  }
+
+  brackets(str: string) {
+    let re = /{([^}]+)}/;  // /\(([^)]+)\)/;
+
+    if (!str) {
+      return '';
+    }
+    const ma = str.match(re);
+    if (!ma) {
+      return '';
+    }
+    return ma[1];
+  }
+
   analyze() {
     if (!this._letter.full_text) {
       if (this.state.selectedBlocks.length === 0) {
@@ -127,27 +149,36 @@ export class LetterFieldsComponent {
         this.state.selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
           return true;
         });
-        this._letter.full_text = this.state.getBlockText();
       }
+      this._letter.full_text = this.state.getBlockText();
     }
     // console.log(this._letter.full_text);
+
+    let prompt = this.state.fileConfig.prompt;
+    const brackets: string = this.brackets(prompt);
+    if (brackets) {
+      let ex = brackets.replace('words', this.wordCount(this._letter.full_text) + '');
+      const val = Math.floor(eval(ex));
+      prompt = prompt.replaceAll('{' + brackets +'}', val+'');
+    }
+
     const dialogRef = this.dialog.open(AnalyzeDialogComponent, {
       width: '1200px',
       // height: '600px',
       disableClose: true,
       panelClass: 'my-custom-panel',
-      data: { letter: this._letter, text: this._letter.full_text, prompt: this.state.fileConfig.prompt }
+      data: { letter: this._letter, text: this._letter.full_text, prompt: prompt }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       // console.log(result);
-      if (result) {
-        if (!isNaN(Date.parse(result.date))) {
-          this.datum.setValue(this._letter.date);
-        } else {
-          this.datum.setValue(null);
-        }
+
+      if (!isNaN(Date.parse(this._letter.date))) {
+        this.datum.setValue(this._letter.date);
+      } else {
+        this.datum.setValue(null);
       }
+
       this.onShouldRefresh.emit(true);
     })
   }
@@ -156,7 +187,7 @@ export class LetterFieldsComponent {
     if (!this._letter.startPage) {
       this._letter.startPage = this.state.currentPage;
     }
-    
+
     if (!this._letter.endPage) {
       this._letter.endPage = this.state.currentPage;
     }

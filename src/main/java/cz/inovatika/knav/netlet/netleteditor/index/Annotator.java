@@ -109,7 +109,17 @@ public class Annotator {
             
             JSONObject reqBody = Options.getInstance().getJSONObject("annotator");
             JSONArray messages = Options.getInstance().getJSONArray("chatGPTMessages");
-            messages.getJSONObject(0).put("content", prompt);
+            
+            if (prompt.contains("###words###")) {
+                StringTokenizer st = new StringTokenizer(text);
+                long words = Math.max(200, st.countTokens() / 10);
+                System.out.println(words);
+                messages.getJSONObject(0).put("content", prompt.replaceAll("###words###", words + ""));
+            } else {
+                messages.getJSONObject(0).put("content", prompt);
+            }
+            
+            
             int tokenCount2 = encoding.countTokens(messages.toString());
             messages.getJSONObject(2).put("content", text);
             

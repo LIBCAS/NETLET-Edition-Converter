@@ -30,7 +30,7 @@
             },
             {
                 "role": "system",
-                "content": "The JSON format definition is { summary: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string }"
+                "content": "Odpoved musi byt v JSON formate. Datum musi byt v ISO format. The JSON format definition is { summary: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string }"
             },
             {
                 "role": "user",
