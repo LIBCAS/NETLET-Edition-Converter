@@ -118,4 +118,11 @@ export class AppService {
     return this.get(url);
   }
 
+  checkAuthors(author: string, recipient: string): Observable<any> {
+    const params: HttpParams = new HttpParams()
+    .set('author', author).set('recipient', recipient);
+    return this.get(`/data/check_authors`, params);
+    
+  }
+
 }

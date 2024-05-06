@@ -333,6 +333,21 @@ public class DataServlet extends HttpServlet {
                 return json;
             }
         },
+        INDEX_HIKO_IDENTITIES {
+            @Override
+            JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
+
+                JSONObject json = new JSONObject();
+                try {
+                    HikoKeywordsIndexer hi = new HikoKeywordsIndexer();
+                    json.put("identities", hi.identities());
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    json.put("error", ex.toString());
+                }
+                return json;
+            }
+        },
         FIND_TAGS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -417,6 +432,15 @@ public class DataServlet extends HttpServlet {
                     // return ret.put("response", Annotator.annotateMock(text));
                 }
 
+                return ret;
+            }
+        },
+        CHECK_AUTHORS {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                ret.put("author", Indexer.checkAuthor(request.getParameter("author")).getJSONObject("response").getJSONArray("docs"));
+                ret.put("recipient", Indexer.checkAuthor(request.getParameter("recipient")).getJSONObject("response").getJSONArray("docs"));
                 return ret;
             }
         };

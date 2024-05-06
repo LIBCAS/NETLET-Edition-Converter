@@ -105,18 +105,9 @@ export class LetterFieldsComponent {
     // });
   }
 
-  annotate() {
-    this.abstract.nativeElement.focus();
-    const orig = this._letter.abstract_cs;
-    this._letter.abstract_cs = 'processing...';
-    this.service.annotate(this._letter.full_text).subscribe((resp: any) => {
-      console.log(resp);
-      if (resp.error) {
-        this._letter.abstract_cs = orig;
-      } else {
-        this._letter.abstract_cs = resp.response?.choices[0].message.content;
-      }
-
+  checkAuthors() {
+    this.service.checkAuthors(this._letter.author, this._letter.recipient).subscribe((resp: any) => {
+      console.log(resp)
     });
   }
 
@@ -159,7 +150,7 @@ export class LetterFieldsComponent {
     if (brackets) {
       let ex = brackets.replace('words', this.wordCount(this._letter.full_text) + '');
       const val = Math.floor(eval(ex));
-      prompt = prompt.replaceAll('{' + brackets +'}', val+'');
+      prompt = prompt.replaceAll('{' + brackets + '}', val + '');
     }
 
     const dialogRef = this.dialog.open(AnalyzeDialogComponent, {
