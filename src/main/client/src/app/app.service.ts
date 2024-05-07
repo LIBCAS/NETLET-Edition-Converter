@@ -125,4 +125,11 @@ export class AppService {
     
   }
 
+  getAuthors(prefix: string, tenant: string): Observable<any> {
+    const params: HttpParams = new HttpParams()
+    .set('prefix', prefix).set('tenant', tenant);
+    return this.get(`/data/get_authors`, params);
+    
+  }
+
 }

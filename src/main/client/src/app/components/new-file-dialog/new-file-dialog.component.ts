@@ -7,6 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { FileUploadModule, FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 
@@ -16,7 +17,7 @@ import { FileUploadModule, FileUploader, FileUploaderOptions } from 'ng2-file-up
   styleUrls: ['./new-file-dialog.component.scss'],
   standalone: true,
   imports: [FileUploadModule,
-    CommonModule, TranslateModule, FormsModule,
+    CommonModule, TranslateModule, FormsModule, MatAutocompleteModule,
     MatFormFieldModule, MatInputModule, MatButtonModule,
     MatDividerModule, MatProgressBarModule, MatDialogModule]
 })

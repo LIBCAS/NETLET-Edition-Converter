@@ -14,11 +14,6 @@
     <mat-icon class="material-icons-outlined">search_insights</mat-icon>
     Analyze
   </button>
- -- 
-  <button mat-flat-button color="primary" (click)="checkAuthors()" class="app-mb-4">
-    <mat-icon class="material-icons-outlined">search_insights</mat-icon>
-    checkAuthors
-  </button>
   
   <div class="app-mb-4">
     <mat-form-field class="app-w-100" appearance="outline">
@@ -55,6 +50,11 @@
           <mat-option *ngFor="let a of _letter.recipients_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
       </mat-select>
     </mat-form-field>
+    
+    <button mat-flat-button (click)="checkAuthors()" [title]="'action.check_authors' | translate">
+      <mat-icon color="primary" class="material-icons-outlined app-ml-2 app-mr-2">how_to_reg</mat-icon>
+    </button>
+
   </div>
   <div class="app-mb-4">
     <!-- <mat-form-field class="app-fxFlex" appearance="outline">

@@ -437,6 +437,14 @@ public class DataServlet extends HttpServlet {
                 return ret;
             }
         },
+        GET_AUTHORS {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                ret.put("authors", Indexer.getAuthors(request.getParameter("prefix"), request.getParameter("tenant")).getJSONObject("response").getJSONArray("docs"));
+                return ret;
+            }
+        },
         CHECK_AUTHORS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {

@@ -411,5 +411,36 @@ public class Indexer {
         }
         return ret;
     }
+    
+    public static JSONObject getAuthors(String prefix, String tenant) {
+        JSONObject ret = new JSONObject();
+        try {
+
+            Http2SolrClient solr = (Http2SolrClient) getClient();
+            SolrQuery query = new SolrQuery("name_lower:" + prefix + "*")
+                    .setFields("id,tenant,name")
+                    .setRows(10);
+            if (!tenant.isBlank()) {
+                query.addFilterQuery("tenant:"+tenant);
+            }
+            
+            query.set("wt", "json");
+            String jsonResponse;
+
+            QueryRequest qreq = new QueryRequest(query);
+            // qreq.setPath();
+            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
+            dontMessWithSolr.setWriterType("json");
+            solr.setParser(dontMessWithSolr);
+            NamedList<Object> qresp = solr.request(qreq, "identities");
+            jsonResponse = (String) qresp.get("response");
+            ret = new JSONObject(jsonResponse);
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        return ret;
+    }
 
 }

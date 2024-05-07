@@ -16,11 +16,24 @@
       </mat-form-field>
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>Default Autor</mat-label>
-        <input matInput name="def_author" [(ngModel)]="fileConfig.def_author">
+        <input matInput name="def_author" [(ngModel)]="fileConfig.def_author" [matAutocomplete]="auto" (keyup)="getAuthors(fileConfig.def_author)">
+
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let a of authors_db" [value]="a.name">
+            {{a.name}}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
+
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>Default recipient</mat-label>
-        <input matInput name="def_recipient" [(ngModel)]="fileConfig.def_recipient">
+        <input matInput name="def_recipient" [(ngModel)]="fileConfig.def_recipient" [matAutocomplete]="auto2" (keyup)="getAuthors(fileConfig.def_recipient)">
+
+        <mat-autocomplete #auto2="matAutocomplete">
+          <mat-option *ngFor="let a of authors_db" [value]="a.name">
+            {{a.name}}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
     </div>
     <div class="app-mb-4">

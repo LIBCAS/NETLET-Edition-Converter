@@ -1,6 +1,4 @@
-<h1 mat-dialog-title cdkDrag
-cdkDragRootElement=".cdk-overlay-pane" 
-cdkDragHandle >{{ 'Analysis' | translate }}</h1>
+<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>{{ 'Analysis' | translate }}</h1>
 <div mat-dialog-content class="app-letter">
     <div *ngIf="loading" class="app-fxLayout app-row ">
         <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
@@ -25,16 +23,16 @@ cdkDragHandle >{{ 'Analysis' | translate }}</h1>
     <button mat-flat-button color="primary" (click)="detectLang()" class="app-mb-4">
         <mat-icon class="material-icons-outlined">lang</mat-icon>
         {{ 'detect_lang' | translate}}
-      </button>&#160;
-      
+    </button>&#160;
+
     <button mat-flat-button color="primary" (click)="translate()" class="app-mb-4">
-      <mat-icon class="material-icons-outlined">translate</mat-icon>
-      {{ 'translate' | translate}}
+        <mat-icon class="material-icons-outlined">translate</mat-icon>
+        {{ 'translate' | translate}}
     </button>
     <mat-divider class="app-mt-4"></mat-divider>
 
     <div class="app-fxLayout app-row app-mb-4" *ngIf="translation?.lang">
-      <strong>{{ 'Detected language' | translate }}</strong>:{{ translation.lang }}
+        <strong>{{ 'Detected language' | translate }}</strong>:{{ translation.lang }}
     </div>
     <div class="app-mb-4" *ngIf="translation?.text">
         <mat-form-field class="app-w-100" appearance="outline">
@@ -54,13 +52,19 @@ cdkDragHandle >{{ 'Analysis' | translate }}</h1>
         <mat-form-field class="app-fxFlex" appearance="outline">
             <mat-label>{{ 'field.author_db' | translate}}</mat-label>
             <mat-select [(ngModel)]="author_db">
-          <mat-option *ngFor="let a of authors_db" [value]="a">{{a.name}}</mat-option>
-      </mat-select>
+                <mat-option *ngFor="let a of authors_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
+            </mat-select>
         </mat-form-field>
 
         <mat-form-field class="app-fxFlex" appearance="outline">
             <mat-label>{{ 'field.recipient' | translate}}</mat-label>
             <input matInput [(ngModel)]="recipient" name="recipient">
+        </mat-form-field>
+        <mat-form-field class="app-fxFlex" appearance="outline">
+            <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
+            <mat-select [(ngModel)]="recipient_db">
+                <mat-option *ngFor="let a of recipients_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
+            </mat-select>
         </mat-form-field>
     </div>
 
