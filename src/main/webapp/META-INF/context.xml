@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/netleteditor">
-  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxIdle="30" maxTotal="100" maxWaitMillis="10000" name="jdbc/hiko" password="Incad.01" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/hiko" username="root"/>
+  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxIdle="30" maxTotal="100" maxWaitMillis="10000" name="jdbc/hiko" password="" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/hiko" username="root"/>
 </Context>
