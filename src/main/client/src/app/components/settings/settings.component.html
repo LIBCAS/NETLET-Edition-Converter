@@ -9,6 +9,12 @@
     </div>
     <div class="app-fxLayout app-row app-center-v app-mb-4">
       <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>Tenant</mat-label>
+        <mat-select [(ngModel)]="fileConfig.tenant">
+          <mat-option *ngFor="let t of state.tenants" [value]="t">{{ t }}</mat-option>
+      </mat-select>
+      </mat-form-field>
+      <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>Default Autor</mat-label>
         <input matInput name="def_author" [(ngModel)]="fileConfig.def_author">
       </mat-form-field>

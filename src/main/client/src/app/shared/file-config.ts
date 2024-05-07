@@ -14,5 +14,6 @@ export class FileConfig {
   replacements: {orig: string, dest: string}[];
   searchParams: SearchParams;
   ignored: { [id: string]: boolean };
+  tenant: string;
   prompt: string;
 }

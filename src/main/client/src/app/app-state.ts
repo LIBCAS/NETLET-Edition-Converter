@@ -7,6 +7,7 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
 }) export class AppState {
 
   alto: any;
+  tenants: string[];
   files: {dir: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number}[] = [];
   selectedFile: {dir: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number};
   fileConfig: FileConfig;

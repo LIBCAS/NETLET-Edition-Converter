@@ -14,6 +14,7 @@ import { AngularSplitModule } from 'angular-split';
 import { FileConfig } from 'src/app/shared/file-config';
 import { AppService } from 'src/app/app.service';
 import { AppState } from 'src/app/app-state';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-settings',
@@ -21,12 +22,13 @@ import { AppState } from 'src/app/app-state';
   styleUrls: ['./settings.component.scss'],
   standalone: true,
   imports: [FormsModule, AngularSplitModule, NgIf, NgFor, RouterModule, TranslateModule, 
-    MatTabsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatDialogModule, MatListModule]
+    MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule,
+    MatInputModule, MatIconModule, MatDialogModule, MatListModule]
 })
 export class SettingsComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public fileConfig: FileConfig,
-    private state: AppState,
+    public state: AppState,
     private service: AppService
   ) { }
 

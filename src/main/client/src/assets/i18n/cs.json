@@ -21,7 +21,9 @@
   "Export": "Export",
   "field": {
     "author": "Autor", 
+    "author_db": "Autor v HIKO db", 
     "recipient": "Příjemce", 
+    "recipient_db": "Příjemce v HIKO db", 
     "date": "Datum dopisu", 
     "date_year": "Rok dopisu", 
     "origin": "Origin", 

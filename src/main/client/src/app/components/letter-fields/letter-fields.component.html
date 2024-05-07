@@ -14,6 +14,11 @@
     <mat-icon class="material-icons-outlined">search_insights</mat-icon>
     Analyze
   </button>
+ -- 
+  <button mat-flat-button color="primary" (click)="checkAuthors()" class="app-mb-4">
+    <mat-icon class="material-icons-outlined">search_insights</mat-icon>
+    checkAuthors
+  </button>
   
   <div class="app-mb-4">
     <mat-form-field class="app-w-100" appearance="outline">
@@ -31,11 +36,24 @@
       <input matInput [(ngModel)]="_letter.author" name="author" /><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'author' }"></ng-container>
     </mat-form-field>
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'field.author_db' | translate}}</mat-label>
+      <mat-select [(ngModel)]="_letter.author_db">
+          <mat-option *ngFor="let a of _letter.authors_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <mat-icon (click)="switchAuthors()" class="app-ml-2 app-mr-2">sync_alt</mat-icon>
     <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>{{ 'field.recipient' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.recipient" name="recipient"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'recipient' }"></ng-container>
+    </mat-form-field>
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
+      <mat-select [(ngModel)]="_letter.recipient_db">
+          <mat-option *ngFor="let a of _letter.recipients_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
+      </mat-select>
     </mat-form-field>
   </div>
   <div class="app-mb-4">

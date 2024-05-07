@@ -52,6 +52,13 @@ cdkDragHandle >{{ 'Analysis' | translate }}</h1>
         </mat-form-field>
 
         <mat-form-field class="app-fxFlex" appearance="outline">
+            <mat-label>{{ 'field.author_db' | translate}}</mat-label>
+            <mat-select [(ngModel)]="author_db">
+          <mat-option *ngFor="let a of authors_db" [value]="a">{{a.name}}</mat-option>
+      </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="app-fxFlex" appearance="outline">
             <mat-label>{{ 'field.recipient' | translate}}</mat-label>
             <input matInput [(ngModel)]="recipient" name="recipient">
         </mat-form-field>

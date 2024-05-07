@@ -44,6 +44,7 @@ import { AppState } from './app-state';
             switchMap((cfg: any) => {
                 this.config = cfg as Configuration;
                 return this.http.get('api/data/documents').pipe(tap((res: any) => {
+                    this.state.tenants = Object.keys(res.tenants);
                     this.state.files = res.dirs;
                     this.state.files.forEach(f => {
                         f.letters = res.totals[f.dir] ? res.totals[f.dir] : 0;

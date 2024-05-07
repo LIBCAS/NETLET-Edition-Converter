@@ -20,6 +20,7 @@ import { AltoBlock, AltoLine } from 'src/app/shared/alto';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-letter-fields',
@@ -30,7 +31,7 @@ import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/
   ],
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, NgIf, RouterModule, TranslateModule, DatePipe,
-    MatDatepickerModule, MatNativeDateModule,
+    MatDatepickerModule, MatNativeDateModule, MatSelectModule,
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatListModule, MatTooltipModule,
     MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, MatCheckboxModule]
 })
@@ -47,6 +48,13 @@ export class LetterFieldsComponent {
     } else {
       this.datum.setValue(null);
     }
+    if (this._letter.authors_db) {
+      this._letter.author_db = this._letter.authors_db.find(a => a.id === this._letter.author_db.id);
+    }
+    if (this._letter.recipients_db) {
+      this._letter.recipient_db = this._letter.recipients_db.find(a => a.id === this._letter.recipient_db.id);
+    }
+    
 
   }
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
@@ -105,18 +113,16 @@ export class LetterFieldsComponent {
     // });
   }
 
-  annotate() {
-    this.abstract.nativeElement.focus();
-    const orig = this._letter.abstract_cs;
-    this._letter.abstract_cs = 'processing...';
-    this.service.annotate(this._letter.full_text).subscribe((resp: any) => {
-      console.log(resp);
-      if (resp.error) {
-        this._letter.abstract_cs = orig;
-      } else {
-        this._letter.abstract_cs = resp.response?.choices[0].message.content;
+  checkAuthors() {
+    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.fileConfig.tenant).subscribe((resp: any) => {
+      this._letter.authors_db = resp.author;
+      this._letter.recipients_db = resp.recipient;
+      if (this._letter.authors_db.length > 0){
+        this._letter.author_db = this._letter.authors_db[0];
       }
-
+      if (this._letter.recipients_db.length > 0){
+        this._letter.recipient_db = this._letter.recipients_db[0];
+      }
     });
   }
 
@@ -159,7 +165,7 @@ export class LetterFieldsComponent {
     if (brackets) {
       let ex = brackets.replace('words', this.wordCount(this._letter.full_text) + '');
       const val = Math.floor(eval(ex));
-      prompt = prompt.replaceAll('{' + brackets +'}', val+'');
+      prompt = prompt.replaceAll('{' + brackets + '}', val + '');
     }
 
     const dialogRef = this.dialog.open(AnalyzeDialogComponent, {

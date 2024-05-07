@@ -11,6 +11,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 import {CdkDrag, CdkDragHandle} from '@angular/cdk/drag-drop';
 import { AppState } from 'src/app/app-state';
@@ -23,7 +24,7 @@ import { Entity, Letter } from 'src/app/shared/letter';
   styleUrls: ['./analyze-dialog.component.scss'],
   standalone: true,
   imports: [FormsModule, TranslateModule, NgIf, NgFor, MatFormFieldModule, MatInputModule, MatTabsModule,
-    MatCheckboxModule, DatePipe, MatListModule, CdkDrag, CdkDragHandle,
+    MatCheckboxModule, DatePipe, MatListModule, CdkDrag, CdkDragHandle, MatSelectModule,
     MatButtonModule, MatIconModule, MatDialogModule, MatProgressSpinnerModule, MatProgressBarModule]
 })
 export class AnalyzeDialogComponent {
@@ -35,6 +36,10 @@ export class AnalyzeDialogComponent {
 
   abstract_cs: string;
   author: string;
+  authors_db: {id: string, tenant: string, name: string}[] = [];
+  recipients_db: {id: string, tenant: string, name: string}[] = [];
+  author_db: {id: string, tenant: string, name: string};
+  recipient_db: {id: string, tenant: string, name: string};
   recipient: string;
   origin: string;
   datum: Date;
@@ -145,9 +150,25 @@ export class AnalyzeDialogComponent {
         this.incipit = content.incipit;
         this.explicit = content.explicit;
         this.usage = resp.response?.usage;
+
+        this.checkAuthors();
+
         this.loading = false;
       }
 
+    });
+  }
+
+  checkAuthors() {
+    this.service.checkAuthors(this.author, this.recipient, this.state.fileConfig.tenant).subscribe((resp: any) => {
+      this.authors_db = resp.author;
+      this.recipients_db = resp.recipient;
+      if (this.authors_db.length > 0){
+        this.author_db = this.authors_db[0];
+      }
+      if (this.recipients_db.length > 0){
+        this.recipient_db = this.recipients_db[0];
+      }
     });
   }
 
@@ -173,15 +194,20 @@ export class AnalyzeDialogComponent {
     this.data.letter.nametags = this.nametags;
     this.data.letter.usage = this.usage;
 
+    this.data.letter.authors_db = this.authors_db;
+    this.data.letter.author_db = this.author_db;
+    this.data.letter.recipients_db = this.recipients_db;
+    this.data.letter.recipient_db = this.recipient_db;
+
     // if (!isNaN(Date.parse(this.data.letter.date))) {
     //   this.datum.setValue(this.data.letter.date);
     // } else {
     //   this.datum.setValue(null);
     // }
 
-    if (this.datum) {
-      this.data.letter.date_year = this.datum.getFullYear();
-    }
+    // if (this.datum) {
+    //   this.data.letter.date_year = this.datum.getFullYear();
+    // }
 
     this.service.saveLetter(this.state.selectedFile.dir, this.data.letter).subscribe((res: any) => {
       if (res.error) {

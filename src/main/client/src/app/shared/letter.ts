@@ -45,6 +45,10 @@ export class Letter {
     l_author: number;
     author: string;
     recipient: string;
+    authors_db: {id: string, tenant: string, name: string}[] = [];
+    recipients_db: {id: string, tenant: string, name: string}[] = [];
+    author_db: {id: string, tenant: string, name: string};
+    recipient_db: {id: string, tenant: string, name: string};
     origin: string;
     full_text: string;
     entities: Entity[];

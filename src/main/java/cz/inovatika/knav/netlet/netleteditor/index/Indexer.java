@@ -278,6 +278,36 @@ public class Indexer {
         return ret;
     }
     
+    public static JSONObject getTenants() {
+        JSONObject ret = new JSONObject();
+        try {
+            Http2SolrClient solr = (Http2SolrClient) getClient();
+            SolrQuery query = new SolrQuery("*")
+                    .setRows(0)
+                    .setFacet(true)
+                    .addFacetField("tenant")
+                    .setParam("json.nl", "map")
+                    .setFacetMinCount(0)
+                    .setFacetLimit(1000);
+            query.set("wt", "json");
+            String jsonResponse;
+
+            QueryRequest qreq = new QueryRequest(query);
+            // qreq.setPath();
+            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
+            dontMessWithSolr.setWriterType("json");
+            solr.setParser(dontMessWithSolr);
+            NamedList<Object> qresp = solr.request(qreq, "identities");
+            jsonResponse = (String) qresp.get("response");
+            ret = new JSONObject(jsonResponse);
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        return ret;
+    }
+    
     
     public static JSONObject removeLetter(String id) {
         JSONObject ret = new JSONObject();
@@ -341,6 +371,39 @@ public class Indexer {
             solr.add("letters", idoc);
             solr.commit("letters");
             ret.put("msg", "letter saved!");
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        return ret;
+    }
+
+    public static JSONObject checkAuthor(String name, String tenant) {
+        JSONObject ret = new JSONObject();
+        try {
+
+            Http2SolrClient solr = (Http2SolrClient) getClient();
+            SolrQuery query = new SolrQuery(name)
+                    .setFields("id,tenant,name")
+                    .setRows(10);
+            query.set("qf", "name_lower^5 name^2 alternative_names");
+            if (!tenant.isBlank()) {
+                query.set("bq", "tenant:"+tenant+"^10");
+            }
+            query.set("tie", "0.9");
+            query.set("defType", "edismax");
+            query.set("wt", "json");
+            String jsonResponse;
+
+            QueryRequest qreq = new QueryRequest(query);
+            // qreq.setPath();
+            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
+            dontMessWithSolr.setWriterType("json");
+            solr.setParser(dontMessWithSolr);
+            NamedList<Object> qresp = solr.request(qreq, "identities");
+            jsonResponse = (String) qresp.get("response");
+            ret = new JSONObject(jsonResponse);
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
