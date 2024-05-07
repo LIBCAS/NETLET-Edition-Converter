@@ -140,7 +140,7 @@ export class AnalyzeDialogComponent {
             this.recipient = this.state.fileConfig.def_recipient;
           }
         }
-        this.abstract_cs = content.summary;
+        this.abstract_cs = content.abstract;
         this.origin = content.location || content.place;
         this.date = content.date;
         if (this.isDate(this.date)) {
