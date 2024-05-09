@@ -33,6 +33,7 @@
       "startPage": "First Page in PDF",
       "endPage": "Last Page in PDF",
       "letter_number": "Letter number (headline)",
+      "letter_title": "Letter title",
       "page_number": "First Page in book",
       "end_page_number": "Last Page in book",
       "salutation": "Salutation",

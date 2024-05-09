@@ -50,7 +50,7 @@
             },
             {
                 "role": "system",
-                "content": "Reply must be in JSON format. The JSON format definition is { abstract: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string }"
+                "content": "Incipit a explicit musi byt v originalnim jazyku. Odpoved musi byt v JSON formate. Datum musi byt v ISO format. The JSON format definition is { letter_number: string; letter_title: string; page_number: number; end_page_number: number; abstract: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string, signature: string, salutation: string }"
             },
             {
                 "role": "user",

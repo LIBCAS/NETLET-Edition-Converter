@@ -104,13 +104,6 @@ export class LetterFieldsComponent {
       width: '800px',
       data: this._letter.full_text,
     });
-
-
-    // this.service.translate(this._letter.full_text).subscribe((resp: any) => {
-    //   const dialogRef = this.dialog.open(TranslationDialogComponent, {
-    //     data: resp,
-    //   });
-    // });
   }
 
   checkAuthors() {
@@ -164,7 +157,7 @@ export class LetterFieldsComponent {
     const brackets: string = this.brackets(prompt);
     if (brackets) {
       let ex = brackets.replace('words', this.wordCount(this._letter.full_text) + '');
-      const val = Math.floor(eval(ex));
+      const val = Math.max(3, Math.floor(eval(ex)));
       prompt = prompt.replaceAll('{' + brackets + '}', val + '');
     }
 

@@ -1,4 +1,4 @@
-<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>{{ 'Analysis' | translate }}</h1>
+<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle style="cursor: move;">{{ 'Analysis' | translate }}</h1>
 <div mat-dialog-content class="app-letter">
     <div *ngIf="loading" class="app-fxLayout app-row ">
         <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
@@ -43,6 +43,30 @@
 
     <mat-divider class="app-mt-4"></mat-divider>
 
+
+    <div class="app-mb-4">
+    <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>{{ 'field.letter_number' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.letter_number" name="letter_number">
+      </mat-form-field>
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'field.letter_title' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.letter_title" name="letter_title">
+    </mat-form-field>
+      <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>{{ 'field.page_number' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.page_number" name="page_number">
+      </mat-form-field>
+      <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>{{ 'field.end_page_number' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
+      </mat-form-field>
+        <mat-form-field class="app-w-100">
+            <mat-label>{{ 'field.origin' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.origin" name="origin" />
+        </mat-form-field>
+    </div>
+
     <div class="app-fxLayout app-row app-center-v app-mb-4">
         <mat-form-field class="app-fxFlex" appearance="outline">
             <mat-label>{{ 'field.author' | translate}}</mat-label>
@@ -80,25 +104,6 @@
       <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
     </mat-form-field>
   </div>
-
-    <div class="app-mb-4">
-    <mat-form-field class="app-fxFlex" appearance="outline">
-        <mat-label>{{ 'field.letter_number' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.letter_number" name="letter_number">
-      </mat-form-field>
-      <mat-form-field class="app-fxFlex" appearance="outline">
-        <mat-label>{{ 'field.page_number' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.page_number" name="page_number">
-      </mat-form-field>
-      <mat-form-field class="app-fxFlex" appearance="outline">
-        <mat-label>{{ 'field.end_page_number' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
-      </mat-form-field>
-        <mat-form-field class="app-w-100">
-            <mat-label>{{ 'field.origin' | translate}}</mat-label>
-            <input matInput [(ngModel)]="_letter.origin" name="origin" />
-        </mat-form-field>
-    </div>
 
     <div class="app-mb-4">
         <mat-form-field class="app-fxFlex" *ngIf="!datum">

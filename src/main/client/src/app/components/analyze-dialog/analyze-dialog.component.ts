@@ -36,17 +36,6 @@ export class AnalyzeDialogComponent {
 
   _letter: Letter;
   datum: Date;
-  // abstract_cs: string;
-  // author: string;
-  // authors_db: {id: string, tenant: string, name: string}[] = [];
-  // recipients_db: {id: string, tenant: string, name: string}[] = [];
-  // author_db: {id: string, tenant: string, name: string};
-  // recipient_db: {id: string, tenant: string, name: string};
-  // recipient: string;
-  // origin: string;
-  // date: string;
-  // incipit: string;
-  // explicit: string;
 
   usage: any;
 
@@ -120,6 +109,7 @@ export class AnalyzeDialogComponent {
         // this.misto = content.misto_a_datum.misto;
         // this.datum = content.misto_a_datum.datum;
         this._letter.letter_number = content.letter_number;
+        this._letter.letter_title = content.letter_title;
         this._letter.page_number = content.page_number;
         this._letter.end_page_number = content.end_page_number;
         this._letter.author = content.sender;
@@ -191,6 +181,7 @@ export class AnalyzeDialogComponent {
 
     
     this.data.letter.letter_number = this._letter.letter_number;
+    this.data.letter.letter_title = this._letter.letter_title;
     this.data.letter.page_number = this._letter.page_number;
     this.data.letter.end_page_number = this._letter.end_page_number;
     this.data.letter.salutation = this._letter.salutation;

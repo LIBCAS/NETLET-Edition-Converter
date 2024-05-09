@@ -35,6 +35,7 @@
     "startPage": "První strana v PDF",
     "endPage": "Poslední strana v PDF",
     "letter_number": "Číslo dopisu (záhlaví)",
+    "letter_title": "Titulek dopisu",
     "page_number": "První strana v knize",
     "end_page_number": "Poslední strana v knize",
     "salutation": "Oslovení",
