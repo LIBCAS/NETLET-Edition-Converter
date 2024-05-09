@@ -18,24 +18,24 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
-    standalone: true,
-    imports: [RouterLink, FileUploadModule, MatTooltipModule,
-      CommonModule, TranslateModule, FormsModule, MatIconModule,
-      MatFormFieldModule, MatInputModule, MatButtonModule,
-      MatDividerModule, MatProgressBarModule, MatDialogModule]
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
+  standalone: true,
+  imports: [RouterLink, FileUploadModule, MatTooltipModule,
+    CommonModule, TranslateModule, FormsModule, MatIconModule,
+    MatFormFieldModule, MatInputModule, MatButtonModule,
+    MatDividerModule, MatProgressBarModule, MatDialogModule]
 })
 export class HomeComponent {
 
   constructor(
     public dialog: MatDialog,
     public state: AppState,
-    private service: AppService) {}
+    private service: AppService) { }
 
   ngOnInit() {
-    // this.getFiles();
+    this.getDocuments();
   }
 
   regenerateAlto(file: string) {
@@ -55,9 +55,19 @@ export class HomeComponent {
     dialogRef.afterClosed().subscribe(result => {
       // console.log(result);
       if (result) {
-        
+
       }
     })
+  }
+
+  getDocuments() {
+    this.service.getDocuments().subscribe((res: any) => {
+      this.state.tenants = Object.keys(res.tenants);
+      this.state.files = res.dirs;
+      this.state.files.forEach(f => {
+        f.letters = res.totals[f.dir] ? res.totals[f.dir] : 0;
+      });
+    });
   }
 
 }

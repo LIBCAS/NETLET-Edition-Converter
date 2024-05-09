@@ -368,6 +368,8 @@ public class Indexer {
             idoc.setField("filename", filename);
             idoc.setField("data", data.toString());
             idoc.setField("startPage", data.optInt("startPage", 0));
+            idoc.setField("author", data.optString("author"));
+            idoc.setField("recipient", data.optString("recipient"));
             solr.add("letters", idoc);
             solr.commit("letters");
             ret.put("msg", "letter saved!");

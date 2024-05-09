@@ -1,11 +1,12 @@
-<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle style="cursor: move;">{{ 'Analysis' | translate }}</h1>
+<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle style="cursor: move;">{{ 'Analysis' |
+    translate }}</h1>
 <div mat-dialog-content class="app-letter">
     <div *ngIf="loading" class="app-fxLayout app-row ">
         <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
     </div>
 
     <div class="app-mb-4">
-        <mat-form-field class="app-w-100" appearance="outline">
+        <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.full_text' | translate}}</mat-label>
             <textarea rows="5" matInput [(ngModel)]="data.text" name="full_text"></textarea>
         </mat-form-field>
@@ -35,7 +36,7 @@
         <strong>{{ 'Detected language' | translate }}</strong>:{{ translation.lang }}
     </div>
     <div class="app-mb-4" *ngIf="translation?.text">
-        <mat-form-field class="app-w-100" appearance="outline">
+        <mat-form-field class="app-w-100">
             <mat-label>{{ 'Translation' | translate}}</mat-label>
             <textarea rows="5" matInput [value]="translation.text" name="translation_text" #preklad></textarea>
         </mat-form-field>
@@ -44,23 +45,25 @@
     <mat-divider class="app-mt-4"></mat-divider>
 
 
+    <div class="app-fxLayout app-row app-center-v app-mb-4">
+        <mat-form-field class="app-fxFlex app-ml-3">
+            <mat-label>{{ 'field.letter_number' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.letter_number" name="letter_number">
+        </mat-form-field>
+        <mat-form-field class="app-fxFlex app-ml-3">
+            <mat-label>{{ 'field.letter_title' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.letter_title" name="letter_title">
+        </mat-form-field>
+        <mat-form-field class="app-fxFlex app-ml-3">
+            <mat-label>{{ 'field.page_number' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.page_number" name="page_number">
+        </mat-form-field>
+        <mat-form-field class="app-fxFlex app-ml-3">
+            <mat-label>{{ 'field.end_page_number' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
+        </mat-form-field>
+    </div>
     <div class="app-mb-4">
-    <mat-form-field class="app-fxFlex" appearance="outline">
-        <mat-label>{{ 'field.letter_number' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.letter_number" name="letter_number">
-      </mat-form-field>
-    <mat-form-field class="app-fxFlex" appearance="outline">
-      <mat-label>{{ 'field.letter_title' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.letter_title" name="letter_title">
-    </mat-form-field>
-      <mat-form-field class="app-fxFlex" appearance="outline">
-        <mat-label>{{ 'field.page_number' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.page_number" name="page_number">
-      </mat-form-field>
-      <mat-form-field class="app-fxFlex" appearance="outline">
-        <mat-label>{{ 'field.end_page_number' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
-      </mat-form-field>
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.origin' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.origin" name="origin" />
@@ -68,23 +71,23 @@
     </div>
 
     <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.author' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.author" name="author" />
         </mat-form-field>
 
-        <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.author_db' | translate}}</mat-label>
             <mat-select [(ngModel)]="_letter.author_db">
                 <mat-option *ngFor="let a of _letter.authors_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
             </mat-select>
         </mat-form-field>
 
-        <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.recipient' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.recipient" name="recipient">
         </mat-form-field>
-        <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
             <mat-select [(ngModel)]="_letter.recipient_db">
                 <mat-option *ngFor="let a of _letter.recipients_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
@@ -92,26 +95,26 @@
         </mat-form-field>
     </div>
 
-    
 
-  <div class="app-mb-4">
-    <mat-form-field class="app-fxFlex" appearance="outline">
-      <mat-label>{{ 'field.salutation' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.salutation" name="salutation"><span matSuffix></span>
-    </mat-form-field>
-    <mat-form-field class="app-fxFlex" appearance="outline">
-      <mat-label>{{ 'field.signature' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
-    </mat-form-field>
-  </div>
 
     <div class="app-mb-4">
-        <mat-form-field class="app-fxFlex" *ngIf="!datum">
+        <mat-form-field class="app-fxFlex app-ml-3">
+            <mat-label>{{ 'field.salutation' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.salutation" name="salutation"><span matSuffix></span>
+        </mat-form-field>
+        <mat-form-field class="app-fxFlex app-ml-3">
+            <mat-label>{{ 'field.signature' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
+        </mat-form-field>
+    </div>
+
+    <div class="app-mb-4">
+        <mat-form-field class="app-fxFlex app-ml-3" *ngIf="!datum">
             <mat-label>{{ 'field.date' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.date" name="date" />
         </mat-form-field>
 
-        <mat-form-field class="app-fxFlex" *ngIf="datum">
+        <mat-form-field class="app-fxFlex app-ml-3" *ngIf="datum">
             <mat-label>{{ 'field.date' | translate}}</mat-label>
             <input matInput [(ngModel)]="datum" [value]="datum | date : 'dd.MM.yyyy' " name="datum" />
         </mat-form-field>

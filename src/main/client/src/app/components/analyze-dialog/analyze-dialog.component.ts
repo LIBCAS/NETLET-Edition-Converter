@@ -53,6 +53,9 @@ export class AnalyzeDialogComponent {
   ngOnInit() {
     // this.analyze();
     this._letter = new Letter();
+    if (this.data.letter.analysis) {
+      this.setAnalysis(this.data.letter.analysis);
+    }
   }
 
   analyze() {
@@ -95,6 +98,50 @@ export class AnalyzeDialogComponent {
     return !isNaN(Date.parse(date));
   }
 
+  setAnalysis(analysis: any) {
+    this._letter.analysis = analysis;
+    this._letter.letter_number = this._letter.analysis.letter_number;
+    this._letter.letter_title = this._letter.analysis.letter_title;
+    this._letter.page_number = this._letter.analysis.page_number;
+    this._letter.end_page_number = this._letter.analysis.end_page_number;
+    this._letter.author = this._letter.analysis.sender;
+    this._letter.recipient = this._letter.analysis.recipient;
+    if (!this._letter.author || this._letter.author === 'neuvedeno') {
+      if (this._letter.recipient) {
+        if (this._letter.recipient.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
+          this._letter.author = this.state.fileConfig.def_recipient;
+        } else if (this._letter.recipient.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
+          this._letter.author = this.state.fileConfig.def_author;
+        }
+      } else {
+        this._letter.author = this.state.fileConfig.def_author;
+      }
+
+    }
+    if (!this._letter.recipient || this._letter.recipient === 'neuvedeno') {
+      if (this._letter.author.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
+        this._letter.recipient = this.state.fileConfig.def_author;
+      } else if (this._letter.author.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
+        this._letter.recipient = this.state.fileConfig.def_recipient;
+      } else {
+        this._letter.recipient = this.state.fileConfig.def_recipient;
+      }
+    }
+    
+    this._letter.salutation = this._letter.analysis.salutation;
+    this._letter.signature = this._letter.analysis.signature;
+
+    this._letter.abstract_cs = this._letter.analysis.abstract;
+    this._letter.origin = this._letter.analysis.location || this._letter.analysis.place;
+    this._letter.date = this._letter.analysis.date;
+    if (this.isDate(this._letter.date)) {
+      this.datum = new Date(this._letter.analysis.date);
+    }
+
+    this._letter.incipit = this._letter.analysis.incipit;
+    this._letter.explicit = this._letter.analysis.explicit;
+  }
+
   annotate() {
     const orig = this._letter.abstract_cs;
     this._letter.abstract_cs = 'processing...';
@@ -103,55 +150,9 @@ export class AnalyzeDialogComponent {
         console.log(resp);
         // this.letter.abstract_cs = orig;
       } else {
-        const content = JSON.parse(resp.response?.choices[0].message.content);
-        // console.log(content)
-        // this.abstract_cs = content.shrnuti;
-        // this.misto = content.misto_a_datum.misto;
-        // this.datum = content.misto_a_datum.datum;
-        this._letter.letter_number = content.letter_number;
-        this._letter.letter_title = content.letter_title;
-        this._letter.page_number = content.page_number;
-        this._letter.end_page_number = content.end_page_number;
-        this._letter.author = content.sender;
-        this._letter.recipient = content.recipient;
-        if (!this._letter.author || this._letter.author === 'neuvedeno') {
-          if (this._letter.recipient) {
-            if (this._letter.recipient.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
-              this._letter.author = this.state.fileConfig.def_recipient;
-            } else if (this._letter.recipient.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
-              this._letter.author = this.state.fileConfig.def_author;
-            }
-          } else {
-            this._letter.author = this.state.fileConfig.def_author;
-          }
-
-        }
-        if (!this._letter.recipient || this._letter.recipient === 'neuvedeno') {
-          if (this._letter.author.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
-            this._letter.recipient = this.state.fileConfig.def_author;
-          } else if (this._letter.author.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
-            this._letter.recipient = this.state.fileConfig.def_recipient;
-          } else {
-            this._letter.recipient = this.state.fileConfig.def_recipient;
-          }
-        }
-        
-        this._letter.salutation = content.salutation;
-        this._letter.signature = content.signature;
-
-        this._letter.abstract_cs = content.abstract;
-        this._letter.origin = content.location || content.place;
-        this._letter.date = content.date;
-        if (this.isDate(this._letter.date)) {
-          this.datum = new Date(content.date);
-        }
-
-        this._letter.incipit = content.incipit;
-        this._letter.explicit = content.explicit;
+        this.setAnalysis(JSON.parse(resp.response?.choices[0].message.content));
         this.usage = resp.response?.usage;
-
         this.checkAuthors();
-
         this.loading = false;
       }
 
@@ -206,16 +207,8 @@ export class AnalyzeDialogComponent {
     this.data.letter.author_db = this._letter.author_db;
     this.data.letter.recipients_db = this._letter.recipients_db;
     this.data.letter.recipient_db = this._letter.recipient_db;
-
-    // if (!isNaN(Date.parse(this.data.letter.date))) {
-    //   this.datum.setValue(this.data.letter.date);
-    // } else {
-    //   this.datum.setValue(null);
-    // }
-
-    // if (this.datum) {
-    //   this.data.letter.date_year = this.datum.getFullYear();
-    // }
+    
+    this.data.letter.analysis = this._letter.analysis;
 
     this.service.saveLetter(this.state.selectedFile.dir, this.data.letter).subscribe((res: any) => {
       if (res.error) {
@@ -227,22 +220,6 @@ export class AnalyzeDialogComponent {
         // })
       }
     });
-
-    // this.dialogRef.close({
-    //   author: this.author,
-    //   recipient: this.recipient,
-    //   abstract_cs: this.abstract_cs,
-    //   origin: this.origin,
-    //   datum: this.datum,
-    //   date: this.date,
-    //   incipit: this.incipit,
-    //   explicit: this.explicit,
-    //   full_text: this.data.text,
-
-    //   entities: this.entities,
-    //   nametags: this.nametags
-
-    // })
   }
 
 }

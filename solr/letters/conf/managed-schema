@@ -62,6 +62,8 @@ Managed external dictionaries
     <field name="alto_id" type="string" indexed="true" stored="true"  />
     <field name="data" type="string_big" indexed="false" stored="true"/>
     <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW" />
+    <field name="author" type="string" indexed="true" stored="true" multiValued="true" />
+    <field name="recipient" type="string" indexed="true" stored="true" multiValued="true"  />
 	
 
     <!-- uncomment the following to ignore any fields that don't already match an existing 
