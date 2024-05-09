@@ -14,14 +14,16 @@ import { FileConfig } from 'src/app/shared/file-config';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NewFileDialogComponent } from 'src/app/components/new-file-dialog/new-file-dialog.component';
 import { AppState } from 'src/app/app-state';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss'],
     standalone: true,
-    imports: [RouterLink, FileUploadModule,
-      CommonModule, TranslateModule, FormsModule,
+    imports: [RouterLink, FileUploadModule, MatTooltipModule,
+      CommonModule, TranslateModule, FormsModule, MatIconModule,
       MatFormFieldModule, MatInputModule, MatButtonModule,
       MatDividerModule, MatProgressBarModule, MatDialogModule]
 })
@@ -36,7 +38,13 @@ export class HomeComponent {
     // this.getFiles();
   }
 
-  
+  regenerateAlto(file: string) {
+    this.service.regenerateAlto(file).subscribe((res: any) => {
+      // this.getLetters();
+      this.service.showSnackBar(res)
+    });
+
+  }
 
   newFile() {
     const dialogRef = this.dialog.open(NewFileDialogComponent, {

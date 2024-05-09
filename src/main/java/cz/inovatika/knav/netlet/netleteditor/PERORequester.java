@@ -10,6 +10,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -170,7 +171,8 @@ public class PERORequester {
             HttpEntity entity = response.getEntity();
 
             if (response.getStatusLine().getStatusCode() == 200) {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent())); FileWriter writer = new FileWriter(outputDir)) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent(), "UTF-8")); 
+                        FileWriter writer = new FileWriter(outputDir, Charset.forName("UTF-8"))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         writer.write(line);
@@ -179,7 +181,7 @@ public class PERORequester {
                     return "PROCESSED";
                 }
             } else if (response.getStatusLine().getStatusCode() >= 400) {
-                JSONObject jsonResponse = new JSONObject(EntityUtils.toString(entity));
+                JSONObject jsonResponse = new JSONObject(EntityUtils.toString(entity, "UTF-8"));
 
 //                LOGGER.log(Level.INFO, "The request returned status code {0}. The message is: {1}",
 //                        new Object[]{response.getStatusLine().getStatusCode(), jsonResponse.getString("message")});

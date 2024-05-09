@@ -33,6 +33,7 @@
             <!-- <button mat-icon-button (click)="toggleIgnoreAndNext()" [matTooltip]="'ignore' | translate"><mat-icon>gpp_bad</mat-icon></button> -->
             <button [disabled]="!letter" mat-icon-button (click)="removeLetter()" [matTooltip]="'Remove' | translate"><mat-icon>delete_forever</mat-icon></button>
             <button [disabled]="!letter" mat-icon-button (click)="exportLetter()" [matTooltip]="'Export' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
+            <button mat-icon-button (click)="regenerateAlto()" [matTooltip]="'action.regenerate' | translate"><mat-icon>document_scanner</mat-icon></button>
           </div>
         </div>
         <div *ngIf="view == 'letters'" class="app-fxFlex app-p-4 app-oa-y">

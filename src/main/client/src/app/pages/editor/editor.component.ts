@@ -445,4 +445,12 @@ export class EditorComponent {
   changeView(view: string) {
     this.view = view;
   }
+
+  regenerateAlto() {
+    this.service.regeneratePageAlto(this.state.selectedFile.dir, (this.state.currentPage - 1) + '').subscribe((res: any) => {
+      // this.getLetters();
+      this.service.showSnackBar(res)
+    });
+
+  }
 }

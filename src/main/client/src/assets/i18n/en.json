@@ -44,7 +44,8 @@
       "copy_block": "Copy text from block",
       "copy_line": "Copy text from line",
       "copy_word": "Copy text from word",
-      "check_authors": "Check authors against HIKO db"
+      "check_authors": "Check authors against HIKO db",
+      "regenerate": "Re-create OCR"
     },
     "tags": {
       "a": "Numbers in addresses",

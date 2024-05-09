@@ -80,6 +80,16 @@ public class ConvertServlet extends HttpServlet {
 
             }
         },
+        ALTO_IMAGE {
+            @Override
+            JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
+                String filename = req.getParameter("filename");
+                String page = req.getParameter("page");
+                String pdfDir = Storage.pdfDir(filename);
+                return new JSONObject().put("result", PERORequester.generate(pdfDir, page));
+
+            }
+        },
         ALTO {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {

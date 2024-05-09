@@ -46,7 +46,8 @@
     "copy_block": "CTRL+C z bloku",
     "copy_line": "CTRL+C z radku",
     "copy_word": "CTRL+C ze slova",
-    "check_authors": "Zkontrolovat autory proti HIKO db"
+    "check_authors": "Zkontrolovat autory proti HIKO db",
+    "regenerate": "Vytvorit OCR znova"
   },
 
   "tags" : {

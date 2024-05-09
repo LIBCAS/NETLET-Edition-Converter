@@ -132,4 +132,20 @@ export class AppService {
     
   }
 
+  regeneratePageAlto(filename: string, page: string): Observable<string> {
+    const params: HttpParams = new HttpParams()
+    .set('filename', filename)
+    .set('page', page);
+    return this.get(`/convert/alto_image`, params);
+    
+  }
+
+  regenerateAlto(filename: string): Observable<string> {
+    const params: HttpParams = new HttpParams()
+    .set('file', filename)
+    .set('overwrite', 'true');
+    return this.get(`/convert/alto`, params);
+    
+  }
+
 }
