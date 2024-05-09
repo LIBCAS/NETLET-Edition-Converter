@@ -30,8 +30,13 @@
       "full_text": "Letter Text",
       "abstract": "Abstract",
       "prompt": "GPT Input",
-      "startPage": "First Page",
-      "endPage": "Last Page"
+      "startPage": "First Page in PDF",
+      "endPage": "Last Page in PDF",
+      "letter_number": "Letter number (headline)",
+      "page_number": "First Page in book",
+      "end_page_number": "Last Page in book",
+      "salutation": "Salutation",
+      "signature": "Signature"
     },
     "action": {
       "set_block": "Set text from block (+ctrl to add)",

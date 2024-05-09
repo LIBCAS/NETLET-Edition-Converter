@@ -41,6 +41,11 @@ export class Letter {
     startPage: number;
     endPage: number;
     date: string;
+    letter_number: string;
+    page_number: number;
+    end_page_number: number;
+    salutation: string;
+    signature: string;
 
     l_author: number;
     author: string;

@@ -41,7 +41,7 @@
             <div mat-subheader>{{ 'Letters' | translate }}: ({{letters?.length}})</div>
             <mat-list-item *ngFor="let l of letters; let idx = index;" [class.app-selected]="selectedResult === idx" (click)="selectResult(l, false, idx)">
               <div matListItemTitle [class.app-ignore]="ignored[l.id]">
-                {{ idx }} .- Page(s): {{ l.data.startPage }} <ng-container *ngIf="l.data.endPage"> - {{ l.data.endPage }}</ng-container> 
+                {{ idx }} .- Page(s): {{ l.data.page_number }} <ng-container *ngIf="l.data.end_page_number"> - {{ l.data.end_page_number }}</ng-container> 
                 
               </div>
               <div matListItemLine>{{l.data.full_text.substring(0, 100)}}...</div>

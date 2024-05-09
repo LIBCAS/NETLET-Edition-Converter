@@ -4,9 +4,21 @@
       <mat-label>{{ 'field.startPage' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.startPage" name="startPage" />
     </mat-form-field>
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <!-- <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>{{ 'field.endPage' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.endPage" name="endPage">
+    </mat-form-field> -->
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'field.letter_number' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.letter_number" name="letter_number">
+    </mat-form-field>
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'field.page_number' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.page_number" name="page_number">
+    </mat-form-field>
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'field.end_page_number' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
     </mat-form-field>
   </div>
 
@@ -91,23 +103,20 @@
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'explicit' }"></ng-container>
     </mat-form-field>
   </div>
+
+  <div class="app-mb-4">
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'field.salutation' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.salutation" name="salutation"><span matSuffix></span>
+      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
+    </mat-form-field>
+    <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>{{ 'field.signature' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
+      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
+    </mat-form-field>
+  </div>
     
-  <!-- <button mat-flat-button color="primary" [disabled]="!_letter.full_text" (click)="findTags()" class="app-mb-4">
-    <mat-icon class="material-icons-outlined">system_update_alt</mat-icon>
-    Extract entities
-  </button>&#160;
-  <button mat-flat-button color="primary" [disabled]="!_letter.full_text" (click)="detectLang()" class="app-mb-4">
-    <mat-icon class="material-icons-outlined">lang</mat-icon>
-    {{ 'detect_lang' | translate}}
-  </button>&#160;
-  <button mat-flat-button color="primary" [disabled]="!_letter.full_text" (click)="translate()" class="app-mb-4">
-    <mat-icon class="material-icons-outlined">translate</mat-icon>
-    {{ 'translate' | translate}}
-  </button>
-  <button mat-flat-button color="primary" [disabled]="!_letter.full_text" (click)="annotate()" class="app-mb-4">
-    <mat-icon class="material-icons-outlined">summarize</mat-icon>
-    {{ 'annotate' | translate}}
-  </button> -->
     <mat-form-field class="app-w-100" appearance="outline">
       <mat-label>{{ 'field.abstract' | translate}}</mat-label>
       <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract" #abstract></textarea>
