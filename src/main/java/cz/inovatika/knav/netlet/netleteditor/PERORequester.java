@@ -51,7 +51,7 @@ public class PERORequester {
 
         HttpClient httpClient = HttpClients.createDefault();
         String requestId = postProcessingRequest(httpClient, data);
-        LOGGER.log(Level.INFO, "requestId is {0}", requestId);
+        // LOGGER.log(Level.INFO, "requestId is {0}", requestId);
         try {
             boolean uploaded = uploadImage(httpClient, requestId, fileName, imagePath, contentType);
             if (!uploaded) {
@@ -59,7 +59,6 @@ public class PERORequester {
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, null, e);
-
         }
 
         String processingResult;

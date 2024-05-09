@@ -103,14 +103,12 @@ public class ConvertServlet extends HttpServlet {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
                 return PDFThumbsGenerator.stop(false);
-
             }
         },
         CHECK {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
                 return PDFThumbsGenerator.check(false);
-
             }
         };
 
