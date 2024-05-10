@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{ 'File settings' | translate }}</h1>
+<h1 mat-dialog-title>{{ 'file_settings' | translate }}</h1>
 <div mat-dialog-content class="app-letter">
   <div *ngIf="fileConfig">
     <div class="app-mb-4">
@@ -49,10 +49,10 @@
     </mat-form-field>
     </div>
   </div>
-  <div class="app-mt-4"><strong>{{ 'Replacements' | translate }}</strong>:</div>
+  <!-- <div class="app-mt-4"><strong>{{ 'Replacements' | translate }}</strong>:</div>
   <ul class="app-mt-0">
     <li *ngFor="let r of fileConfig.replacements">{{ r.orig }} ==> {{ r.dest }}</li>
-  </ul>
+  </ul> -->
   <!-- <mat-list role="list">
     <mat-list-item *ngFor="let r of fileConfig.replacements" role="listitem">{{ r.orig }} ==> {{ r.dest }}</mat-list-item>
   </mat-list> -->
