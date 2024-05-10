@@ -113,7 +113,6 @@ public class Annotator {
             if (prompt.contains("###words###")) {
                 StringTokenizer st = new StringTokenizer(text);
                 long words = Math.max(200, st.countTokens() / 10);
-                System.out.println(words);
                 messages.getJSONObject(0).put("content", prompt.replaceAll("###words###", words + ""));
             } else {
                 messages.getJSONObject(0).put("content", prompt);

@@ -63,15 +63,9 @@
             <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
         </mat-form-field>
     </div>
-    <div class="app-mb-4">
-        <mat-form-field class="app-w-100">
-            <mat-label>{{ 'field.origin' | translate}}</mat-label>
-            <input matInput [(ngModel)]="_letter.origin" name="origin" />
-        </mat-form-field>
-    </div>
 
     <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex app-ml-3">
+        <mat-form-field class="app-fxFlex">
             <mat-label>{{ 'field.author' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.author" name="author" />
         </mat-form-field>
@@ -94,10 +88,18 @@
             </mat-select>
         </mat-form-field>
     </div>
-
-
+    
 
     <div class="app-mb-4">
+        <mat-form-field class="app-fxFlex">
+            <mat-label>{{ 'field.origin' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.origin" name="origin" />
+        </mat-form-field>
+        <mat-form-field class="app-fxFlex">
+            <mat-label>{{ 'field.languages' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.languages" name="languages" />
+        </mat-form-field>
+
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.salutation' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.salutation" name="salutation"><span matSuffix></span>

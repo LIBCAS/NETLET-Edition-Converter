@@ -64,6 +64,7 @@ Managed external dictionaries
     <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW" />
     <field name="author" type="string" indexed="true" stored="true" multiValued="true" />
     <field name="recipient" type="string" indexed="true" stored="true" multiValued="true"  />
+    <field name="date" type="pdate" indexed="true" stored="true" />
 	
 
     <!-- uncomment the following to ignore any fields that don't already match an existing 

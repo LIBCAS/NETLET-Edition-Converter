@@ -15,7 +15,7 @@
       </mat-select>
       </mat-form-field>
       <mat-form-field class="app-fxFlex" appearance="outline">
-        <mat-label>Default Autor</mat-label>
+        <mat-label>{{ 'def_author' | translate }}</mat-label>
         <input matInput name="def_author" [(ngModel)]="fileConfig.def_author" [matAutocomplete]="auto" (keyup)="getAuthors(fileConfig.def_author)">
 
         <mat-autocomplete #auto="matAutocomplete">
@@ -26,7 +26,7 @@
       </mat-form-field>
 
       <mat-form-field class="app-fxFlex" appearance="outline">
-        <mat-label>Default recipient</mat-label>
+        <mat-label>{{ 'def_recipient' | translate }}</mat-label>
         <input matInput name="def_recipient" [(ngModel)]="fileConfig.def_recipient" [matAutocomplete]="auto2" (keyup)="getAuthors(fileConfig.def_recipient)">
 
         <mat-autocomplete #auto2="matAutocomplete">
@@ -38,8 +38,8 @@
     </div>
     <div class="app-mb-4">
       <mat-form-field class="app-w-100" appearance="outline">
-        <mat-label>Columns</mat-label>
-        <input matInput type="number" name="def_author" [(ngModel)]="fileConfig.columns">
+        <mat-label>{{ 'Columns' | translate }}</mat-label>
+        <input matInput type="number" name="columns" [(ngModel)]="fileConfig.columns">
       </mat-form-field>
     </div>
     <div class="app-mb-4">

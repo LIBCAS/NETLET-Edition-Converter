@@ -21,8 +21,8 @@ cdkDragHandle >{{ 'new_file' | translate }}</h1>
   </div>
   <div class="app-mb-4">
     <mat-form-field class="app-w-100" appearance="outline">
-      <mat-label>Columns</mat-label>
-      <input matInput type="number" name="def_author" [(ngModel)]="columns">
+      <mat-label>{{ 'Columns' | translate }}</mat-label>
+      <input matInput type="number" name="columns" [(ngModel)]="columns">
     </mat-form-field>
   </div>
 
@@ -32,7 +32,7 @@ cdkDragHandle >{{ 'new_file' | translate }}</h1>
   <div class="app-fxLayout app-row app-center-v">
     <mat-form-field appearance="outline" class="app-fxFlex app-form-field-center-v-fix">
       <input matInput type="text" name="selectedCover" [(ngModel)]="selectedFile">
-      <button matPrefix mat-stroked-button color="primary" class="app-mr-2 app-ml-2" (click)="fileUpload.click()">{{ 'Vybrat soubor' | translate }}</button>
+      <button matPrefix mat-stroked-button color="primary" class="app-mr-2 app-ml-2" (click)="fileUpload.click()">{{ 'action.choose_file' | translate }}</button>
     </mat-form-field>
   </div>
   <mat-progress-bar mode="indeterminate" [value]="uploader.progress" *ngIf="uploader.isUploading"></mat-progress-bar>
@@ -41,7 +41,6 @@ cdkDragHandle >{{ 'new_file' | translate }}</h1>
 </div>
 
 <div mat-dialog-actions>
-    <button [disabled]="!selectedFile" mat-flat-button color="primary" (click)="uploadFile()">{{ 'Nahrat' | translate }}</button>
-    <!-- <button mat-flat-button (click)="save()" color="primary">{{ 'Save' | translate }}</button> -->
-    <button mat-flat-button [mat-dialog-close]="false">{{ 'Close' | translate }}</button>
+    <button [disabled]="!selectedFile" mat-flat-button color="primary" (click)="uploadFile()">{{ 'action.upload' | translate }}</button>
+    <button mat-flat-button [mat-dialog-close]="false">{{ 'action.close' | translate }}</button>
 </div>

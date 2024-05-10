@@ -61,7 +61,7 @@
     "chatGPT": {
        "max_tokens":  7000
     },
-    "defaultPrompt": "Jsi pomocník, který dostane korespondenci (dopis) ###NAME### a musí vytvořit shrnutí, o čem dopis je, kdo je odesilatel, kdo je adresat, kde a kdy byl napsan, jaky je incipit a explicit. Shrnutí musí být v češtině. Odpoved musi byt v JSON formate. Datum musi byt v ISO format",
+    "defaultPrompt": "Jsi pomocník, který dostane korespondenci (dopis) ###NAME###. Napis abstrakt v češtině v {words/100} větách.",
     "file_config" : {
         "name": "",
         "columns": 1,

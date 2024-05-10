@@ -9,7 +9,7 @@
     </div>
     <span class="app-label">{{ 'stránka' | translate }}:</span>
     <input [(ngModel)]="state.currentPage" (change)="getPage()" min="1" max="numPages" />
-    <span class="app-ml-6 app-mr-4">{{ 'z celkového počtu ' | translate }}<strong>{{ state.numPages }}</strong></span>
+    <span class="app-ml-6 app-mr-4">{{ 'z ' | translate }}<strong>{{ state.numPages }}</strong></span>
     <button mat-icon-button [matTooltip]="'Previous' | translate" (click)="prevPage()"><mat-icon>navigate_before</mat-icon></button>
     <button mat-icon-button [matTooltip]="'Next' | translate" (click)="nextPage()"><mat-icon>navigate_next</mat-icon></button>
   </div>

@@ -63,6 +63,7 @@ export class AnalyzeDialogComponent {
     this.findTags();
     // this.translate();
     this.annotate();
+    this.detectLang();
   }
 
 
@@ -90,7 +91,8 @@ export class AnalyzeDialogComponent {
   
   detectLang() {
     this.service.detectLang(this.data.text).subscribe((resp: any) => {
-      alert(resp.languages)
+      // alert(resp.languages)
+      this._letter.languages = resp.languages;
     });
   }
 
@@ -180,6 +182,7 @@ export class AnalyzeDialogComponent {
       this.data.letter.endPage = this.state.currentPage;
     }
 
+    this.data.letter.languages = this._letter.languages;
     
     this.data.letter.letter_number = this._letter.letter_number;
     this.data.letter.letter_title = this._letter.letter_title;

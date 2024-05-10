@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ViewerComponent } from '../../components/viewer/viewer.component';
-import { NgIf, NgTemplateOutlet, NgFor } from '@angular/common';
+import { NgIf, NgTemplateOutlet, NgFor, DatePipe } from '@angular/common';
 import { AngularSplitModule } from 'angular-split';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,6 +22,7 @@ import { LetterFieldsComponent } from 'src/app/components/letter-fields/letter-f
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AppState } from 'src/app/app-state';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 
 @Component({
@@ -29,7 +30,11 @@ import { AppState } from 'src/app/app-state';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
   standalone: true,
-  imports: [FormsModule, AngularSplitModule, NgIf, ViewerComponent, MatToolbarModule, RouterModule, TranslateModule,
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'cs' },
+  ],
+  imports: [FormsModule, AngularSplitModule, NgIf, ViewerComponent, 
+    MatToolbarModule, RouterModule, TranslateModule, DatePipe,
     MatTabsModule, MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatListModule,
     MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
 })
@@ -98,16 +103,6 @@ export class EditorComponent {
     this.letter.author = this.state.fileConfig.def_author;
     this.letter.recipient = this.state.fileConfig.def_recipient;
     this.view = 'fields';
-
-    // this.letterForm = this.formBuilder.group({
-    //   date_year: [],
-    //   date_month: [],
-    //   abstract: this.formBuilder.group({
-    //     subfield2: [],
-    //   }),
-    //   l_author: [this.state.fileConfig.def_author, Validators.required],
-    //   recipient: [this.state.fileConfig.def_recipient, Validators.required],
-    // });
   }
 
   switchAuthors() {

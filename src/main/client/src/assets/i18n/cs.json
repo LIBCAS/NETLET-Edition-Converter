@@ -3,6 +3,8 @@
   "Ne": "Ne",
   "file_list": "Seznam nahráných PDF",
   "pages": "stránek",
+  "page": "strana",
+  "Page(s)": "Rozsah stránek",
   "letters": "dopisy",
   "Letters": "Dopisy",
   "generated": "zpracované",
@@ -14,11 +16,7 @@
   "book_name": "Název knihy",
   "def_author": "Výchozí autor", 
   "def_recipient": "Výchozí příjemce", 
-  "Refresh": "Obnovit",
-  "Add": "Přidat",
-  "Save": "Uložit",
-  "Remove": "Odstranit",
-  "Export": "Export",
+  "Columns": "Počet sloupců",
   "field": {
     "author": "Autor", 
     "author_db": "Autor v HIKO db", 
@@ -42,6 +40,11 @@
     "signature": "Podpis"
   },
   "action": {
+    "refresh": "Obnovit",
+    "add": "Přidat",
+    "save": "Uložit",
+    "remove": "Odstranit",
+    "export": "Export",
     "set_block": "Nastavit text z bloku (+ctrl přidat)",
     "add_block": "Pridat text z bloku",
     "set_line": "Nastavit text z radku (+ctrl přidat)",
@@ -53,7 +56,10 @@
     "copy_line": "CTRL+C z radku",
     "copy_word": "CTRL+C ze slova",
     "check_authors": "Zkontrolovat autory proti HIKO db",
-    "regenerate": "Vytvorit OCR znova"
+    "regenerate": "Vytvorit OCR znova",
+    "choose_file": "Vybrat soubor",
+    "upload": "Nahrát",
+    "close": "Zavřít"
   },
 
   "tags" : {

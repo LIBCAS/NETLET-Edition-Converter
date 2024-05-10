@@ -370,6 +370,7 @@ public class Indexer {
             idoc.setField("startPage", data.optInt("startPage", 0));
             idoc.setField("author", data.optString("author"));
             idoc.setField("recipient", data.optString("recipient"));
+            idoc.setField("date", data.optString("date"));  
             solr.add("letters", idoc);
             solr.commit("letters");
             ret.put("msg", "letter saved!");
