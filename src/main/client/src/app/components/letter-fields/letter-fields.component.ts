@@ -58,7 +58,7 @@ export class LetterFieldsComponent {
 
   }
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
-  @Output() onShouldRefresh = new EventEmitter<boolean>();
+  @Output() onShouldRefresh = new EventEmitter<string>();
 
   @ViewChild('abstract') abstract: any;
 
@@ -178,7 +178,7 @@ export class LetterFieldsComponent {
         this.datum.setValue(null);
       }
 
-      this.onShouldRefresh.emit(true);
+      this.onShouldRefresh.emit(this._letter.id);
     })
   }
 
@@ -191,7 +191,8 @@ export class LetterFieldsComponent {
       this._letter.endPage = this.state.currentPage;
     }
     this.service.saveLetter(this.state.selectedFile.dir, this._letter).subscribe((res: any) => {
-      this.onShouldRefresh.emit(true);
+      this.onShouldRefresh.emit(this._letter.id);
+      
     });
   }
 
@@ -211,6 +212,10 @@ export class LetterFieldsComponent {
         this._letter.full_text += '\n\n' + this.state.getBlockText();
       } else {
         this._letter.full_text = this.state.getBlockText();
+      }
+
+      if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
+        this._letter.startPage = this.state.currentPage;
       }
 
     } else {

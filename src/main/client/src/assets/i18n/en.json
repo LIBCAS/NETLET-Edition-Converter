@@ -60,7 +60,9 @@
     "regenerate": "Re-create OCR",
     "choose_file": "Choose file",
     "upload": "Upload",
-    "close": "Close"
+    "close": "Close",
+    "AI": "Artificial intelligence",
+    "process": "Process with AI"
   },
   "tags": {
     "a": "Numbers in addresses",

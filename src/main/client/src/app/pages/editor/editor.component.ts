@@ -124,7 +124,7 @@ export class EditorComponent {
 
   newLetter() {
     this.letter = new Letter();
-    this.letter.id = this.state.selectedFile.dir + new Date().getMilliseconds();
+    this.letter.id = this.state.selectedFile.dir + new Date().getTime();
     this.letter.author = this.state.fileConfig.def_author;
     this.letter.recipient = this.state.fileConfig.def_recipient;
     this.view = 'fields';
@@ -139,8 +139,17 @@ export class EditorComponent {
 
   }
 
-  refreshLetters(c: boolean) {
-    this.getLetters();
+  refreshLetters(id: string) {
+    if (id) {
+      if (this.currentLetterId) {
+        this.router.navigate(['../', id], { relativeTo: this.route });
+      } else {
+        this.router.navigate([id], { relativeTo: this.route });
+      }
+    } else {
+      this.getLetters();
+    }
+    
   }
 
   setField(data: { field: string, textBox: string, append: boolean }) {
@@ -428,7 +437,7 @@ export class EditorComponent {
       this.letter.endPage = this.state.currentPage;
     }
     this.service.saveLetter(this.state.selectedFile.dir, this.letter).subscribe((res: any) => {
-      this.refreshLetters(true);
+      this.refreshLetters('');
     });
   }
 
