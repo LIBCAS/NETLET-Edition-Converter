@@ -1,5 +1,6 @@
 package cz.inovatika.knav.netlet.netleteditor;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
@@ -17,7 +18,7 @@ import org.json.JSONObject;
  * @author alberto
  */
 @WebServlet(name = "ConvertServlet", urlPatterns = {"/convert/*"})
-public class ConvertServlet extends HttpServlet {
+public class ConvertServlet extends HttpServlet { 
 
     public static final Logger LOGGER = Logger.getLogger(ConvertServlet.class.getName());
 
@@ -87,6 +88,18 @@ public class ConvertServlet extends HttpServlet {
                 String page = req.getParameter("page");
                 String pdfDir = Storage.pdfDir(filename);
                 return new JSONObject().put("result", PERORequester.generate(pdfDir, page));
+
+            }
+        },
+        ALTO_IMAGE_FILE {
+            @Override
+            JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
+                String imagePath = req.getParameter("file");
+                String page = req.getParameter("page");
+                String pdfDir = Storage.pdfsDir();
+                String outputTxt = pdfDir + "test" + File.separator + page + ".txt";
+                String outputAlto = pdfDir + "test" + File.separator + page + ".xml";
+                return new JSONObject().put("result", PERORequester.generate(imagePath, outputTxt, outputAlto)); 
 
             }
         },

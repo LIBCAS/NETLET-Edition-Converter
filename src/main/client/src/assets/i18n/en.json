@@ -37,7 +37,8 @@
     "page_number": "First Page in book",
     "end_page_number": "Last Page in book",
     "salutation": "Salutation",
-    "signature": "Signature"
+    "signature": "Signature",
+    "languages": "Languages"
   },
   "action": {
     "refresh": "Refresh",

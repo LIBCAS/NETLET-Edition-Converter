@@ -23,20 +23,7 @@
     "translationUrl": "https://lindat.mff.cuni.cz/services/translation/api/v2/languages/",
     "annotator": {
         "model": "gpt-3.5-turbo",
-        "messages": [
-            {
-                "role": "system",
-                "content": "The text is a historical letter. Create summary. Extract sender, recipient, location, date, incipit, explicit. Date must be in ISO format. Response must be in Czech. Odpoved musi byt v JSON formate."
-            },
-            {
-                "role": "system",
-                "content": "Odpoved musi byt v JSON formate. Datum musi byt v ISO format. The JSON format definition is { summary: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string }"
-            },
-            {
-                "role": "user",
-                "content": ""
-            }
-        ],
+        "messages": [],
         "temperature": 0,
         "max_tokens": 4048,
         "top_p": 0,
@@ -50,8 +37,8 @@
             },
             {
                 "role": "system",
-                "content": "Incipit a explicit musi byt v originalnim jazyku. Odpoved musi byt v JSON formate. Datum musi byt v ISO format. The JSON format definition is { letter_number: string; letter_title: string; page_number: number; end_page_number: number; abstract: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string, signature: string, salutation: string }"
-            },
+                "content": "Oslovení je na začátku dopisu. Incipit a explicit musi byt v originalnim jazyku. Odpoved musi byt v JSON formate. Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string, signature: string, sign_off: string }"
+            }, 
             {
                 "role": "user",
                 "content": ""

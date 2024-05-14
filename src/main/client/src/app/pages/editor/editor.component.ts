@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AppService } from 'src/app/app.service';
 import { AltoBlock, AltoLine, AltoString } from 'src/app/shared/alto';
 import { Entity, Letter } from 'src/app/shared/letter';
@@ -33,7 +33,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'cs' },
   ],
-  imports: [FormsModule, AngularSplitModule, NgIf, ViewerComponent, 
+  imports: [FormsModule, AngularSplitModule, NgIf, ViewerComponent,
     MatToolbarModule, RouterModule, TranslateModule, DatePipe,
     MatTabsModule, MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatListModule,
     MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
@@ -49,6 +49,7 @@ export class EditorComponent {
   withSelection = false;
   results: any[];
   selectedResult: number = -1;
+  currentLetterId: string;
   viewerWidth: number;
   imgW = 100;
 
@@ -67,6 +68,7 @@ export class EditorComponent {
   view: string;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     public state: AppState,
     private service: AppService,
@@ -76,7 +78,22 @@ export class EditorComponent {
   ngOnInit() {
     this.state.currentPage = 1;
     this.route.paramMap.subscribe((params: any) => {
+      if (params.get('letter')) {
+        this.currentLetterId = params.get('letter');
+      } else {
+        this.currentLetterId = null;
+      }
+      const file = params.get('file');
+      if (file === this.state.selectedFile?.dir) {
+        if (this.currentLetterId) {
+          this.openLetter(this.currentLetterId);
+        }
+        return;
+      }
       this.state.selectedFile = this.state.files.find(f => f.dir === params.get('file'));
+      if (params.get('letter')) {
+        this.currentLetterId = params.get('letter');
+      }
       this.service.getDocument(this.state.selectedFile.dir).subscribe((res: any) => {
         this.state.numPages = res.pages;
       });
@@ -90,9 +107,17 @@ export class EditorComponent {
           // this.findLetters();
         }
         this.getLetters();
+
+        if (params.get('letter')) {
+          this.currentLetterId = params.get('letter');
+        } else {
+          this.view = 'letters'
+        }
+
+
       });
-      this.getPage();
-      this.view = 'letters'
+
+
     });
 
   }
@@ -289,6 +314,13 @@ export class EditorComponent {
     this.service.getLetters(this.state.selectedFile.dir).subscribe((resp: any) => {
       this.letters = resp.response.docs;
 
+      this.getPage();
+      if (this.currentLetterId) {
+        this.openLetter(this.currentLetterId);
+      } else {
+        this.view = 'letters'
+      }
+
     });
   }
 
@@ -309,13 +341,8 @@ export class EditorComponent {
     this.state.selectedAlto = { blocks: this.state.selectedBlocks, lines: this.state.selectedLines, words: this.state.selectedWords };
   }
 
-
-  selectResult(doc: any, keepSelection: boolean, idx: number) {
-    if (this.ignored[doc.id]) {
-      return;
-    }
-    this.gotoResult(doc, keepSelection, idx);
-    this.service.getLetter(doc.id).subscribe(res => {
+  openLetter(id: string) {
+    this.service.getLetter(id).subscribe(res => {
       if (res.response.docs.length > 0) {
         this.letter = res.response.docs[0].data;
         if (!this.letter.startPage) {
@@ -328,37 +355,46 @@ export class EditorComponent {
         } else {
           this.state.currentPage = this.letter.startPage;
         }
+        this.gotoResult(res.response.docs[0], false, 0);
 
       } else {
         this.newLetter();
-        this.letter.id = doc.id;
+        this.letter.id = id;
         this.letter.startPage = this.state.currentPage;
       }
       this.view = 'fields';
     });
+  }
+
+
+  selectResult(doc: any, keepSelection: boolean, idx: number) {
+    if (this.ignored[doc.id]) {
+      return;
+    }
+    if (this.currentLetterId) {
+      this.router.navigate(['../', doc.id], { relativeTo: this.route });
+    } else {
+      this.router.navigate([doc.id], { relativeTo: this.route });
+    }
+
+    // this.openLetter(doc.id);
 
   }
 
 
   gotoResult(doc: any, keepSelection: boolean, idx: number) {
+
     this.selectedResult = idx;
     this.withSelection = keepSelection;
     this.state.currentPage = doc.data.startPage;
     this.getPage(keepSelection);
 
-    // this.state.selectedBlocks = [{
-    //   HPOS: doc.HPOS,
-    //   VPOS: doc.VPOS,
-    //   WIDTH: doc.WIDTH,
-    //   HEIGHT: doc.HEIGHT,
-    //   ID: doc.blockid,
-    //   TextLine: []
-    // }];
 
     // this.state.selectedLines = doc.lines;
     this.state.selectedWords = [];
     // this.state.selectedAlto = null;
     this.state.selectedAlto = { blocks: this.state.selectedBlocks, lines: this.state.selectedLines, words: this.state.selectedWords };
+
   }
 
   splitChanged(e: any) {

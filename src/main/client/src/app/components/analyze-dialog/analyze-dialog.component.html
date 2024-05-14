@@ -1,9 +1,9 @@
-<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle style="cursor: move;">{{ 'Analysis' |
-    translate }}</h1>
-<div mat-dialog-content class="app-letter">
+<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary="body" style="cursor: move;">{{ 'Analysis' |
+    translate }}
     <div *ngIf="loading" class="app-fxLayout app-row ">
         <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
-    </div>
+    </div></h1>
+<div mat-dialog-content class="app-letter">
 
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
@@ -46,7 +46,7 @@
 
 
     <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex app-ml-3">
+        <mat-form-field class="app-fxFlex">
             <mat-label>{{ 'field.letter_number' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.letter_number" name="letter_number">
         </mat-form-field>
@@ -111,14 +111,19 @@
     </div>
 
     <div class="app-mb-4">
-        <mat-form-field class="app-fxFlex app-ml-3" *ngIf="!datum">
+        <mat-form-field class="app-fxFlex" *ngIf="!datum">
             <mat-label>{{ 'field.date' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.date" name="date" />
         </mat-form-field>
 
-        <mat-form-field class="app-fxFlex app-ml-3" *ngIf="datum">
+        <mat-form-field class="app-fxFlex" *ngIf="datum">
             <mat-label>{{ 'field.date' | translate}}</mat-label>
             <input matInput [(ngModel)]="datum" [value]="datum | date : 'dd.MM.yyyy' " name="datum" />
+        </mat-form-field>
+
+        <mat-form-field class="app-fxFlex app-ml-3">
+            <mat-label>{{ 'field.languages' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.languages" name="languages">
         </mat-form-field>
     </div>
 

@@ -8,23 +8,23 @@
       <mat-label>{{ 'field.endPage' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.endPage" name="endPage">
     </mat-form-field> -->
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
       <mat-label>{{ 'field.letter_number' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.letter_number" name="letter_number">
     </mat-form-field>
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
       <mat-label>{{ 'field.page_number' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.page_number" name="page_number">
     </mat-form-field>
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
       <mat-label>{{ 'field.end_page_number' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
     </mat-form-field>
   </div>
 
   <button mat-flat-button color="primary" (click)="analyze()" class="app-mb-4">
-    <mat-icon class="material-icons-outlined">search_insights</mat-icon>
-    Analyze
+    <mat-icon class="material-icons-outlined">manage_search</mat-icon>
+    {{ 'action.process' | translate}}
   </button>
   
   <div class="app-mb-4">
@@ -43,7 +43,7 @@
       <input matInput [(ngModel)]="_letter.author" name="author" /><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'author' }"></ng-container>
     </mat-form-field>
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
       <mat-label>{{ 'field.author_db' | translate}}</mat-label>
       <mat-select [(ngModel)]="_letter.author_db">
           <mat-option *ngFor="let a of _letter.authors_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
@@ -56,7 +56,7 @@
       <input matInput [(ngModel)]="_letter.recipient" name="recipient"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'recipient' }"></ng-container>
     </mat-form-field>
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
       <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
       <mat-select [(ngModel)]="_letter.recipient_db">
           <mat-option *ngFor="let a of _letter.recipients_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
@@ -105,15 +105,21 @@
   </div>
 
   <div class="app-mb-4">
+
     <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>{{ 'field.salutation' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.salutation" name="salutation"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
     </mat-form-field>
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
       <mat-label>{{ 'field.signature' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
+    </mat-form-field>
+
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{ 'field.languages' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.languages" name="languages">
     </mat-form-field>
   </div>
     

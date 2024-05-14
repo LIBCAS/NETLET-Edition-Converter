@@ -39,7 +39,8 @@
     "page_number": "První strana v knize",
     "end_page_number": "Poslední strana v knize",
     "salutation": "Oslovení",
-    "signature": "Podpis"
+    "signature": "Podpis",
+    "languages": "Jazyky"
   },
   "action": {
     "refresh": "Obnovit",
@@ -61,7 +62,9 @@
     "regenerate": "Vytvorit OCR znova",
     "choose_file": "Vybrat soubor",
     "upload": "Nahrát",
-    "close": "Zavřít"
+    "close": "Zavřít",
+    "AI": "Umělá Inteligence",
+    "process": "Zpracovat pomoci AI"
   },
 
   "tags" : {

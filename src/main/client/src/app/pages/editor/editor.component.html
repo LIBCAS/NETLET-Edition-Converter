@@ -39,7 +39,7 @@
         <div *ngIf="view == 'letters'" class="app-fxFlex app-p-4 app-oa-y">
           <mat-list>
             <div mat-subheader>{{ 'Letters' | translate }}: ({{letters?.length}})</div>
-            <mat-list-item *ngFor="let l of letters; let idx = index;" [class.app-selected]="selectedResult === idx" (click)="selectResult(l, false, idx)">
+            <mat-list-item *ngFor="let l of letters; let idx = index;" [class.app-selected]="l.id === currentLetterId" (click)="selectResult(l, false, idx)">
               <div matListItemTitle [class.app-ignore]="ignored[l.id]">
                 {{'Page(s)' | translate}}: {{ l.data.page_number }} <ng-container *ngIf="l.data.end_page_number"> - {{ l.data.end_page_number }}</ng-container> 
                 
