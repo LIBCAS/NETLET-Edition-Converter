@@ -68,7 +68,7 @@ export class AnalyzeDialogComponent {
 
 
   findTags() {
-    this.service.findTags(this.data.text).subscribe((resp: any) => {
+    this.service.findTags(this.data.text, this.state.fileConfig.tenant).subscribe((resp: any) => {
       this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
@@ -131,6 +131,7 @@ export class AnalyzeDialogComponent {
     }
     
     this._letter.salutation = this._letter.analysis.salutation;
+    this._letter.sign_off = this._letter.analysis.sign_off;
     this._letter.signature = this._letter.analysis.signature;
 
     this._letter.abstract_cs = this._letter.analysis.abstract;
@@ -189,6 +190,7 @@ export class AnalyzeDialogComponent {
     this.data.letter.page_number = this._letter.page_number;
     this.data.letter.end_page_number = this._letter.end_page_number;
     this.data.letter.salutation = this._letter.salutation;
+    this.data.letter.sign_off = this._letter.sign_off;
     this.data.letter.signature = this._letter.signature;
 
 
@@ -213,7 +215,7 @@ export class AnalyzeDialogComponent {
     
     this.data.letter.analysis = this._letter.analysis;
 
-    this.service.saveLetter(this.state.selectedFile.dir, this.data.letter).subscribe((res: any) => {
+    this.service.saveLetter(this.state.selectedFile.filename, this.data.letter).subscribe((res: any) => {
       if (res.error) {
         this.service.showSnackBarError(res.error);
       } else {

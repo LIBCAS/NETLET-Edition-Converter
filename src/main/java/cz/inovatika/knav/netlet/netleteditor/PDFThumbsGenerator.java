@@ -44,7 +44,8 @@ public class PDFThumbsGenerator {
             }
 
             ret.append("dirs", new JSONObject()
-                    .put("dir", dir)
+                    .put("filename", dir)
+                    .put("file_id", Indexer.hashString(dir))
                     .put("config", c)
                     .put("imgs", new File(Storage.imagesDir(dir)).list().length)
                     .put("alto", new File(Storage.altoDir(dir)).list().length)

@@ -21,6 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
+import { Overlay } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-letter-fields',
@@ -71,6 +72,7 @@ export class LetterFieldsComponent {
   constructor(
     private _adapter: DateAdapter<any>,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
+    private overlay: Overlay,
     private route: ActivatedRoute,
     private service: AppService,
     public state: AppState,
@@ -82,7 +84,7 @@ export class LetterFieldsComponent {
   }
 
   findTags() {
-    this.service.findTags(this._letter.full_text).subscribe((resp: any) => {
+    this.service.findTags(this._letter.full_text, this.state.fileConfig.tenant).subscribe((resp: any) => {
       this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
@@ -150,6 +152,11 @@ export class LetterFieldsComponent {
         });
       }
       this._letter.full_text = this.state.getBlockText();
+
+      if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
+        this._letter.startPage = this.state.currentPage;
+      }
+
     }
     // console.log(this._letter.full_text);
 
@@ -163,9 +170,9 @@ export class LetterFieldsComponent {
 
     const dialogRef = this.dialog.open(AnalyzeDialogComponent, {
       width: '1200px',
-      // height: '600px',
+      // scrollStrategy: this.overlay.scrollStrategies.noop(),
       disableClose: true,
-      panelClass: 'my-custom-panel',
+      panelClass: 'analize-dialog',
       data: { letter: this._letter, text: this._letter.full_text, prompt: prompt }
     });
 
@@ -190,7 +197,7 @@ export class LetterFieldsComponent {
     if (!this._letter.endPage) {
       this._letter.endPage = this.state.currentPage;
     }
-    this.service.saveLetter(this.state.selectedFile.dir, this._letter).subscribe((res: any) => {
+    this.service.saveLetter(this.state.selectedFile.filename, this._letter).subscribe((res: any) => {
       this.onShouldRefresh.emit(this._letter.id);
       
     });

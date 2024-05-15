@@ -28,7 +28,7 @@ export class NewFileDialogComponent {
   def_author: string;
   def_recipient: string;
 
-  public uploader: FileUploader = new FileUploader({ url: 'api/lf?action=UPLOAD' });
+  public uploader: FileUploader = new FileUploader({ url: 'api/data/pdf' });
   selectedFile: string;
   progressMsg: string;
 

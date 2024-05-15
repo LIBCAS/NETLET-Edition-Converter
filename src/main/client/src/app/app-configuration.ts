@@ -47,7 +47,7 @@ import { AppState } from './app-state';
                     this.state.tenants = Object.keys(res.tenants);
                     this.state.files = res.dirs;
                     this.state.files.forEach(f => {
-                        f.letters = res.totals[f.dir] ? res.totals[f.dir] : 0;
+                        f.letters = res.totals[f.filename] ? res.totals[f.filename] : 0;
                     });
                 }));
             }),
@@ -57,17 +57,5 @@ import { AppState } from './app-state';
             })
         );
     }
-
-
-
-
-    // getDocuments() {
-    //     this.service.getDocuments().subscribe((res: any) => {
-    //       this.state.files = res.dirs;
-    //       this.state.files.forEach(f => {
-    //         f.letters = res.totals[f.dir] ? res.totals[f.dir] : 0;
-    //       });
-    //     });
-    //   }
 
 }

@@ -37,6 +37,8 @@ import org.json.JSONObject;
 public class Translator {
 
     private static final String API_POINT = Options.getInstance().getString("translationUrl");
+    
+    private static final org.apache.tika.language.detect.LanguageDetector detector = new OptimaizeLangDetector().loadModels();
 
     public static String request(String data, String src_lang, String tgt_lang) throws URISyntaxException, IOException, InterruptedException {
 
@@ -106,8 +108,8 @@ public class Translator {
     }
     
     public static List<LanguageResult> detectLanguages(String text) throws IOException {
-        org.apache.tika.language.detect.LanguageDetector detector = new OptimaizeLangDetector().loadModels();
         List<LanguageResult> result = detector.detectAll(text);
+        detector.reset();
         return result;
     }
 }

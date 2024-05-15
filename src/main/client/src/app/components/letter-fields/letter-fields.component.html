@@ -81,13 +81,30 @@
       <mat-datepicker #picker></mat-datepicker>
       <!-- <input matInput [value]="datum | date : 'dd.MM.yyyy' " name="datum" /> -->
     </mat-form-field>
+
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+      <mat-label>{{ 'field.languages' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.languages" name="languages">
+  </mat-form-field>
+
   </div>
-  <div class="app-mb-4">
-    <mat-form-field class="app-w-100" appearance="outline">
+  <div class="app-fxLayout app-row app-center-v app-mb-4">
+    <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>{{ 'field.origin' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.origin" name="origin"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'origin' }"></ng-container>
     </mat-form-field>
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+      <mat-label>{{ 'field.salutation' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.salutation" name="salutation"><span matSuffix></span>
+      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
+    </mat-form-field>
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+      <mat-label>{{ 'field.signature' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
+      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
+    </mat-form-field>
+
   </div>
   <div class="app-mb-4">
     <mat-form-field class="app-w-100" appearance="outline">
@@ -101,25 +118,6 @@
       <mat-label>{{ 'field.explicit' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.explicit" name="explicit"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'explicit' }"></ng-container>
-    </mat-form-field>
-  </div>
-
-  <div class="app-mb-4">
-
-    <mat-form-field class="app-fxFlex" appearance="outline">
-      <mat-label>{{ 'field.salutation' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.salutation" name="salutation"><span matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
-    </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-      <mat-label>{{ 'field.signature' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
-    </mat-form-field>
-
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-        <mat-label>{{ 'field.languages' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.languages" name="languages">
     </mat-form-field>
   </div>
     

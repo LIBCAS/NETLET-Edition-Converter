@@ -58,6 +58,7 @@ Managed external dictionaries
     
     
     <field name="filename" type="string" indexed="true" stored="true"  />
+    <field name="file_id" type="string" indexed="true" stored="true"  />
     <field name="startPage" type="pint" indexed="true" stored="true"  />
     <field name="alto_id" type="string" indexed="true" stored="true"  />
     <field name="data" type="string_big" indexed="false" stored="true"/>

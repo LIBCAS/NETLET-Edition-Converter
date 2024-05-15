@@ -10,9 +10,12 @@ import cz.inovatika.knav.netlet.netleteditor.alto.AltoPrintSpace;
 import cz.inovatika.knav.netlet.netleteditor.alto.AltoString;
 import java.io.File;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.io.FileUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -46,6 +49,12 @@ public class Indexer {
             LOGGER.log(Level.SEVERE, null, ex);
         }
         return _solr;
+    }
+    
+    public static void closeClient() throws IOException {
+        if (_solr != null) {
+            _solr.close();
+        }
     }
 
     public static JSONObject indexPdfFile(String filename) {
@@ -353,6 +362,18 @@ public class Indexer {
         }
         return ret;
     }
+    
+    public static String hashString(String str) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(str.getBytes());
+            byte[] digest = md.digest();
+            return DatatypeConverter.printHexBinary(digest).toLowerCase();
+        } catch (NoSuchAlgorithmException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            return str;
+        }
+  }
 
     public static JSONObject saveLetter(String filename, JSONObject data) {
         JSONObject ret = new JSONObject();
@@ -362,10 +383,11 @@ public class Indexer {
                 id = filename + new Date().getTime();
                 data.put("id", id);
             }
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            Http2SolrClient solr = (Http2SolrClient) getClient(); 
             SolrInputDocument idoc = new SolrInputDocument();
             idoc.setField("id", id);
             idoc.setField("filename", filename);
+            idoc.setField("file_id", hashString(filename));
             idoc.setField("data", data.toString());
             idoc.setField("startPage", data.optInt("startPage", 0));
             idoc.setField("author", data.optString("author"));

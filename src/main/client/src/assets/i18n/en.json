@@ -37,12 +37,16 @@
     "page_number": "First Page in book",
     "end_page_number": "Last Page in book",
     "salutation": "Salutation",
+    "sign_off": "Sign off",
     "signature": "Signature",
     "languages": "Languages"
   },
   "action": {
     "refresh": "Refresh",
     "add": "Add",
+    "new_letter": "Create new letter",
+    "prevoius_letter": "Previous letter",
+    "next_letter": "Next letter",
     "save": "Save",
     "remove": "Remove",
     "export": "Export",

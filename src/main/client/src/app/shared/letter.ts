@@ -47,6 +47,7 @@ export class Letter {
     end_page_number: number;
     salutation: string;
     signature: string;
+    sign_off: string;
 
     l_author: number;
     author: string;

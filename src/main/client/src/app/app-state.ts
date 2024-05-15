@@ -8,8 +8,8 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
 
   alto: any;
   tenants: string[];
-  files: {dir: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number}[] = [];
-  selectedFile: {dir: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number};
+  files: {filename: string, file_id: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number}[] = [];
+  selectedFile: {filename: string, file_id: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number};
   fileConfig: FileConfig;
   currentPage: number = 100;
   numPages: number;

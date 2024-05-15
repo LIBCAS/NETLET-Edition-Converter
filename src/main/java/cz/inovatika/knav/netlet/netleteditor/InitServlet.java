@@ -1,9 +1,8 @@
 package cz.inovatika.knav.netlet.netleteditor;
 
+import cz.inovatika.knav.netlet.netleteditor.index.Indexer;
 import java.io.File;
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -114,7 +113,12 @@ public class InitServlet extends HttpServlet {
       InitServlet.taskRunning = false;
       future.cancel(true);
       executor.shutdownNow();
-      // timer.cancel();
+      
+      try {
+          Indexer.closeClient();
+      } catch (IOException ex) {
+          LOGGER.log(Level.SEVERE, null, ex);
+      }
       
   }
 

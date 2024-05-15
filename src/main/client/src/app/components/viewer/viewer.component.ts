@@ -140,7 +140,7 @@ export class ViewerComponent {
     if (!keepSelection) {
       this.clearSelection();
     }
-    this.service.getAlto(this.state.selectedFile.dir, (this.state.currentPage - 1) + '').subscribe((res: any) => {
+    this.service.getAlto(this.state.selectedFile.filename, (this.state.currentPage - 1) + '').subscribe((res: any) => {
       this.state.alto = res.alto;
       this.addIdx();
     });

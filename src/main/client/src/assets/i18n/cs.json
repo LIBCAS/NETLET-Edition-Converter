@@ -39,12 +39,16 @@
     "page_number": "První strana v knize",
     "end_page_number": "Poslední strana v knize",
     "salutation": "Oslovení",
+    "sign_off": "Rozloučení",
     "signature": "Podpis",
     "languages": "Jazyky"
   },
   "action": {
     "refresh": "Obnovit",
     "add": "Přidat",
+    "new_letter": "Vytvorit nový dopis",
+    "previous_letter": "Předchozí dopis",
+    "next_letter": "Následující dopis",
     "save": "Uložit",
     "remove": "Odstranit",
     "export": "Export",

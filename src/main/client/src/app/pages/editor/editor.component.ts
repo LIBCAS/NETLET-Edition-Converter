@@ -53,7 +53,7 @@ export class EditorComponent {
   viewerWidth: number;
   imgW = 100;
 
-  letters: any[];
+  letters: any[] = [];
   letter: Letter;
 
   letterForm: FormGroup;
@@ -84,20 +84,24 @@ export class EditorComponent {
         this.currentLetterId = null;
       }
       const file = params.get('file');
-      if (file === this.state.selectedFile?.dir) {
+      if (file === this.state.selectedFile?.filename) {
         if (this.currentLetterId) {
           this.openLetter(this.currentLetterId);
         }
+        if (this.letters.length === 0) {
+          this.getLetters();
+        }
         return;
       }
-      this.state.selectedFile = this.state.files.find(f => f.dir === params.get('file'));
+      this.state.selectedFile = this.state.files.find(f => f.filename === params.get('file'));
       if (params.get('letter')) {
         this.currentLetterId = params.get('letter');
       }
-      this.service.getDocument(this.state.selectedFile.dir).subscribe((res: any) => {
+      this.service.getDocument(this.state.selectedFile.filename).subscribe((res: any) => {
         this.state.numPages = res.pages;
       });
-      this.service.getConfig(this.state.selectedFile.dir).subscribe((res: any) => {
+
+      this.service.getConfig(this.state.selectedFile.filename).subscribe((res: any) => {
         this.state.fileConfig = res;
         if (this.state.fileConfig.searchParams) {
           this.searchParams = this.state.fileConfig.searchParams;
@@ -124,7 +128,7 @@ export class EditorComponent {
 
   newLetter() {
     this.letter = new Letter();
-    this.letter.id = this.state.selectedFile.dir + new Date().getTime();
+    this.letter.id = this.state.selectedFile.filename.substring(0,3) + new Date().getTime();
     this.letter.author = this.state.fileConfig.def_author;
     this.letter.recipient = this.state.fileConfig.def_recipient;
     this.view = 'fields';
@@ -218,7 +222,7 @@ export class EditorComponent {
     if (!keepSelection) {
       this.clearSelection();
     }
-    this.service.getAlto(this.state.selectedFile.dir, (this.state.currentPage - 1) + '').subscribe((res: any) => {
+    this.service.getAlto(this.state.selectedFile.filename, (this.state.currentPage - 1) + '').subscribe((res: any) => {
       this.state.alto = res.alto;
       this.addIdx();
     });
@@ -306,7 +310,7 @@ export class EditorComponent {
 
   findSimilar() {
     this.onlyBox = true;
-    this.searchParams = { filename: this.state.selectedFile.dir, page: (this.state.currentPage - 1), selection: this.state.selectedAlto, onlyBox: this.onlyBox, twoCols: this.twoCols };
+    this.searchParams = { filename: this.state.selectedFile.filename, page: (this.state.currentPage - 1), selection: this.state.selectedAlto, onlyBox: this.onlyBox, twoCols: this.twoCols };
     this.state.fileConfig.searchParams = this.searchParams;
     this.findLetters();
   }
@@ -320,7 +324,7 @@ export class EditorComponent {
   }
 
   getLetters() {
-    this.service.getLetters(this.state.selectedFile.dir).subscribe((resp: any) => {
+    this.service.getLetters(this.state.selectedFile.filename).subscribe((resp: any) => {
       this.letters = resp.response.docs;
 
       this.getPage();
@@ -423,7 +427,7 @@ export class EditorComponent {
   }
 
   saveFileSettings() {
-    this.service.saveFile(this.state.selectedFile.dir, this.state.fileConfig).subscribe(result => {
+    this.service.saveFile(this.state.selectedFile.filename, this.state.fileConfig).subscribe(result => {
 
 
     });
@@ -436,13 +440,13 @@ export class EditorComponent {
     if (!this.letter.endPage) {
       this.letter.endPage = this.state.currentPage;
     }
-    this.service.saveLetter(this.state.selectedFile.dir, this.letter).subscribe((res: any) => {
+    this.service.saveLetter(this.state.selectedFile.filename, this.letter).subscribe((res: any) => {
       this.refreshLetters('');
     });
   }
 
   removeLetter() {
-    this.service.removeLetter(this.state.selectedFile.dir, this.letter.id).subscribe((res: any) => {
+    this.service.removeLetter(this.state.selectedFile.filename, this.letter.id).subscribe((res: any) => {
       this.getLetters();
     });
 
@@ -450,6 +454,20 @@ export class EditorComponent {
 
   exportLetter() {
     console.log(this.letter);
+  }
+
+  nextLetter() {
+    const idx = this.letters.findIndex(l => l.id === this.currentLetterId);
+    if (idx > -1 && idx < this.letters.length - 1) {
+      this.selectResult(this.letters[idx + 1], false, idx + 1)
+    }
+  }
+
+  prevLetter() {
+    const idx = this.letters.findIndex(l => l.id === this.currentLetterId);
+    if (idx > 0) {
+      this.selectResult(this.letters[idx - 1], false, idx - 1)
+    }
   }
 
   nextResult() {
@@ -487,7 +505,7 @@ export class EditorComponent {
   }
 
   regenerateAlto() {
-    this.service.regeneratePageAlto(this.state.selectedFile.dir, (this.state.currentPage - 1) + '').subscribe((res: any) => {
+    this.service.regeneratePageAlto(this.state.selectedFile.filename, (this.state.currentPage - 1) + '').subscribe((res: any) => {
       // this.getLetters();
       this.service.showSnackBar(res)
     });

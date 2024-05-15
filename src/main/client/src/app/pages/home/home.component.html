@@ -2,11 +2,11 @@
   <h3>{{ 'file_list' | translate }}:</h3>
   <ul>
     <li *ngFor="let file of state.files">
-      <a [routerLink]="['/editor', file.dir]">{{ file.config?.name ? file.config.name : file.dir }}</a>
+      <a [routerLink]="['/editor', file.filename]">{{ file.config?.name ? file.config.name : file.filename }}</a>
       <span> {{ file.imgs }} {{ 'pages' | translate }} </span> <span> ({{ 'generated' | translate }} : {{ file.alto }}
         )</span>
       <span> {{ file.letters }} {{ 'letters' | translate }} </span>
-      <button mat-icon-button (click)="regenerateAlto(file.dir)" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button>
+      <button mat-icon-button (click)="regenerateAlto(file.filename)" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button>
     </li>
   </ul>
   

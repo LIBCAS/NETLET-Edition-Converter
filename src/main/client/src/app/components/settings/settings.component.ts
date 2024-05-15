@@ -56,6 +56,6 @@ getAuthors(e: string) {
 }
 
   save() {
-    this.service.saveFile(this.state.selectedFile.dir, this.fileConfig).subscribe(res => {});
+    this.service.saveFile(this.state.selectedFile.filename, this.fileConfig).subscribe(res => {});
   }
 }

@@ -65,7 +65,7 @@ export class HomeComponent {
       this.state.tenants = Object.keys(res.tenants);
       this.state.files = res.dirs;
       this.state.files.forEach(f => {
-        f.letters = res.totals[f.dir] ? res.totals[f.dir] : 0;
+        f.letters = res.totals[f.filename] ? res.totals[f.filename] : 0;
       });
     });
   }

@@ -73,8 +73,8 @@ export class AppService {
     return this.post(`/data/find`, params);
   }
 
-  findTags(text: any) {
-    return this.post(`/data/find_tags`, text);
+  findTags(text: any, tenant: string) {
+    return this.post(`/data/find_tags?tenant=${tenant}`, text);
   }
 
   detectLang(text: any) {

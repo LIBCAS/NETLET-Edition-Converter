@@ -4,7 +4,7 @@
       <mat-icon class="app-mr-2" color="primary">home</mat-icon>
       <a routerLink="/">Home</a>
       <mat-icon class="app-separator">navigate_next</mat-icon>
-      {{ state.selectedFile.config?.name ? state.selectedFile.config.name : state.selectedFile.dir }} 
+      {{ state.selectedFile.config?.name ? state.selectedFile.config.name : state.selectedFile.filename }} 
     </div>
     
     <input #copyText type="text" id="copyText" style="visibility: hidden;" />
@@ -13,7 +13,7 @@
 
   <as-split direction="horizontal" unit="percent" #splitArea (dragEnd)="splitChanged($event)">
     <as-split-area [size]="40">
-      <app-viewer *ngIf="state.selectedFile" [file]="state.selectedFile.dir" [selectedAlto]="state.selectedAlto" [width]="viewerWidth" 
+      <app-viewer *ngIf="state.selectedFile" [file]="state.selectedFile.filename" [selectedAlto]="state.selectedAlto" [width]="viewerWidth" 
         (selectionEvent)="setSelectedArea($event)" (onSetField)="setField($event)" (onCopyToClipboard)="copyToClipBoard($event)"></app-viewer>
     </as-split-area>
     <as-split-area [size]="60">
@@ -26,10 +26,10 @@
           </div>
           <div>
             <button mat-icon-button (click)="getLetters()" [matTooltip]="'action.refresh' | translate"><mat-icon>refresh</mat-icon></button>
-            <button mat-icon-button (click)="newLetter()" [matTooltip]="'action.add' | translate"><mat-icon>add_circle</mat-icon></button>
+            <button mat-icon-button (click)="newLetter()" [matTooltip]="'action.new_letter' | translate"><mat-icon>add_circle</mat-icon></button>
             <button  [disabled]="!letter" mat-icon-button (click)="saveLetter()" [matTooltip]="'action.save' | translate"><mat-icon>save</mat-icon></button>
-            <!-- <button mat-icon-button (click)="prevResult()" [matTooltip]="'Previous' | translate"><mat-icon>navigate_before</mat-icon></button>
-            <button mat-icon-button (click)="nextResult()" [matTooltip]="'Next' | translate"><mat-icon>navigate_next</mat-icon></button> -->
+            <button mat-icon-button (click)="prevLetter()" [matTooltip]="'action.previous_letter' | translate"><mat-icon>navigate_before</mat-icon></button>
+            <button mat-icon-button (click)="nextLetter()" [matTooltip]="'action.next_letter' | translate"><mat-icon>navigate_next</mat-icon></button>
             <!-- <button mat-icon-button (click)="toggleIgnoreAndNext()" [matTooltip]="'ignore' | translate"><mat-icon>gpp_bad</mat-icon></button> -->
             <button [disabled]="!letter" mat-icon-button (click)="removeLetter()" [matTooltip]="'action.remove' | translate"><mat-icon>delete_forever</mat-icon></button>
             <button [disabled]="!letter" mat-icon-button (click)="exportLetter()" [matTooltip]="'action.export' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
