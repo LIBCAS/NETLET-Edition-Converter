@@ -1,4 +1,4 @@
-<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary="body" style="cursor: move;">{{ 'Analysis' |
+<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle  style="cursor: move;">{{ 'Analysis' |
     translate }}
     <div *ngIf="loading" class="app-fxLayout app-row ">
         <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
@@ -10,6 +10,14 @@
             <mat-label>{{ 'field.full_text' | translate}}</mat-label>
             <textarea rows="5" matInput [(ngModel)]="data.text" name="full_text"></textarea>
         </mat-form-field>
+    </div>
+    <div class="app-mb-4">
+        <mat-form-field class="app-fxFlex" appearance="outline">
+            <mat-label>chatGPT model</mat-label>
+            <mat-select [(ngModel)]="data.gptModel">
+              <mat-option *ngFor="let t of state.gptModels" [value]="t">{{ t }}</mat-option>
+          </mat-select>
+          </mat-form-field>
     </div>
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
@@ -145,6 +153,13 @@
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.abstract' | translate}}</mat-label>
             <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract"></textarea>
+        </mat-form-field>
+    </div>
+
+    <div class="app-mb-4">
+        <mat-form-field class="app-w-100">
+            <mat-label>{{ 'field.summary' | translate}}</mat-label>
+            <textarea rows="5" matInput [(ngModel)]="_letter.summary" name="abstract"></textarea>
         </mat-form-field>
     </div>
 

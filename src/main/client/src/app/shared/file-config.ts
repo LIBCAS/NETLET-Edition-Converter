@@ -16,4 +16,5 @@ export class FileConfig {
   ignored: { [id: string]: boolean };
   tenant: string;
   prompt: string;
+  gptModel: string;
 }

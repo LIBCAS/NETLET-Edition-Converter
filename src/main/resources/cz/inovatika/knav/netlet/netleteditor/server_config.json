@@ -21,8 +21,10 @@
     "dbKeywordTables": ["keywords", "professions"],
     "nametagUrl": "http://lindat.mff.cuni.cz/services/nametag/api/",
     "translationUrl": "https://lindat.mff.cuni.cz/services/translation/api/v2/languages/",
-    "annotator": {
         "model": "gpt-3.5-turbo",
+    "annotator": {
+        "model": "gpt-4o",
+        "response_format": { "type": "json_object" },
         "messages": [],
         "temperature": 0,
         "max_tokens": 4048,
@@ -37,7 +39,11 @@
             },
             {
                 "role": "system",
-                "content": "Oslovení je na začátku dopisu. Explicit je posledni veta hlavniho obsahu dopisu pred rozloučením. Incipit a explicit musi byt v originalnim jazyku. Odpoved musi byt v JSON formate. Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string, sign_off: string, signature: string }"
+                "content": "Oslovení je na začátku dopisu. Incipit a explicit musi byt v originalnim jazyku. Definice incipitu – první věta či větný celek textu dokumentu, bez úvodního pozdravu a oslovení, cca. 10 slov. Definice explicitu – poslední věta či větný celek textu dokumentu, pred rozloučením, bez závěrečného pozdravu a podpisu, cca. 10 slov"
+            }, 
+            {
+                "role": "system",
+                "content": "Odpoved musi byt v JSON formate. Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string, sign_off: string, signature: string, summary: text }"
             }, 
             {
                 "role": "user",

@@ -173,7 +173,7 @@ export class LetterFieldsComponent {
       // scrollStrategy: this.overlay.scrollStrategies.noop(),
       disableClose: true,
       panelClass: 'analize-dialog',
-      data: { letter: this._letter, text: this._letter.full_text, prompt: prompt }
+      data: { letter: this._letter, text: this._letter.full_text, prompt: prompt, gptModel: this.state.fileConfig.gptModel }
     });
 
     dialogRef.afterClosed().subscribe(result => {

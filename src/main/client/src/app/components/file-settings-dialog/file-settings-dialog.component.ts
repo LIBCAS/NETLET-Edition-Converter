@@ -16,40 +16,46 @@ import { AppService } from 'src/app/app.service';
 import { AppState } from 'src/app/app-state';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { AppConfiguration } from 'src/app/app-configuration';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss'],
+  selector: 'app-file-settings-dialog',
+  templateUrl: './file-settings-dialog.component.html',
+  styleUrls: ['./file-settings-dialog.component.scss'],
   standalone: true,
   imports: [FormsModule, AngularSplitModule, NgIf, NgFor, RouterModule, TranslateModule, 
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule,
     MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule]
 })
-export class SettingsComponent {
+export class FileSettingsDialogComponent {
   
-  prompt: string;
+  authors_db: {id: string, tenant: string, name: string}[] = [];
 
   constructor(
-    public config: AppConfiguration,
+    @Inject(MAT_DIALOG_DATA) public fileConfig: FileConfig,
     public state: AppState,
     private service: AppService
   ) { }
 
   ngOnInit() {
-    this.getPrompt();
+    this.getAuthors('');
   }
 
 
-  getPrompt() {
-  this.service.getPrompt().subscribe((resp: any) => {
-    this.prompt = resp.prompt;
-
+getAuthors(e: string) {
+  this.service.getAuthors(e, this.state.fileConfig.tenant ? this.state.fileConfig.tenant : '').subscribe((resp: any) => {
+    this.authors_db = resp.authors;
+    // this._letter.authors_db = resp.author;
+    // this._letter.recipients_db = resp.recipient;
+    // if (this._letter.authors_db.length > 0){
+    //   this._letter.author_db = this._letter.authors_db[0];
+    // }
+    // if (this._letter.recipients_db.length > 0){
+    //   this._letter.recipient_db = this._letter.recipients_db[0];
+    // }
   });
 }
 
   save() {
-    this.service.savePrompt(this.prompt).subscribe(res => {});
+    this.service.saveFile(this.state.selectedFile.filename, this.fileConfig).subscribe(res => {});
   }
 }

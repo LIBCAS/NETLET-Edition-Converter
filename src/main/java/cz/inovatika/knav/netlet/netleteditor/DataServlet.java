@@ -150,6 +150,10 @@ public class DataServlet extends HttpServlet {
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = PDFThumbsGenerator.getDocuments();
                 ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
+                JSONArray gptModels = new JSONArray();
+                gptModels.put("gpt-3.5-turbo");
+                gptModels.put("gpt-4o");
+                ret.put("gptModels", gptModels);
                 return ret;
             }
         },
@@ -430,10 +434,32 @@ public class DataServlet extends HttpServlet {
                 JSONObject ret = new JSONObject();
                 if (request.getMethod().equals("POST")) {
                     JSONObject data = new JSONObject(IOUtils.toString(request.getInputStream(), "UTF-8"));
-                    ret.put("response", Annotator.annotate(data.getString("text"), data.getString("prompt")));
+                    ret.put("response", Annotator.annotate(data.getString("text"), data.getString("prompt"), data.optString("gptModel")));
                     // return ret.put("response", Annotator.annotateMock(text));
                 }
 
+                return ret;
+            }
+        },
+        GET_PROMPT {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                String p = Options.getInstance().getPrompt();
+                ret.put("prompt", p);
+                return ret;
+            }
+        },
+        SAVE_PROMPT {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+
+                if (request.getMethod().equals("POST")) {
+                    String p = IOUtils.toString(request.getInputStream(), "UTF-8");
+                    Options.getInstance().savePrompt(p);
+                    ret.put("prompt", p);
+                }
                 return ret;
             }
         },

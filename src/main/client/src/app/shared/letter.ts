@@ -94,6 +94,7 @@ export class Letter {
     related_resources: RelatedResources[];
     abstract_en: string;
     abstract_cs: string;
+    summary: string;
     explicit: string;
     incipit: string;
     history: string;

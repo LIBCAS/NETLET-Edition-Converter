@@ -15,156 +15,177 @@ import org.json.JSONObject;
  */
 public class Options {
 
-  public static final Logger LOGGER = Logger.getLogger(Options.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(Options.class.getName());
 
-  private static Options _sharedInstance = null;
+    private static Options _sharedInstance = null;
 
-  private static boolean _indexingFlag = false; // survives option reset
-  
-  private final JSONObject client_conf;
-  private final JSONObject server_conf;
+    private static boolean _indexingFlag = false; // survives option reset
 
-  public synchronized static Options getInstance() {
-    try {
-    if (_sharedInstance == null) {
-      _sharedInstance = new Options();
-    }
-    } catch (IOException | JSONException ex) {
-      LOGGER.log(Level.SEVERE, null, ex);
-    }
-    return _sharedInstance;
-  }
-  
+    private final JSONObject client_conf;
+    private final JSONObject server_conf;
 
-  public synchronized static void resetInstance() {
-    _sharedInstance = null;
-    LOGGER.log(Level.INFO, "Options reseted");
-  }
-
-  public synchronized static boolean setIndexingFlag(boolean indexing) {
-    boolean old = _indexingFlag;
-    _indexingFlag = indexing;
-
-    if ((old != indexing) && (_sharedInstance != null)) {
-      _sharedInstance.ensureIndexingFlag();
+    public synchronized static Options getInstance() {
+        try {
+            if (_sharedInstance == null) {
+                _sharedInstance = new Options();
+            }
+        } catch (IOException | JSONException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return _sharedInstance;
     }
 
-    return old;
-  }
-  
-  public Options() throws IOException, JSONException {
+    public synchronized static void resetInstance() {
+        _sharedInstance = null;
+        LOGGER.log(Level.INFO, "Options reseted");
+    }
 
-    File fdef = new File(InitServlet.DEFAULT_CONFIG_FILE);
+    public synchronized static boolean setIndexingFlag(boolean indexing) {
+        boolean old = _indexingFlag;
+        _indexingFlag = indexing;
+
+        if ((old != indexing) && (_sharedInstance != null)) {
+            _sharedInstance.ensureIndexingFlag();
+        }
+
+        return old;
+    }
+
+    public Options() throws IOException, JSONException {
+
+        File fdef = new File(InitServlet.DEFAULT_CONFIG_FILE);
+
+        if (fdef.exists()) {
+            String json = FileUtils.readFileToString(fdef, "UTF-8");
+            client_conf = new JSONObject(json);
+        } else {
+            client_conf = new JSONObject();
+        }
+
+        String path = InitServlet.CONFIG_DIR + File.separator + "config.json";
+
+        //Get server options
+        File fserver = FileUtils.toFile(Options.class.getResource("server_config.json"));
+        String sjson = FileUtils.readFileToString(fserver, "UTF-8");
+        server_conf = new JSONObject(sjson);
+
+        //Merge options defined in custom dir
+        File f = new File(path);
+
+        if (f.exists() && f.canRead()) {
+            String json = FileUtils.readFileToString(f, "UTF-8");
+            JSONObject customClientConf = new JSONObject(json).getJSONObject("client");
+            if (customClientConf != null) {
+                deepMerge(customClientConf, client_conf);
+            }
+            JSONObject customServerConf = new JSONObject(json).getJSONObject("server");
+            if (customServerConf != null) {
+                deepMerge(customServerConf, server_conf);
+            }
+        }
+
+    }
+
+    /**
+     * Merge "source" into "target". If fields have equal name, merge them
+     * recursively.
+     *
+     * @param source The json source object
+     * @param target The json target
+     * @return the merged object (target).
+     */
+    private JSONObject deepMerge(JSONObject source, JSONObject target) throws JSONException {
+        if (source == null || JSONObject.getNames(source) == null) {
+            return source;
+        }
+        for (String key : JSONObject.getNames(source)) {
+            Object value = source.get(key);
+            if (!target.has(key)) {
+                // new value for "key":
+                target.put(key, value);
+            } else // existing value for "key" - recursively deep merge:
+            if (value instanceof JSONObject) {
+                JSONObject valueJson = (JSONObject) value;
+
+                deepMerge(valueJson, target.getJSONObject(key));
+            } else {
+                target.put(key, value);
+            }
+        }
+        return target;
+    }
+
+    public JSONObject getClientConf() {
+        ensureIndexingFlag();
+        return client_conf;
+    }
+
+    public String getString(String key, String defVal) {
+        return server_conf.optString(key, defVal);
+    }
+
+    public String getString(String key) {
+        return server_conf.optString(key);
+    }
+
+    public int getInt(String key, int defVal) {
+        return server_conf.optInt(key, defVal);
+    }
+
+    public double getDouble(String key, double defVal) {
+        return server_conf.optDouble(key, defVal);
+    }
+
+    public boolean getBoolean(String key, boolean defVal) {
+        return server_conf.optBoolean(key, defVal);
+    }
+
+    public String[] getStrings(String key) {
+        JSONArray arr = server_conf.optJSONArray(key);
+        String[] ret = new String[arr.length()];
+        for (int i = 0; i < arr.length(); i++) {
+            ret[i] = arr.getString(i);
+        }
+        return ret;
+    }
+
+    public JSONArray getJSONArray(String key) {
+        return server_conf.optJSONArray(key);
+    }
+
+    public JSONObject getJSONObject(String key) {
+        return server_conf.optJSONObject(key);
+    }
+
+    public String getPrompt() {
+
+        String path = InitServlet.CONFIG_DIR + File.separator + "prompt.txt";
+        File f = new File(path);
+
+        if (f.exists() && f.canRead()) {
+            try {
+                return FileUtils.readFileToString(f, "UTF-8");
+            } catch (IOException ex) {
+                Logger.getLogger(Options.class.getName()).log(Level.SEVERE, null, ex);
+                return server_conf.getJSONArray("chatGPTMessages").getJSONObject(1).getString("content");
+            }
+        } else {
+            return server_conf.getJSONArray("chatGPTMessages").getJSONObject(1).getString("content");
+        }
+    }
     
-    if (fdef.exists()) {
-      String json = FileUtils.readFileToString(fdef, "UTF-8");
-      client_conf = new JSONObject(json);
-    } else {
-      client_conf = new JSONObject();
+    public void savePrompt(String p) throws IOException {
+        String path = InitServlet.CONFIG_DIR + File.separator + "prompt.txt";
+        File f = new File(path);
+        FileUtils.writeStringToFile(f, p, "UTF-8");
     }
 
-    String path = InitServlet.CONFIG_DIR + File.separator + "config.json";
-    
-    //Get server options
-    File fserver = FileUtils.toFile(Options.class.getResource("server_config.json"));
-    String sjson = FileUtils.readFileToString(fserver, "UTF-8");
-    server_conf = new JSONObject(sjson);
-    
-
-    //Merge options defined in custom dir
-    File f = new File(path);
-    
-    if (f.exists() && f.canRead()) {
-      String json = FileUtils.readFileToString(f, "UTF-8");
-      JSONObject customClientConf = new JSONObject(json).getJSONObject("client");
-      if (customClientConf != null) {
-        deepMerge(customClientConf, client_conf);
-      }
-      JSONObject customServerConf = new JSONObject(json).getJSONObject("server");
-      if (customServerConf != null) {
-        deepMerge(customServerConf, server_conf);
-      }
+    private void ensureIndexingFlag() {
+        client_conf.put("indexing", _indexingFlag);
     }
 
-  }
-
-  /**
-   * Merge "source" into "target". If fields have equal name, merge them
-   * recursively.
-   *
-   * @param source The json source object
-   * @param target The json target
-   * @return the merged object (target).
-   */
-  private JSONObject deepMerge(JSONObject source, JSONObject target) throws JSONException {
-    if (source == null || JSONObject.getNames(source) == null) {
-      return source;
+    @Override
+    public String toString() {
+        return this.server_conf.toString();
     }
-    for (String key : JSONObject.getNames(source)) {
-      Object value = source.get(key);
-      if (!target.has(key)) {
-        // new value for "key":
-        target.put(key, value);
-      } else // existing value for "key" - recursively deep merge:
-      if (value instanceof JSONObject) {
-        JSONObject valueJson = (JSONObject) value;
-
-        deepMerge(valueJson, target.getJSONObject(key));
-      } else {
-        target.put(key, value);
-      }
-    }
-    return target;
-  }
-
-  public JSONObject getClientConf() {
-    ensureIndexingFlag();
-    return client_conf;
-  }
-
-  public String getString(String key, String defVal) {
-    return server_conf.optString(key, defVal);
-  }
-
-  public String getString(String key) {
-    return server_conf.optString(key);
-  }
-
-  public int getInt(String key, int defVal) {
-    return server_conf.optInt(key, defVal);
-  }
-
-  public double getDouble(String key, double defVal) {
-    return server_conf.optDouble(key, defVal);
-  }
-
-  public boolean getBoolean(String key, boolean defVal) {
-    return server_conf.optBoolean(key, defVal);
-  }
-
-  public String[] getStrings(String key) {
-    JSONArray arr = server_conf.optJSONArray(key);
-    String[] ret = new String[arr.length()];
-    for (int i = 0; i < arr.length(); i++) {
-      ret[i] = arr.getString(i);
-    }
-    return ret;
-  }
-
-  public JSONArray getJSONArray(String key) {
-    return server_conf.optJSONArray(key);
-  }
-
-  public JSONObject getJSONObject(String key) {
-    return server_conf.optJSONObject(key);
-  }
-
-  private void ensureIndexingFlag() {
-    client_conf.put("indexing", _indexingFlag);
-  }
-  
-  @Override
-  public String toString() {
-    return this.server_conf.toString();
-  }
 }

@@ -24,6 +24,7 @@
   </div>
   <div>
    <!-- <a mat-button >{{ 'Login' | translate }}</a> -->
+   <button mat-icon-button (click)="openSettings()"><mat-icon >settings</mat-icon></button>
    <a mat-button *ngIf="translator.currentLang === 'en'" (click)="onLanguageChanged('cs')">cs</a>
    <a mat-button *ngIf="translator.currentLang === 'cs'" (click)="onLanguageChanged('en')">en</a>
   </div>

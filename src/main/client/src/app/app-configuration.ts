@@ -26,25 +26,13 @@ import { AppState } from './app-state';
         return this.config && true;
     }
 
-    // public load(): Promise<any> {
-    //     // console.log('loading config ...');
-    //     const promise = this.http.get('assets/config.json')
-    //         .toPromise()
-    //         .then(cfg => {
-    //             this.config = cfg as Configuration;
-    //         }).then(() => {
-    //             return this.getDocuments();
-    //         });
-    //     return promise;
-    // }
-
-
     public load() {
         return this.http.get('assets/config.json').pipe(
             switchMap((cfg: any) => {
                 this.config = cfg as Configuration;
                 return this.http.get('api/data/documents').pipe(tap((res: any) => {
                     this.state.tenants = Object.keys(res.tenants);
+                    this.state.gptModels = res.gptModels;
                     this.state.files = res.dirs;
                     this.state.files.forEach(f => {
                         f.letters = res.totals[f.filename] ? res.totals[f.filename] : 0;

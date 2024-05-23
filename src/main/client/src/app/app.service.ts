@@ -148,4 +148,13 @@ export class AppService {
     
   }
 
+  getPrompt(): Observable<any> {
+    return this.get(`/data/get_prompt`,);
+  }  
+
+  savePrompt(data: any) {
+    const url = `/data/save_prompt`;
+    return this.post(url, data);
+  }
+
 }

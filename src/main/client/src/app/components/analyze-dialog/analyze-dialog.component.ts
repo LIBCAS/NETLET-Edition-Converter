@@ -45,7 +45,7 @@ export class AnalyzeDialogComponent {
 
   constructor(
     private dialogRef: MatDialogRef<AnalyzeDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { letter: Letter, text: string, prompt: string },
+    @Inject(MAT_DIALOG_DATA) public data: { letter: Letter, text: string, prompt: string, gptModel: string },
     public state: AppState,
     private service: AppService
   ) { }
@@ -135,6 +135,8 @@ export class AnalyzeDialogComponent {
     this._letter.signature = this._letter.analysis.signature;
 
     this._letter.abstract_cs = this._letter.analysis.abstract;
+    this._letter.summary = this._letter.analysis.summary;
+    
     this._letter.origin = this._letter.analysis.location || this._letter.analysis.place;
     this._letter.date = this._letter.analysis.date;
     if (this.isDate(this._letter.date)) {
@@ -147,7 +149,7 @@ export class AnalyzeDialogComponent {
 
   annotate() {
     const orig = this._letter.abstract_cs;
-    this._letter.abstract_cs = 'processing...';
+    // this._letter.abstract_cs = 'processing...';
     this.service.annotate(this.data).subscribe((resp: any) => {
       if (resp.error) {
         console.log(resp);
@@ -197,6 +199,7 @@ export class AnalyzeDialogComponent {
     this.data.letter.author = this._letter.author;
     this.data.letter.recipient = this._letter.recipient;
     this.data.letter.abstract_cs = this._letter.abstract_cs;
+    this.data.letter.summary = this._letter.summary;
     this.data.letter.origin = this._letter.origin;
 
     this.data.letter.date = this._letter.date;

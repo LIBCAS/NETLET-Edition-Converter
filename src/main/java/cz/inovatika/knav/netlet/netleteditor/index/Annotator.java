@@ -100,14 +100,14 @@ public class Annotator {
         return ret;
     }
 
-    public static JSONObject annotate(String text, String prompt) {
+    public static JSONObject annotate(String text, String prompt, String model) {
         
         JSONObject ret = new JSONObject();
         try {
             EncodingRegistry registry = Encodings.newLazyEncodingRegistry();
             Encoding encoding = registry.getEncodingForModel(ModelType.GPT_3_5_TURBO_16K);
             
-            JSONObject reqBody = Options.getInstance().getJSONObject("annotator");
+            JSONObject reqBody = new JSONObject(Options.getInstance().getJSONObject("annotator").toString()) ;
             JSONArray messages = Options.getInstance().getJSONArray("chatGPTMessages");
             
             if (prompt.contains("###words###")) {
@@ -118,9 +118,14 @@ public class Annotator {
                 messages.getJSONObject(0).put("content", prompt);
             }
             
+            messages.getJSONObject(1).put("content", Options.getInstance().getPrompt());
             
             int tokenCount2 = encoding.countTokens(messages.toString());
-            messages.getJSONObject(2).put("content", text);
+            messages.getJSONObject(3).put("content", text);
+            
+            if (model != null) {
+                reqBody.put("model", model);
+            }
             
             reqBody.put("messages", messages);
             
@@ -134,12 +139,12 @@ public class Annotator {
             } 
             String r = request(reqBody.toString());
             ret = new JSONObject(r);
-            JSONObject respjs = new JSONObject(ret
-                    .getJSONArray("choices")
-                    .getJSONObject(0)
-                    .getJSONObject("message")
-                    .getString("content"));
-            ret.put("respjs", respjs);
+//            JSONObject respjs = new JSONObject(ret
+//                    .getJSONArray("choices")
+//                    .getJSONObject(0)
+//                    .getJSONObject("message")
+//                    .getString("content"));
+//            ret.put("respjs", respjs);
 
         } catch (URISyntaxException | IOException | InterruptedException ex) {
             Logger.getLogger(NameTag.class.getName()).log(Level.SEVERE, null, ex);

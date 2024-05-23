@@ -14,8 +14,7 @@ import { NgIf, NgTemplateOutlet, NgFor, DatePipe } from '@angular/common';
 import { AngularSplitModule } from 'angular-split';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
-import { AltoSelection, FileConfig, SearchParams } from 'src/app/shared/file-config';
-import { SettingsComponent } from 'src/app/components/settings/settings.component';
+import { SearchParams } from 'src/app/shared/file-config';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { LetterFieldsComponent } from 'src/app/components/letter-fields/letter-fields.component';
@@ -23,6 +22,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AppState } from 'src/app/app-state';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { FileSettingsDialogComponent } from 'src/app/components/file-settings-dialog/file-settings-dialog.component';
 
 
 @Component({
@@ -416,7 +416,7 @@ export class EditorComponent {
   }
 
   openSettings() {
-    const dialogRef = this.dialog.open(SettingsComponent, {
+    const dialogRef = this.dialog.open(FileSettingsDialogComponent, {
       data: this.state.fileConfig,
       width: '800px'
     });
