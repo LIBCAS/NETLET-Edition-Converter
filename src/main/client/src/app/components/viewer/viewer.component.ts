@@ -176,9 +176,8 @@ export class ViewerComponent {
 
   getInfo() {
     const img = this.image.nativeElement as HTMLImageElement;
-
-    this.scale = img.width / img.naturalWidth;
     this.imageBounds = img.getBoundingClientRect();
+    this.scale = img.width / img.naturalWidth;
     this.initCanvas(img, !this.canvasInited);
     this.drawSelectedAlto(this._alto);
   }
@@ -186,12 +185,24 @@ export class ViewerComponent {
   initCanvas(img: HTMLImageElement, withEvents: boolean) {
 
     const bounds = img.getBoundingClientRect();
+    this.scale = bounds.width / img.naturalWidth;
     const el = this.selCanvas.nativeElement;
+    
     el.width = bounds.width;
     el.height = bounds.height;
-    el.setAttribute('style', 'position: absolute; z-index:20;' +
+    el.setAttribute('style', 'position: absolute; z-index:20; border: solid 1px blue;' +
       'left:0; top:0;' +
       'width:' + bounds.width + 'px; height:' + bounds.height + 'px;');
+
+      
+
+    const a = this.autoCanvas.nativeElement;
+    a.width = bounds.width;
+    a.height = bounds.height;
+    a.setAttribute('style', 'position: absolute; z-index:20; border: solid 1px red;' +
+      'left:0; top:0;' +
+      'width:' + bounds.width + 'px; height:' + bounds.height + 'px;');
+
 
     this.canvasWidth = bounds.width;
     this.canvasHeight = bounds.height;
@@ -217,12 +228,6 @@ export class ViewerComponent {
     } else {
     }
 
-    const a = this.autoCanvas.nativeElement;
-    a.width = bounds.width;
-    a.height = bounds.height;
-    a.setAttribute('style', 'position: absolute; z-index:20;' +
-      'left:0; top:0;' +
-      'width:' + bounds.width + 'px; height:' + bounds.height + 'px;');
 
     this.canvasInited = true;
 
@@ -387,17 +392,17 @@ export class ViewerComponent {
 
 
   zoomImg(scale: number) {
-    this._imgW = this._imgW * scale;
+    this._imgW = Math.round(this._imgW * scale);
     setTimeout(() => {
       this.getInfo();
-    }, 1)
+    }, 10)
   }
 
   zoomImgReset() {
     this._imgW = 100;
     setTimeout(() => {
       this.getInfo();
-    }, 1)
+    }, 10)
   }
 
   

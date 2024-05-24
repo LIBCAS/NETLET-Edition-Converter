@@ -54,7 +54,7 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
     // sort selected blocks
     this.selectedBlocks.sort((a, b) => {
       if (a.HPOS <= half && b.HPOS > half) {
-        console.log(a.ID + ' - ' + b.ID)
+        // console.log(a.ID + ' - ' + b.ID)
         return -1;
       } else if (b.HPOS <= half && a.HPOS > half) {
         return 1;

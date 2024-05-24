@@ -6,11 +6,16 @@ import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.EncodingRegistry;
 import com.knuddels.jtokkit.api.ModelType;
 import cz.inovatika.knav.netlet.netleteditor.Options;
+import cz.inovatika.knav.netlet.netleteditor.Storage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Base64;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -26,6 +31,7 @@ import org.json.JSONObject;
  * @author alber
  */
 public class Annotator {
+    public static final Logger LOGGER = Logger.getLogger(Annotator.class.getName());
     private static final String API_POINT = "https://api.openai.com/v1/chat/completions";
     
     public static String request(String data) throws URISyntaxException, IOException, InterruptedException {
@@ -147,7 +153,57 @@ public class Annotator {
 //            ret.put("respjs", respjs);
 
         } catch (URISyntaxException | IOException | InterruptedException ex) {
-            Logger.getLogger(NameTag.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        return ret;
+
+    }
+    
+    public static JSONObject analyzeImages(String filename, List<Object> pages, String prompt, String model) {
+        
+        JSONObject ret = new JSONObject();
+        try {
+            JSONObject reqBody = new JSONObject(Options.getInstance().getJSONObject("annotator").toString()) ;
+            JSONArray messages = Options.getInstance().getJSONArray("chatGPTMessages");
+            
+            messages.getJSONObject(0).put("content", prompt);
+            messages.getJSONObject(1).put("content", Options.getInstance().getPrompt());
+            
+            // Add images as base 64
+            
+            JSONArray imgs = new JSONArray();
+            imgs.put(new JSONObject().put("type", "text").put("text", "These image are one letter"));
+            for (Object image : pages) {
+                File f = Storage.imageFile(filename, (String)image);
+                byte[] fileContent = FileUtils.readFileToByteArray(f);
+                String encodedString = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileContent);
+                JSONObject imgJson = new JSONObject().put("type", "image_url");
+                JSONObject img = new JSONObject().put("url", encodedString);
+                // System.out.println(encodedString);
+                imgJson.put("image_url", img);
+                imgs.put(imgJson);
+                
+            }
+            messages.getJSONObject(3).put("content", imgs);
+            
+            if (model != null) {
+                reqBody.put("model", model);
+            }
+            
+            reqBody.put("messages", messages);
+            
+            String r = request(reqBody.toString());
+            ret = new JSONObject(r);
+//            JSONObject respjs = new JSONObject(ret
+//                    .getJSONArray("choices")
+//                    .getJSONObject(0)
+//                    .getJSONObject("message")
+//                    .getString("content"));
+//            ret.put("respjs", respjs);
+
+        } catch (URISyntaxException | IOException | InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
             ret.put("error", ex);
         }
         return ret;

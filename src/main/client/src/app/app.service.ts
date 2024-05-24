@@ -15,18 +15,18 @@ export class AppService {
     private translateService: TranslateService,
     private snackBar: MatSnackBar) { }
 
-    showSnackBar(s: string, r: string = '', error: boolean = false) {
+    showSnackBar(s: string, r: string = '', error: boolean = false, duration: number = 2000) {
       const right = r !== '' ? this.translateService.instant(r) : '';
       const clazz = error ? 'app-snack-error' : 'app-snack-success';
       this.snackBar.open(this.translateService.instant(s), right, {
-        duration: 2000,
+        duration,
         verticalPosition: 'top',
         panelClass: clazz
       });
     }
 
     showSnackBarError(s: string, r: string = '') {
-      this.showSnackBar(s, r, true);
+      this.showSnackBar(s, r, true, 5000);
     }
   
   private get<T>(url: string, params: HttpParams = new HttpParams(), responseType?: any): Observable<T> {
@@ -87,6 +87,10 @@ export class AppService {
 
   annotate(data: any) {
     return this.post(`/data/annotate`, data);
+  }
+
+  analyzeImages(data: any) {
+    return this.post(`/data/analyze_images`, data);
   }
 
   saveFile(filename: string, data: any) {

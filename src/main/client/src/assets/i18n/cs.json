@@ -69,6 +69,8 @@
     "choose_file": "Vybrat soubor",
     "upload": "Nahrát",
     "close": "Zavřít",
+    "analyze": "Analyzovat",
+    "analyze_images": "Analyzovat z obrázků",
     "AI": "Umělá Inteligence",
     "process": "Zpracovat pomoci AI"
   },

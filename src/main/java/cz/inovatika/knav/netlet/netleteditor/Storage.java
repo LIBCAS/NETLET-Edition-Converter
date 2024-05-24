@@ -46,6 +46,10 @@ public class Storage {
     return pdfDir(filename) + Options.getInstance().getString("txt_dir") + File.separator;
   }
   
+  public static File imageFile(String filename, String page) {
+    return new File(imagesDir(filename) + page + ".jpg");
+  }
+  
   public static String altoPageFileName(String filename, int page) {
     return altoDir(filename) + page + ".xml";
   }

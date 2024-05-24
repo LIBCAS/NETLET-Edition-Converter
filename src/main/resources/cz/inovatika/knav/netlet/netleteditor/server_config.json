@@ -21,9 +21,9 @@
     "dbKeywordTables": ["keywords", "professions"],
     "nametagUrl": "http://lindat.mff.cuni.cz/services/nametag/api/",
     "translationUrl": "https://lindat.mff.cuni.cz/services/translation/api/v2/languages/",
-        "model": "gpt-3.5-turbo",
+
     "annotator": {
-        "model": "gpt-4o",
+        "model": "gpt-3.5-turbo",
         "response_format": { "type": "json_object" },
         "messages": [],
         "temperature": 0,
@@ -43,7 +43,7 @@
             }, 
             {
                 "role": "system",
-                "content": "Odpoved musi byt v JSON formate. Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string, sign_off: string, signature: string, summary: text }"
+                "content": "Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract: string, sender: string, recipient: string, date: Date, location: string, incipit: string, explicit: string, sign_off: string, signature: string, summary: text }"
             }, 
             {
                 "role": "user",

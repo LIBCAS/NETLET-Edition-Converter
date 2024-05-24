@@ -67,6 +67,8 @@
     "choose_file": "Choose file",
     "upload": "Upload",
     "close": "Close",
+    "analyze": "Analyze",
+    "analyze_images": "Analyze using images",
     "AI": "Artificial intelligence",
     "process": "Process with AI"
   },

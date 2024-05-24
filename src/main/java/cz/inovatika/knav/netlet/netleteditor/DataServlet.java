@@ -434,7 +434,23 @@ public class DataServlet extends HttpServlet {
                 JSONObject ret = new JSONObject();
                 if (request.getMethod().equals("POST")) {
                     JSONObject data = new JSONObject(IOUtils.toString(request.getInputStream(), "UTF-8"));
-                    ret.put("response", Annotator.annotate(data.getString("text"), data.getString("prompt"), data.optString("gptModel")));
+                    ret = Annotator.annotate(data.getString("text"), data.getString("prompt"), data.optString("gptModel"));
+                    // return ret.put("response", Annotator.annotateMock(text));
+                }
+
+                return ret;
+            }
+        },
+        ANALYZE_IMAGES {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                if (request.getMethod().equals("POST")) {
+                    JSONObject data = new JSONObject(IOUtils.toString(request.getInputStream(), "UTF-8"));
+                    ret = Annotator.analyzeImages(data.getString("filename"), 
+                            data.getJSONArray("pages").toList(), 
+                            data.getString("prompt"), 
+                            data.optString("gptModel"));
                     // return ret.put("response", Annotator.annotateMock(text));
                 }
 

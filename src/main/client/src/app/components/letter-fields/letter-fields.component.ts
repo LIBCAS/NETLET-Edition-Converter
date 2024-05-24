@@ -157,8 +157,13 @@ export class LetterFieldsComponent {
         this._letter.startPage = this.state.currentPage;
       }
 
+      this._letter.selection = [{
+          page: this.state.currentPage - 1
+        }
+      ];
     }
     // console.log(this._letter.full_text);
+    // console.log(this._letter.selection);
 
     let prompt = this.state.fileConfig.prompt;
     const brackets: string = this.brackets(prompt);
@@ -205,6 +210,10 @@ export class LetterFieldsComponent {
 
   setField(field: string, textBox: string, e: MouseEvent) {
     const append: boolean = e.ctrlKey;
+    if (!this._letter.selection) {
+      this._letter.selection = [];
+    }
+    const blockIds: string[] = [];
     if (field === 'full_text' && textBox === 'block') {
 
       if (this.state.selectedBlocks.length === 0) {
@@ -213,7 +222,7 @@ export class LetterFieldsComponent {
           return true;
         });
 
-      }
+      } 
 
       if (append) {
         this._letter.full_text += '\n\n' + this.state.getBlockText();
@@ -224,6 +233,11 @@ export class LetterFieldsComponent {
       if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
         this._letter.startPage = this.state.currentPage;
       }
+
+      this._letter.selection.push({
+        page: this.state.currentPage - 1,
+        selection: this.state.selection
+      });
 
     } else {
       this.onSetField.emit({ field, textBox, append });

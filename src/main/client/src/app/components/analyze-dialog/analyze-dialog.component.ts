@@ -13,7 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
-import {CdkDrag, CdkDragHandle} from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { Entity, Letter } from 'src/app/shared/letter';
@@ -37,7 +37,7 @@ export class AnalyzeDialogComponent {
   _letter: Letter;
   datum: Date;
 
-  usage: any;
+  // usage: any;
 
   entities: Entity[] = [];
   nametag: string;
@@ -88,7 +88,7 @@ export class AnalyzeDialogComponent {
       // this.loading = false;
     });
   }
-  
+
   detectLang() {
     this.service.detectLang(this.data.text).subscribe((resp: any) => {
       // alert(resp.languages)
@@ -129,14 +129,14 @@ export class AnalyzeDialogComponent {
         this._letter.recipient = this.state.fileConfig.def_recipient;
       }
     }
-    
+
     this._letter.salutation = this._letter.analysis.salutation;
     this._letter.sign_off = this._letter.analysis.sign_off;
     this._letter.signature = this._letter.analysis.signature;
 
     this._letter.abstract_cs = this._letter.analysis.abstract;
     this._letter.summary = this._letter.analysis.summary;
-    
+
     this._letter.origin = this._letter.analysis.location || this._letter.analysis.place;
     this._letter.date = this._letter.analysis.date;
     if (this.isDate(this._letter.date)) {
@@ -151,27 +151,55 @@ export class AnalyzeDialogComponent {
     const orig = this._letter.abstract_cs;
     // this._letter.abstract_cs = 'processing...';
     this.service.annotate(this.data).subscribe((resp: any) => {
+      this.loading = false;
       if (resp.error) {
         console.log(resp);
+        this.service.showSnackBarError(resp.error, 'action.close');
         // this.letter.abstract_cs = orig;
       } else {
-        this.setAnalysis(JSON.parse(resp.response?.choices[0].message.content));
-        this.usage = resp.response?.usage;
+        this.setAnalysis(JSON.parse(resp.choices[0].message.content));
+        // this.usage = resp.usage;
         this.checkAuthors();
-        this.loading = false;
       }
 
     });
+  }
+
+  analyzeImages() {
+    const d = {
+      filename: this.state.selectedFile.filename,
+      pages: [(this.state.currentPage - 1)+''],
+      prompt: this.data.prompt,
+      gptModel: this.data.gptModel,
+      selection: this.data.letter.selection
+    };
+
+    console.log(d);
+
+    // this.loading = true;
+    // this.service.analyzeImages(d).subscribe((resp: any) => {
+    //   this.loading = false;
+    //   if (resp.error) {
+    //     console.log(resp);
+    //     this.service.showSnackBarError(resp.error, 'action.close');
+    //     // this.letter.abstract_cs = orig;
+    //   } else {
+    //     this.setAnalysis(JSON.parse(resp.choices[0].message.content));
+    //     // this.usage = resp.usage;
+    //     this.checkAuthors();
+    //   }
+
+    // });
   }
 
   checkAuthors() {
     this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.fileConfig.tenant).subscribe((resp: any) => {
       this._letter.authors_db = resp.author;
       this._letter.recipients_db = resp.recipient;
-      if (this._letter.authors_db.length > 0){
+      if (this._letter.authors_db.length > 0) {
         this._letter.author_db = this._letter.authors_db[0];
       }
-      if (this._letter.recipients_db.length > 0){
+      if (this._letter.recipients_db.length > 0) {
         this._letter.recipient_db = this._letter.recipients_db[0];
       }
     });
@@ -186,7 +214,7 @@ export class AnalyzeDialogComponent {
     }
 
     this.data.letter.languages = this._letter.languages;
-    
+
     this.data.letter.letter_number = this._letter.letter_number;
     this.data.letter.letter_title = this._letter.letter_title;
     this.data.letter.page_number = this._letter.page_number;
@@ -209,13 +237,13 @@ export class AnalyzeDialogComponent {
 
     this.data.letter.entities = this.entities;
     this.data.letter.nametags = this.nametags;
-    this.data.letter.usage = this.usage;
+    // this.data.letter.usage = this.usage;
 
     this.data.letter.authors_db = this._letter.authors_db;
     this.data.letter.author_db = this._letter.author_db;
     this.data.letter.recipients_db = this._letter.recipients_db;
     this.data.letter.recipient_db = this._letter.recipient_db;
-    
+
     this.data.letter.analysis = this._letter.analysis;
 
     this.service.saveLetter(this.state.selectedFile.filename, this.data.letter).subscribe((res: any) => {

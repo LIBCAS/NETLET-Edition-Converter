@@ -27,7 +27,11 @@
     </div>
     <button mat-flat-button color="primary" (click)="analyze()" class="app-mb-4">
         <mat-icon class="material-icons-outlined">search_insights</mat-icon>
-        {{ 'analyze' | translate}}
+        {{ 'action.analyze' | translate}}
+    </button>&#160;
+    <button [disabled]="data.gptModel !== 'gpt-4o' || !data.letter.selection" mat-flat-button color="primary" (click)="analyzeImages()" class="app-mb-4">
+        <mat-icon class="material-icons-outlined">image_search</mat-icon>
+        {{ 'action.analyze_images' | translate}}
     </button>&#160;
     <button mat-flat-button color="primary" (click)="detectLang()" class="app-mb-4">
         <mat-icon class="material-icons-outlined">lang</mat-icon>

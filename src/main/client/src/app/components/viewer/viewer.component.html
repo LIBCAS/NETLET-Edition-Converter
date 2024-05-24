@@ -15,7 +15,8 @@
   </div>
   <div class="app-fxFlex app-oa-y" #scroller>
     <div style="position: relative;" [cdkContextMenuTriggerFor]="context_menu">
-      <img [src]="config.context + 'api/img?filename=' + file + '&page=' + (state.currentPage-1)"  (load)="getInfo()" #image style="position: absolute; width: 100%;"
+      <img [src]="config.context + 'api/img?filename=' + file + '&page=' + (state.currentPage-1)"  (load)="getInfo()" #image 
+      style="position: absolute;"
       [style.width]="_imgW + '%'"  />
       <canvas id="autoCanvas" #autoCanvas></canvas>
       <canvas id="selCanvas" #selCanvas></canvas>
