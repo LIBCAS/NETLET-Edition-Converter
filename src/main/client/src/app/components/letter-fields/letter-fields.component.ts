@@ -22,6 +22,7 @@ import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/mate
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { Overlay } from '@angular/cdk/overlay';
+import { AppConfiguration } from 'src/app/app-configuration';
 
 @Component({
   selector: 'app-letter-fields',
@@ -37,6 +38,9 @@ import { Overlay } from '@angular/cdk/overlay';
     MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, MatCheckboxModule]
 })
 export class LetterFieldsComponent {
+
+  showSelection = false;
+  imgUrl = '';
 
   _letter: Letter;
   @Input() set letter(value: Letter) {
@@ -74,6 +78,7 @@ export class LetterFieldsComponent {
     @Inject(MAT_DATE_LOCALE) private _locale: string,
     private overlay: Overlay,
     private route: ActivatedRoute,
+    public config: AppConfiguration,
     private service: AppService,
     public state: AppState,
     public dialog: MatDialog) { }
@@ -158,7 +163,7 @@ export class LetterFieldsComponent {
       }
 
       this._letter.selection = [{
-          page: this.state.currentPage - 1
+          page: (this.state.currentPage - 1) + ''
         }
       ];
     }
@@ -235,7 +240,7 @@ export class LetterFieldsComponent {
       }
 
       this._letter.selection.push({
-        page: this.state.currentPage - 1,
+        page: (this.state.currentPage - 1) + '',
         selection: this.state.selection
       });
 
@@ -252,6 +257,18 @@ export class LetterFieldsComponent {
     this._letter.author = r;
     this._letter.recipient = a;
 
+  }
+
+  showImage() {
+    const data = {
+      filename: this.state.selectedFile.filename,
+      selection: {page: (this.state.currentPage - 1) + '',
+      selection: this.state.selection}
+    }
+    console.log(data);
+    let url = this.config.context + 'api/data/create_image?data=' + encodeURIComponent(JSON.stringify(data));
+    this.imgUrl = url;
+    this.showSelection = true;
   }
 
 

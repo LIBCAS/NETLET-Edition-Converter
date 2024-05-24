@@ -110,5 +110,5 @@ export class Letter {
     places_meta: PlaceMeta[];
     
     analysis: any;
-    selection: {page: number, selection?: DOMRect}[];
+    selection: {page: string, selection?: DOMRect}[];
 }

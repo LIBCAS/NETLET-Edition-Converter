@@ -17,6 +17,7 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { Entity, Letter } from 'src/app/shared/letter';
+import { AppConfiguration } from 'src/app/app-configuration';
 
 @Component({
   selector: 'app-analyze-dialog',
@@ -33,6 +34,7 @@ export class AnalyzeDialogComponent {
 
   translation: { text: string, lang: string };
   loading = false;
+  fromImages = false;
 
   _letter: Letter;
   datum: Date;
@@ -46,6 +48,7 @@ export class AnalyzeDialogComponent {
   constructor(
     private dialogRef: MatDialogRef<AnalyzeDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { letter: Letter, text: string, prompt: string, gptModel: string },
+    public config: AppConfiguration,
     public state: AppState,
     private service: AppService
   ) { }
@@ -166,9 +169,10 @@ export class AnalyzeDialogComponent {
   }
 
   analyzeImages() {
+    const pages = this.data.letter.selection.map(s => s.page+'');
     const d = {
       filename: this.state.selectedFile.filename,
-      pages: [(this.state.currentPage - 1)+''],
+      pages,
       prompt: this.data.prompt,
       gptModel: this.data.gptModel,
       selection: this.data.letter.selection
@@ -188,7 +192,6 @@ export class AnalyzeDialogComponent {
     //     // this.usage = resp.usage;
     //     this.checkAuthors();
     //   }
-
     // });
   }
 
@@ -256,6 +259,15 @@ export class AnalyzeDialogComponent {
         // })
       }
     });
+  }
+
+  imgUrl(selection: any) {
+    const data = {
+      filename: this.state.selectedFile.filename,
+      selection
+    }
+    let url = this.config.context + 'api/data/create_image?data=' + encodeURIComponent(JSON.stringify(data));
+    return url;
   }
 
 }

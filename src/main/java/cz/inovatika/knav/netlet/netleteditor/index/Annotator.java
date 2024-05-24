@@ -129,7 +129,7 @@ public class Annotator {
             int tokenCount2 = encoding.countTokens(messages.toString());
             messages.getJSONObject(3).put("content", text);
             
-            if (model != null) {
+            if (!model.isBlank()) {
                 reqBody.put("model", model);
             }
             
@@ -173,7 +173,7 @@ public class Annotator {
             // Add images as base 64
             
             JSONArray imgs = new JSONArray();
-            imgs.put(new JSONObject().put("type", "text").put("text", "These image are one letter"));
+            imgs.put(new JSONObject().put("type", "text").put("text", "These image contains one letter. Analize it."));
             for (Object image : pages) {
                 File f = Storage.imageFile(filename, (String)image);
                 byte[] fileContent = FileUtils.readFileToByteArray(f);
@@ -195,12 +195,12 @@ public class Annotator {
             
             String r = request(reqBody.toString());
             ret = new JSONObject(r);
-//            JSONObject respjs = new JSONObject(ret
-//                    .getJSONArray("choices")
-//                    .getJSONObject(0)
-//                    .getJSONObject("message")
-//                    .getString("content"));
-//            ret.put("respjs", respjs);
+            JSONObject respjs = new JSONObject(ret
+                    .getJSONArray("choices")
+                    .getJSONObject(0)
+                    .getJSONObject("message")
+                    .getString("content"));
+            ret.put("respjs", respjs);
 
         } catch (URISyntaxException | IOException | InterruptedException ex) {
             LOGGER.log(Level.SEVERE, null, ex);

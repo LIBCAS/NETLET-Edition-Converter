@@ -6,6 +6,7 @@ import cz.inovatika.knav.netlet.netleteditor.index.Indexer;
 import cz.inovatika.knav.netlet.netleteditor.index.NameTag;
 import cz.inovatika.knav.netlet.netleteditor.index.SolrTaggerAnalyzer;
 import cz.inovatika.knav.netlet.netleteditor.index.Translator;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -54,21 +56,23 @@ public class DataServlet extends HttpServlet {
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
         response.setHeader("Pragma", "no-cache"); // HTTP 1.0
         response.setDateHeader("Expires", 0); // Proxies.
-        PrintWriter out = response.getWriter();
         try {
             String actionNameParam = request.getPathInfo().substring(1);
             if (actionNameParam != null) {
                 Actions actionToDo = Actions.valueOf(actionNameParam.toUpperCase());
                 JSONObject json = actionToDo.doPerform(request, response);
-                out.println(json.toString(2));
+                if (json != null) {
+                    response.getWriter().println(json.toString(2));
+                }
+                
             } else {
-                out.print("actionNameParam -> " + actionNameParam);
+                response.getWriter().print("actionNameParam -> " + actionNameParam);
             }
         } catch (IOException e1) {
             LOGGER.log(Level.SEVERE, e1.getMessage(), e1);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e1.toString());
-            out.print(e1.toString());
+            response.getWriter().print(e1.toString());
         } catch (SecurityException e1) {
             LOGGER.log(Level.SEVERE, e1.getMessage(), e1);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -76,7 +80,7 @@ public class DataServlet extends HttpServlet {
             LOGGER.log(Level.SEVERE, e1.getMessage(), e1);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e1.toString());
-            out.print(e1.toString());
+            response.getWriter().print(e1.toString());
         }
     }
 
@@ -136,7 +140,7 @@ public class DataServlet extends HttpServlet {
                             ret.put("msg", "not exists");
                         }
                     }
-                }
+                } 
                 if (filename != null) {
                     File f = Storage.configFile(filename);
                     fileSettings.put("prompt", Options.getInstance().getString("defaultPrompt").replace("###NAME###", "z knihy \"" + fileSettings.optString("name", "") + "\""));
@@ -455,6 +459,17 @@ public class DataServlet extends HttpServlet {
                 }
 
                 return ret;
+            }
+        },
+        CREATE_IMAGE {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                response.setContentType("image/jpeg");
+                JSONObject data = new JSONObject(request.getParameter("data"));
+                BufferedImage bi = Imagging.processOneSelection(data.getString("filename"),
+                        data.getJSONObject("selection"));
+                ImageIO.write(bi, "jpg", response.getOutputStream());
+                return null;
             }
         },
         GET_PROMPT {
