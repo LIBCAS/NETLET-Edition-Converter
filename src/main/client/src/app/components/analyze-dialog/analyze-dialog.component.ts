@@ -169,30 +169,28 @@ export class AnalyzeDialogComponent {
   }
 
   analyzeImages() {
-    const pages = this.data.letter.selection.map(s => s.page+'');
+    // const pages = this.data.letter.selection.map(s => s.page+'');
     const d = {
       filename: this.state.selectedFile.filename,
-      pages,
+      // selection: this.data.letter.selection,
       prompt: this.data.prompt,
       gptModel: this.data.gptModel,
       selection: this.data.letter.selection
     };
 
-    console.log(d);
-
-    // this.loading = true;
-    // this.service.analyzeImages(d).subscribe((resp: any) => {
-    //   this.loading = false;
-    //   if (resp.error) {
-    //     console.log(resp);
-    //     this.service.showSnackBarError(resp.error, 'action.close');
-    //     // this.letter.abstract_cs = orig;
-    //   } else {
-    //     this.setAnalysis(JSON.parse(resp.choices[0].message.content));
-    //     // this.usage = resp.usage;
-    //     this.checkAuthors();
-    //   }
-    // });
+    this.loading = true;
+    this.service.analyzeImages(d).subscribe((resp: any) => {
+      this.loading = false;
+      if (resp.error) {
+        console.log(resp);
+        this.service.showSnackBarError(resp.error, 'action.close');
+        // this.letter.abstract_cs = orig;
+      } else {
+        this.setAnalysis(JSON.parse(resp.choices[0].message.content));
+        // this.usage = resp.usage;
+        this.checkAuthors();
+      }
+    });
   }
 
   checkAuthors() {

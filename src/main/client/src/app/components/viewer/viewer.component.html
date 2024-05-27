@@ -2,8 +2,8 @@
   <div class="app-controlbar app-fxLayout app-row app-pl-4 app-pr-4 app-center-v">
     <div class="app-fxFlex">
       
-      <button mat-icon-button (click)="zoomImg(1.4)"><mat-icon>zoom_in</mat-icon></button>
-      <button mat-icon-button (click)="zoomImg(.75)"><mat-icon>zoom_out</mat-icon></button>
+      <button mat-icon-button (click)="zoomImg(1.2)"><mat-icon>zoom_in</mat-icon></button>
+      <button mat-icon-button (click)="zoomImg(.8)"><mat-icon>zoom_out</mat-icon></button>
       <button mat-icon-button (click)="zoomImgReset()"><mat-icon>zoom_in_map</mat-icon></button>
       
     </div>
@@ -17,7 +17,7 @@
     <div style="position: relative;" [cdkContextMenuTriggerFor]="context_menu">
       <img [src]="config.context + 'api/img?filename=' + file + '&page=' + (state.currentPage-1)"  (load)="getInfo()" #image 
       style="position: absolute;"
-      [style.width]="_imgW + '%'"  />
+      [style.width]="_imgW + 'px'"  />
       <canvas id="autoCanvas" #autoCanvas></canvas>
       <canvas id="selCanvas" #selCanvas></canvas>
     </div>

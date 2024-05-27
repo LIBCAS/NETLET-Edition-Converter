@@ -5,6 +5,7 @@ import com.knuddels.jtokkit.Encodings;
 import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.EncodingRegistry;
 import com.knuddels.jtokkit.api.ModelType;
+import cz.inovatika.knav.netlet.netleteditor.Imagging;
 import cz.inovatika.knav.netlet.netleteditor.Options;
 import cz.inovatika.knav.netlet.netleteditor.Storage;
 import java.io.File;
@@ -160,7 +161,7 @@ public class Annotator {
 
     }
     
-    public static JSONObject analyzeImages(String filename, List<Object> pages, String prompt, String model) {
+    public static JSONObject analyzeImages(String filename, JSONArray selection, String prompt, String model) {
         
         JSONObject ret = new JSONObject();
         try {
@@ -174,10 +175,9 @@ public class Annotator {
             
             JSONArray imgs = new JSONArray();
             imgs.put(new JSONObject().put("type", "text").put("text", "These image contains one letter. Analize it."));
-            for (Object image : pages) {
-                File f = Storage.imageFile(filename, (String)image);
-                byte[] fileContent = FileUtils.readFileToByteArray(f);
-                String encodedString = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileContent);
+            for (int i = 0; i < selection.length(); i++) {
+                JSONObject json = selection.getJSONObject(i);
+                String encodedString = Imagging.selectionToBase64(filename, json);
                 JSONObject imgJson = new JSONObject().put("type", "image_url");
                 JSONObject img = new JSONObject().put("url", encodedString);
                 // System.out.println(encodedString);

@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ViewerComponent } from '../../components/viewer/viewer.component';
 import { NgIf, NgTemplateOutlet, NgFor, DatePipe } from '@angular/common';
-import { AngularSplitModule } from 'angular-split';
+import { AngularSplitModule, SplitComponent } from 'angular-split';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
 import { SearchParams } from 'src/app/shared/file-config';
@@ -40,8 +40,8 @@ import { FileSettingsDialogComponent } from 'src/app/components/file-settings-di
 })
 export class EditorComponent {
 
-  @ViewChild('splitArea') splitArea: any;
-
+  @ViewChild('splitArea') splitArea: SplitComponent;
+  inited = false;
 
   onlyBox: boolean;
   twoCols: boolean;
@@ -124,6 +124,14 @@ export class EditorComponent {
 
     });
 
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      const w = this.splitArea.displayedAreas[0].component.elRef.nativeElement.clientWidth;
+      this.viewerWidth = w;
+      this.inited = true;
+    }, 10)
   }
 
   newLetter() {
@@ -411,8 +419,8 @@ export class EditorComponent {
   }
 
   splitChanged(e: any) {
-    this.viewerWidth = e.sizes[0];
-    // console.log(getVisibleAreaSizes())
+    const w = this.splitArea.displayedAreas[0].component.elRef.nativeElement.clientWidth;
+    this.viewerWidth = w;
   }
 
   openSettings() {
@@ -509,6 +517,5 @@ export class EditorComponent {
       // this.getLetters();
       this.service.showSnackBar(res)
     });
-
   }
 }

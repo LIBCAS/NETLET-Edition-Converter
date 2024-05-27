@@ -163,7 +163,7 @@ export class LetterFieldsComponent {
       }
 
       this._letter.selection = [{
-          page: (this.state.currentPage - 1) + ''
+          page: this.state.currentPage
         }
       ];
     }
@@ -215,7 +215,7 @@ export class LetterFieldsComponent {
 
   setField(field: string, textBox: string, e: MouseEvent) {
     const append: boolean = e.ctrlKey;
-    if (!this._letter.selection) {
+    if (!this._letter.selection || !append) {
       this._letter.selection = [];
     }
     const blockIds: string[] = [];
@@ -239,10 +239,29 @@ export class LetterFieldsComponent {
         this._letter.startPage = this.state.currentPage;
       }
 
-      this._letter.selection.push({
-        page: (this.state.currentPage - 1) + '',
-        selection: this.state.selection
-      });
+        const page = this._letter.selection.find(s => s.page === this.state.currentPage);
+        if (page) {
+          if (!this.state.selection) {
+            delete page.selection;
+          } else if (page.selection) {
+            page.selection.push(this.state.selection);
+          } else {
+            page.selection = [this.state.selection];
+          }
+          
+        } else {
+          if (this.state.selection) {
+            this._letter.selection.push({
+              page: this.state.currentPage,
+              selection: [this.state.selection]
+            });
+          } else {
+            this._letter.selection.push({
+              page: this.state.currentPage
+            });
+          }
+          this._letter.selection.sort((s1, s2) =>  s1.page - s2.page);
+        }
 
     } else {
       this.onSetField.emit({ field, textBox, append });
@@ -259,17 +278,20 @@ export class LetterFieldsComponent {
 
   }
 
-  showImage() {
+  getImgUrl(selection: any) {
     const data = {
       filename: this.state.selectedFile.filename,
-      selection: {page: (this.state.currentPage - 1) + '',
-      selection: this.state.selection}
+      selection
     }
-    console.log(data);
     let url = this.config.context + 'api/data/create_image?data=' + encodeURIComponent(JSON.stringify(data));
-    this.imgUrl = url;
-    this.showSelection = true;
+    return url;
   }
 
+  gotoPage(page: number) {
+    this.state.currentPage = page;
+  }
 
+  removeSelection(page: number) {
+    this._letter.selection = this._letter.selection.filter(s => s.page !== page)
+  }
 }

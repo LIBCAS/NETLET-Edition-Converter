@@ -13,7 +13,7 @@
 
   <as-split direction="horizontal" unit="percent" #splitArea (dragEnd)="splitChanged($event)">
     <as-split-area [size]="40">
-      <app-viewer *ngIf="state.selectedFile" [file]="state.selectedFile.filename" [selectedAlto]="state.selectedAlto" [width]="viewerWidth" 
+      <app-viewer *ngIf="inited && state.selectedFile" [file]="state.selectedFile.filename" [selectedAlto]="state.selectedAlto" [width]="viewerWidth" 
         (selectionEvent)="setSelectedArea($event)" (onSetField)="setField($event)" (onCopyToClipboard)="copyToClipBoard($event)"></app-viewer>
     </as-split-area>
     <as-split-area [size]="60">

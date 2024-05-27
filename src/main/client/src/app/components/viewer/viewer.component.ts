@@ -26,6 +26,7 @@ export class ViewerComponent {
   
 
   public _imgW = 100;
+  public _fitWidth = 100;
   // @Input() set imgW(value: number){
   //   this._imgW = value;
   //   if (this.canvasInited) {
@@ -37,8 +38,11 @@ export class ViewerComponent {
 
 
   @Input() set width(value: number) {
+    this._fitWidth = value;
     if (this.canvasInited) {
       this.getInfo();
+    } else {
+      this._imgW = value;
     }
   }
 
@@ -190,7 +194,7 @@ export class ViewerComponent {
     
     el.width = bounds.width;
     el.height = bounds.height;
-    el.setAttribute('style', 'position: absolute; z-index:20; border: solid 1px blue;' +
+    el.setAttribute('style', 'position: absolute; z-index:20; ' +
       'left:0; top:0;' +
       'width:' + bounds.width + 'px; height:' + bounds.height + 'px;');
 
@@ -199,7 +203,7 @@ export class ViewerComponent {
     const a = this.autoCanvas.nativeElement;
     a.width = bounds.width;
     a.height = bounds.height;
-    a.setAttribute('style', 'position: absolute; z-index:20; border: solid 1px red;' +
+    a.setAttribute('style', 'position: absolute; z-index:20; ' +
       'left:0; top:0;' +
       'width:' + bounds.width + 'px; height:' + bounds.height + 'px;');
 
@@ -399,7 +403,7 @@ export class ViewerComponent {
   }
 
   zoomImgReset() {
-    this._imgW = 100;
+    this._imgW = this._fitWidth;
     setTimeout(() => {
       this.getInfo();
     }, 10)

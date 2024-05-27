@@ -452,7 +452,7 @@ public class DataServlet extends HttpServlet {
                 if (request.getMethod().equals("POST")) {
                     JSONObject data = new JSONObject(IOUtils.toString(request.getInputStream(), "UTF-8"));
                     ret = Annotator.analyzeImages(data.getString("filename"), 
-                            data.getJSONArray("pages").toList(), 
+                            data.getJSONArray("selection"), 
                             data.getString("prompt"), 
                             data.optString("gptModel"));
                     // return ret.put("response", Annotator.annotateMock(text));

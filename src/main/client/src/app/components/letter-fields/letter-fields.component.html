@@ -1,13 +1,34 @@
 <div *ngIf="_letter" class="app-letter">
+
+  <div class="app-fxLayout app-row app-center-v app-mb-4">
+    <div  *ngFor="let sel of _letter.selection" (click)="gotoPage(sel.page)">
+      <span style="position: absolute;">{{ sel.page }}</span>
+      <span style="position: relative;float: right;left:-15px;" (click)="removeSelection(sel.page)">X</span>
+      <img style="height: 100px; border: 1px solid #aaa; margin-right: 2px;" [src]="getImgUrl(sel)" />
+    </div>
+    
+  </div>
+
+  <button mat-flat-button color="primary" (click)="analyze()" class="app-mb-4">
+    <mat-icon class="material-icons-outlined">manage_search</mat-icon>
+    {{ 'action.process' | translate}}
+  </button>
+  
+  <div class="app-mb-4">
+    <mat-form-field class="app-w-100" appearance="outline">
+      <mat-label>{{ 'field.full_text' | translate}}</mat-label>
+      <textarea rows="5" matInput [(ngModel)]="_letter.full_text" name="full_text"></textarea>
+      <div class="app-pt-4 app-mb-n2 app-text-right">
+        <ng-container *ngTemplateOutlet="icons; context:{ field: 'full_text' }"></ng-container>
+      </div>
+    </mat-form-field>
+  </div>
+
   <div class="app-fxLayout app-row app-center-v app-mb-4">
     <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>{{ 'field.startPage' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.startPage" name="startPage" />
     </mat-form-field>
-    <!-- <mat-form-field class="app-fxFlex" appearance="outline">
-      <mat-label>{{ 'field.endPage' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.endPage" name="endPage">
-    </mat-form-field> -->
     <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
       <mat-label>{{ 'field.letter_number' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.letter_number" name="letter_number">
@@ -19,27 +40,6 @@
     <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
       <mat-label>{{ 'field.end_page_number' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
-    </mat-form-field>
-  </div>
-
-  <button mat-flat-button color="primary" (click)="analyze()" class="app-mb-4">
-    <mat-icon class="material-icons-outlined">manage_search</mat-icon>
-    {{ 'action.process' | translate}}
-  </button>
-
-  <!-- <button mat-flat-button color="primary" (click)="showImage()" class="app-mb-4">
-    <mat-icon class="material-icons-outlined">image</mat-icon>
-    {{ 'action.image' | translate}}
-  </button>
-  <img *ngIf="showSelection" [src]="imgUrl" /> -->
-  
-  <div class="app-mb-4">
-    <mat-form-field class="app-w-100" appearance="outline">
-      <mat-label>{{ 'field.full_text' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.full_text" name="full_text"></textarea>
-      <div class="app-pt-4 app-mb-n2 app-text-right">
-        <ng-container *ngTemplateOutlet="icons; context:{ field: 'full_text' }"></ng-container>
-      </div>
     </mat-form-field>
   </div>
   
