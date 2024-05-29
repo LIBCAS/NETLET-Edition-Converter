@@ -1,15 +1,15 @@
-export interface LetterCopy {
-    ms_manifestation: string,
-    type: string,
-    preservation: string,
-    copy: string,
-    manifestation_notes: string,
-    l_number: null,
-    repository: string,
-    archive: string,
-    collection: string,
-    signature: string,
-    location_note: null
+export class LetterCopy {
+    ms_manifestation: string;
+    type: string;
+    preservation: string;
+    copy: string;
+    manifestation_notes: string;
+    l_number: null;
+    repository: string;
+    archive: string;
+    collection: string;
+    signature: string;
+    location_note: string
 }
 
 export interface RelatedResources {
@@ -90,7 +90,7 @@ export class Letter {
     origin_note: string;
     people_mentioned: number;
     people_mentioned_notes: string;
-    copies: LetterCopy[];
+    copies: LetterCopy = new LetterCopy();
     related_resources: RelatedResources[];
     abstract_en: string;
     abstract_cs: string;

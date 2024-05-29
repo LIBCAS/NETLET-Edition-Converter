@@ -41,7 +41,15 @@
     "salutation": "Salutation",
     "sign_off": "Sign off",
     "signature": "Signature",
-    "languages": "Languages"
+    "languages": "Languages",
+    "copies": "Repository and version",
+    "type": "Document type",
+    "preservation": "Preservation",
+    "copy": "Copy type",
+    "repository": "Repository",
+    "archive": "Archive",
+    "collection": "Collection",
+    "signatura": "Ssignature"
   },
   "action": {
     "refresh": "Refresh",

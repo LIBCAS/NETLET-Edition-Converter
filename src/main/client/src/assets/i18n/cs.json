@@ -43,7 +43,15 @@
     "salutation": "Oslovení",
     "sign_off": "Rozloučení",
     "signature": "Podpis",
-    "languages": "Jazyky"
+    "languages": "Jazyky",
+    "copies": "Repozitáře a verze",
+    "type": "Typ dokumentu",
+    "preservation": "Uchování",
+    "copy": "Typ kopie",
+    "repository": "Repozitář",
+    "archive": "Archiv",
+    "collection": "Sbírka",
+    "signatura": "Ssignatura"
   },
   "action": {
     "refresh": "Obnovit",

@@ -9,6 +9,10 @@
     
   </div>
 
+  <button mat-icon-button color="primary" (click)="addSelection()" class="app-mb-4">
+    <mat-icon class="material-icons-outlined">note_add</mat-icon>
+  </button>
+
   <button mat-flat-button color="primary" (click)="analyze()" class="app-mb-4">
     <mat-icon class="material-icons-outlined">manage_search</mat-icon>
     {{ 'action.process' | translate}}
@@ -92,8 +96,8 @@
       <mat-label>{{ 'field.languages' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.languages" name="languages">
   </mat-form-field>
-
   </div>
+
   <div class="app-fxLayout app-row app-center-v app-mb-4">
     <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>{{ 'field.origin' | translate}}</mat-label>
@@ -110,8 +114,8 @@
       <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
     </mat-form-field>
-
   </div>
+
   <div class="app-mb-4">
     <mat-form-field class="app-w-100" appearance="outline">
       <mat-label>{{ 'field.incipit' | translate}}</mat-label>
@@ -127,10 +131,57 @@
     </mat-form-field>
   </div>
     
+  <div class="app-mb-4">
     <mat-form-field class="app-w-100" appearance="outline">
       <mat-label>{{ 'field.abstract' | translate}}</mat-label>
       <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract" #abstract></textarea>
     </mat-form-field>
+  </div>
+  
+  <fieldset>
+    <legend>{{ 'field.copies' | translate }}</legend>
+    <div class="app-fxLayout app-row app-center-v app-mb-4">
+      <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>{{ 'field.repository' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies.repository" name="repository"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'repository' }"></ng-container>
+      </mat-form-field>
+      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{ 'field.archive' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies.archive" name="archive"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'archive' }"></ng-container>
+      </mat-form-field>
+      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{ 'field.collection' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies.collection" name="collection"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'collection' }"></ng-container>
+      </mat-form-field>
+      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{ 'field.signatura' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies.signature" name="signature"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
+      </mat-form-field>
+    </div>
+
+    <div class="app-fxLayout app-row app-center-v app-mb-4">
+      <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>{{ 'field.type' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies.type" name="type"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'type' }"></ng-container>
+      </mat-form-field>
+      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{ 'field.preservation' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies.preservation" name="preservation"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'preservation' }"></ng-container>
+      </mat-form-field>
+      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{ 'field.copy' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies.copy" name="copy"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copy' }"></ng-container>
+      </mat-form-field>
+    </div>
+  </fieldset>
+
   <mat-tab-group>
     <mat-tab label="HIKO">
       <div class="app-pt-4 app-pb-4 app-pr-4">

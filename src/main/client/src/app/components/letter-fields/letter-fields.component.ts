@@ -11,7 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from 'src/app/app.service';
-import { Entity, Letter, NameTag } from 'src/app/shared/letter';
+import { Entity, Letter, LetterCopy, NameTag } from 'src/app/shared/letter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslationDialogComponent } from '../translation-dialog/translation-dialog.component';
 import { AnalyzeDialogComponent } from '../analyze-dialog/analyze-dialog.component';
@@ -58,6 +58,10 @@ export class LetterFieldsComponent {
     }
     if (this._letter.recipients_db) {
       this._letter.recipient_db = this._letter.recipients_db.find(a => a.id === this._letter.recipient_db.id);
+    }
+
+    if (!this._letter.copies) {
+      this._letter.copies = new LetterCopy();
     }
     
 
@@ -211,6 +215,35 @@ export class LetterFieldsComponent {
       this.onShouldRefresh.emit(this._letter.id);
       
     });
+  }
+
+  addSelection() {
+    if (!this._letter.selection) {
+      this._letter.selection = [];
+    }
+    const page = this._letter.selection.find(s => s.page === this.state.currentPage);
+    if (page) {
+      if (!this.state.selection) {
+        delete page.selection;
+      } else if (page.selection) {
+        page.selection.push(this.state.selection);
+      } else {
+        page.selection = [this.state.selection];
+      }
+      
+    } else {
+      if (this.state.selection) {
+        this._letter.selection.push({
+          page: this.state.currentPage,
+          selection: [this.state.selection]
+        });
+      } else {
+        this._letter.selection.push({
+          page: this.state.currentPage
+        });
+      }
+      this._letter.selection.sort((s1, s2) =>  s1.page - s2.page);
+    }
   }
 
   setField(field: string, textBox: string, e: MouseEvent) {
