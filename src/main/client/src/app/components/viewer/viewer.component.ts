@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 import { AltoBlock, AltoLine, AltoString } from 'src/app/shared/alto';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -16,7 +16,7 @@ import { AppConfiguration } from 'src/app/app-configuration';
   templateUrl: './viewer.component.html',
   styleUrls: ['./viewer.component.scss'],
   standalone: true,
-  imports: [NgFor, TranslateModule, CdkMenuModule, MatIconModule, FormsModule, MatTooltipModule, MatButtonModule]
+  imports: [NgFor, NgIf, TranslateModule, CdkMenuModule, MatIconModule, FormsModule, MatTooltipModule, MatButtonModule]
 })
 export class ViewerComponent {
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();

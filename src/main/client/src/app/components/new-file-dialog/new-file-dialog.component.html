@@ -10,7 +10,14 @@ cdkDragHandle >{{ 'new_file' | translate }}</h1>
     </mat-form-field>
   </div>
   <div class="app-fxLayout app-row app-center-v app-mb-4">
+    
     <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-label>Tenant</mat-label>
+      <mat-select [(ngModel)]="tenant">
+        <mat-option *ngFor="let t of state.tenants" [value]="t">{{ t }}</mat-option>
+    </mat-select>
+    </mat-form-field>
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
       <mat-label>{{ 'def_author' | translate }}</mat-label>
       <input matInput name="def_author" [(ngModel)]="def_author">
     </mat-form-field>
@@ -41,6 +48,6 @@ cdkDragHandle >{{ 'new_file' | translate }}</h1>
 </div>
 
 <div mat-dialog-actions>
-    <button [disabled]="!selectedFile" mat-flat-button color="primary" (click)="uploadFile()">{{ 'action.upload' | translate }}</button>
+    <button [disabled]="!selectedFile || !tenant" mat-flat-button color="primary" (click)="uploadFile()">{{ 'action.upload' | translate }}</button>
     <button mat-flat-button [mat-dialog-close]="false">{{ 'action.close' | translate }}</button>
 </div>

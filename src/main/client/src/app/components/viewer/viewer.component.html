@@ -15,7 +15,7 @@
   </div>
   <div class="app-fxFlex app-oa-y" #scroller>
     <div style="position: relative;" [cdkContextMenuTriggerFor]="context_menu">
-      <img [src]="config.context + 'api/img?filename=' + file + '&page=' + (state.currentPage-1)"  (load)="getInfo()" #image 
+      <img [src]="config.context + 'api/img/full?filename=' + file + '&page=' + (state.currentPage-1)"  (load)="getInfo()" #image 
       style="position: absolute;"
       [style.width]="_imgW + 'px'"  />
       <canvas id="autoCanvas" #autoCanvas></canvas>
@@ -23,7 +23,7 @@
     </div>
     
     <ng-template #context_menu>
-      <div class="app-context-menu mat-elevation-z8" cdkMenu>
+      <div class="app-context-menu mat-elevation-z8" *ngIf="state.selectedBlocks.length > 0" cdkMenu>
         <div cdkMenuItem *ngFor="let f of state.fields" class="app-fxLayout app-row app-center-v">
           <strong class="app-mr-1 app-fxFlex app-label">{{ 'field.' + f | translate }}: </strong>
           <mat-icon class="app-suffix app-color-block" (click)="setField(f, 'block', $event)" [matTooltip]="'action.set_block' | translate">menu_open</mat-icon>

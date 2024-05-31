@@ -185,6 +185,15 @@ export class EditorComponent {
       this.letter[data.field as keyof Letter] = text;
     }
     // this.letterForm.controls[field].setValue(text);
+
+    setTimeout(() => {
+      
+    const el: HTMLInputElement = document.querySelector('input[name="'+data.field + '"]');
+    if (el) {
+      el.focus();
+    }
+    }, 100)
+    
   }
 
   copyToClipBoard(textBox: string) {
@@ -300,6 +309,21 @@ export class EditorComponent {
       }
 
     });
+
+    if (this.state.selection.right - this.state.selection.left < 2) {
+      // Je to jen click. state.selection ma byt oblast bloku
+      let left = this.state.alto.Layout.Page.PrintSpace.WIDTH;
+      let rigth = 0;
+      let top = this.state.alto.Layout.Page.PrintSpace.HEIGHT;
+      let bottom = 0;
+      this.state.selectedBlocks.forEach((tb: AltoBlock) => {
+        left = Math.min(left, tb.HPOS);
+        top = Math.min(top, tb.VPOS);
+        rigth = Math.max(rigth, tb.HPOS + tb.WIDTH);
+        bottom = Math.max(bottom, tb.VPOS + tb.HEIGHT);
+      });
+      this.state.selection = new DOMRect(left, top, rigth - left, bottom - top);
+    }
 
     this.state.selectedAlto = { blocks: this.state.selectedBlocks, lines: this.state.selectedLines, words: this.state.selectedWords };
 

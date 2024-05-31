@@ -49,24 +49,26 @@
 Managed external dictionaries
 -->
 
-<schema name="letters" version="1.6">
+<schema name="locations" version="1.6">
   
     <field name="id" type="string" indexed="true" stored="true" docValues="true" />
     <!-- doc values are enabled by default for primitive types such as long so we don't index the version field  -->
     <field name="_version_" type="long" indexed="false" stored="false"/>
     <field name="_text_" type="text_general" indexed="true" stored="false" multiValued="true"/>
+	
+    <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW"  />
     
-    
-    <field name="filename" type="string" indexed="true" stored="true"  />
-    <field name="file_id" type="string" indexed="true" stored="true"  />
-    <field name="startPage" type="pint" indexed="true" stored="true"  />
-    <field name="page_number" type="pint" indexed="true" stored="true" sortMissingLast="true" />
-    <field name="alto_id" type="string" indexed="true" stored="true"  />
-    <field name="data" type="string_big" indexed="false" stored="true"/>
-    <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW" />
-    <field name="author" type="string" indexed="true" stored="true" multiValued="true" />
-    <field name="recipient" type="string" indexed="true" stored="true" multiValued="true"  />
-    <field name="date" type="pdate" indexed="true" stored="true" />
+    <field name="table" type="string" indexed="true" stored="true"  />
+    <field name="table_id" type="string" indexed="true" stored="true"  />
+    <field name="tenant" type="string" indexed="true" stored="true"  />
+    <field name="name" type="text_cz" indexed="true" stored="true" multiValued="false" />
+    <field name="name_lower" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
+    <field name="type" type="string" indexed="true" stored="true"  />
+    <field name="acronyms" type="strings" indexed="true" stored="true"  />
+    <field name="acronyms_lower" type="text_lowercase" multiValued="true" indexed="true" stored="true"  />
+  
+  <copyField source="name" dest="name_lower"/>
+  <copyField source="acronyms" dest="acronyms_lower"/>
 	
 
     <!-- uncomment the following to ignore any fields that don't already match an existing 
@@ -96,11 +98,6 @@ Managed external dictionaries
        single-valued and either required or have a default value.
       -->
     <fieldType name="string" class="solr.StrField" sortMissingLast="true" docValues="true" />
-	  <fieldType name="string_big" class="solr.TextField" omitNorms="true" sortMissingLast="true">
-		<analyzer>
-		  <tokenizer class="solr.KeywordTokenizerFactory"/>
-		</analyzer>
-	  </fieldType>
     <fieldType name="strings" class="solr.StrField" sortMissingLast="true" multiValued="true" docValues="true" />
 
     <!-- boolean type: "true" or "false" -->
@@ -471,6 +468,17 @@ Managed external dictionaries
         <filter class="solr.ASCIIFoldingFilterFactory"/>       
       </analyzer>
     </fieldType>
+    
+    <!-- Czech -->
+	
+  <fieldType name="text_cz" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.StopFilterFactory" words="lang/stopwords_cz.txt" ignoreCase="true"/>
+      <filter class="solr.CzechStemFilterFactory"/>
+    </analyzer>
+  </fieldType>
 
     <!-- Similarity is the scoring routine for each document vs. a query.
        A custom Similarity or SimilarityFactory may be specified here, but 

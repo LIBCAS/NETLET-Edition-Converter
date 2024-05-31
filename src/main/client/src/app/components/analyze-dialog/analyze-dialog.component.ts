@@ -264,7 +264,7 @@ export class AnalyzeDialogComponent {
       filename: this.state.selectedFile.filename,
       selection
     }
-    let url = this.config.context + 'api/data/create_image?data=' + encodeURIComponent(JSON.stringify(data));
+    let url = this.config.context + 'api/img/selection?data=' + encodeURIComponent(JSON.stringify(data));
     return url;
   }
 

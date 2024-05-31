@@ -23,6 +23,7 @@ import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/
 import { MatSelectModule } from '@angular/material/select';
 import { Overlay } from '@angular/cdk/overlay';
 import { AppConfiguration } from 'src/app/app-configuration';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-letter-fields',
@@ -33,7 +34,7 @@ import { AppConfiguration } from 'src/app/app-configuration';
   ],
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, NgIf, RouterModule, TranslateModule, DatePipe,
-    MatDatepickerModule, MatNativeDateModule, MatSelectModule,
+    MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatAutocompleteModule,
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatListModule, MatTooltipModule,
     MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, MatCheckboxModule]
 })
@@ -59,10 +60,6 @@ export class LetterFieldsComponent {
     if (this._letter.recipients_db) {
       this._letter.recipient_db = this._letter.recipients_db.find(a => a.id === this._letter.recipient_db.id);
     }
-
-    if (!this._letter.copies) {
-      this._letter.copies = new LetterCopy();
-    }
     
 
   }
@@ -74,6 +71,11 @@ export class LetterFieldsComponent {
   entities: Entity[] = [];
   nametag: string;
   nametags: NameTag[];
+
+  locations_db: {id: string, tenant: string, name: string, type: string}[] = [];
+  repositories: {id: string, tenant: string, name: string}[] = [];
+  archives: {id: string, tenant: string, name: string}[] = [];
+  collections: {id: string, tenant: string, name: string}[] = [];
 
   datum = new FormControl();
 
@@ -217,7 +219,10 @@ export class LetterFieldsComponent {
     });
   }
 
-  addSelection() {
+  addSelection(append: boolean) {
+    if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
+      this._letter.startPage = this.state.currentPage;
+    }
     if (!this._letter.selection) {
       this._letter.selection = [];
     }
@@ -248,9 +253,6 @@ export class LetterFieldsComponent {
 
   setField(field: string, textBox: string, e: MouseEvent) {
     const append: boolean = e.ctrlKey;
-    if (!this._letter.selection || !append) {
-      this._letter.selection = [];
-    }
     const blockIds: string[] = [];
     if (field === 'full_text' && textBox === 'block') {
 
@@ -272,29 +274,7 @@ export class LetterFieldsComponent {
         this._letter.startPage = this.state.currentPage;
       }
 
-        const page = this._letter.selection.find(s => s.page === this.state.currentPage);
-        if (page) {
-          if (!this.state.selection) {
-            delete page.selection;
-          } else if (page.selection) {
-            page.selection.push(this.state.selection);
-          } else {
-            page.selection = [this.state.selection];
-          }
-          
-        } else {
-          if (this.state.selection) {
-            this._letter.selection.push({
-              page: this.state.currentPage,
-              selection: [this.state.selection]
-            });
-          } else {
-            this._letter.selection.push({
-              page: this.state.currentPage
-            });
-          }
-          this._letter.selection.sort((s1, s2) =>  s1.page - s2.page);
-        }
+      this.addSelection(append);
 
     } else {
       this.onSetField.emit({ field, textBox, append });
@@ -311,12 +291,26 @@ export class LetterFieldsComponent {
 
   }
 
+  getLocations(e: string, type: string) {
+    this.service.getLocations(e, this.state.fileConfig.tenant ? this.state.fileConfig.tenant : '', type).subscribe((resp: any) => {
+      this.locations_db = resp.locations;
+      switch(type) {
+        case 'repository': this.repositories = this.locations_db.filter(l => l.type === 'repository'); break;
+        case 'archive':this.archives = this.locations_db.filter(l => l.type === 'archive'); break;
+        case 'collection':this.collections = this.locations_db.filter(l => l.type === 'collection'); break;
+      }
+      
+      // this.archives = this.locations_db.filter(l => l.type === 'archive');
+      // this.collections = this.locations_db.filter(l => l.type === 'collection');
+    });
+  }
+
   getImgUrl(selection: any) {
     const data = {
       filename: this.state.selectedFile.filename,
       selection
     }
-    let url = this.config.context + 'api/data/create_image?data=' + encodeURIComponent(JSON.stringify(data));
+    let url = this.config.context + 'api/img/selection?data=' + encodeURIComponent(JSON.stringify(data));
     return url;
   }
 
