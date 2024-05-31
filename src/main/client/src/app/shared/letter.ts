@@ -90,7 +90,16 @@ export class Letter {
     origin_note: string;
     people_mentioned: number;
     people_mentioned_notes: string;
-    copies: LetterCopy = new LetterCopy();
+
+    // copies: LetterCopy = new LetterCopy();
+    copies_repository: string;
+    copies_archive: string;
+    copies_collection: string;
+    copies_signature: string;
+    copies_type: string;
+    copies_preservation: string;
+    copies_copy: string;
+
     related_resources: RelatedResources[];
     abstract_en: string;
     abstract_cs: string;

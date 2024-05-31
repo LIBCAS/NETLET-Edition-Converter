@@ -283,5 +283,60 @@ public class HikoKeywordsIndexer {
         ret.put("total", success);
         return ret;
     }
+    
+    public JSONObject locations() {
+        Date start = new Date();
+        JSONObject ret = new JSONObject();
+        int tindexed = 0;
+        int success = 0;
+        try {
+            client = Indexer.getClient();
+            List<String> tenants = getTenants();
+            
+        
+            for (String tenant : tenants) {
+                String t = tenant + "__locations";
+                PreparedStatement ps = getConnection().prepareStatement("select * from " + t);
+                try (ResultSet rs = ps.executeQuery()) {
+                    tindexed = 0;
+                    while (rs.next()) {
+
+                        SolrInputDocument doc = new SolrInputDocument();
+                        
+                        String id = tenant + "_" + rs.getInt("id");
+
+                        doc.addField("id", id);
+                        doc.addField("table", t);
+                        doc.addField("table_id", rs.getInt("id"));
+                        doc.addField("tenant", tenant);
+                        doc.addField("name", rs.getString("name"));
+                        doc.addField("type", rs.getString("type"));
+
+                        client.add("locations", doc);
+                        success++;
+                        if (success % 500 == 0) {
+                            client.commit("locations");
+                            LOGGER.log(Level.INFO, "Indexed {0} docs", success);
+                        }
+
+                        ret.put(t, tindexed++);
+
+                    }
+                    rs.close();
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, null, e);
+                    ret.put("error" + t, e);
+                }
+                ps.close();
+            }
+        } catch (NamingException | SQLException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        Date end = new Date();
+        ret.put("ellapsed time", DurationFormatUtils.formatDuration(end.getTime() - start.getTime(), "HH:mm:ss.S"));
+        ret.put("total", success);
+        return ret;
+    }
 
 }

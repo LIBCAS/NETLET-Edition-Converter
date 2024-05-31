@@ -236,7 +236,8 @@ public class Indexer {
             SolrQuery query = new SolrQuery("*")
                     .addFilterQuery("filename:\"" + filename + "\"")
                     .setFields("*,data:[json]")
-                    .setSort("startPage", SolrQuery.ORDER.asc)
+                    .addSort("startPage", SolrQuery.ORDER.asc)
+                    .addSort("page_number", SolrQuery.ORDER.asc)
                     .setRows(1000);
             query.set("wt", "json");
             String jsonResponse;
@@ -390,6 +391,9 @@ public class Indexer {
             idoc.setField("file_id", hashString(filename));
             idoc.setField("data", data.toString());
             idoc.setField("startPage", data.optInt("startPage", 0));
+            if (data.has("page_number")) {
+                idoc.setField("page_number", data.getInt("page_number"));
+            }
             idoc.setField("author", data.optString("author"));
             idoc.setField("recipient", data.optString("recipient"));
             idoc.setField("date", data.optString("date"));  
@@ -458,6 +462,40 @@ public class Indexer {
             dontMessWithSolr.setWriterType("json");
             solr.setParser(dontMessWithSolr);
             NamedList<Object> qresp = solr.request(qreq, "identities");
+            jsonResponse = (String) qresp.get("response");
+            ret = new JSONObject(jsonResponse);
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        return ret;
+    }
+    
+    public static JSONObject getLocations(String prefix, String tenant, String type) {
+        JSONObject ret = new JSONObject();
+        try {
+
+            Http2SolrClient solr = (Http2SolrClient) getClient();
+            SolrQuery query = new SolrQuery("name_lower:" + prefix + "* OR acronyms:" + prefix + "*")
+                    .setFields("id,tenant,name,type")
+                    .setRows(10);
+            if (!tenant.isBlank()) {
+                query.addFilterQuery("tenant:"+tenant);
+            }
+            if (!type.isBlank()) {
+                query.addFilterQuery("type:"+type);
+            }
+            
+            query.set("wt", "json");
+            String jsonResponse;
+
+            QueryRequest qreq = new QueryRequest(query);
+            // qreq.setPath();
+            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
+            dontMessWithSolr.setWriterType("json");
+            solr.setParser(dontMessWithSolr);
+            NamedList<Object> qresp = solr.request(qreq, "locations");
             jsonResponse = (String) qresp.get("response");
             ret = new JSONObject(jsonResponse);
 

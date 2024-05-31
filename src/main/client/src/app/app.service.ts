@@ -136,6 +136,13 @@ export class AppService {
     
   }
 
+  getLocations(prefix: string, tenant: string, type: string): Observable<any> {
+    const params: HttpParams = new HttpParams()
+    .set('prefix', prefix).set('tenant', tenant).set('type', type);
+    return this.get(`/data/get_locations`, params);
+    
+  }
+
   regeneratePageAlto(filename: string, page: string): Observable<string> {
     const params: HttpParams = new HttpParams()
     .set('filename', filename)

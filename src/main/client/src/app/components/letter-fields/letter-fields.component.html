@@ -2,14 +2,14 @@
 
   <div class="app-fxLayout app-row app-center-v app-mb-4">
     <div  *ngFor="let sel of _letter.selection" (click)="gotoPage(sel.page)">
-      <span style="position: absolute;">{{ sel.page }}</span>
+      <!-- <span style="position: relative;float: left;">{{ sel.page }}</span> -->
       <span style="position: relative;float: right;left:-15px;" (click)="removeSelection(sel.page)">X</span>
       <img style="height: 100px; border: 1px solid #aaa; margin-right: 2px;" [src]="getImgUrl(sel)" />
     </div>
     
   </div>
 
-  <button mat-icon-button color="primary" (click)="addSelection()" class="app-mb-4" [matTooltip]="'action.add_selection' | translate">
+  <button mat-icon-button color="primary" (click)="addSelection(true)" class="app-mb-4" [matTooltip]="'action.add_selection' | translate">
     <mat-icon class="material-icons-outlined">note_add</mat-icon>
   </button>
 
@@ -141,43 +141,71 @@
   <fieldset>
     <legend>{{ 'field.copies' | translate }}</legend>
     <div class="app-fxLayout app-row app-center-v app-mb-4">
+
       <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies_repository" name="copies_repository" 
+          [matAutocomplete]="autoRepos" (focus)="getLocations(_letter.copies_repository, 'repository')" (change)="getLocations(_letter.copies_repository, 'repository')" (keyup)="getLocations(_letter.copies_repository, 'repository')"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_repository' }"></ng-container>
+        <mat-autocomplete #autoRepos="matAutocomplete">
+          <mat-option *ngFor="let a of repositories" [value]="a.name">
+            {{a.name}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <!-- <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'field.repository' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.copies.repository" name="repository"><span matSuffix></span>
-        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'repository' }"></ng-container>
-      </mat-form-field>
+        <input matInput [(ngModel)]="_letter.copies_repository" name="copies_repository"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_repository' }"></ng-container>
+      </mat-form-field> -->
+
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-        <mat-label>{{ 'field.archive' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.copies.archive" name="archive"><span matSuffix></span>
-        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'archive' }"></ng-container>
+        <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies_archive" name="copies_archive"
+        [matAutocomplete]="autoArchives" (change)="getLocations(_letter.copies_archive, 'archive')" (keyup)="getLocations(_letter.copies_archive, 'archive')"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_archive' }"></ng-container>
+        <mat-autocomplete #autoArchives="matAutocomplete">
+          <mat-option *ngFor="let a of archives" [value]="a.name">
+            {{a.name}}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
+
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-        <mat-label>{{ 'field.collection' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.copies.collection" name="collection"><span matSuffix></span>
-        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'collection' }"></ng-container>
+        <mat-label>{{ 'field.copies_collection' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies_collection" name="copies_collection"
+        [matAutocomplete]="autoCollections" (change)="getLocations(_letter.copies_collection, 'collection')" (keyup)="getLocations(_letter.copies_collection, 'collection')"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_collection' }"></ng-container>
+        <mat-autocomplete #autoCollections="matAutocomplete">
+          <mat-option *ngFor="let a of collections" [value]="a.name">
+            {{a.name}}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
+
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-        <mat-label>{{ 'field.signatura' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.copies.signature" name="signature"><span matSuffix></span>
-        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
+        <mat-label>{{ 'field.copies_signature' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.copies_signature" name="copies_signature"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_signature' }"></ng-container>
       </mat-form-field>
     </div>
 
     <div class="app-fxLayout app-row app-center-v app-mb-4">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'field.type' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.copies.type" name="type"><span matSuffix></span>
-        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'type' }"></ng-container>
+        <input matInput [(ngModel)]="_letter.copies_type" name="copies_type"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_type' }"></ng-container>
       </mat-form-field>
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'field.preservation' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.copies.preservation" name="preservation"><span matSuffix></span>
-        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'preservation' }"></ng-container>
+        <input matInput [(ngModel)]="_letter.copies_preservation" name="copies_preservation"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_preservation' }"></ng-container>
       </mat-form-field>
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'field.copy' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.copies.copy" name="copy"><span matSuffix></span>
-        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copy' }"></ng-container>
+        <input matInput [(ngModel)]="_letter.copies_copy" name="copies_copy"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_copy' }"></ng-container>
       </mat-form-field>
     </div>
   </fieldset>

@@ -48,10 +48,10 @@
     "type": "Typ dokumentu",
     "preservation": "Uchování",
     "copy": "Typ kopie",
-    "repository": "Repozitář",
-    "archive": "Archiv",
-    "collection": "Sbírka",
-    "signatura": "Ssignatura"
+    "copies_repository": "Repozitář",
+    "copies_archive": "Archiv",
+    "copies_collection": "Sbírka",
+    "copies_signature": "Signatura"
   },
   "action": {
     "refresh": "Obnovit",

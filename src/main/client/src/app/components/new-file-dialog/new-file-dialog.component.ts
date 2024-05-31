@@ -10,6 +10,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { FileUploadModule, FileUploader, FileUploaderOptions } from 'ng2-file-upload';
+import { AppState } from 'src/app/app-state';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-new-file-dialog',
@@ -18,13 +20,14 @@ import { FileUploadModule, FileUploader, FileUploaderOptions } from 'ng2-file-up
   standalone: true,
   imports: [FileUploadModule,
     CommonModule, TranslateModule, FormsModule, MatAutocompleteModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule,
+    MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule,
     MatDividerModule, MatProgressBarModule, MatDialogModule]
 })
 export class NewFileDialogComponent {
 
   name: string;
   columns: number;
+  tenant: string;
   def_author: string;
   def_recipient: string;
 
@@ -33,7 +36,8 @@ export class NewFileDialogComponent {
   progressMsg: string;
 
   constructor(
-    private dialogRef: MatDialogRef<NewFileDialogComponent>
+    private dialogRef: MatDialogRef<NewFileDialogComponent>,
+    public state: AppState
   ) { }
 
 
@@ -51,7 +55,8 @@ export class NewFileDialogComponent {
         name: this.name,
         columns: this.columns,
         def_author: this.def_author,
-        def_recipient: this.def_recipient
+        def_recipient: this.def_recipient,
+        tenant: this.tenant
       }
     };
     this.progressMsg = 'uploading...'
