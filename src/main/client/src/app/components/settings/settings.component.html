@@ -2,11 +2,43 @@
 <div mat-dialog-content class="app-letter">
   <div>
     <div class="app-mb-4">
-    <mat-form-field class="app-w-100">
-      <mat-label>{{ 'field.prompt' | translate}}</mat-label>
-      <textarea rows="6" matInput [(ngModel)]="prompt" name="prompt"></textarea>
-    </mat-form-field>
+      <mat-form-field class="app-w-100">
+        <mat-label>{{ 'field.prompt' | translate}}</mat-label>
+        <textarea rows="6" matInput [(ngModel)]="prompt" name="prompt"></textarea>
+      </mat-form-field>
     </div>
+  </div>
+  
+  <div class="app-fxLayout app-row app-center-v app-mb-4">
+    <fieldset class="app-w-100 app-fxFlex">
+      <legend>{{ 'Acronyms' | translate }}</legend>
+      <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>{{ 'field.locations' | translate }}</mat-label>
+        <input matInput [(ngModel)]="location" name="locations" [value]="location?.name" [matAutocomplete]="autoRepos">
+        <mat-autocomplete #autoRepos="matAutocomplete">
+          <mat-option *ngFor="let a of locations_db" [value]="a">
+            {{a.name}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div class="app-fxFlex-25" *ngIf="location">
+        <mat-form-field class="app-w-100" appearance="outline">
+          <mat-label>{{ 'acronyms' | translate }}</mat-label>
+          <input matInput type="text" name="new_acronym" [(ngModel)]="new_acronym" />
+          <button matSuffix mat-icon-button (click)="addAcronym()" [matTooltip]="'action.add_acronym' | translate">
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="app-fxFlex app-fxFlex-75 app-center-v" *ngIf="location">
+        <span *ngFor="let k of location.acronyms; let idx = index; let last = last;" class="app-keyword">
+          <label class="app-label">{{ k }}</label><a (click)="removeAcronym(idx)" [matTooltip]="'action.remove_acronym' | translate"><mat-icon>clear</mat-icon></a><span class="app-pipe app-in-element" *ngIf="!last"></span>
+        </span>
+      </div>
+      
+      
+    </fieldset>
   </div>
 </div>
 

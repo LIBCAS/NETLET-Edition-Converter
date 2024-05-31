@@ -478,8 +478,8 @@ public class Indexer {
 
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery("name_lower:" + prefix + "* OR acronyms:" + prefix + "*")
-                    .setFields("id,tenant,name,type")
-                    .setRows(10);
+                    .setFields("id,tenant,name,type,acronyms")
+                    .setRows(1000);
             if (!tenant.isBlank()) {
                 query.addFilterQuery("tenant:"+tenant);
             }
