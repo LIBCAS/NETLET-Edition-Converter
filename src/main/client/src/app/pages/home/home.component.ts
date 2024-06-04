@@ -16,6 +16,7 @@ import { NewFileDialogComponent } from 'src/app/components/new-file-dialog/new-f
 import { AppState } from 'src/app/app-state';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +25,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   standalone: true,
   imports: [RouterLink, FileUploadModule, MatTooltipModule,
     CommonModule, TranslateModule, FormsModule, MatIconModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule,
+    MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressSpinnerModule,
     MatDividerModule, MatProgressBarModule, MatDialogModule]
 })
 export class HomeComponent {
@@ -55,8 +56,9 @@ export class HomeComponent {
     dialogRef.afterClosed().subscribe(result => {
       // console.log(result);
       if (result) {
-
+        this.getDocuments();
       }
+      
     })
   }
 
@@ -64,6 +66,7 @@ export class HomeComponent {
     this.service.getDocuments().subscribe((res: any) => {
       this.state.tenants = Object.keys(res.tenants);
       this.state.files = res.dirs;
+      this.state.files.sort((f1, f2) => f1.config.name.localeCompare(f2.config.name, 'cs-CZ'));
       this.state.files.forEach(f => {
         f.letters = res.totals[f.filename] ? res.totals[f.filename] : 0;
       });

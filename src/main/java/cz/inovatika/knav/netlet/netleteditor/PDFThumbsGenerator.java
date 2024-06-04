@@ -80,10 +80,20 @@ public class PDFThumbsGenerator {
         InitServlet.stopFuture();
         ret.put("msg", "Checking ALTO stopped");
         return ret;
-
+    }
+    
+    public static JSONObject processFile(String fileName) {
+        JSONObject ret = new JSONObject();
+        try {
+            ret.put("images", generateImages(fileName, true));
+            ret.put("alto", generateAlto(fileName, true, false));
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return ret;
     }
 
-    public static JSONObject processFile(String fileName) {
+    public static JSONObject processFilePython(String fileName) {
         File f = new File(fileName);
         maxPixels = Options.getInstance().getInt("maxPixels", maxPixels);
         maxMedium = Options.getInstance().getInt("maxMedium", maxMedium);

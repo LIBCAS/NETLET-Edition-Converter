@@ -15,7 +15,7 @@
     "geo_dir": "c:\\Users\\alberto\\Projects\\NETLET\\geo",
 
     "maxPixels": 20000000,
-    "maxMedium": 2000,
+    "maxMedium": 1200,
 
     "solr": "http://localhost:8983/solr",
     "dbKeywordTables": ["keywords", "professions"],

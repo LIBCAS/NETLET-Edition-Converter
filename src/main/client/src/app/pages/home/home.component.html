@@ -7,10 +7,12 @@
         )</span>
       <span> {{ file.letters }} {{ 'letters' | translate }} </span>
       <button mat-icon-button (click)="regenerateAlto(file.filename)" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button>
+      <mat-spinner *ngIf="file.alto < file.imgs" diameter="16" style="display: inline-block;"></mat-spinner>
     </li>
   </ul>
   
   <div>
-    <button mat-flat-button (click)="newFile()" color="primary">{{ 'new_file' | translate }}</button>
+    <button mat-flat-button (click)="getDocuments()" color="primary" [matTooltip]="'action.refresh' | translate"><mat-icon>refresh</mat-icon>{{'action.refresh' | translate}}</button>
+    &#160;<button mat-flat-button (click)="newFile()" color="primary">{{ 'new_file' | translate }}</button>
   </div>
 </div>

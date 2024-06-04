@@ -124,7 +124,7 @@ public class DataServlet extends HttpServlet {
                             try {
                                 boolean deleted = uploadedFile.delete();
                                 if (!deleted) {
-                                    return ret.put("error", "can't delete file");
+                                    return ret.put("error", "can't delete file"); 
                                 }
                             } catch (Exception ioex) {
                                 LOGGER.log(Level.SEVERE, null, ioex);
@@ -134,7 +134,7 @@ public class DataServlet extends HttpServlet {
                         File f2 = new File(fileName);
                         item.write(f2);
                         if (f2.exists()) {
-                            new Thread(() -> PDFThumbsGenerator.processFile(fileName)).start();
+                            new Thread(() -> PDFThumbsGenerator.processFile(item.getName())).start();
                             ret.put("msg", "process started");
                         } else {
                             ret.put("msg", "not exists");
