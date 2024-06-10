@@ -124,7 +124,7 @@ public class DataServlet extends HttpServlet {
                             try {
                                 boolean deleted = uploadedFile.delete();
                                 if (!deleted) {
-                                    return ret.put("error", "can't delete file"); 
+                                    return ret.put("error", "can't delete file");  
                                 }
                             } catch (Exception ioex) {
                                 LOGGER.log(Level.SEVERE, null, ioex);
