@@ -227,6 +227,9 @@ export class EditorComponent {
   }
 
   processReplacements(text: string): string {
+    if (!this.state.fileConfig.replacements) {
+      return text;
+    }
     let ret = text;
     this.state.fileConfig.replacements.forEach(r => {
       ret = ret.replaceAll(r.orig, r.dest);

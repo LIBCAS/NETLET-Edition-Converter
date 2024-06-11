@@ -90,7 +90,6 @@ public class ImageServlet extends HttpServlet {
             void doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 response.setContentType("image/jpeg");
                 JSONObject data = new JSONObject(request.getParameter("data"));
-                System.out.println(data);
                 BufferedImage bi = Imagging.processOneSelection(data.getString("filename"),
                         data.optJSONObject("selection", new JSONObject()));
                 ImageIO.write(bi, "jpg", response.getOutputStream());
