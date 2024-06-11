@@ -153,11 +153,11 @@ export class AnalyzeDialogComponent {
     this._letterAnalyzed.date = this._letterAnalyzed.analysis.date;
     if (this.isDate(this._letterAnalyzed.date)) {
       this.datum = new Date(this._letterAnalyzed.analysis.date);
-      console.log(this.datum)
     }
 
     this._letterAnalyzed.incipit = this._letterAnalyzed.analysis.incipit;
     this._letterAnalyzed.explicit = this._letterAnalyzed.analysis.explicit;
+    this._letterAnalyzed.full_text = this.data.letter.full_text;
 
     this.setCurrentLetter();
   }
@@ -230,6 +230,24 @@ export class AnalyzeDialogComponent {
   }
 
   save() {
+    const keys = Object.keys(this._letterAnalyzed);
+    keys.forEach(k => {
+      if (!this.keepFields[k]) {
+        this.data.letter[k] = this._letterAnalyzed[k];
+      }
+    });
+    
+
+    this.service.saveLetter(this.state.selectedFile.filename, this.data.letter).subscribe((res: any) => {
+      if (res.error) {
+        this.service.showSnackBarError(res.error);
+      } else {
+        this.service.showSnackBar(res.msg);
+      }
+    });
+  }
+
+  saveAll() {
     if (!this.data.letter.startPage) {
       this.data.letter.startPage = this.state.currentPage;
     }

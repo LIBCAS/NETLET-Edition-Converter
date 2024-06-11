@@ -212,3 +212,10 @@ hr {
   }
 } 
 
+.mat-icon-close {
+  position: relative;
+  float: right;
+  left:-22px;
+  cursor: pointer;
+    @include setIcon(18);
+}

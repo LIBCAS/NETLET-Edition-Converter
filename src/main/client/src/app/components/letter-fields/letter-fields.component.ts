@@ -105,9 +105,9 @@ export class LetterFieldsComponent {
   ngOnInit() {
     //this._locale = 'cs';
     //this._adapter.setLocale(this._locale);
-    this.datum.valueChanges.subscribe(v => {
-      console.log(this.datum.value)
-    })
+    // this.datum.valueChanges.subscribe(v => {
+    //   console.log(this.datum.value)
+    // })
   }
 
   findTags() {
@@ -205,7 +205,11 @@ export class LetterFieldsComponent {
       // scrollStrategy: this.overlay.scrollStrategies.noop(),
       disableClose: true,
       panelClass: 'analize-dialog',
-      data: { letter: this._letter, text: this._letter.full_text, prompt: prompt, gptModel: this.state.fileConfig.gptModel }
+      data: { 
+        letter: this._letter, 
+        // text: this._letter.full_text, 
+        prompt: prompt, 
+        gptModel: this.state.fileConfig.gptModel }
     });
 
     dialogRef.afterClosed().subscribe(result => {

@@ -69,6 +69,7 @@
     "set_word": "Nastavit text ze slova (+ctrl přidat)",
     "add_word": "Pridat text ze slova",
     "add_selection": "Přidat výběr",
+    "remove_selection": "Odstranit výběr",
     "copy": "CTRL+C",
     "copy_block": "CTRL+C z bloku",
     "copy_line": "CTRL+C z radku",

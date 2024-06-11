@@ -67,6 +67,7 @@
     "set_word": "Set text from word (+ctrl to add)",
     "add_word": "Add text from word",
     "add_selection": "Add selection",
+    "remove_selection": "Remove selection",
     "copy": "CTRL+C",
     "copy_block": "Copy text from block",
     "copy_line": "Copy text from line",
