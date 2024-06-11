@@ -1,5 +1,7 @@
 // --- VARIABLES ---
 
+@use '@angular/material' as mat;
+
 // css variables
 :root {
   // colors
@@ -7,27 +9,31 @@
   --app-color-lightnes-rgb: 255, 255, 255;
   --app-color-darknes: #000000;
   --app-color-darknes-rgb: 0, 0, 0;
-  --app-color-primary: #{mat-color($app-primary)};
-  --app-color-warning: #{mat-color($app-warn)};
-  --app-color-info: #{mat-color($mat-amber, 900)};
-  --app-color-success: #{mat-color($mat-green, 800)};
+  --app-color-primary: #{$app-primary};
+  --app-color-warning: #{$app-warn};
+
+  --app-color-info: #{mat.get-color-from-palette(mat.define-palette(mat.$amber-palette, 900))};
+
+  $app-green-palette: mat.define-palette(mat.$green-palette);
+  --app-color-success: #{mat.get-color-from-palette($app-green-palette, 800)};
 
   // color markings
-  --app-color-block: #{mat-color($mat-green, 800)};
-  --app-color-line: #{mat-color($mat-purple, 500)};
-  --app-color-word: #{mat-color($mat-yellow, A700)};;
+  --app-color-block: #{mat.get-color-from-palette($app-green-palette, 800)};
+  --app-color-line: #{mat.get-color-from-palette(mat.define-palette(mat.$purple-palette, 500))};
+  --app-color-word: #{mat.get-color-from-palette(mat.define-palette(mat.$yellow-palette, A700))};
 
   // gray colors
-  --app-gray-0: #{mat-color($mat-gray, 50)};
-  --app-gray-1: #{mat-color($mat-gray, 100)};
-  --app-gray-2: #{mat-color($mat-gray, 200)};
-  --app-gray-3: #{mat-color($mat-gray, 300)};
-  --app-gray-4: #{mat-color($mat-gray, 400)};
-  --app-gray-5: #{mat-color($mat-gray, 500)};
-  --app-gray-6: #{mat-color($mat-gray, 600)};
-  --app-gray-7: #{mat-color($mat-gray, 700)};
-  --app-gray-8: #{mat-color($mat-gray, 800)};
-  --app-gray-9: #{mat-color($mat-gray, 900)};
+  $app-gray-palette: mat.define-palette(mat.$gray-palette);
+  --app-gray-0: #{mat.get-color-from-palette($app-gray-palette, 50)};
+  --app-gray-1: #{mat.get-color-from-palette($app-gray-palette, 100)};
+  --app-gray-2: #{mat.get-color-from-palette($app-gray-palette, 200)};
+  --app-gray-3: #{mat.get-color-from-palette($app-gray-palette, 300)};
+  --app-gray-4: #{mat.get-color-from-palette($app-gray-palette, 400)};
+  --app-gray-5: #{mat.get-color-from-palette($app-gray-palette, 500)};
+  --app-gray-6: #{mat.get-color-from-palette($app-gray-palette, 600)};
+  --app-gray-7: #{mat.get-color-from-palette($app-gray-palette, 700)};
+  --app-gray-8: #{mat.get-color-from-palette($app-gray-palette, 800)};
+  --app-gray-9: #{mat.get-color-from-palette($app-gray-palette, 900)};
 
   // bars
   --app-topbar-height: 50px;
