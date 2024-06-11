@@ -31,4 +31,4 @@ $app-theme: mat.define-light-theme((
 @include mat.core-theme($app-theme);
 // @include mat.form-field-theme($app-theme);
 @include mat.all-component-themes($app-theme);
-@include mat.form-field-density(-4);
+@include mat.form-field-density(-2);

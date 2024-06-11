@@ -1,4 +1,4 @@
-<div *ngIf="_letter" class="app-letter">
+<div *ngIf="_letter" class="app-letter app-icons">
 
   <div class="app-fxLayout app-row app-center-v app-mb-4">
     <div  *ngFor="let sel of _letter.selection" (click)="gotoPage(sel.page)">
@@ -19,7 +19,7 @@
   </button>
   
   <div class="app-mb-4">
-    <mat-form-field class="app-w-100" appearance="outline">
+    <mat-form-field class="app-w-100" >
       <mat-label>{{ 'field.full_text' | translate}}</mat-label>
       <textarea rows="5" matInput [(ngModel)]="_letter.full_text" name="full_text"></textarea>
       <div class="app-pt-4 app-mb-n2 app-text-right">
@@ -29,31 +29,31 @@
   </div>
 
   <div class="app-fxLayout app-row app-center-v app-mb-4">
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <mat-form-field class="app-fxFlex" >
       <mat-label>{{ 'field.startPage' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.startPage" name="startPage" />
     </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" >
       <mat-label>{{ 'field.letter_number' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.letter_number" name="letter_number">
     </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" >
       <mat-label>{{ 'field.page_number' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.page_number" name="page_number">
     </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" >
       <mat-label>{{ 'field.end_page_number' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
     </mat-form-field>
   </div>
   
   <div class="app-fxLayout app-row app-center-v app-mb-4">
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <mat-form-field class="app-fxFlex" >
       <mat-label>{{ 'field.author' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.author" name="author" /><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'author' }"></ng-container>
     </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" >
       <mat-label>{{ 'field.author_db' | translate}}</mat-label>
       <mat-select [(ngModel)]="_letter.author_db">
           <mat-option *ngFor="let a of _letter.authors_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
@@ -61,12 +61,12 @@
     </mat-form-field>
 
     <mat-icon (click)="switchAuthors()" class="app-ml-2 app-mr-2">sync_alt</mat-icon>
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <mat-form-field class="app-fxFlex" >
       <mat-label>{{ 'field.recipient' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.recipient" name="recipient"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'recipient' }"></ng-container>
     </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" >
       <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
       <mat-select [(ngModel)]="_letter.recipient_db">
           <mat-option *ngFor="let a of _letter.recipients_db" [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
@@ -79,12 +79,12 @@
 
   </div>
   <div class="app-mb-4">
-    <!-- <mat-form-field class="app-fxFlex" appearance="outline">
+    <!-- <mat-form-field class="app-fxFlex" >
       <mat-label>{{ 'field.date_year' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.date_year" name="date_year"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'date_year' }"></ng-container>
     </mat-form-field> -->
-    <mat-form-field class="app-fxFlex" appearance="outline" *ngIf="datum">
+    <mat-form-field class="app-fxFlex" >
       <mat-label>{{ 'field.date' | translate}}</mat-label>
       <input matInput [matDatepicker]="picker" [formControl]="datum" >
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -92,24 +92,24 @@
       <!-- <input matInput [value]="datum | date : 'dd.MM.yyyy' " name="datum" /> -->
     </mat-form-field>
 
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" >
       <mat-label>{{ 'field.languages' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.languages" name="languages">
   </mat-form-field>
   </div>
 
   <div class="app-fxLayout app-row app-center-v app-mb-4">
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <mat-form-field class="app-fxFlex" >
       <mat-label>{{ 'field.origin' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.origin" name="origin"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'origin' }"></ng-container>
     </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" >
       <mat-label>{{ 'field.salutation' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.salutation" name="salutation"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
     </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+    <mat-form-field class="app-fxFlex app-ml-3" >
       <mat-label>{{ 'field.signature' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
@@ -117,14 +117,14 @@
   </div>
 
   <div class="app-mb-4">
-    <mat-form-field class="app-w-100" appearance="outline">
+    <mat-form-field class="app-w-100" >
       <mat-label>{{ 'field.incipit' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.incipit" name="incipit"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'incipit' }"></ng-container>
     </mat-form-field>
   </div>
   <div class="app-mb-4">
-    <mat-form-field class="app-w-100" appearance="outline">
+    <mat-form-field class="app-w-100" >
       <mat-label>{{ 'field.explicit' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.explicit" name="explicit"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'explicit' }"></ng-container>
@@ -132,7 +132,7 @@
   </div>
     
   <div class="app-mb-4">
-    <mat-form-field class="app-w-100" appearance="outline">
+    <mat-form-field class="app-w-100" >
       <mat-label>{{ 'field.abstract' | translate}}</mat-label>
       <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract" #abstract></textarea>
     </mat-form-field>
@@ -142,7 +142,7 @@
     <legend>{{ 'field.copies' | translate }}</legend>
     <div class="app-fxLayout app-row app-center-v app-mb-4">
 
-      <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-form-field class="app-fxFlex" >
         <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
         <input matInput [(ngModel)]="_letter.copies_repository" name="copies_repository" 
           [matAutocomplete]="autoRepos" (focus)="getLocations(_letter.copies_repository, 'repository')" (change)="getLocations(_letter.copies_repository, 'repository')" (keyup)="getLocations(_letter.copies_repository, 'repository')"><span matSuffix></span>
@@ -154,13 +154,13 @@
         </mat-autocomplete>
       </mat-form-field>
 
-      <!-- <mat-form-field class="app-fxFlex" appearance="outline">
+      <!-- <mat-form-field class="app-fxFlex" >
         <mat-label>{{ 'field.repository' | translate}}</mat-label>
         <input matInput [(ngModel)]="_letter.copies_repository" name="copies_repository"><span matSuffix></span>
         <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_repository' }"></ng-container>
       </mat-form-field> -->
 
-      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+      <mat-form-field class="app-fxFlex app-ml-3" >
         <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
         <input matInput [(ngModel)]="_letter.copies_archive" name="copies_archive"
         [matAutocomplete]="autoArchives" (change)="getLocations(_letter.copies_archive, 'archive')" (keyup)="getLocations(_letter.copies_archive, 'archive')"><span matSuffix></span>
@@ -172,7 +172,7 @@
         </mat-autocomplete>
       </mat-form-field>
 
-      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+      <mat-form-field class="app-fxFlex app-ml-3" >
         <mat-label>{{ 'field.copies_collection' | translate}}</mat-label>
         <input matInput [(ngModel)]="_letter.copies_collection" name="copies_collection"
         [matAutocomplete]="autoCollections" (change)="getLocations(_letter.copies_collection, 'collection')" (keyup)="getLocations(_letter.copies_collection, 'collection')"><span matSuffix></span>
@@ -184,7 +184,7 @@
         </mat-autocomplete>
       </mat-form-field>
 
-      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+      <mat-form-field class="app-fxFlex app-ml-3" >
         <mat-label>{{ 'field.copies_signature' | translate}}</mat-label>
         <input matInput [(ngModel)]="_letter.copies_signature" name="copies_signature"><span matSuffix></span>
         <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_signature' }"></ng-container>
@@ -192,17 +192,17 @@
     </div>
 
     <div class="app-fxLayout app-row app-center-v app-mb-4">
-      <mat-form-field class="app-fxFlex" appearance="outline">
+      <mat-form-field class="app-fxFlex" >
         <mat-label>{{ 'field.type' | translate}}</mat-label>
         <input matInput [(ngModel)]="_letter.copies_type" name="copies_type"><span matSuffix></span>
         <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_type' }"></ng-container>
       </mat-form-field>
-      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+      <mat-form-field class="app-fxFlex app-ml-3" >
         <mat-label>{{ 'field.preservation' | translate}}</mat-label>
         <input matInput [(ngModel)]="_letter.copies_preservation" name="copies_preservation"><span matSuffix></span>
         <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_preservation' }"></ng-container>
       </mat-form-field>
-      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+      <mat-form-field class="app-fxFlex app-ml-3" >
         <mat-label>{{ 'field.copy' | translate}}</mat-label>
         <input matInput [(ngModel)]="_letter.copies_copy" name="copies_copy"><span matSuffix></span>
         <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_copy' }"></ng-container>

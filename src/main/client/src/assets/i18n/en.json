@@ -79,7 +79,8 @@
     "analyze": "Analyze",
     "analyze_images": "Analyze using images",
     "AI": "Artificial intelligence",
-    "process": "Process with AI"
+    "process": "Process with AI",
+    "keep_value": "Keep current value"
   },
   "tags": {
     "a": "Numbers in addresses",

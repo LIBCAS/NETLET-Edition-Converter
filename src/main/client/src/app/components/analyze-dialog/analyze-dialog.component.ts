@@ -1,10 +1,10 @@
-import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { Component, Inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
@@ -18,14 +18,19 @@ import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { Entity, Letter } from 'src/app/shared/letter';
 import { AppConfiguration } from 'src/app/app-configuration';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-analyze-dialog',
   templateUrl: './analyze-dialog.component.html',
   styleUrls: ['./analyze-dialog.component.scss'],
+  providers: [ 
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } } 
+ ],
   standalone: true,
-  imports: [FormsModule, TranslateModule, NgIf, NgFor, MatFormFieldModule, MatInputModule, MatTabsModule,
-    MatCheckboxModule, DatePipe, MatListModule, CdkDrag, CdkDragHandle, MatSelectModule,
+  imports: [FormsModule, TranslateModule, NgIf, NgFor, NgTemplateOutlet,
+    MatFormFieldModule, MatInputModule, MatTabsModule,
+    MatCheckboxModule, DatePipe, MatListModule, CdkDrag, CdkDragHandle, MatSelectModule, MatTooltipModule,
     MatButtonModule, MatIconModule, MatDialogModule, MatProgressSpinnerModule, MatProgressBarModule]
 })
 export class AnalyzeDialogComponent {
@@ -36,6 +41,9 @@ export class AnalyzeDialogComponent {
   loading = false;
   fromImages = false;
 
+  letter: {oldV: Letter, newV: Letter};
+  keepFields: {[field: string]: boolean} = {};
+  _letterAnalyzed: Letter;
   _letter: Letter;
   datum: Date;
 
@@ -55,8 +63,10 @@ export class AnalyzeDialogComponent {
 
   ngOnInit() {
     // this.analyze();
+    this._letterAnalyzed = new Letter();
     this._letter = new Letter();
     if (this.data.letter.analysis) {
+      console.log(this.data.letter.analysis)
       this.setAnalysis(this.data.letter.analysis);
     }
   }
@@ -95,7 +105,7 @@ export class AnalyzeDialogComponent {
   detectLang() {
     this.service.detectLang(this.data.text).subscribe((resp: any) => {
       // alert(resp.languages)
-      this._letter.languages = resp.languages;
+      this._letterAnalyzed.languages = resp.languages;
     });
   }
 
@@ -104,54 +114,69 @@ export class AnalyzeDialogComponent {
   }
 
   setAnalysis(analysis: any) {
-    this._letter.analysis = analysis;
-    this._letter.letter_number = this._letter.analysis.letter_number;
-    this._letter.letter_title = this._letter.analysis.letter_title;
-    this._letter.page_number = this._letter.analysis.page_number;
-    this._letter.end_page_number = this._letter.analysis.end_page_number;
-    this._letter.author = this._letter.analysis.sender;
-    this._letter.recipient = this._letter.analysis.recipient;
-    if (!this._letter.author || this._letter.author === 'neuvedeno') {
-      if (this._letter.recipient) {
-        if (this._letter.recipient.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
-          this._letter.author = this.state.fileConfig.def_recipient;
-        } else if (this._letter.recipient.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
-          this._letter.author = this.state.fileConfig.def_author;
+    this._letterAnalyzed.analysis = analysis;
+    this._letterAnalyzed.letter_number = this._letterAnalyzed.analysis.letter_number;
+    this._letterAnalyzed.letter_title = this._letterAnalyzed.analysis.letter_title;
+    this._letterAnalyzed.page_number = this._letterAnalyzed.analysis.page_number;
+    this._letterAnalyzed.end_page_number = this._letterAnalyzed.analysis.end_page_number;
+    this._letterAnalyzed.author = this._letterAnalyzed.analysis.sender;
+    this._letterAnalyzed.recipient = this._letterAnalyzed.analysis.recipient;
+    if (!this._letterAnalyzed.author || this._letterAnalyzed.author === 'neuvedeno') {
+      if (this._letterAnalyzed.recipient) {
+        if (this._letterAnalyzed.recipient.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
+          this._letterAnalyzed.author = this.state.fileConfig.def_recipient;
+        } else if (this._letterAnalyzed.recipient.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
+          this._letterAnalyzed.author = this.state.fileConfig.def_author;
         }
       } else {
-        this._letter.author = this.state.fileConfig.def_author;
+        this._letterAnalyzed.author = this.state.fileConfig.def_author;
       }
 
     }
-    if (!this._letter.recipient || this._letter.recipient === 'neuvedeno') {
-      if (this._letter.author.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
-        this._letter.recipient = this.state.fileConfig.def_author;
-      } else if (this._letter.author.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
-        this._letter.recipient = this.state.fileConfig.def_recipient;
+    if (!this._letterAnalyzed.recipient || this._letterAnalyzed.recipient === 'neuvedeno') {
+      if (this._letterAnalyzed.author.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
+        this._letterAnalyzed.recipient = this.state.fileConfig.def_author;
+      } else if (this._letterAnalyzed.author.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
+        this._letterAnalyzed.recipient = this.state.fileConfig.def_recipient;
       } else {
-        this._letter.recipient = this.state.fileConfig.def_recipient;
+        this._letterAnalyzed.recipient = this.state.fileConfig.def_recipient;
       }
     }
 
-    this._letter.salutation = this._letter.analysis.salutation;
-    this._letter.sign_off = this._letter.analysis.sign_off;
-    this._letter.signature = this._letter.analysis.signature;
+    this._letterAnalyzed.salutation = this._letterAnalyzed.analysis.salutation;
+    this._letterAnalyzed.sign_off = this._letterAnalyzed.analysis.sign_off;
+    this._letterAnalyzed.signature = this._letterAnalyzed.analysis.signature;
 
-    this._letter.abstract_cs = this._letter.analysis.abstract;
-    this._letter.summary = this._letter.analysis.summary;
+    this._letterAnalyzed.abstract_cs = this._letterAnalyzed.analysis.abstract;
+    this._letterAnalyzed.summary = this._letterAnalyzed.analysis.summary;
 
-    this._letter.origin = this._letter.analysis.location || this._letter.analysis.place;
-    this._letter.date = this._letter.analysis.date;
-    if (this.isDate(this._letter.date)) {
-      this.datum = new Date(this._letter.analysis.date);
+    this._letterAnalyzed.origin = this._letterAnalyzed.analysis.location || this._letterAnalyzed.analysis.place;
+    this._letterAnalyzed.date = this._letterAnalyzed.analysis.date;
+    if (this.isDate(this._letterAnalyzed.date)) {
+      this.datum = new Date(this._letterAnalyzed.analysis.date);
+      console.log(this.datum)
     }
 
-    this._letter.incipit = this._letter.analysis.incipit;
-    this._letter.explicit = this._letter.analysis.explicit;
+    this._letterAnalyzed.incipit = this._letterAnalyzed.analysis.incipit;
+    this._letterAnalyzed.explicit = this._letterAnalyzed.analysis.explicit;
+
+    this.setCurrentLetter();
+  }
+
+  setCurrentLetter() {
+    const keys = Object.keys(this._letterAnalyzed);
+    keys.forEach(k => {
+      if (this.keepFields[k]) {
+        this._letter[k] = this.data.letter[k];
+      } else {
+        this._letter[k] = this._letterAnalyzed[k];
+      }
+      
+    });
   }
 
   annotate() {
-    const orig = this._letter.abstract_cs;
+    const orig = this._letterAnalyzed.abstract_cs;
     // this._letter.abstract_cs = 'processing...';
     this.service.annotate(this.data).subscribe((resp: any) => {
       this.loading = false;
@@ -164,7 +189,6 @@ export class AnalyzeDialogComponent {
         // this.usage = resp.usage;
         this.checkAuthors();
       }
-
     });
   }
 
@@ -194,14 +218,14 @@ export class AnalyzeDialogComponent {
   }
 
   checkAuthors() {
-    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.fileConfig.tenant).subscribe((resp: any) => {
-      this._letter.authors_db = resp.author;
-      this._letter.recipients_db = resp.recipient;
-      if (this._letter.authors_db.length > 0) {
-        this._letter.author_db = this._letter.authors_db[0];
+    this.service.checkAuthors(this._letterAnalyzed.author, this._letterAnalyzed.recipient, this.state.fileConfig.tenant).subscribe((resp: any) => {
+      this._letterAnalyzed.authors_db = resp.author;
+      this._letterAnalyzed.recipients_db = resp.recipient;
+      if (this._letterAnalyzed.authors_db.length > 0) {
+        this._letterAnalyzed.author_db = this._letterAnalyzed.authors_db[0];
       }
-      if (this._letter.recipients_db.length > 0) {
-        this._letter.recipient_db = this._letter.recipients_db[0];
+      if (this._letterAnalyzed.recipients_db.length > 0) {
+        this._letterAnalyzed.recipient_db = this._letterAnalyzed.recipients_db[0];
       }
     });
   }
@@ -214,38 +238,42 @@ export class AnalyzeDialogComponent {
       this.data.letter.endPage = this.state.currentPage;
     }
 
-    this.data.letter.languages = this._letter.languages;
+    this.data.letter.languages = this._letterAnalyzed.languages;
 
-    this.data.letter.letter_number = this._letter.letter_number;
-    this.data.letter.letter_title = this._letter.letter_title;
-    this.data.letter.page_number = this._letter.page_number;
-    this.data.letter.end_page_number = this._letter.end_page_number;
-    this.data.letter.salutation = this._letter.salutation;
-    this.data.letter.sign_off = this._letter.sign_off;
-    this.data.letter.signature = this._letter.signature;
+    this.data.letter.letter_number = this._letterAnalyzed.letter_number;
+    this.data.letter.letter_title = this._letterAnalyzed.letter_title;
+    this.data.letter.page_number = this._letterAnalyzed.page_number;
+    this.data.letter.end_page_number = this._letterAnalyzed.end_page_number;
+    this.data.letter.salutation = this._letterAnalyzed.salutation;
+    this.data.letter.sign_off = this._letterAnalyzed.sign_off;
+    this.data.letter.signature = this._letterAnalyzed.signature;
 
 
-    this.data.letter.author = this._letter.author;
-    this.data.letter.recipient = this._letter.recipient;
-    this.data.letter.abstract_cs = this._letter.abstract_cs;
-    this.data.letter.summary = this._letter.summary;
-    this.data.letter.origin = this._letter.origin;
+    this.data.letter.author = this._letterAnalyzed.author;
+    this.data.letter.recipient = this._letterAnalyzed.recipient;
+    this.data.letter.abstract_cs = this._letterAnalyzed.abstract_cs;
+    this.data.letter.summary = this._letterAnalyzed.summary;
+    this.data.letter.origin = this._letterAnalyzed.origin;
 
-    this.data.letter.date = this._letter.date;
-    this.data.letter.incipit = this._letter.incipit;
-    this.data.letter.explicit = this._letter.explicit;
+    if (this.datum) {
+      console.log(this.datum)
+    }
+    this.data.letter.date = this._letterAnalyzed.date;
+
+    this.data.letter.incipit = this._letterAnalyzed.incipit;
+    this.data.letter.explicit = this._letterAnalyzed.explicit;
     this.data.letter.full_text = this.data.text;
 
     this.data.letter.entities = this.entities;
     this.data.letter.nametags = this.nametags;
     // this.data.letter.usage = this.usage;
 
-    this.data.letter.authors_db = this._letter.authors_db;
-    this.data.letter.author_db = this._letter.author_db;
-    this.data.letter.recipients_db = this._letter.recipients_db;
-    this.data.letter.recipient_db = this._letter.recipient_db;
+    this.data.letter.authors_db = this._letterAnalyzed.authors_db;
+    this.data.letter.author_db = this._letterAnalyzed.author_db;
+    this.data.letter.recipients_db = this._letterAnalyzed.recipients_db;
+    this.data.letter.recipient_db = this._letterAnalyzed.recipient_db;
 
-    this.data.letter.analysis = this._letter.analysis;
+    this.data.letter.analysis = this._letterAnalyzed.analysis;
 
     this.service.saveLetter(this.state.selectedFile.filename, this.data.letter).subscribe((res: any) => {
       if (res.error) {
@@ -266,6 +294,15 @@ export class AnalyzeDialogComponent {
     }
     let url = this.config.context + 'api/img/selection?data=' + encodeURIComponent(JSON.stringify(data));
     return url;
+  }
+
+  toggleKeep(field: string) {
+    this.keepFields[field] = !this.keepFields[field];
+    if (this.keepFields[field]) {
+      this._letter[field] = this.data.letter[field];
+    } else {
+      this._letter[field] = this._letterAnalyzed[field];
+    }
   }
 
 }

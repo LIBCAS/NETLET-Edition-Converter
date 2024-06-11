@@ -157,6 +157,7 @@ hr {
   min-height: var(--app-controlbar-height);
   background-color: var(--app-controlbar-bg-color);
   border-bottom: 1px solid var(--app-controlbar-border-color);
+  color: var(--app-gray-9);
 
   .mat-mdc-icon-button {
     @extend .app-clean-radius;
@@ -177,11 +178,11 @@ hr {
       border-bottom: 2px solid var(--app-color-primary);
     }
 
-    .mat-icon {
-      &:not(.mat-primary) {
-        color: var(--app-gray-6);
-      }
-    }
+    // .mat-icon {
+    //   &:not(.mat-primary) {
+    //     color: var(--app-gray-6);
+    //   }
+    // }
   }
 
   .app-label {

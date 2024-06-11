@@ -3,7 +3,7 @@ import { Component, EventEmitter, Inject, Input, Output, ViewChild } from '@angu
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
@@ -31,6 +31,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
   styleUrls: ['./letter-fields.component.scss'],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'cs' },
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } } 
   ],
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, NgIf, RouterModule, TranslateModule, DatePipe,
@@ -50,10 +51,11 @@ export class LetterFieldsComponent {
     }
     this._letter = value;
     if (!isNaN(Date.parse(this._letter.date))) {
-      this.datum.setValue(this._letter.date);
+      this.datum.setValue(new Date(this._letter.date));
     } else {
       this.datum.setValue(null);
     }
+    console.log(this.datum.value)
     if (this._letter.authors_db) {
       this._letter.author_db = this._letter.authors_db.find(a => a.id === this._letter.author_db.id);
     }
@@ -92,6 +94,9 @@ export class LetterFieldsComponent {
   ngOnInit() {
     this._locale = 'cs';
     this._adapter.setLocale(this._locale);
+    this.datum.valueChanges.subscribe(v => {
+      console.log(this.datum.value)
+    })
   }
 
   findTags() {

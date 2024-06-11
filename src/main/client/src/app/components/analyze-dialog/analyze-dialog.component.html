@@ -12,7 +12,7 @@
         </mat-form-field>
     </div>
     <div class="app-mb-4">
-        <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-form-field class="app-fxFlex" >
             <mat-label>chatGPT model</mat-label>
             <mat-select [(ngModel)]="data.gptModel">
               <mat-option *ngFor="let t of state.gptModels" [value]="t">{{ t }}</mat-option>
@@ -62,21 +62,25 @@
 
 
     <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex">
+        <mat-form-field class="app-fxFlex" >
             <mat-label>{{ 'field.letter_number' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.letter_number" name="letter_number">
+            <mat-icon matSuffix (click)="toggleKeep('letter_number')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['letter_number']">push_pin</mat-icon>
         </mat-form-field>
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.letter_title' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.letter_title" name="letter_title">
+            <mat-icon matSuffix (click)="toggleKeep('letter_title')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['letter_title']">push_pin</mat-icon>
         </mat-form-field>
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.page_number' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.page_number" name="page_number">
+            <mat-icon matSuffix (click)="toggleKeep('page_number')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['page_number']">push_pin</mat-icon>
         </mat-form-field>
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.end_page_number' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
+            <mat-icon matSuffix (click)="toggleKeep('end_page_number')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['end_page_number']">push_pin</mat-icon>
         </mat-form-field>
     </div>
 
@@ -84,6 +88,7 @@
         <mat-form-field class="app-fxFlex">
             <mat-label>{{ 'field.author' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.author" name="author" />
+            <mat-icon matSuffix (click)="toggleKeep('author')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['author']">push_pin</mat-icon>
         </mat-form-field>
 
         <mat-form-field class="app-fxFlex app-ml-3">
@@ -96,6 +101,7 @@
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.recipient' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.recipient" name="recipient">
+            <mat-icon matSuffix (click)="toggleKeep('recipient')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['recipient']">push_pin</mat-icon>
         </mat-form-field>
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
@@ -110,19 +116,23 @@
         <mat-form-field class="app-fxFlex">
             <mat-label>{{ 'field.origin' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.origin" name="origin" />
+            <mat-icon matSuffix (click)="toggleKeep('origin')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['origin']">push_pin</mat-icon>
         </mat-form-field>
 
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.salutation' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.salutation" name="salutation">
+            <mat-icon matSuffix (click)="toggleKeep('salutation')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['salutation']">push_pin</mat-icon>
         </mat-form-field>
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.sign_off' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.sign_off" name="sign_off">
+            <mat-icon matSuffix (click)="toggleKeep('sign_off')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['sign_off']">push_pin</mat-icon>
         </mat-form-field>
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.signature' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.signature" name="signature">
+            <mat-icon matSuffix (click)="toggleKeep('signature')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['signature']">push_pin</mat-icon>
         </mat-form-field>
     </div>
 
@@ -134,19 +144,21 @@
 
         <mat-form-field class="app-fxFlex" *ngIf="datum">
             <mat-label>{{ 'field.date' | translate}}</mat-label>
-            <input matInput [(ngModel)]="datum" [value]="datum | date : 'dd.MM.yyyy' " name="datum" />
+            <input matInput  [ngModel]="datum | date : 'dd.MM.yyyy'" (ngModelChange)="datum=$event"  name="datum" />
         </mat-form-field>
 
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.languages' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.languages" name="languages">
+            <mat-icon matSuffix (click)="toggleKeep('languages')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['languages']">push_pin</mat-icon>
         </mat-form-field>
     </div>
 
-    <div class="app-mb-4">
-        <mat-form-field class="app-w-100">
+    <div class="app-mb-4 ">
+        <mat-form-field class="app-w-100"  >
             <mat-label>{{ 'field.incipit' | translate}}</mat-label>
             <input rows="5" matInput [(ngModel)]="_letter.incipit" name="incipit" />
+            <mat-icon matSuffix (click)="toggleKeep('incipit')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['incipit']">push_pin</mat-icon>
         </mat-form-field>
     </div>
 
@@ -154,6 +166,7 @@
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.explicit' | translate}}</mat-label>
             <input rows="2" matInput [(ngModel)]="_letter.explicit" name="explicit" />
+            <mat-icon matSuffix (click)="toggleKeep('explicit')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['explicit']">push_pin</mat-icon>
         </mat-form-field>
     </div>
 
@@ -161,6 +174,7 @@
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.abstract' | translate}}</mat-label>
             <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract"></textarea>
+            <mat-icon matSuffix (click)="toggleKeep('abstract')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['abstract']">push_pin</mat-icon>
         </mat-form-field>
     </div>
 
@@ -168,6 +182,7 @@
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.summary' | translate}}</mat-label>
             <textarea rows="5" matInput [(ngModel)]="_letter.summary" name="abstract"></textarea>
+            <mat-icon matSuffix (click)="toggleKeep('summary')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['summary']">push_pin</mat-icon>
         </mat-form-field>
     </div>
 

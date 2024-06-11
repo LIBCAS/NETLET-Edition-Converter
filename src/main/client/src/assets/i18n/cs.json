@@ -81,7 +81,8 @@
     "analyze": "Analyzovat",
     "analyze_images": "Analyzovat z obrázků",
     "AI": "Umělá Inteligence",
-    "process": "Zpracovat pomoci AI"
+    "process": "Zpracovat pomoci AI",
+    "keep_value": "Zachovat stávající hodnotu"
   },
 
   "tags" : {
