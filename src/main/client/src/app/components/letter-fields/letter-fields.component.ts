@@ -11,26 +11,37 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from 'src/app/app.service';
-import { Entity, Letter, LetterCopy, NameTag } from 'src/app/shared/letter';
+import { Entity, Letter, NameTag } from 'src/app/shared/letter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslationDialogComponent } from '../translation-dialog/translation-dialog.component';
 import { AnalyzeDialogComponent } from '../analyze-dialog/analyze-dialog.component';
 import { AppState } from 'src/app/app-state';
 import { AltoBlock, AltoLine } from 'src/app/shared/alto';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { MatDatepicker, MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { Overlay } from '@angular/cdk/overlay';
 import { AppConfiguration } from 'src/app/app-configuration';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { Moment } from 'moment';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS } from '@angular/material-moment-adapter';
+import { MultiDateFormat } from 'src/app/shared/multi-date-format';
+
 
 @Component({
   selector: 'app-letter-fields',
   templateUrl: './letter-fields.component.html',
   styleUrls: ['./letter-fields.component.scss'],
   providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'cs' },
+    { provide: MAT_DATE_LOCALE, useValue: 'cs-CZ' },
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
+    },
+    // {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+    { provide: MAT_DATE_FORMATS, useClass: MultiDateFormat },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } } 
   ],
   standalone: true,
@@ -55,7 +66,6 @@ export class LetterFieldsComponent {
     } else {
       this.datum.setValue(null);
     }
-    console.log(this.datum.value)
     if (this._letter.authors_db) {
       this._letter.author_db = this._letter.authors_db.find(a => a.id === this._letter.author_db.id);
     }
@@ -83,7 +93,8 @@ export class LetterFieldsComponent {
 
   constructor(
     private _adapter: DateAdapter<any>,
-    @Inject(MAT_DATE_LOCALE) private _locale: string,
+    @Inject(MAT_DATE_FORMATS) private dateFormatConfig: MultiDateFormat,
+    // @Inject(MAT_DATE_LOCALE) private _locale: string,
     private overlay: Overlay,
     private route: ActivatedRoute,
     public config: AppConfiguration,
@@ -92,8 +103,8 @@ export class LetterFieldsComponent {
     public dialog: MatDialog) { }
 
   ngOnInit() {
-    this._locale = 'cs';
-    this._adapter.setLocale(this._locale);
+    //this._locale = 'cs';
+    //this._adapter.setLocale(this._locale);
     this.datum.valueChanges.subscribe(v => {
       console.log(this.datum.value)
     })
@@ -326,4 +337,14 @@ export class LetterFieldsComponent {
   removeSelection(page: number) {
     this._letter.selection = this._letter.selection.filter(s => s.page !== page)
   }
+
+  setMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>, control: FormControl) {
+      const ctrlValue = control.value ? control.value : new Date();
+      ctrlValue.setMonth(normalizedMonthAndYear.month());
+      ctrlValue.setFullYear(normalizedMonthAndYear.year());
+      control.setValue(ctrlValue);
+    // this.seriesDateTo = ctrlValue;
+    //  datepicker.close();
+  }
+
 }

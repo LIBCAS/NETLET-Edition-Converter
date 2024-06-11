@@ -66,7 +66,6 @@ export class AnalyzeDialogComponent {
     this._letterAnalyzed = new Letter();
     this._letter = new Letter();
     if (this.data.letter.analysis) {
-      console.log(this.data.letter.analysis)
       this.setAnalysis(this.data.letter.analysis);
     }
   }

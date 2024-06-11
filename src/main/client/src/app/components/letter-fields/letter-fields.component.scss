@@ -1,9 +1,9 @@
 ::ng-deep {
   .app-icons {
-  .mat-mdc-form-field {
-    .mat-mdc-form-field-icon-suffix {
-      min-width: 90px !important;
-    }
+    .mat-mdc-form-field:not(.app-calendar) {
+      .mat-mdc-form-field-icon-suffix {
+        min-width: 90px !important;
+      }
+    }  
   }
-}
 }

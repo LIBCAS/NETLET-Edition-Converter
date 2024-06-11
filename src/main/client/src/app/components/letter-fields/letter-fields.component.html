@@ -79,17 +79,18 @@
 
   </div>
   <div class="app-mb-4">
-    <!-- <mat-form-field class="app-fxFlex" >
-      <mat-label>{{ 'field.date_year' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.date_year" name="date_year"><span matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'date_year' }"></ng-container>
-    </mat-form-field> -->
-    <mat-form-field class="app-fxFlex" >
+    <mat-form-field class="app-fxFlex app-calendar" >
       <mat-label>{{ 'field.date' | translate}}</mat-label>
-      <input matInput [matDatepicker]="picker" [formControl]="datum" >
+      <!-- <input matInput [matDatepicker]="picker" [formControl]="datum" >
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-      <!-- <input matInput [value]="datum | date : 'dd.MM.yyyy' " name="datum" /> -->
+      <mat-datepicker #picker></mat-datepicker> -->
+
+      <input matInput [matDatepicker]="dp2" [placeholder]="'field.date' | translate" 
+             [formControl]="datum">
+      <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+      <mat-datepicker #dp2 (monthSelected)="setMonthAndYear($event, dp2, datum)"
+                      (yearSelected)="setMonthAndYear($event, dp2, datum)" startView="multi-year"></mat-datepicker>
+
     </mat-form-field>
 
     <mat-form-field class="app-fxFlex app-ml-3" >

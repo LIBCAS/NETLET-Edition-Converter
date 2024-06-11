@@ -5,7 +5,7 @@
 @include mat.core();
 
 
-$app-pp: mat.define-palette(mat.$blue-palette, 700);
+$app-pp: mat.define-palette(mat.$brown-palette, 500);
 $app-primary: mat.get-color-from-palette($app-pp); 
 // $app-primary: mat-palette($mat-blue, 700);
 
