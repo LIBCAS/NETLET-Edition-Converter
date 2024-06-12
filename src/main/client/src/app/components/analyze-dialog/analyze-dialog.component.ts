@@ -184,7 +184,7 @@ export class AnalyzeDialogComponent {
   annotate() {
     const orig = this._letterAnalyzed.abstract_cs;
     // this._letter.abstract_cs = 'processing...';
-    this.service.annotate(this.data).subscribe((resp: any) => {
+    this.service.annotate({text: this._letter.full_text, prompt: this.data.prompt, gptModel: this.data.gptModel}).subscribe((resp: any) => {
       this.loading = false;
       if (resp.error) {
         console.log(resp);
