@@ -48,12 +48,12 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
     return ret.trim();
   }
 
-  getBlockText(): string {
+  getBlockText(selectedBlocks: AltoBlock[]): string {
     let ret = '-';
     const half = this.alto.Layout.Page.PrintSpace.WIDTH / this.fileConfig.columns;
     // console.log(half)
     // sort selected blocks
-    this.selectedBlocks.sort((a, b) => {
+    selectedBlocks.sort((a, b) => {
       if (a.HPOS <= half && b.HPOS > half) {
         // console.log(a.ID + ' - ' + b.ID)
         return -1;
@@ -66,7 +66,7 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
 
 
 
-    this.selectedBlocks.forEach((s: AltoBlock) => {
+    selectedBlocks.forEach((s: AltoBlock) => {
       if (s.TextLine) {
         s.TextLine.forEach((s: AltoLine) => {
           // join lines on '-' splitter        
@@ -82,6 +82,21 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
       }
     });
     return ret;
+  }
+
+  getBlocksFromSelection(t: DOMRect): AltoBlock[] {
+    const tBlocks: AltoBlock[] = this.alto.Layout.Page.PrintSpace.TextBlock;
+    const selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
+      return this.intersectRect(t, DOMRect.fromRect({ x: tb.HPOS, y: tb.VPOS, width: tb.WIDTH, height: tb.HEIGHT }))
+    });
+    return selectedBlocks;
+  }
+
+  intersectRect(r1: DOMRect, r2: DOMRect) {
+    return !(r2.left >= r1.right ||
+      r2.right <= r1.left ||
+      r2.top >= r1.bottom ||
+      r2.bottom <= r1.top);
   }
 
 }

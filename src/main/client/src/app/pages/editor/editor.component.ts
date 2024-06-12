@@ -136,9 +136,10 @@ export class EditorComponent {
 
   newLetter() {
     this.letter = new Letter();
-    this.letter.id = this.state.selectedFile.filename.substring(0,3) + new Date().getTime();
+    this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
     this.letter.author = this.state.fileConfig.def_author;
     this.letter.recipient = this.state.fileConfig.def_recipient;
+    this.letter.full_text = '';
     this.view = 'fields';
   }
 
@@ -161,14 +162,14 @@ export class EditorComponent {
     } else {
       this.getLetters();
     }
-    
+
   }
 
   setField(data: { field: string, textBox: string, append: boolean }) {
     let text = '';
     switch (data.textBox) {
       case 'block':
-        text = this.state.getBlockText();
+        text = this.state.getBlockText(this.state.selectedBlocks);
         break;
       case 'line':
         text = this.state.getSelectedLinesText();
@@ -187,13 +188,13 @@ export class EditorComponent {
     // this.letterForm.controls[field].setValue(text);
 
     setTimeout(() => {
-      
-    const el: HTMLInputElement = document.querySelector('input[name="'+data.field + '"]');
-    if (el) {
-      el.focus();
-    }
+
+      const el: HTMLInputElement = document.querySelector('input[name="' + data.field + '"]');
+      if (el) {
+        el.focus();
+      }
     }, 100)
-    
+
   }
 
   copyToClipBoard(textBox: string) {
@@ -203,7 +204,7 @@ export class EditorComponent {
     let text = '';
     switch (textBox) {
       case 'block':
-        text = this.state.getBlockText();
+        text = this.state.getBlockText(this.state.selectedBlocks);
         break;
       case 'line':
         text = this.state.getSelectedLinesText();
@@ -272,8 +273,8 @@ export class EditorComponent {
   }
 
   setArea(lineIdx: number, wordIdx: number) {
-    console.log(this.state.selectedBlocks[0].TextLine[lineIdx])
-    console.log(this.state.selectedBlocks[0].TextLine[lineIdx].String[wordIdx])
+    // console.log(this.state.selectedBlocks[0].TextLine[lineIdx])
+    // console.log(this.state.selectedBlocks[0].TextLine[lineIdx].String[wordIdx])
     const b = this.state.selectedBlocks[0];
     this.clearSelection();
     this.state.selectedBlocks = [b];
@@ -315,19 +316,22 @@ export class EditorComponent {
 
     if (this.state.selection.right - this.state.selection.left < 2) {
       // Je to jen click. state.selection ma byt oblast bloku
-      let left = this.state.alto.Layout.Page.PrintSpace.WIDTH;
+      let left = this.state.alto.Layout.Page.WIDTH;
       let rigth = 0;
-      let top = this.state.alto.Layout.Page.PrintSpace.HEIGHT;
+      let top = this.state.alto.Layout.Page.HEIGHT;
       let bottom = 0;
-      this.state.selectedBlocks.forEach((tb: AltoBlock) => {
-        left = Math.min(left, tb.HPOS);
-        top = Math.min(top, tb.VPOS);
-        rigth = Math.max(rigth, tb.HPOS + tb.WIDTH);
-        bottom = Math.max(bottom, tb.VPOS + tb.HEIGHT);
-      });
-      this.state.selection = new DOMRect(left, top, rigth - left, bottom - top);
+      if (this.state.selectedBlocks.length > 0) {
+        this.state.selectedBlocks.forEach((tb: AltoBlock) => {
+          left = Math.min(left, tb.HPOS);
+          top = Math.min(top, tb.VPOS);
+          rigth = Math.max(rigth, tb.HPOS + tb.WIDTH);
+          bottom = Math.max(bottom, tb.VPOS + tb.HEIGHT);
+        });
+        this.state.selection = new DOMRect(left, top, rigth - left, bottom - top);
+      } else {
+        this.state.selection = new DOMRect(0, 0, left, top);
+      }
     }
-
     this.state.selectedAlto = { blocks: this.state.selectedBlocks, lines: this.state.selectedLines, words: this.state.selectedWords };
 
   }

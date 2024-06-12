@@ -1,3 +1,5 @@
+import { AltoBlock } from "./alto";
+
 export class LetterCopy {
     ms_manifestation: string;
     type: string;
@@ -119,5 +121,5 @@ export class Letter {
     places_meta: PlaceMeta[];
     
     analysis: any;
-    selection: {page: number, selection?: DOMRect[]}[];
+    selection: {page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string}[];
 }

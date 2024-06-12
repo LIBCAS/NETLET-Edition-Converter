@@ -178,7 +178,7 @@ export class LetterFieldsComponent {
           return true;
         });
       }
-      this._letter.full_text = this.state.getBlockText();
+      this._letter.full_text = this.state.getBlockText(this.state.selectedBlocks);
 
       if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
         this._letter.startPage = this.state.currentPage;
@@ -239,6 +239,27 @@ export class LetterFieldsComponent {
     });
   }
 
+  getTextFromSelection(selection: {page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string}[]): string {
+    let ret = '';
+    selection.forEach(s => {
+      ret += s.text + '\n\n';
+    });
+    
+    return ret;
+  }
+
+  mergeBlocks(currentBlocks: AltoBlock[], newBlocks: AltoBlock[]): AltoBlock[] {
+    if (!currentBlocks) {
+      return newBlocks;
+    }
+    newBlocks.forEach(tb => {
+      if (!currentBlocks.find((b: AltoBlock) => tb.ID === b.ID)) {
+        currentBlocks.push(tb);
+      }
+    });
+    return currentBlocks;
+  }
+
   addSelection(append: boolean) {
     if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
       this._letter.startPage = this.state.currentPage;
@@ -246,29 +267,47 @@ export class LetterFieldsComponent {
     if (!this._letter.selection) {
       this._letter.selection = [];
     }
+
+
+    const blocks: AltoBlock[] = this.state.selection ? 
+      this.state.getBlocksFromSelection(this.state.selection) : this.state.alto.Layout.Page.PrintSpace.TextBlock;
+
     const page = this._letter.selection.find(s => s.page === this.state.currentPage);
     if (page) {
+      
       if (!this.state.selection) {
         delete page.selection;
+        page.blocks = blocks;
+        page.text = this.state.getBlockText(blocks);
       } else if (page.selection) {
         page.selection.push(this.state.selection);
+        page.blocks = this.mergeBlocks(page.blocks, blocks);
+        page.text = this.state.getBlockText(page.blocks);
       } else {
         page.selection = [this.state.selection];
+        page.blocks = this.mergeBlocks(page.blocks, blocks);
+        page.text = this.state.getBlockText(page.blocks);
       }
       
     } else {
       if (this.state.selection) {
         this._letter.selection.push({
           page: this.state.currentPage,
-          selection: [this.state.selection]
+          selection: [this.state.selection],
+          blocks: blocks,
+          text: this.state.getBlockText(blocks)
         });
       } else {
         this._letter.selection.push({
-          page: this.state.currentPage
+          page: this.state.currentPage,
+          blocks: blocks,
+          text: this.state.getBlockText(blocks)
         });
       }
       this._letter.selection.sort((s1, s2) =>  s1.page - s2.page);
     }
+
+    this._letter.full_text = this.getTextFromSelection(this._letter.selection);
   }
 
   setField(field: string, textBox: string, e: MouseEvent) {
@@ -281,13 +320,12 @@ export class LetterFieldsComponent {
         this.state.selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
           return true;
         });
-
       } 
 
       if (append) {
-        this._letter.full_text += '\n\n' + this.state.getBlockText();
+        this._letter.full_text += '\n\n' + this.state.getBlockText(this.state.selectedBlocks);
       } else {
-        this._letter.full_text = this.state.getBlockText();
+        this._letter.full_text = this.state.getBlockText(this.state.selectedBlocks);
       }
 
       if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
@@ -328,7 +366,7 @@ export class LetterFieldsComponent {
   getImgUrl(selection: any) {
     const data = {
       filename: this.state.selectedFile.filename,
-      selection
+      selection: {page: selection.page, selection: selection.selection}
     }
     let url = this.config.context + 'api/img/selection?data=' + encodeURIComponent(JSON.stringify(data));
     return url;
@@ -339,7 +377,8 @@ export class LetterFieldsComponent {
   }
 
   removeSelection(page: number) {
-    this._letter.selection = this._letter.selection.filter(s => s.page !== page)
+    this._letter.selection = this._letter.selection.filter(s => s.page !== page);
+    this._letter.full_text = this.getTextFromSelection(this._letter.selection);
   }
 
   setMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>, control: FormControl) {
