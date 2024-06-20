@@ -20,6 +20,8 @@
   "def_author": "Default Author",
   "def_recipient": "Default Recipient",
   "Columns": "Number of columns",
+  "Acronyms": "Acronyms",
+  
   "field": {
     "author": "Author",
     "recipient": "Recipient",
@@ -49,7 +51,8 @@
     "copies_repository": "Repository",
     "copies_archive": "Archive",
     "copies_collection": "Collection",
-    "copies_signature": "Signature"
+    "copies_signature": "Signature",
+    "locations": "Repositories"
   },
   "action": {
     "refresh": "Refresh",
@@ -81,7 +84,9 @@
     "analyze_images": "Analyze using images",
     "AI": "Artificial intelligence",
     "process": "Process with AI",
-    "keep_value": "Keep current value"
+    "keep_value": "Keep current value",
+    "add_acronym": "Add acronym",
+    "remove_acronym": "Remove acronym"
   },
   "tags": {
     "a": "Numbers in addresses",

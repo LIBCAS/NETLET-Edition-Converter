@@ -20,6 +20,8 @@
   "def_author": "Výchozí autor", 
   "def_recipient": "Výchozí příjemce", 
   "Columns": "Počet sloupců",
+  "Acronyms": "Akronyma",
+
   "field": {
     "author": "Autor", 
     "author_db": "Autor v HIKO db", 
@@ -51,7 +53,8 @@
     "copies_repository": "Repozitář",
     "copies_archive": "Archiv",
     "copies_collection": "Sbírka",
-    "copies_signature": "Signatura"
+    "copies_signature": "Signatura",
+    "locations": "Repozitáře"
   },
   "action": {
     "refresh": "Obnovit",
@@ -83,7 +86,9 @@
     "analyze_images": "Analyzovat z obrázků",
     "AI": "Umělá Inteligence",
     "process": "Zpracovat pomoci AI",
-    "keep_value": "Zachovat stávající hodnotu"
+    "keep_value": "Zachovat stávající hodnotu",
+    "add_acronym": "Přidat akronym",
+    "remove_acronym": "Odstranit akronym"
   },
 
   "tags" : {

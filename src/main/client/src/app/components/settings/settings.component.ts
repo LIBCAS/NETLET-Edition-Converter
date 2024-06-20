@@ -1,6 +1,6 @@
-import { NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -18,6 +18,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AppConfiguration } from 'src/app/app-configuration';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Observable, map, startWith } from 'rxjs';
+
+export class Location {
+  id: string; tenant: string; name: string = ''; type: string; acronyms: string[];
+  toString() {
+    return this.name;
+  }
+}
 
 @Component({
   selector: 'app-settings',
@@ -26,14 +34,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   standalone: true,
   imports: [FormsModule, AngularSplitModule, NgIf, NgFor, RouterModule, TranslateModule,
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule,
-    MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule]
+    MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule,
+    ReactiveFormsModule,
+    AsyncPipe]
 })
 export class SettingsComponent {
 
   prompt: string;
-  locations_db: {id: string, tenant: string, name: string, type: string, acronyms: string[]}[] = [];
-  location_str: string;
-  location: {id: string, tenant: string, name: string, type: string, acronyms: string[]};
+  locations_db: Location[] = [];
+  filteredLocations: Observable<Location[]>;
+
+  location_str = new FormControl<Location>(new Location())
+  location: Location;
+
   new_acronym: string;
 
   constructor(
@@ -43,15 +56,34 @@ export class SettingsComponent {
   ) { }
 
   ngOnInit() {
-    this.getPrompt();
+
+    this.filteredLocations = this.location_str.valueChanges.pipe(
+      startWith(''),
+      map(value => {
+        // const name = typeof value === 'string' ? value : value?.name;
+        const name = value
+        return name ? this._filterLocations(name as string) : this.locations_db.slice();
+      }),
+    );
+
     this.getLocations();
+    this.getPrompt();
+  }
+
+  private _filterLocations(value: any): Location[] {
+    // const filterValue = value.toLowerCase();
+    const filterValue = typeof value === 'string' ? value : value?.name;
+    return this.locations_db.filter(option => option.name.toLowerCase().includes(filterValue));
+  }
+
+  selectLocation(e: any) {
+    this.location = e.option.value;
   }
 
 
   getPrompt() {
     this.service.getPrompt().subscribe((resp: any) => {
       this.prompt = resp.prompt;
-
     });
   }
 
@@ -60,7 +92,7 @@ export class SettingsComponent {
   }
 
   getLocations() {
-    this.service.getAllLocations(this.state.fileConfig.tenant ? this.state.fileConfig.tenant : '').subscribe((resp: any) => {
+    this.service.getAllLocations(this.state.fileConfig?.tenant ? this.state.fileConfig.tenant : '').subscribe((resp: any) => {
       this.locations_db = resp.locations;
     });
   }

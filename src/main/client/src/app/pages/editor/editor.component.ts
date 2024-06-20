@@ -545,7 +545,6 @@ export class EditorComponent {
 
   regenerateAlto() {
     this.service.regeneratePageAlto(this.state.selectedFile.filename, (this.state.currentPage - 1) + '').subscribe((res: any) => {
-      // this.getLetters();
       this.service.showSnackBar(res)
     });
   }

@@ -22,7 +22,7 @@
       </svg>
     </a>
   </div>
-  <div>
+  <div class="app-fxLayout app-row app-center-v">
    <!-- <a mat-button >{{ 'Login' | translate }}</a> -->
    <button mat-icon-button (click)="openSettings()"><mat-icon >settings</mat-icon></button>
    <a mat-button *ngIf="translator.currentLang === 'en'" (click)="onLanguageChanged('cs')">cs</a>

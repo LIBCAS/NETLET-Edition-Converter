@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AppConfiguration } from './app-configuration';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class AppService {
   constructor(
     private http: HttpClient,
     private translateService: TranslateService,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    private config: AppConfiguration) { }
 
     showSnackBar(s: string, r: string = '', error: boolean = false, duration: number = 2000) {
       const right = r !== '' ? this.translateService.instant(r) : '';
@@ -32,12 +34,12 @@ export class AppService {
   private get<T>(url: string, params: HttpParams = new HttpParams(), responseType?: any): Observable<T> {
     // const r = re ? re : 'json';
     const options = { params, responseType, withCredentials: true };
-    return this.http.get<T>(`/api${url}`, options);
+    return this.http.get<T>(`${this.config.context}api${url}`, options);
 
   }
 
   private post(url: string, obj: any) {
-    return this.http.post<any>(`/api${url}`, obj);
+    return this.http.post<any>(`${this.config.context}api${url}`, obj);
   }
   
   /**

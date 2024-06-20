@@ -145,8 +145,13 @@ export class ViewerComponent {
       this.clearSelection();
     }
     this.service.getAlto(this.state.selectedFile.filename, (this.state.currentPage - 1) + '').subscribe((res: any) => {
-      this.state.alto = res.alto;
-      this.addIdx();
+
+      if (res.error) {
+        this.state.alto = null;
+      } else {
+        this.state.alto = res.alto;
+        this.addIdx();
+      }
     });
   }
 
@@ -407,6 +412,12 @@ export class ViewerComponent {
     setTimeout(() => {
       this.getInfo();
     }, 10)
+  }
+
+  regenerateAlto() {
+    this.service.regeneratePageAlto(this.state.selectedFile.filename, (this.state.currentPage - 1) + '').subscribe((res: any) => {
+      this.service.showSnackBar(res)
+    });
   }
 
   
