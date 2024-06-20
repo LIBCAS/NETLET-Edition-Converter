@@ -98,10 +98,17 @@ export class SettingsComponent {
   }
 
   addAcronym() {
-    this.location.acronyms.push(this.new_acronym);
+    if (!this.location.acronyms) {
+      this.location.acronyms = [this.new_acronym]
+    } else {
+      this.location.acronyms.push(this.new_acronym);
+    }
+    this.service.saveLocation(this.location).subscribe(res => { });
+    
   }
 
   removeAcronym(idx: number) {
     this.location.acronyms.splice(idx, 1);
+    this.service.saveLocation(this.location).subscribe(res => { });
   }
 }

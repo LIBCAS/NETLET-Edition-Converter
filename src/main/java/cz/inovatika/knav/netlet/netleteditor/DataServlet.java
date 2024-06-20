@@ -495,6 +495,18 @@ public class DataServlet extends HttpServlet {
                 return ret;
             }
         },
+        SAVE_LOCATION {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+
+                if (request.getMethod().equals("POST")) {
+                    JSONObject p = new JSONObject(IOUtils.toString(request.getInputStream(), "UTF-8"));
+                    ret = Indexer.saveLocation(p);
+                }
+                return ret;
+            }
+        },
         GET_AUTHORS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {

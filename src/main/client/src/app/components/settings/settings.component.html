@@ -19,7 +19,7 @@
         <mat-autocomplete #autoRepos1="matAutocomplete" (optionSelected)="selectLocation($event)">
 
           @for (option of filteredLocations | async; track option) {
-            <mat-option [value]="option">{{option.name}}</mat-option>
+            <mat-option [value]="option">{{option.name}} ({{ 'field.copies_' + option.type | translate }})</mat-option>
           }
 
           <!-- <mat-option *ngFor="let a of locations_db" [value]="a">

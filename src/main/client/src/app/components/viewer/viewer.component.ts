@@ -150,28 +150,8 @@ export class ViewerComponent {
         this.state.alto = null;
       } else {
         this.state.alto = res.alto;
-        this.addIdx();
+        this.state.addIdx();
       }
-    });
-  }
-
-  addIdx() {
-    const tBlocks: AltoBlock[] = this.state.alto.Layout.Page.PrintSpace.TextBlock;
-    if (!tBlocks) {
-      return;
-    }
-    tBlocks.forEach((tb: any) => {
-      const tlines = tb.TextLine;
-      if (tlines) {
-        tlines.forEach((line: AltoLine, idx: number) => {
-          line.idx = idx;
-          line.String.forEach((word: AltoString, widx: number) => {
-            word.idx = widx;
-          });
-
-        });
-      }
-
     });
   }
 

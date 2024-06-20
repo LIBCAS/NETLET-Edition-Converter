@@ -8,8 +8,8 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
 
   alto: any;
   tenants: string[];
-  files: {filename: string, file_id: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number}[] = [];
-  selectedFile: {filename: string, file_id: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number};
+  files: { filename: string, file_id: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number }[] = [];
+  selectedFile: { filename: string, file_id: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number };
   fileConfig: FileConfig;
   gptModels: string[];
   currentPage: number = 100;
@@ -21,8 +21,35 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
   selectedWords: AltoString[] = [];
   selectedAlto: AltoSelection;
 
-  fields: string[] = ['author', 'recipient', 'date_year', 'origin', 'incipit', 'explicit', 'full_text', 
+  fields: string[] = ['author', 'recipient', 'date_year', 'origin', 'incipit', 'explicit', 'full_text',
     'copies_repository', 'copies_archive', 'copies_collection', 'copies_signature'];
+
+  clearSelection() {
+    this.selectedBlocks = [];
+    this.selectedLines = [];
+    this.selectedWords = [];
+    this.selectedAlto = { blocks: [], lines: [], words: [] };
+  }
+
+  addIdx() {
+    const tBlocks: AltoBlock[] = this.alto.Layout.Page.PrintSpace.TextBlock;
+    if (!tBlocks) {
+      return;
+    }
+    tBlocks.forEach((tb: any) => {
+      const tlines = tb.TextLine;
+      if (tlines) {
+        tlines.forEach((line: AltoLine, idx: number) => {
+          line.idx = idx;
+          line.String.forEach((word: AltoString, widx: number) => {
+            word.idx = widx;
+          });
+
+        });
+      }
+
+    });
+  }
 
   getSelectedWordsText(): string {
     let ret = '';

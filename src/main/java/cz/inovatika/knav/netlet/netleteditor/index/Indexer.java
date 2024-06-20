@@ -27,6 +27,7 @@ import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.NamedList;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -498,6 +499,32 @@ public class Indexer {
             NamedList<Object> qresp = solr.request(qreq, "locations");
             jsonResponse = (String) qresp.get("response");
             ret = new JSONObject(jsonResponse);
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        return ret;
+    }
+    
+    public static JSONObject saveLocation(JSONObject data) {
+        JSONObject ret = new JSONObject();
+        try {
+            String id = data.optString("id", null);
+            Http2SolrClient solr = (Http2SolrClient) getClient(); 
+            SolrInputDocument idoc = new SolrInputDocument();
+            idoc.setField("id", id);
+            idoc.setField("name", data.optString("name"));
+            idoc.setField("tenant", data.optString("tenant"));
+            idoc.setField("type", data.optString("type"));
+            JSONArray ja = data.optJSONArray("acronyms");
+            for (int i = 0; i < ja.length(); i++) {
+                idoc.addField("acronyms", ja.getString(i));
+            }
+            
+            solr.add("locations", idoc);
+            solr.commit("locations");
+            ret.put("msg", "location saved!");
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);

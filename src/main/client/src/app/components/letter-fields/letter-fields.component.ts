@@ -373,7 +373,19 @@ export class LetterFieldsComponent {
   }
 
   gotoPage(page: number) {
+    this.state.clearSelection();
     this.state.currentPage = page;
+
+    this.service.getAlto(this.state.selectedFile.filename, (this.state.currentPage - 1) + '').subscribe((res: any) => {
+
+      if (res.error) {
+        this.state.alto = null;
+      } else {
+        this.state.alto = res.alto;
+        this.state.addIdx();
+      }
+    });
+
   }
 
   removeSelection(page: number) {

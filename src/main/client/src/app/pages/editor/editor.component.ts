@@ -241,7 +241,7 @@ export class EditorComponent {
 
   getPage(keepSelection: boolean = false) {
     if (!keepSelection) {
-      this.clearSelection();
+      this.state.clearSelection();
     }
     this.service.getAlto(this.state.selectedFile.filename, (this.state.currentPage - 1) + '').subscribe((res: any) => {
       this.state.alto = res.alto;
@@ -276,7 +276,7 @@ export class EditorComponent {
     // console.log(this.state.selectedBlocks[0].TextLine[lineIdx])
     // console.log(this.state.selectedBlocks[0].TextLine[lineIdx].String[wordIdx])
     const b = this.state.selectedBlocks[0];
-    this.clearSelection();
+    this.state.clearSelection();
     this.state.selectedBlocks = [b];
     this.state.selectedLines = [this.state.selectedBlocks[0].TextLine[lineIdx]];
     this.state.selectedWords = [this.state.selectedBlocks[0].TextLine[lineIdx].String[wordIdx]];
@@ -287,7 +287,7 @@ export class EditorComponent {
     this.state.selection = t;
     const tBlocks: AltoBlock[] = this.state.alto.Layout.Page.PrintSpace.TextBlock;
 
-    this.clearSelection();
+    this.state.clearSelection();
 
     this.state.selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
       return this.intersectRect(this.state.selection, DOMRect.fromRect({ x: tb.HPOS, y: tb.VPOS, width: tb.WIDTH, height: tb.HEIGHT }))
@@ -384,13 +384,6 @@ export class EditorComponent {
         return;
       }
     }
-  }
-
-  clearSelection() {
-    this.state.selectedBlocks = [];
-    this.state.selectedLines = [];
-    this.state.selectedWords = [];
-    this.state.selectedAlto = { blocks: this.state.selectedBlocks, lines: this.state.selectedLines, words: this.state.selectedWords };
   }
 
   openLetter(id: string) {

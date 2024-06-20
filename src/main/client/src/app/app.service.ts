@@ -177,4 +177,9 @@ export class AppService {
     return this.post(url, data);
   }
 
+  saveLocation(data: any) {
+    const url = `/data/save_location`;
+    return this.post(url, data);
+  }
+
 }
