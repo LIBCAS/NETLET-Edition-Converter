@@ -18,9 +18,9 @@
               <mat-option *ngFor="let t of state.gptModels" [value]="t">{{ t }}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-checkbox [(ngModel)]="fromImages">{{ 'images' | translate }}</mat-checkbox>
+        <mat-checkbox [(ngModel)]="showImages">{{ 'action.show_images' | translate }}</mat-checkbox>
     </div>
-    <div class="app-mb-4" *ngIf="fromImages">
+    <div class="app-mb-4" *ngIf="showImages">
         <img class="app-fxFlex" style="height: 100px;" *ngFor="let sel of data.letter.selection" [src]="imgUrl(sel)" />
     </div>
     <div class="app-mb-4">

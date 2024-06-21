@@ -1,14 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cz.inovatika.knav.netlet.netleteditor;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import org.apache.commons.io.FileUtils;
-import org.json.JSONObject;
 
 /**
  *

@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {MatMenuModule} from '@angular/material/menu';
 import { SettingsComponent } from '../settings/settings.component';
 
 
@@ -13,7 +14,7 @@ import { SettingsComponent } from '../settings/settings.component';
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, MatToolbarModule, MatButtonModule, MatIconModule,  MatDialogModule,
-    RouterModule, TranslateModule],
+    RouterModule, TranslateModule, MatMenuModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })

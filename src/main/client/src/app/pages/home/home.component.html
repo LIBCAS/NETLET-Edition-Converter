@@ -1,17 +1,26 @@
-<div class="app-p-4">
-  <h3>{{ 'file_list' | translate }}:</h3>
-  <ul>
-    <li *ngFor="let file of state.files">
-      <a [routerLink]="['/editor', file.filename]">{{ file.config?.name ? file.config.name : file.filename }}</a>
-      <span> {{ file.imgs }} {{ 'pages' | translate }} </span> <span> ({{ 'generated' | translate }} : {{ file.alto }}
-        )</span>
-      <span> {{ file.letters }} {{ 'letters' | translate }} </span>
-      <button mat-icon-button (click)="regenerateAlto(file.filename)" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button>
-      <mat-spinner *ngIf="file.alto < file.imgs" diameter="16" style="display: inline-block;"></mat-spinner>
-    </li>
-  </ul>
-  
+<div class="app-ml-8">
+  <p></p>
+  <h2>NETLET-Edition-Converter</h2>
+  <p>
+  Software NETLET Edition Converter je jedním z hlavních výstupů projektu <a href="https://netlet.lib.cas.cz/" target="_blenk">NETLET</a>. <br/>
+  Umožní vytváření strukturovaných metadat z tištěných edic korespondence vybraných osobností a jejich následné využití pro uložení v databázi. <br/>
+  Zdrojem mohou být data v textových formátech PDF i data získaná skenováním tištěných edic, kde bude využito OCR k získání plných textů. <br/>
+  Logické části budou rozpoznány a členěny do požadované struktury.
+  </p>
+
+  <h2>{{ 'file_list' | translate }}:</h2>
   <div>
+    <div *ngFor="let file of state.files; let index = index" class="app-fxLayout app-row app-center-v">
+      <a [routerLink]="['/editor', file.filename]">{{ file.config?.name ? file.config.name : file.filename }}</a>
+      <span class="app-ml-4"> {{ file.imgs }} {{ 'pages' | translate }} </span>&#160;<span> ({{ 'generated' | translate }} : {{ file.alto }}
+        )</span>
+      <span class="app-ml-4"> {{ file.letters }} {{ 'letters' | translate }} </span>
+      <button mat-icon-button (click)="regenerateAlto(file.filename)" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button>
+      <mat-spinner *ngIf="(file.alto < file.imgs)" diameter="16" style="display: inline-block;"></mat-spinner>
+    </div>
+  </div>
+  
+  <div class="app-fxLayout app-center-v">
     <button mat-flat-button (click)="getDocuments()" color="primary" [matTooltip]="'action.refresh' | translate"><mat-icon>refresh</mat-icon>{{'action.refresh' | translate}}</button>
     &#160;<button mat-flat-button (click)="newFile()" color="primary">{{ 'new_file' | translate }}</button>
   </div>

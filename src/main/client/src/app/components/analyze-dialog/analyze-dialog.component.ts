@@ -39,7 +39,7 @@ export class AnalyzeDialogComponent {
 
   translation: { text: string, lang: string };
   loading = false;
-  fromImages = false;
+  showImages = false;
 
   letter: {oldV: Letter, newV: Letter};
   keepFields: {[field: string]: boolean} = {};

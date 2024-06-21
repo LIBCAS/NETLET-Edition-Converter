@@ -1,4 +1,6 @@
 {
+  "cs": "Český",
+  "en": "English",
   "Ano": "Yes",
   "Ne": "No",
   "file_list": "List of uploaded PDFs",
@@ -7,6 +9,7 @@
   "Page(s)": "Page(s)",
   "letters": "letters",
   "Letters": "Letters",
+  "Fields": "Letter fields",
   "generated": "generated",
   "detect_lang": "Language Detection",
   "translate": "Translation",
@@ -86,7 +89,8 @@
     "process": "Process with AI",
     "keep_value": "Keep current value",
     "add_acronym": "Add acronym",
-    "remove_acronym": "Remove acronym"
+    "remove_acronym": "Remove acronym",
+    "show_images": "Show selection"
   },
   "tags": {
     "a": "Numbers in addresses",

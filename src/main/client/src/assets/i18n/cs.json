@@ -1,4 +1,6 @@
 {
+  "cs": "Český",
+  "en": "English",
   "Ano": "Ano",
   "Ne": "Ne",
   "file_list": "Seznam nahráných PDF",
@@ -7,6 +9,7 @@
   "Page(s)": "Rozsah stránek",
   "letters": "dopisy",
   "Letters": "Dopisy",
+  "Fields": "Pole dopisu",
   "generated": "zpracované",
   "detect_lang": "Detekce jazyka",
   "translate": "Překlad",
@@ -86,9 +89,10 @@
     "analyze_images": "Analyzovat z obrázků",
     "AI": "Umělá Inteligence",
     "process": "Zpracovat pomoci AI",
-    "keep_value": "Zachovat stávající hodnotu",
+    "keep_value": "Zachovat předchozí hodnotu",
     "add_acronym": "Přidat akronym",
-    "remove_acronym": "Odstranit akronym"
+    "remove_acronym": "Odstranit akronym",
+    "show_images": "Zobrazit výběr"
   },
 
   "tags" : {
