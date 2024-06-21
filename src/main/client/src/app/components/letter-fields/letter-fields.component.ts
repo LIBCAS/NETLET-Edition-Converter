@@ -78,8 +78,6 @@ export class LetterFieldsComponent {
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
   @Output() onShouldRefresh = new EventEmitter<string>();
 
-  @ViewChild('abstract') abstract: any;
-
   entities: Entity[] = [];
   nametag: string;
   nametags: NameTag[];
@@ -171,26 +169,25 @@ export class LetterFieldsComponent {
   }
 
   analyze() {
-    if (!this._letter.full_text) {
-      if (this.state.selectedBlocks.length === 0) {
-        const tBlocks: AltoBlock[] = this.state.alto.Layout.Page.PrintSpace.TextBlock;
-        this.state.selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
-          return true;
-        });
-      }
-      this._letter.full_text = this.state.getBlockText(this.state.selectedBlocks);
+    // if (!this._letter.full_text) {
+    //   if (this.state.selectedBlocks.length === 0) {
+    //     const tBlocks: AltoBlock[] = this.state.alto.Layout.Page.PrintSpace.TextBlock;
+    //     this.state.selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
+    //       return true;
+    //     });
+    //   }
+    //   this._letter.full_text = this.state.getBlockText(this.state.selectedBlocks);
 
-      if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
-        this._letter.startPage = this.state.currentPage;
-      }
+    //   if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
+    //     this._letter.startPage = this.state.currentPage;
+    //   }
 
-      this._letter.selection = [{
-          page: this.state.currentPage
-        }
-      ];
-    }
-    // console.log(this._letter.full_text);
-    // console.log(this._letter.selection);
+    //   this._letter.selection = [{
+    //       page: this.state.currentPage
+    //     }
+    //   ];
+    // }
+    
 
     let prompt = this.state.fileConfig.prompt;
     const brackets: string = this.brackets(prompt);

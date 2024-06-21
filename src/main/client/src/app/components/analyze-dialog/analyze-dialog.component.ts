@@ -147,7 +147,8 @@ export class AnalyzeDialogComponent {
     this._letterAnalyzed.sign_off = analysis.sign_off;
     this._letterAnalyzed.signature = analysis.signature;
 
-    this._letterAnalyzed.abstract_cs = analysis.abstract;
+    this._letterAnalyzed.abstract_cs = analysis.abstract_cs;
+    this._letterAnalyzed.abstract_en = analysis.abstract_en;
     this._letterAnalyzed.summary = analysis.summary;
 
     this._letterAnalyzed.origin = analysis.location || analysis.place;
@@ -310,10 +311,10 @@ export class AnalyzeDialogComponent {
     });
   }
 
-  imgUrl(selection: any) {
+  getImgUrl(selection: any) {
     const data = {
       filename: this.state.selectedFile.filename,
-      selection
+      selection: {page: selection.page, selection: selection.selection}
     }
     let url = this.config.context + 'api/img/selection?data=' + encodeURIComponent(JSON.stringify(data));
     return url;

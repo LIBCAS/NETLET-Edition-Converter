@@ -134,8 +134,15 @@
     
   <div class="app-mb-4">
     <mat-form-field class="app-w-100" >
-      <mat-label>{{ 'field.abstract' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract" #abstract></textarea>
+      <mat-label>{{ 'field.abstract_cs' | translate}}</mat-label>
+      <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract_cs" #abstract_cs></textarea>
+    </mat-form-field>
+  </div>
+    
+  <div class="app-mb-4">
+    <mat-form-field class="app-w-100" >
+      <mat-label>{{ 'field.abstract_en' | translate}}</mat-label>
+      <textarea rows="5" matInput [(ngModel)]="_letter.abstract_en" name="abstract_en" #abstract_en></textarea>
     </mat-form-field>
   </div>
   

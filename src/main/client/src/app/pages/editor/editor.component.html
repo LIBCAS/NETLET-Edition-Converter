@@ -28,8 +28,8 @@
             <button mat-icon-button (click)="getLetters()" [matTooltip]="'action.refresh' | translate"><mat-icon>refresh</mat-icon></button>
             <button mat-icon-button (click)="newLetter()" [matTooltip]="'action.new_letter' | translate"><mat-icon>add_circle</mat-icon></button>
             <button  [disabled]="!letter" mat-icon-button (click)="saveLetter()" [matTooltip]="'action.save' | translate"><mat-icon>save</mat-icon></button>
-            <button mat-icon-button (click)="prevLetter()" [matTooltip]="'action.previous_letter' | translate"><mat-icon>navigate_before</mat-icon></button>
-            <button mat-icon-button (click)="nextLetter()" [matTooltip]="'action.next_letter' | translate"><mat-icon>navigate_next</mat-icon></button>
+            <button mat-icon-button [disabled]="selectedResult === 0" (click)="prevLetter()" [matTooltip]="'action.previous_letter' | translate"><mat-icon>navigate_before</mat-icon></button>
+            <button mat-icon-button [disabled]="selectedResult === letters.length - 1" (click)="nextLetter()" [matTooltip]="'action.next_letter' | translate"><mat-icon>navigate_next</mat-icon></button>
             <!-- <button mat-icon-button (click)="toggleIgnoreAndNext()" [matTooltip]="'ignore' | translate"><mat-icon>gpp_bad</mat-icon></button> -->
             <button [disabled]="!letter" mat-icon-button (click)="removeLetter()" [matTooltip]="'action.remove' | translate"><mat-icon>delete_forever</mat-icon></button>
             <button [disabled]="!letter" mat-icon-button (click)="exportLetter()" [matTooltip]="'action.export' | translate"><mat-icon>forward_to_inbox</mat-icon></button>

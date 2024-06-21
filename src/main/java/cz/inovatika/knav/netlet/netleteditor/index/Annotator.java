@@ -141,12 +141,12 @@ public class Annotator {
             } 
             String r = request(reqBody.toString());
             ret = new JSONObject(r);
-//            JSONObject respjs = new JSONObject(ret
-//                    .getJSONArray("choices")
-//                    .getJSONObject(0)
-//                    .getJSONObject("message")
-//                    .getString("content"));
-//            ret.put("respjs", respjs);
+            JSONObject respjs = new JSONObject(ret
+                    .getJSONArray("choices")
+                    .getJSONObject(0)
+                    .getJSONObject("message")
+                    .getString("content"));
+            ret.put("respjs", respjs);
 
         } catch (URISyntaxException | IOException | InterruptedException ex) {
             LOGGER.log(Level.SEVERE, null, ex);

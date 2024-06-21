@@ -21,7 +21,7 @@
         <mat-checkbox [(ngModel)]="showImages">{{ 'action.show_images' | translate }}</mat-checkbox>
     </div>
     <div class="app-mb-4" *ngIf="showImages">
-        <img class="app-fxFlex" style="height: 100px;" *ngFor="let sel of data.letter.selection" [src]="imgUrl(sel)" />
+        <img class="app-fxFlex" style="height: 100px; border: 1px solid #aaa; margin-right: 2px;" *ngFor="let sel of data.letter.selection" [src]="getImgUrl(sel)" />
     </div>
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
@@ -172,16 +172,24 @@
 
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
-            <mat-label>{{ 'field.abstract' | translate}}</mat-label>
-            <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract"></textarea>
-            <mat-icon matSuffix (click)="toggleKeep('abstract')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['abstract']">push_pin</mat-icon>
+            <mat-label>{{ 'field.abstract_cs' | translate}}</mat-label>
+            <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract_cs"></textarea>
+            <mat-icon matSuffix (click)="toggleKeep('abstract_cs')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['abstract_cs']">push_pin</mat-icon>
+        </mat-form-field>
+    </div>
+
+    <div class="app-mb-4">
+        <mat-form-field class="app-w-100">
+            <mat-label>{{ 'field.abstract_en' | translate}}</mat-label>
+            <textarea rows="5" matInput [(ngModel)]="_letter.abstract_en" name="abstract_en"></textarea>
+            <mat-icon matSuffix (click)="toggleKeep('abstract_en')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['abstract_en']">push_pin</mat-icon>
         </mat-form-field>
     </div>
 
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.summary' | translate}}</mat-label>
-            <textarea rows="5" matInput [(ngModel)]="_letter.summary" name="abstract"></textarea>
+            <textarea rows="5" matInput [(ngModel)]="_letter.summary" name="summary"></textarea>
             <mat-icon matSuffix (click)="toggleKeep('summary')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['summary']">push_pin</mat-icon>
         </mat-form-field>
     </div>

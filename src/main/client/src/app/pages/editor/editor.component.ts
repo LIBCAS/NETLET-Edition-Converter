@@ -400,7 +400,8 @@ export class EditorComponent {
         } else {
           this.state.currentPage = this.letter.startPage;
         }
-        this.gotoResult(res.response.docs[0], false, 0);
+        const idx = this.letters.findIndex(l => l.id === id);
+        this.gotoResult(res.response.docs[0], false, idx);
 
       } else {
         this.newLetter();
@@ -416,6 +417,7 @@ export class EditorComponent {
     if (this.ignored[doc.id]) {
       return;
     }
+    this.selectedResult = idx;
     if (this.currentLetterId) {
       this.router.navigate(['../', doc.id], { relativeTo: this.route });
     } else {
