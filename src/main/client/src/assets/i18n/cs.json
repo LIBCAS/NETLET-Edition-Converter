@@ -24,6 +24,14 @@
   "def_recipient": "Výchozí příjemce", 
   "Columns": "Počet sloupců",
   "Acronyms": "Akronyma",
+  "chatgpt_info": {
+    "title": "chatGPT informace",
+    "completion_tokens": "Tokeny v odpovědi", 
+    "prompt_tokens": "Tokeny dotazu", 
+    "total_tokens": "Celkem tokenů",
+    "model": "Model",
+    "price": "Cena"
+  } ,
 
   "field": {
     "author": "Autor", 

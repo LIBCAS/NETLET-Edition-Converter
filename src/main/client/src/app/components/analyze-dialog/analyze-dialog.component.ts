@@ -19,6 +19,7 @@ import { AppService } from 'src/app/app.service';
 import { Entity, Letter } from 'src/app/shared/letter';
 import { AppConfiguration } from 'src/app/app-configuration';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { InfoUsageDialogComponent } from '../info-usage-dialog/info-usage-dialog.component';
 
 @Component({
   selector: 'app-analyze-dialog',
@@ -47,7 +48,7 @@ export class AnalyzeDialogComponent {
   _letter: Letter;
   datum: Date;
 
-  // usage: any;
+  usage: any;
 
   entities: Entity[] = [];
   nametag: string;
@@ -55,6 +56,7 @@ export class AnalyzeDialogComponent {
 
   constructor(
     private dialogRef: MatDialogRef<AnalyzeDialogComponent>,
+    public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: { letter: Letter, prompt: string, gptModel: string },
     public config: AppConfiguration,
     public state: AppState,
@@ -193,7 +195,7 @@ export class AnalyzeDialogComponent {
         // this.letter.abstract_cs = orig;
       } else {
         this.setAnalysis(JSON.parse(resp.choices[0].message.content));
-        // this.usage = resp.usage;
+        this.usage = resp.usage;
         this.checkAuthors();
       }
     });
@@ -218,7 +220,7 @@ export class AnalyzeDialogComponent {
         // this.letter.abstract_cs = orig;
       } else {
         this.setAnalysis(JSON.parse(resp.choices[0].message.content));
-        // this.usage = resp.usage;
+        this.usage = resp.usage;
         this.checkAuthors();
       }
     });
@@ -327,6 +329,21 @@ export class AnalyzeDialogComponent {
     } else {
       this._letter[field] = this._letterAnalyzed[field];
     }
+  }
+
+  showInfo() {
+    const data = {
+      usage: this.usage,
+      model :  "gpt-3.5-turbo-0125"
+    }
+    const dialogRef = this.dialog.open(InfoUsageDialogComponent, {
+      width: '800px',
+      data
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+    });
   }
 
 }

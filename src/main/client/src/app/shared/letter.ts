@@ -31,12 +31,13 @@ export interface PlaceMeta {
     marked: string
 }
 
-export interface Entity { 
-    id: string, key_cze: string, key_eng: string, dict: string, 
+export interface Entity {
+    id: string, key_cze: string, key_eng: string, dict: string,
     table: string, table_id: string, type: string, tenant: string,
-    selected: boolean };
+    selected: boolean
+};
 
-    export interface NameTag { pos: number[], text: string, type: string, selected: boolean };
+export interface NameTag { pos: number[], text: string, type: string, selected: boolean };
 
 export class Letter {
     id: string;
@@ -54,10 +55,10 @@ export class Letter {
     l_author: number;
     author: string;
     recipient: string;
-    authors_db: {id: string, tenant: string, name: string}[] = [];
-    recipients_db: {id: string, tenant: string, name: string}[] = [];
-    author_db: {id: string, tenant: string, name: string};
-    recipient_db: {id: string, tenant: string, name: string};
+    authors_db: { id: string, tenant: string, name: string }[] = [];
+    recipients_db: { id: string, tenant: string, name: string }[] = [];
+    author_db: { id: string, tenant: string, name: string };
+    recipient_db: { id: string, tenant: string, name: string };
     origin: string;
     full_text: string;
     entities: Entity[];
@@ -119,7 +120,7 @@ export class Letter {
 
     authors_meta: AutorMeta[];
     places_meta: PlaceMeta[];
-    
+
     analysis: any;
-    selection: {page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string}[];
+    selection: { page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string }[];
 }

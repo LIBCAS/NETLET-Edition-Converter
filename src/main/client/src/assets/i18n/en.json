@@ -24,7 +24,14 @@
   "def_recipient": "Default Recipient",
   "Columns": "Number of columns",
   "Acronyms": "Acronyms",
-  
+  "chatgpt_info": {
+    "title": "chatGPT Info",
+    "completion_tokens": "Completion tokens", 
+    "prompt_tokens": "Prompt tokens", 
+    "total_tokens": "Toal tokens",
+    "model": "Model",
+    "price": "Price"
+  } ,
   "field": {
     "author": "Author",
     "recipient": "Recipient",
@@ -168,3 +175,4 @@
     "ty": "years"
   }
 }
+

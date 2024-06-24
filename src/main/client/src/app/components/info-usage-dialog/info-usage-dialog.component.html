@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>{{ 'chatgpt_info.title' | translate }}</h1>
+<div mat-dialog-content class="app-letter">
+    <div>
+        {{ 'chatgpt_info.prompt_tokens' | translate}}: {{ data.usage.prompt_tokens}}
+    </div>
+    <div>
+      {{ 'chatgpt_info.completion_tokens' | translate}}: {{ data.usage.completion_tokens}}
+    </div>
+    <div>
+      {{ 'chatgpt_info.total_tokens' | translate}}: {{ data.usage.total_tokens}}
+    </div>
+    <div>
+        {{ 'chatgpt_info.model' | translate}}: {{ data.model }}
+    </div>
+    <div>
+        {{ 'chatgpt_info.price' | translate}}: {{ total }}$
+    </div>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="null" color="primary">{{ 'Close' | translate }}</button>
+</div>

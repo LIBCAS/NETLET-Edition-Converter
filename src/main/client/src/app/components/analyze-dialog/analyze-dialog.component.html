@@ -46,6 +46,11 @@
         <mat-icon class="material-icons-outlined">translate</mat-icon>
         {{ 'translate' | translate}}
     </button>
+
+    <button mat-icon-button color="primary" [disabled]="!usage" (click)="showInfo()" [matTooltip]="'info' | translate">
+        <mat-icon class="material-icons-outlined">info</mat-icon>
+    </button>
+    
     <mat-divider class="app-mt-4"></mat-divider>
 
     <div class="app-fxLayout app-row app-mb-4" *ngIf="translation?.lang">
