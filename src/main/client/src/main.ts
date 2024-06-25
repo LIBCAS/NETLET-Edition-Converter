@@ -16,7 +16,7 @@ import { AppState } from './app/app-state';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export function createTranslateLoader(http: HttpClient) {
-    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+    return new TranslateHttpLoader(http, 'assets/i18n/', '.json?v=' + Date.now());
   }
 
 bootstrapApplication(AppComponent, {

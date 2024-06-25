@@ -108,6 +108,7 @@ export class AnalyzeDialogComponent {
     this.service.detectLang(this._letter.full_text).subscribe((resp: any) => {
       // alert(resp.languages)
       this._letterAnalyzed.languages = resp.languages;
+      this._letter.languages = this._letterAnalyzed.languages;
     });
   }
 

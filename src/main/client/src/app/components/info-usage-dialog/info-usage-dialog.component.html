@@ -13,7 +13,7 @@
         {{ 'chatgpt_info.model' | translate}}: {{ data.model }}
     </div>
     <div>
-        {{ 'chatgpt_info.price' | translate}}: {{ total }}$
+        {{ 'chatgpt_info.price' | translate}}: {{ total }}$ ~ {{ total * 24 | number : '1.0-3'}}Kc
     </div>
 </div>
 

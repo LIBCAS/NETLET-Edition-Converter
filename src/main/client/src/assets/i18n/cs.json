@@ -40,7 +40,7 @@
     "recipient_db": "Příjemce v HIKO db", 
     "date": "Datum dopisu", 
     "date_year": "Rok dopisu", 
-    "origin": "Origin", 
+    "origin": "Místo odeslání", 
     "incipit": "Incipit", 
     "explicit": "Explicit", 
     "full_text": "Text dopisu",

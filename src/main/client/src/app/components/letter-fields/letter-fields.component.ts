@@ -206,7 +206,7 @@ export class LetterFieldsComponent {
         letter: this._letter, 
         // text: this._letter.full_text, 
         prompt: prompt, 
-        gptModel: this.state.fileConfig.gptModel }
+        gptModel: this.state.fileConfig.gptModel ? this.state.fileConfig.gptModel : this.state.gptModels[0] }
     });
 
     dialogRef.afterClosed().subscribe(result => {
