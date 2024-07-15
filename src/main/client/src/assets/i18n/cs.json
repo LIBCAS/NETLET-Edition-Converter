@@ -32,6 +32,9 @@
     "model": "Model",
     "price": "Cena"
   } ,
+  "tenant": "Katalog",
+  "templates": "Šablony",
+  "new_template_name": "Nová šablona",
 
   "field": {
     "author": "Autor", 
@@ -40,6 +43,7 @@
     "recipient_db": "Příjemce v HIKO db", 
     "date": "Datum dopisu", 
     "date_year": "Rok dopisu", 
+    "date_marked": "Datum označené v dopise", 
     "origin": "Místo odeslání", 
     "incipit": "Incipit", 
     "explicit": "Explicit", 
@@ -66,6 +70,7 @@
     "copies_archive": "Archiv",
     "copies_collection": "Sbírka",
     "copies_signature": "Signatura",
+    "template": "Šablona",
     "locations": "Repozitáře"
   },
   "action": {
@@ -99,6 +104,7 @@
     "AI": "Umělá Inteligence",
     "process": "Zpracovat pomoci AI",
     "keep_value": "Zachovat předchozí hodnotu",
+    "add_template": "Přidat šablonu",
     "add_acronym": "Přidat akronym",
     "remove_acronym": "Odstranit akronym",
     "show_images": "Zobrazit výběr"

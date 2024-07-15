@@ -11,11 +11,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AngularSplitModule } from 'angular-split';
-import { FileConfig } from 'src/app/shared/file-config';
+import { FileConfig, FileTemplate } from 'src/app/shared/file-config';
 import { AppService } from 'src/app/app.service';
 import { AppState } from 'src/app/app-state';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-file-settings-dialog',
@@ -23,12 +24,20 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
   styleUrls: ['./file-settings-dialog.component.scss'],
   standalone: true,
   imports: [FormsModule, AngularSplitModule, NgIf, NgFor, RouterModule, TranslateModule, 
-    MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule,
+    MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule,
     MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule]
 })
 export class FileSettingsDialogComponent {
   
   authors_db: {id: string, tenant: string, name: string}[] = [];
+  selectedTemplate: FileTemplate;
+  new_template: string;
+  
+
+  locations_db: {id: string, tenant: string, name: string, type: string}[] = [];
+  repositories: {id: string, tenant: string, name: string}[] = [];
+  archives: {id: string, tenant: string, name: string}[] = [];
+  collections: {id: string, tenant: string, name: string}[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public fileConfig: FileConfig,
@@ -57,5 +66,28 @@ getAuthors(e: string) {
 
   save() {
     this.service.saveFile(this.state.selectedFile.filename, this.fileConfig).subscribe(res => {});
+  }
+
+  addTemplate() {
+    const t: FileTemplate = new FileTemplate();
+    t.name = this.new_template;
+    if (!this.fileConfig.templates) {
+      this.fileConfig.templates = [];
+    }
+    this.fileConfig.templates.push(t);
+  }
+
+  getLocations(e: string, type: string) {
+    this.service.getLocations(e, this.state.fileConfig.tenant ? this.state.fileConfig.tenant : '', type).subscribe((resp: any) => {
+      this.locations_db = resp.locations;
+      switch(type) {
+        case 'repository': this.repositories = this.locations_db.filter(l => l.type === 'repository'); break;
+        case 'archive':this.archives = this.locations_db.filter(l => l.type === 'archive'); break;
+        case 'collection':this.collections = this.locations_db.filter(l => l.type === 'collection'); break;
+      }
+      
+      // this.archives = this.locations_db.filter(l => l.type === 'archive');
+      // this.collections = this.locations_db.filter(l => l.type === 'collection');
+    });
   }
 }

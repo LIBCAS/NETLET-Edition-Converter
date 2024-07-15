@@ -32,11 +32,16 @@
     "model": "Model",
     "price": "Price"
   } ,
+  "tenant": "Catalog",
+  "templates": "Templates",
+  "new_template_name": "New template",
+
   "field": {
     "author": "Author",
     "recipient": "Recipient",
     "date": "Date of Letter",
     "date_year": "Year of Letter",
+    "date_marked": "Date found in letter", 
     "origin": "Origin",
     "incipit": "Incipit",
     "explicit": "Explicit",
@@ -63,6 +68,7 @@
     "copies_archive": "Archive",
     "copies_collection": "Collection",
     "copies_signature": "Signature",
+    "template": "Template",
     "locations": "Repositories"
   },
   "action": {
@@ -96,6 +102,7 @@
     "AI": "Artificial intelligence",
     "process": "Process with AI",
     "keep_value": "Keep current value",
+    "add_template": "Add template",
     "add_acronym": "Add acronym",
     "remove_acronym": "Remove acronym",
     "show_images": "Show selection"

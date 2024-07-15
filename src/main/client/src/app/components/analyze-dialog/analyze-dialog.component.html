@@ -142,14 +142,14 @@
     </div>
 
     <div class="app-mb-4">
-        <mat-form-field class="app-fxFlex" *ngIf="!datum">
-            <mat-label>{{ 'field.date' | translate}}</mat-label>
-            <input matInput [(ngModel)]="_letter.date" name="date" />
+        <mat-form-field class="app-fxFlex">
+            <mat-label>{{ 'field.date_marked' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.date_marked" name="date" />
         </mat-form-field>
 
-        <mat-form-field class="app-fxFlex" *ngIf="datum">
+        <mat-form-field class="app-fxFlex">
             <mat-label>{{ 'field.date' | translate}}</mat-label>
-            <input matInput  [ngModel]="datum | date : 'dd.MM.yyyy'" (ngModelChange)="datum=$event"  name="datum" />
+            <input matInput  [ngModel]="_letter.date | date : 'dd.MM.yyyy'" (ngModelChange)="datum=$event"  name="datum" />
         </mat-form-field>
 
         <mat-form-field class="app-fxFlex app-ml-3">

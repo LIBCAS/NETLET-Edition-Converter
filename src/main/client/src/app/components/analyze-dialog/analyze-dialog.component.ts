@@ -155,6 +155,7 @@ export class AnalyzeDialogComponent {
     this._letterAnalyzed.summary = analysis.summary;
 
     this._letterAnalyzed.origin = analysis.location || analysis.place;
+    this._letterAnalyzed.date_marked = analysis.date_as_show_in_text;
     this._letterAnalyzed.date = analysis.date;
     if (this.isDate(this._letterAnalyzed.date)) {
       this.datum = new Date(analysis.date);
@@ -286,6 +287,7 @@ export class AnalyzeDialogComponent {
       console.log(this.datum)
     }
     this.data.letter.date = this._letterAnalyzed.date;
+    this.data.letter.date_marked = this._letterAnalyzed.date_marked;
 
     this.data.letter.incipit = this._letterAnalyzed.incipit;
     this.data.letter.explicit = this._letterAnalyzed.explicit;

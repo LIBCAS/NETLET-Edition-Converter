@@ -6,6 +6,8 @@ export interface AltoSelection { blocks: AltoBlock[], lines: AltoLine[], words: 
 
 export interface SearchParams { filename: string, page: number, selection: AltoSelection, onlyBox: boolean, twoCols: boolean };
 
+export class FileTemplate { name: string; def_author: string; def_recipient: string; copies_repository: string; copies_archive: string; copies_collection: string};
+
 export class FileConfig {
   name: string;
   columns: number;
@@ -17,4 +19,5 @@ export class FileConfig {
   tenant: string;
   prompt: string;
   gptModel: string;
+  templates: FileTemplate[];
 }

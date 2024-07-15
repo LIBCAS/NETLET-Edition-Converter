@@ -14,7 +14,7 @@ import { NgIf, NgTemplateOutlet, NgFor, DatePipe } from '@angular/common';
 import { AngularSplitModule, SplitComponent } from 'angular-split';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
-import { SearchParams } from 'src/app/shared/file-config';
+import { FileTemplate, SearchParams } from 'src/app/shared/file-config';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { LetterFieldsComponent } from 'src/app/components/letter-fields/letter-fields.component';
@@ -23,6 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AppState } from 'src/app/app-state';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { FileSettingsDialogComponent } from 'src/app/components/file-settings-dialog/file-settings-dialog.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 @Component({
@@ -34,7 +35,7 @@ import { FileSettingsDialogComponent } from 'src/app/components/file-settings-di
     { provide: MAT_DATE_LOCALE, useValue: 'cs' },
   ],
   imports: [FormsModule, AngularSplitModule, NgIf, ViewerComponent,
-    MatToolbarModule, RouterModule, TranslateModule, DatePipe,
+    MatToolbarModule, RouterModule, TranslateModule, DatePipe, MatMenuModule,
     MatTabsModule, MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatListModule,
     MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
 })
@@ -134,11 +135,14 @@ export class EditorComponent {
     }, 10)
   }
 
-  newLetter() {
+  newLetter(t: FileTemplate) {
     this.letter = new Letter();
     this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-    this.letter.author = this.state.fileConfig.def_author;
-    this.letter.recipient = this.state.fileConfig.def_recipient;
+    this.letter.author = t.def_author;
+    this.letter.recipient = t.def_recipient;
+    this.letter.copies_repository = t.copies_repository;
+    this.letter.copies_archive = t.copies_archive;
+    this.letter.copies_collection = t.copies_collection;
     this.letter.full_text = '';
     this.view = 'fields';
   }
@@ -404,7 +408,7 @@ export class EditorComponent {
         this.gotoResult(res.response.docs[0], false, idx);
 
       } else {
-        this.newLetter();
+        this.newLetter(this.state.fileConfig.templates[0]);
         this.letter.id = id;
         this.letter.startPage = this.state.currentPage;
       }

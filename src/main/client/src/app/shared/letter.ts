@@ -70,7 +70,7 @@ export class Letter {
     date_year: number;
     date_month: number;
     date_day: number;
-    date_marked: boolean;
+    date_marked: string;
     date_uncertain: boolean;
     date_approximate: boolean;
     date_inferred: boolean;
