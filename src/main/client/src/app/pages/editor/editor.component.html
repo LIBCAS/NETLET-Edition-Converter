@@ -26,10 +26,15 @@
           </div>
           <div>
             <button mat-icon-button (click)="getLetters()" [matTooltip]="'action.refresh' | translate"><mat-icon>refresh</mat-icon></button>
-            <button mat-icon-button  [matMenuTriggerFor]="menu" [matTooltip]="'action.new_letter' | translate"><mat-icon>add_circle</mat-icon></button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item *ngFor="let t of state.fileConfig.templates" (click)="newLetter(t)">{{ t.name }}</button>
-            </mat-menu>
+            <ng-container *ngIf="state.fileConfig.templates.length === 1">
+              <button mat-icon-button (click)="newLetter(state.fileConfig.templates[0])" [matTooltip]="'action.new_letter' | translate"><mat-icon>add_circle</mat-icon></button>
+            </ng-container>
+            <ng-container *ngIf="state.fileConfig.templates.length > 1">
+              <button mat-icon-button  [matMenuTriggerFor]="menu" [matTooltip]="'action.new_letter' | translate"><mat-icon>add_circle</mat-icon></button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item *ngFor="let t of state.fileConfig.templates" (click)="newLetter(t)">{{ t.name }}</button>
+              </mat-menu>
+            </ng-container>
             <button  [disabled]="!letter" mat-icon-button (click)="saveLetter()" [matTooltip]="'action.save' | translate"><mat-icon>save</mat-icon></button>
             <button mat-icon-button [disabled]="selectedResult === 0" (click)="prevLetter()" [matTooltip]="'action.previous_letter' | translate"><mat-icon>navigate_before</mat-icon></button>
             <button mat-icon-button [disabled]="selectedResult === letters.length - 1" (click)="nextLetter()" [matTooltip]="'action.next_letter' | translate"><mat-icon>navigate_next</mat-icon></button>

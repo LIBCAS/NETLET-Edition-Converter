@@ -104,6 +104,16 @@ export class EditorComponent {
 
       this.service.getConfig(this.state.selectedFile.filename).subscribe((res: any) => {
         this.state.fileConfig = res;
+        if (!this.state.fileConfig.templates) {
+          this.state.fileConfig.templates = [{
+            name: 'template_0',
+            def_author: this.state.fileConfig.def_author,
+            def_recipient: this.state.fileConfig.def_recipient,
+            copies_repository: null,
+            copies_archive: null,
+            copies_collection: null}
+          ];
+        }
         if (this.state.fileConfig.searchParams) {
           this.searchParams = this.state.fileConfig.searchParams;
           this.twoCols = this.searchParams.twoCols;
@@ -118,11 +128,7 @@ export class EditorComponent {
         } else {
           this.view = 'letters'
         }
-
-
       });
-
-
     });
 
   }
