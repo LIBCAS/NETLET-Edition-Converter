@@ -3,7 +3,7 @@ import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveF
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AppService } from 'src/app/app.service';
 import { AltoBlock, AltoLine, AltoString } from 'src/app/shared/alto';
-import { Entity, Letter } from 'src/app/shared/letter';
+import { Entity, Letter, LetterCopy } from 'src/app/shared/letter';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -143,12 +143,18 @@ export class EditorComponent {
 
   newLetter(t: FileTemplate) {
     this.letter = new Letter();
+    this.letter.template = t;
     this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
     this.letter.author = t.def_author;
     this.letter.recipient = t.def_recipient;
-    this.letter.copies_repository = t.copies_repository;
-    this.letter.copies_archive = t.copies_archive;
-    this.letter.copies_collection = t.copies_collection;
+    // this.letter.copies_repository = t.copies_repository;
+    // this.letter.copies_archive = t.copies_archive;
+    // this.letter.copies_collection = t.copies_collection;
+    const copy = new LetterCopy();
+    copy.repository = t.copies_repository;
+    copy.archive = t.copies_archive;
+    copy.collection = t.copies_collection;
+    this.letter.copies.push(copy);
     this.letter.full_text = '';
     this.view = 'fields';
   }
@@ -190,7 +196,28 @@ export class EditorComponent {
     }
 
     text = this.processReplacements(text);
-    if (data.append && this.letter[data.field as keyof Letter]) {
+    if (data.field.startsWith('copies_')) {
+      // field format is copies_repository_0
+      const parts = data.field.split('_');
+      let idx: number = parseInt(parts[2]);
+      // if (!idx) {
+      //   if (this.letter.copies.length === 1) {
+      //     idx = 0
+      //   } else {
+      //     let p = prompt('Copy number?', '1');
+      //     idx = parseInt(p);
+      //     if (!idx ) {
+      //       return;
+      //     } else {
+      //       idx = idx - 1;
+      //     }
+      //   }
+      //     data.field = data.field +'_' + idx;
+        
+      // }
+      // console.log(idx, this.letter.copies)
+      this.letter.copies[idx][parts[1] as keyof LetterCopy] = text;
+    } else if (data.append && this.letter[data.field as keyof Letter]) {
       this.letter[data.field as keyof Letter] += ' ' + text;
     } else {
       this.letter[data.field as keyof Letter] = text;
@@ -411,6 +438,20 @@ export class EditorComponent {
           this.state.currentPage = this.letter.startPage;
         }
         const idx = this.letters.findIndex(l => l.id === id);
+
+        if (!this.letter.template) {
+          this.letter.template = this.state.fileConfig.templates[0];
+        }
+
+        if (!this.letter.copies) {
+          this.letter.copies = [];
+          const copy = new LetterCopy();
+          copy.repository = this.letter.copies_repository;
+          copy.archive = this.letter.copies_archive;
+          copy.collection = this.letter.copies_collection;
+          this.letter.copies.push(copy);
+        }
+
         this.gotoResult(res.response.docs[0], false, idx);
 
       } else {

@@ -27,17 +27,23 @@
         <div cdkMenuItem *ngFor="let f of state.fields" class="app-fxLayout app-row app-center-v">
           <strong class="app-mr-1 app-fxFlex app-label">{{ 'field.' + f | translate }}: </strong>
           <mat-icon class="app-suffix app-color-block" (click)="setField(f, 'block', $event)" [matTooltip]="'action.set_block' | translate">menu_open</mat-icon>
-          <!-- <mat-icon class="app-suffix app-color-block" (click)="setField(f, 'block', true)" [matTooltip]="'action.add_block' | translate">post_add</mat-icon> -->
           <mat-icon class="app-suffix app-color-line" (click)="setField(f, 'line', $event)" [matTooltip]="'action.set_line' | translate">menu_open</mat-icon>
-          <!-- <mat-icon class="app-suffix app-color-line" (click)="setField(f, 'line', true)" [matTooltip]="'action.add_line' | translate">post_add</mat-icon> -->
           <mat-icon class="app-suffix app-color-word" (click)="setField(f, 'word', $event)" [matTooltip]="'action.set_word' | translate">menu_open</mat-icon>
-          <!-- <mat-icon class="app-suffix app-color-word" (click)="setField(f, 'word', true)" [matTooltip]="'action.add_word' | translate">post_add</mat-icon> -->
         </div>
+        <ng-container *ngFor="let copy of letter.copies; let idx = index">
+          <div cdkMenuItem class="app-fxLayout app-row app-center-v">---</div>
+          <div cdkMenuItem *ngFor="let f of state.copyFields" class="app-fxLayout app-row app-center-v">
+            <strong class="app-mr-1 app-fxFlex app-label">{{ 'field.' + f | translate }} {{ idx + 1 }}: </strong>
+            <mat-icon class="app-suffix app-color-block" (click)="setField(f + '_' + idx, 'block', $event)" [matTooltip]="'action.set_block' | translate">menu_open</mat-icon>
+            <mat-icon class="app-suffix app-color-line" (click)="setField(f + '_' + idx, 'line', $event)" [matTooltip]="'action.set_line' | translate">menu_open</mat-icon>
+            <mat-icon class="app-suffix app-color-word" (click)="setField(f + '_' + idx, 'word', $event)" [matTooltip]="'action.set_word' | translate">menu_open</mat-icon>
+          </div>
+        </ng-container>
         <div cdkMenuItem class="app-fxLayout app-row app-center-v">
-        <strong class="app-mr-1 app-fxFlex app-label">{{ 'action.copy' | translate }}: </strong>
-        <mat-icon class="app-suffix app-color-block" (click)="copyToClipboard('block')" [matTooltip]="'action.copy_block' | translate">content_copy</mat-icon>
-        <mat-icon class="app-suffix app-color-line" (click)="copyToClipboard('line')" [matTooltip]="'action.copy_line' | translate">content_copy</mat-icon>
-        <mat-icon class="app-suffix app-color-word" (click)="copyToClipboard('word')" [matTooltip]="'action.copy_word' | translate">content_copy</mat-icon>
+          <strong class="app-mr-1 app-fxFlex app-label">{{ 'action.copy' | translate }}: </strong>
+          <mat-icon class="app-suffix app-color-block" (click)="copyToClipboard('block')" [matTooltip]="'action.copy_block' | translate">content_copy</mat-icon>
+          <mat-icon class="app-suffix app-color-line" (click)="copyToClipboard('line')" [matTooltip]="'action.copy_line' | translate">content_copy</mat-icon>
+          <mat-icon class="app-suffix app-color-word" (click)="copyToClipboard('word')" [matTooltip]="'action.copy_word' | translate">content_copy</mat-icon>
         </div>
         
       </div>

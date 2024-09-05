@@ -21,8 +21,8 @@ import { FileConfig, AltoSelection } from "./shared/file-config";
   selectedWords: AltoString[] = [];
   selectedAlto: AltoSelection;
 
-  fields: string[] = ['author', 'recipient', 'date_year', 'origin', 'incipit', 'explicit', 'full_text',
-    'copies_repository', 'copies_archive', 'copies_collection', 'copies_signature'];
+  fields: string[] = ['author', 'recipient', 'date_year', 'origin', 'incipit', 'explicit', 'full_text'];
+  copyFields: string[] = ['copies_repository', 'copies_archive', 'copies_collection', 'copies_signature'];
 
   clearSelection() {
     this.selectedBlocks = [];

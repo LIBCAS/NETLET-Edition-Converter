@@ -11,7 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from 'src/app/app.service';
-import { Entity, Letter, NameTag } from 'src/app/shared/letter';
+import { Entity, Letter, LetterCopy, NameTag } from 'src/app/shared/letter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslationDialogComponent } from '../translation-dialog/translation-dialog.component';
 import { AnalyzeDialogComponent } from '../analyze-dialog/analyze-dialog.component';
@@ -21,6 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepicker, MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
 import { Overlay } from '@angular/cdk/overlay';
 import { AppConfiguration } from 'src/app/app-configuration';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -46,7 +47,7 @@ import { MultiDateFormat } from 'src/app/shared/multi-date-format';
   ],
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, NgIf, RouterModule, TranslateModule, DatePipe,
-    MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatAutocompleteModule,
+    MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatAutocompleteModule, MatCardModule,
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatListModule, MatTooltipModule,
     MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, MatCheckboxModule]
 })
@@ -397,6 +398,14 @@ export class LetterFieldsComponent {
       control.setValue(ctrlValue);
     // this.seriesDateTo = ctrlValue;
     //  datepicker.close();
+  }
+
+  addCopy() {
+    const copy = new LetterCopy();
+    copy.repository = this._letter.template.copies_repository;
+    copy.archive = this._letter.template.copies_archive;
+    copy.collection = this._letter.template.copies_collection;
+    this._letter.copies.push(copy);
   }
 
 }

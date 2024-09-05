@@ -1,6 +1,8 @@
 import { AltoBlock } from "./alto";
+import { FileTemplate } from "./file-config";
 
 export class LetterCopy {
+    [key: string]: any;
     ms_manifestation: string;
     type: string;
     preservation: string;
@@ -12,6 +14,15 @@ export class LetterCopy {
     collection: string;
     signature: string;
     location_note: string
+
+    
+    // copies_repository: string;
+    // copies_archive: string;
+    // copies_collection: string;
+    // copies_signature: string;
+    // copies_type: string;
+    // copies_preservation: string;
+    // copies_copy: string;
 }
 
 export interface RelatedResources {
@@ -40,6 +51,7 @@ export interface Entity {
 export interface NameTag { pos: number[], text: string, type: string, selected: boolean };
 
 export class Letter {
+    [key: string]: any;
     id: string;
     startPage: number;
     endPage: number;
@@ -64,7 +76,6 @@ export class Letter {
     entities: Entity[];
     nametags: NameTag[];
 
-    [key: string]: any;
     created_at: Date;
     updated_at: Date;
     date_year: number;
@@ -94,7 +105,7 @@ export class Letter {
     people_mentioned: number;
     people_mentioned_notes: string;
 
-    // copies: LetterCopy = new LetterCopy();
+    copies: LetterCopy[] = [];
     copies_repository: string;
     copies_archive: string;
     copies_collection: string;
@@ -121,6 +132,7 @@ export class Letter {
     authors_meta: AutorMeta[];
     places_meta: PlaceMeta[];
 
+    template: FileTemplate;
     analysis: any;
     selection: { page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string }[];
 }

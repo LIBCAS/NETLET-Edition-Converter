@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { AppConfiguration } from 'src/app/app-configuration';
+import { Letter } from 'src/app/shared/letter';
 
 @Component({
   selector: 'app-viewer',
@@ -22,6 +23,7 @@ export class ViewerComponent {
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
   @Output() onCopyToClipboard = new EventEmitter<string>();
   @Input() file: string = '';
+  @Input() letter: Letter;
 
   
 
@@ -371,6 +373,7 @@ export class ViewerComponent {
   }
 
   setField(field: string, textBox: string, e: MouseEvent) {
+    console.log(e)
     const append: boolean = e.ctrlKey;
     this.onSetField.emit({ field, textBox, append });
   }
