@@ -156,7 +156,9 @@
     <legend>{{ 'field.copies' | translate }}
     </legend>
     <fieldset *ngFor="let copy of _letter.copies; let idx = index">
-      <legend>{{ 'Copy' | translate }} {{ idx + 1 }}</legend>
+      <legend> <span> #{{ idx + 1 }}. </span>
+        <button mat-icon-button (click)="removeCopy(idx)" [matTooltip]="'action.remove' | translate"><mat-icon>delete_forever</mat-icon></button>
+      </legend>
       <div class="app-fxLayout app-row app-center-v app-mb-4" >
 
       <mat-form-field class="app-fxFlex" >
@@ -227,7 +229,7 @@
     </div>
     </fieldset>
     
-    <button mat-icon-button  (click)="addCopy()" ><mat-icon>add</mat-icon></button>
+    <button mat-icon-button  (click)="addCopy()" [matTooltip]="'action.add_copy' | translate"  ><mat-icon>add</mat-icon></button>
   </fieldset>
 
   <mat-tab-group>

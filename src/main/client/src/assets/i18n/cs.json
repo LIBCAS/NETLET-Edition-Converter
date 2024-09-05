@@ -62,7 +62,8 @@
     "sign_off": "Rozloučení",
     "signature": "Podpis",
     "languages": "Jazyky",
-    "copies": "Repozitáře a verze",
+    "copies": "Manifestace a uložení",
+    "Copy": "Manifestace",
     "type": "Typ dokumentu",
     "preservation": "Uchování",
     "copy": "Typ kopie",
@@ -107,7 +108,8 @@
     "add_template": "Přidat šablonu",
     "add_acronym": "Přidat akronym",
     "remove_acronym": "Odstranit akronym",
-    "show_images": "Zobrazit výběr"
+    "show_images": "Zobrazit výběr",
+    "add_copy": "Přidat repozitář a verze"
   },
 
   "tags" : {

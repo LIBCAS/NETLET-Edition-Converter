@@ -408,4 +408,8 @@ export class LetterFieldsComponent {
     this._letter.copies.push(copy);
   }
 
+  removeCopy(idx: number) {
+    this._letter.copies.splice(idx, 1);
+  }
+
 }
