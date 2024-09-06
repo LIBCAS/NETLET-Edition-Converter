@@ -107,7 +107,8 @@
     "add_acronym": "Add acronym",
     "remove_acronym": "Remove acronym",
     "show_images": "Show selection",
-    "add_copy": "Add repository and version"
+    "add_copy": "Add manifestation",
+    "remove_copy": "Remove manifestation"
   },
   "tags": {
     "a": "Numbers in addresses",

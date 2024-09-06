@@ -156,11 +156,9 @@
     <legend>{{ 'field.copies' | translate }}
     </legend>
     <fieldset *ngFor="let copy of _letter.copies; let idx = index">
-      <legend> <span> #{{ idx + 1 }}. </span>
-        <button mat-icon-button (click)="removeCopy(idx)" [matTooltip]="'action.remove' | translate"><mat-icon>delete_forever</mat-icon></button>
-      </legend>
+      <legend> #{{ idx + 1 }}. </legend>
+      <button mat-icon-button (click)="removeCopy(idx)" [matTooltip]="'action.remove_copy' | translate"><mat-icon>delete_forever</mat-icon></button>
       <div class="app-fxLayout app-row app-center-v app-mb-4" >
-
       <mat-form-field class="app-fxFlex" >
         <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
         <input matInput [(ngModel)]="copy.repository" [name]="'copies_repository_' + idx" 
@@ -172,12 +170,6 @@
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
-
-      <!-- <mat-form-field class="app-fxFlex" >
-        <mat-label>{{ 'field.repository' | translate}}</mat-label>
-        <input matInput [(ngModel)]="copy.repository" name="copies_repository"><span matSuffix></span>
-        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_repository' }"></ng-container>
-      </mat-form-field> -->
 
       <mat-form-field class="app-fxFlex app-ml-3" >
         <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
@@ -229,7 +221,7 @@
     </div>
     </fieldset>
     
-    <button mat-icon-button  (click)="addCopy()" [matTooltip]="'action.add_copy' | translate"  ><mat-icon>add</mat-icon></button>
+    <button mat-icon-button  (click)="addCopy()" [matTooltip]="'action.add_copy' | translate"  ><mat-icon>queue</mat-icon></button>
   </fieldset>
 
   <mat-tab-group>

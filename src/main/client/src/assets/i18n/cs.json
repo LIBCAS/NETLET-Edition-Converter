@@ -109,7 +109,8 @@
     "add_acronym": "Přidat akronym",
     "remove_acronym": "Odstranit akronym",
     "show_images": "Zobrazit výběr",
-    "add_copy": "Přidat repozitář a verze"
+    "add_copy": "Přidat manifestace a uložení",
+    "remove_copy": "Odstranit manifestace a uložení"
   },
 
   "tags" : {
