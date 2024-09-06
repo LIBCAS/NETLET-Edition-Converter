@@ -60,8 +60,8 @@
     "sign_off": "Sign off",
     "signature": "Signature",
     "languages": "Languages",
-    "copies": "Manifestations and storage",
-    "Copy": "Manifestation",
+    "copies": "Repositories and versions",
+    "Copy": "Repository",
     "type": "Document type",
     "preservation": "Preservation",
     "copy": "Copy type",
@@ -107,8 +107,8 @@
     "add_acronym": "Add acronym",
     "remove_acronym": "Remove acronym",
     "show_images": "Show selection",
-    "add_copy": "Add manifestation",
-    "remove_copy": "Remove manifestation"
+    "add_copy": "Add repository",
+    "remove_copy": "Remove repository"
   },
   "tags": {
     "a": "Numbers in addresses",

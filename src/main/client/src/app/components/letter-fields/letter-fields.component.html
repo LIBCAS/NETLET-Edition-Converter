@@ -157,7 +157,7 @@
     </legend>
     <fieldset *ngFor="let copy of _letter.copies; let idx = index">
       <legend> #{{ idx + 1 }}. </legend>
-      <button mat-icon-button (click)="removeCopy(idx)" [matTooltip]="'action.remove_copy' | translate"><mat-icon>delete_forever</mat-icon></button>
+      <button *ngIf="idx > 0" mat-icon-button (click)="removeCopy(idx)" [matTooltip]="'action.remove_copy' | translate"><mat-icon>delete_forever</mat-icon></button>
       <div class="app-fxLayout app-row app-center-v app-mb-4" >
       <mat-form-field class="app-fxFlex" >
         <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>

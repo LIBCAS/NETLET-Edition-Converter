@@ -39,6 +39,7 @@
         
     </div>
 
+    <div class="app-mb-4">
     <fieldset *ngIf="selectedTemplate">
       <legend>{{ 'field.template' | translate }} {{ selectedTemplate.name }}</legend>
       <div class="app-fxLayout app-row app-center-v app-mb-4">
@@ -67,7 +68,7 @@
       </div>
       <div class="app-fxLayout app-row app-center-v app-mb-4">
 
-        <mat-form-field class="app-fxFlex" >
+        <mat-form-field class="app-fxFlex"  appearance="outline">
           <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
           <input matInput [(ngModel)]="selectedTemplate.copies_repository" name="copies_repository" 
             [matAutocomplete]="autoRepos" (focus)="getLocations(selectedTemplate.copies_repository, 'repository')" (change)="getLocations(selectedTemplate.copies_repository, 'repository')" (keyup)="getLocations(selectedTemplate.copies_repository, 'repository')">
@@ -79,7 +80,7 @@
         </mat-form-field>
         
   
-        <mat-form-field class="app-fxFlex app-ml-3" >
+        <mat-form-field class="app-fxFlex app-ml-3" appearance="outline" >
           <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
           <input matInput [(ngModel)]="selectedTemplate.copies_archive" name="copies_archive"
           [matAutocomplete]="autoArchives" (change)="getLocations(selectedTemplate.copies_archive, 'archive')" (keyup)="getLocations(selectedTemplate.copies_archive, 'archive')">
@@ -90,7 +91,7 @@
           </mat-autocomplete>
         </mat-form-field>
   
-        <mat-form-field class="app-fxFlex app-ml-3" >
+        <mat-form-field class="app-fxFlex app-ml-3" appearance="outline" >
           <mat-label>{{ 'field.copies_collection' | translate}}</mat-label>
           <input matInput [(ngModel)]="selectedTemplate.copies_collection" name="copies_collection"
           [matAutocomplete]="autoCollections" (change)="getLocations(selectedTemplate.copies_collection, 'collection')" (keyup)="getLocations(selectedTemplate.copies_collection, 'collection')">
@@ -102,8 +103,9 @@
         </mat-form-field>
       </div>
     </fieldset>
+  </div>
 
-    <div class="app-fxLayout app-row app-center-v app-mb-4">
+    <div class="app-mb-4">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>chatGPT model</mat-label>
         <mat-select [(ngModel)]="fileConfig.gptModel">
