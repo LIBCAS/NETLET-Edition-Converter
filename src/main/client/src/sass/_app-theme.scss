@@ -1,9 +1,6 @@
 // --- THEME ---
 
-@use '@angular/material' as mat;
-
 @include mat.core();
-
 
 $app-pp: mat.define-palette(mat.$brown-palette, 500);
 $app-primary: mat.get-color-from-palette($app-pp); 

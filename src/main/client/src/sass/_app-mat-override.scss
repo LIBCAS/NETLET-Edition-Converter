@@ -43,3 +43,66 @@
   }
 }
 
+// card
+@for $i from 0 through 24 {
+  .mat-mdc-card {
+    &.mat-elevation-z#{$i} {
+      @include mat.elevation($i);
+    }
+  }
+}
+
+.mat-mdc-card {
+  &.app-intro {
+    $app-width: 35%;
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      width: $app-width;
+      height: 100%;
+      background-image: url(https://ucl.cas.cz/wp-content/uploads/2021/11/ucl-projekty6-1.jpg);
+      background-size: cover;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .mat-mdc-card-header,
+    .mat-mdc-card-content {
+      padding-left: calc($app-width + 16px);
+    }
+  }
+}
+
+// table
+.mat-mdc-table {
+  &.app-hovered {
+    .mat-mdc-row {
+      &:hover {
+        background-color: var(--app-gray-2);
+      }
+    }  
+  }
+
+  &.app-striped {
+    .mat-mdc-row {
+      &:nth-child(even) {
+        &:not(:hover) {
+          background-color: var(--app-gray-1);
+        }
+      }
+    }
+  }
+  
+  tbody {
+    .mat-mdc-row {
+      .mat-mdc-cell {
+        &.mat-column-action {
+          width: 50px;
+        }
+      }
+    }
+  }
+}
+

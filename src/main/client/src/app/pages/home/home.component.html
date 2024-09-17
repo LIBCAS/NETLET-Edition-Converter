@@ -1,27 +1,52 @@
-<div class="app-ml-8" style="height: 100%; overflow-y: auto;">
-  <p></p>
-  <h2>NETLET-Edition-Converter</h2>
-  <p>
-  Software NETLET Edition Converter je jedním z hlavních výstupů projektu <a href="https://netlet.lib.cas.cz/" target="_blenk">NETLET</a>. <br/>
-  Umožní vytváření strukturovaných metadat z tištěných edic korespondence vybraných osobností a jejich následné využití pro uložení v databázi. <br/>
-  Zdrojem mohou být data v textových formátech PDF i data získaná skenováním tištěných edic, kde bude využito OCR k získání plných textů. <br/>
-  Logické části budou rozpoznány a členěny do požadované struktury.
-  </p>
-
-  <h2>{{ 'file_list' | translate }}:</h2>
+<div class="app-p-4 app-fxLayout app-column app-fill">
+  <mat-card class="app-mb-4 mat-elevation-z2 app-intro">
+    <mat-card-header>
+      <mat-card-title class="app-mb-2">NETLET-Edition-Converter</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div [innerHTML]="'intro' | translate"></div>
+    </mat-card-content>
+  </mat-card>
   <div>
-    <div *ngFor="let file of state.files; let index = index" class="app-fxLayout app-row app-center-v">
-      <a [routerLink]="['/editor', file.filename]">{{ file.config?.name ? file.config.name : file.filename }}</a>
-      <span class="app-ml-4"> {{ file.imgs }} {{ 'pages' | translate }} </span>&#160;<span> ({{ 'generated' | translate }} : {{ file.alto }}
-        )</span>
-      <span class="app-ml-4"> {{ file.letters }} {{ 'letters' | translate }} </span>
-      <button mat-icon-button (click)="regenerateAlto(file.filename)" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button>
-      <mat-spinner *ngIf="(file.alto < file.imgs)" diameter="16" style="display: inline-block;"></mat-spinner>
-    </div>
+    <h2>{{ 'file_list' | translate }}:</h2>
   </div>
-  
-  <div class="app-fxLayout app-center-v">
-    <button mat-flat-button (click)="getDocuments()" color="primary" [matTooltip]="'action.refresh' | translate"><mat-icon>refresh</mat-icon>{{'action.refresh' | translate}}</button>
-    &#160;<button mat-flat-button (click)="newFile()" color="primary">{{ 'new_file' | translate }}</button>
+  <div fxFlex class="app-oa-y mat-elevation-z2 app-mb-4">
+    <table mat-table [dataSource]="state.files" class="mat-elevation-z1 app-striped app-hovered">
+
+      <ng-container matColumnDef="filename">
+        <th mat-header-cell *matHeaderCellDef>{{ 'desc.fileName' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <a [routerLink]="['/editor', element.filename]">{{ element.config?.name ? element.config.name : element.filename }}</a>
+        </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="pages">
+        <th mat-header-cell *matHeaderCellDef>{{ 'desc.numberOfPages' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.imgs }} {{ 'pages' | translate }} ({{ 'generated' | translate }} : {{ element.alto }})
+        </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="letters">
+        <th mat-header-cell *matHeaderCellDef>{{ 'desc.numberOfLetters' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.letters }} {{ 'letters' | translate }} 
+        </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="regenerateAlto(element.filename)" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button>
+        </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+  <div>
+    <button mat-flat-button (click)="getDocuments()" color="primary" [matTooltip]="'action.refresh' | translate" class="app-mr-2"><mat-icon>refresh</mat-icon>{{ 'action.refresh' | translate }}</button>
+    <button mat-flat-button (click)="newFile()" color="primary">{{ 'new_file' | translate }}</button>
   </div>
 </div>

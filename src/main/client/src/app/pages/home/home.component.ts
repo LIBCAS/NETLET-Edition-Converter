@@ -17,6 +17,8 @@ import { AppState } from 'src/app/app-state';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-home',
@@ -26,9 +28,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   imports: [RouterLink, FileUploadModule, MatTooltipModule,
     CommonModule, TranslateModule, FormsModule, MatIconModule,
     MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressSpinnerModule,
-    MatDividerModule, MatProgressBarModule, MatDialogModule]
+    MatDividerModule, MatProgressBarModule, MatDialogModule, MatCardModule, MatTableModule]
 })
 export class HomeComponent {
+  displayedColumns: string[] = ['filename', 'pages', 'letters', 'action'];
 
   constructor(
     public dialog: MatDialog,

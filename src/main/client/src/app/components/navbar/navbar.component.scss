@@ -1,6 +1,10 @@
 .mat-toolbar {
   //height: $app-navbar-height;
 
+  .app-logo {
+    height: 34px;
+  }
+
   .mdc-button {
     padding-left: 16px;
     padding-right: 16px;
