@@ -13,6 +13,7 @@
   --app-color-warning: #{$app-warn};
 
   --app-color-info: #{mat.get-color-from-palette(mat.define-palette(mat.$amber-palette, 900))};
+  --app-color-selected: #{rgba($app-primary, .1)};
 
   $app-green-palette: mat.define-palette(mat.$green-palette);
   --app-color-success: #{mat.get-color-from-palette($app-green-palette, 800)};

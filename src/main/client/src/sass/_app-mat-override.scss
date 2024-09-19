@@ -80,7 +80,7 @@
   &.app-hovered {
     .mat-mdc-row {
       &:hover {
-        background-color: var(--app-gray-2);
+        background-color: var(--app-color-selected);
       }
     }  
   }

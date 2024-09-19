@@ -22,6 +22,21 @@ hr {
   border-bottom: 0;
 }
 
+fieldset {
+  border: 1px solid var(--app-gray-4);
+  border-radius: var(--mdc-shape-small, 4px);
+  min-inline-size: auto;
+
+  &:hover {
+    border-color: var(--app-gray-6);
+  }
+
+  legend {
+    font-size: 12px;
+    color: var(--app-gray-6);
+  }
+}
+
 // cleaners
 .app-cleanfix {
   @include cleanfix();

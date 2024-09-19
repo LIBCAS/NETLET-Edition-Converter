@@ -3,7 +3,7 @@
     border-bottom: 1px solid var(--app-gray-3);
 
     &.app-selected {
-      background-color: #eaf4ff;
+      background-color: var(--app-color-selected);
     }
 
     .mat-icon {
