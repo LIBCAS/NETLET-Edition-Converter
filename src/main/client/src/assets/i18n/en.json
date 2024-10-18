@@ -17,7 +17,6 @@
   "annotate": "Annotation",
   "analyze": "Analysis",
   "Analysis": "Analysis",
-  "new_file": "Add New File",
   "file_settings": "File settings",
   "prompt_settings": "Prompt settings",
   "book_name": "Book Title",
@@ -185,7 +184,8 @@
     "show_images": "Show selection",
     "add_copy": "Add repository",
     "remove_copy": "Remove repository",
-    "querySettings": "Query settings"
+    "querySettings": "Query settings",
+    "addNewFile": "Add a new file"
   },
   "desc": {
     "fileName": "File name",

@@ -17,7 +17,6 @@
   "annotate": "Anotace",
   "analyze": "Analyzovat",
   "Analysis": "Analýza",
-  "new_file": "Přidat nový soubor",
   "file_settings": "Nastavení souboru",
   "prompt_settings": "Nastavení dotazu",
   "book_name": "Název knihy",
@@ -185,7 +184,8 @@
     "show_images": "Zobrazit výběr",
     "add_copy": "Přidat repozitáře a verze",
     "remove_copy": "Odstranit repozitáře a verze",
-    "querySettings": "Nastavení dotazu"
+    "querySettings": "Nastavení dotazu",
+    "addNewFile": "Přidat nový soubor"
   },
   "desc": {
     "fileName": "Jméno souboru",
