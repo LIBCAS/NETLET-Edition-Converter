@@ -185,11 +185,15 @@
     "add_copy": "Add repository",
     "remove_copy": "Remove repository",
     "querySettings": "Query settings",
-    "addNewFile": "Add a new file"
+    "addNewFile": "Add a new file",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "originalSize": "Original size"
   },
   "desc": {
     "fileName": "File name",
     "numberOfPages": "Number of pages",
-    "numberOfLetters": "Number of letters"
+    "numberOfLetters": "Number of letters",
+    "page": "Page"
   }
 }

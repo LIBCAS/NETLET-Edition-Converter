@@ -185,11 +185,15 @@
     "add_copy": "Přidat repozitáře a verze",
     "remove_copy": "Odstranit repozitáře a verze",
     "querySettings": "Nastavení dotazu",
-    "addNewFile": "Přidat nový soubor"
+    "addNewFile": "Přidat nový soubor",
+    "zoomIn": "Zvětšit",
+    "zoomOut": "Zmenšit",
+    "originalSize": "Originální velikost"
   },
   "desc": {
     "fileName": "Jméno souboru",
     "numberOfPages": "Počet stránek",
-    "numberOfLetters": "Počet dopisů"
+    "numberOfLetters": "Počet dopisů",
+    "page": "Stránka"
   }
 }
