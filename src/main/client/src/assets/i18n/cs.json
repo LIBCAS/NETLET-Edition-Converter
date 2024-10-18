@@ -184,7 +184,8 @@
     "remove_acronym": "Odstranit akronym",
     "show_images": "Zobrazit výběr",
     "add_copy": "Přidat repozitáře a verze",
-    "remove_copy": "Odstranit repozitáře a verze"
+    "remove_copy": "Odstranit repozitáře a verze",
+    "querySettings": "Nastavení dotazu"
   },
   "desc": {
     "fileName": "Jméno souboru",

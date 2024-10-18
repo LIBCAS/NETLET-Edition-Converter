@@ -184,7 +184,8 @@
     "remove_acronym": "Remove acronym",
     "show_images": "Show selection",
     "add_copy": "Add repository",
-    "remove_copy": "Remove repository"
+    "remove_copy": "Remove repository",
+    "querySettings": "Query settings"
   },
   "desc": {
     "fileName": "File name",

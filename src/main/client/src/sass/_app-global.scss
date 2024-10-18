@@ -155,16 +155,29 @@ fieldset {
 .app-topbar {
   min-height: var( --app-topbar-height);
   border-bottom: 1px solid var(--app-topbar-border-color);
+  border-top: 1px solid;
+  border-color: rgba(var(--app-color-lightnes-rgb), .3);
+  background-color: var(--app-color-primary);
 
   .app-breadcrumbs {
-    color: var(--app-gray-6);
+    color: rgba(var(--app-color-lightnes-rgb), .6);
+
+    a {
+      color: var(--app-color-lightnes-rgb);
+    }
 
     .mat-icon {
+      color: var(--app-color-lightnes-rgb);
+
       &.app-separator {
         @extend .app-ml-1, .app-mr-1;
-        @include setIcon(18, var(--app-gray-6));
+        @include setIcon(18, rgba(var(--app-color-lightnes-rgb), .5));
       }
     }
+  }
+
+  .mat-mdc-icon-button {
+    color: var(--app-color-lightnes);
   }
 }
 

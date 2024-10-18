@@ -45,7 +45,7 @@
 
   // components
   --app-footer-bg-color: var(--app-color-darknes);
-  --app-footer-color: var(--app-color-lightnes);
+  --app-footer-color: var(--app-gray-6);
 
   --app-paginator-form-field-height: 28px;
 
@@ -58,6 +58,8 @@
   --mat-paginator-container-background-color: transparent;
   --mat-paginator-container-size: 44px;
   --mdc-secondary-navigation-tab-container-height: 48px;
+  //--mat-toolbar-standard-height: 80px;
+  --mat-table-row-item-container-height: 36px;
 }
 
 // gaps
