@@ -41,6 +41,7 @@
             <!-- <button mat-icon-button (click)="toggleIgnoreAndNext()" [matTooltip]="'ignore' | translate"><mat-icon>gpp_bad</mat-icon></button> -->
             <button [disabled]="!letter" mat-icon-button (click)="removeLetter()" [matTooltip]="'action.remove' | translate"><mat-icon>delete_forever</mat-icon></button>
             <button [disabled]="!letter" mat-icon-button (click)="exportLetter()" [matTooltip]="'action.export' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
+            <button [disabled]="!letter" mat-icon-button (click)="templateFromLetter()" [matTooltip]="'action.template_from_letter' | translate"><mat-icon>dynamic_feed</mat-icon></button>
             <!-- <button mat-icon-button (click)="regenerateAlto()" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button> -->
           </div>
         </div>

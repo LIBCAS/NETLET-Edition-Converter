@@ -36,9 +36,9 @@ export interface AutorMeta {
     salutation: string
 }
 
-export interface PlaceMeta {
-    id: number,
-    type: string,
+export class PlaceMeta {
+    id: number;
+    type: string;
     marked: string
 }
 

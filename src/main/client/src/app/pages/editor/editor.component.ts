@@ -24,6 +24,7 @@ import { AppState } from 'src/app/app-state';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { FileSettingsDialogComponent } from 'src/app/components/file-settings-dialog/file-settings-dialog.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { TemplateDialogComponent } from 'src/app/components/template-dialog/template-dialog.component';
 
 
 @Component({
@@ -502,6 +503,17 @@ export class EditorComponent {
 
   openSettings() {
     const dialogRef = this.dialog.open(FileSettingsDialogComponent, {
+      data: this.state.fileConfig,
+      width: '800px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+    });
+  }
+
+  templateFromLetter() {
+    const dialogRef = this.dialog.open(TemplateDialogComponent, {
       data: this.state.fileConfig,
       width: '800px'
     });

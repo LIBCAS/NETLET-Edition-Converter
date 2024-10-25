@@ -36,6 +36,7 @@
   "tenant": "Katalog",
   "templates": "Šablony",
   "new_template_name": "Nová šablona",
+  "template_name": "Název šablony",
   "field": {
     "author": "Autor", 
     "author_db": "Autor v HIKO db", 
@@ -157,6 +158,7 @@
     "save": "Uložit",
     "remove": "Odstranit",
     "export": "Export",
+    "template_from_letter": "Přidat šablonu z dopisu",
     "set_block": "Nastavit text z bloku (+ctrl přidat)",
     "add_block": "Pridat text z bloku",
     "set_line": "Nastavit text z radku (+ctrl přidat)",

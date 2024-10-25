@@ -36,6 +36,7 @@
   "tenant": "Catalog",
   "templates": "Templates",
   "new_template_name": "New template",
+  "template_name": "Název šablony",
   "field": {
     "author": "Author",
     "author_db": "Author in HIKO db", 
@@ -157,6 +158,7 @@
     "save": "Save",
     "remove": "Remove",
     "export": "Export",
+    "template_from_letter": "Create templateb from letter",
     "set_block": "Set text from block (+ctrl to add)",
     "add_block": "Add text from block",
     "set_line": "Set text from line (+ctrl to add)",

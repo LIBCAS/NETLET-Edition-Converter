@@ -11,7 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from 'src/app/app.service';
-import { Entity, Letter, LetterCopy, NameTag } from 'src/app/shared/letter';
+import { Entity, Letter, LetterCopy, NameTag, PlaceMeta } from 'src/app/shared/letter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslationDialogComponent } from '../translation-dialog/translation-dialog.component';
 import { AnalyzeDialogComponent } from '../analyze-dialog/analyze-dialog.component';
@@ -410,6 +410,20 @@ export class LetterFieldsComponent {
 
   removeCopy(idx: number) {
     this._letter.copies.splice(idx, 1);
+  }
+
+  addPlaceMeta() {
+    const pm = new PlaceMeta();
+    pm.marked = this._letter.template.copies_repository;
+    pm.type = this._letter.template.copies_archive;
+    if (!this._letter.places_meta) {
+      this._letter.places_meta = [];
+    }
+    this._letter.places_meta.push(pm);
+  }
+
+  removePlaceMeta(idx: number) {
+    this._letter.places_meta.splice(idx, 1);
   }
 
 }

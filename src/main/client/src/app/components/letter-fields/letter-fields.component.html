@@ -141,7 +141,46 @@
       <textarea rows="5" matInput [(ngModel)]="_letter.abstract_en" name="abstract_en" #abstract_en></textarea>
     </mat-form-field>
   </div>
-  
+
+  <fieldset class="app-mb-4">
+    <legend>{{ 'field.places_meta' | translate }}</legend>
+    <fieldset *ngFor="let place_meta of _letter.places_meta; let idx = index">
+      <legend> #{{ idx + 1 }}. </legend>
+      <button *ngIf="idx > 0" mat-icon-button (click)="removeCopy(idx)" [matTooltip]="'action.remove_copy' | translate"><mat-icon>delete_forever</mat-icon></button>
+      <div class="app-fxLayout app-row app-center-v app-mb-4">
+        <mat-form-field class="app-fxFlex" >
+          <mat-label>{{ 'field.places_meta_marked' | translate }}</mat-label>
+          <input matInput [(ngModel)]="place_meta.marked" [name]="'places_meta_marked_' + idx" 
+          [matAutocomplete]="autoRepos" (focus)="getLocations(place_meta.marked, 'marked')" 
+          (change)="getLocations(place_meta.marked, 'marked')" (keyup)="getLocations(place_meta.marked, 'marked')"><span matSuffix></span>
+          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'places_meta_marked_' + idx }"></ng-container>
+          <mat-autocomplete #autoRepos="matAutocomplete">
+            <mat-option *ngFor="let a of repositories" [value]="a.name">
+              {{a.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="app-fxFlex app-ml-3" >
+          <mat-label>{{ 'field.places_meta_type' | translate}}</mat-label>
+          <input matInput [(ngModel)]="place_meta.type" [name]="'places_meta_type_' + idx" 
+          [matAutocomplete]="autoArchives" (change)="getLocations(place_meta.type, 'type')" (keyup)="getLocations(place_meta.type, 'type')"><span matSuffix></span>
+          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'places_meta_type_' + idx }"></ng-container>
+          <mat-autocomplete #autoArchives="matAutocomplete">
+            <mat-option *ngFor="let a of archives" [value]="a.name">
+              {{a.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+      </div>
+    </fieldset>
+    <button mat-flat-button color="primary" (click)="addPlaceMeta()" [matTooltip]="'action.add_place_meta' | translate" class="app-mt-4 app-mb-2">
+      <mat-icon>queue</mat-icon>{{ 'action.add_place_meta' | translate }}
+    </button>
+  </fieldset>
+
+
   <fieldset class="app-mb-4">
     <legend>{{ 'field.copies' | translate }}</legend>
     <fieldset *ngFor="let copy of _letter.copies; let idx = index">
