@@ -17,7 +17,6 @@
   "annotate": "Anotace",
   "analyze": "Analyzovat",
   "Analysis": "Analýza",
-  "new_file": "Přidat nový soubor",
   "file_settings": "Nastavení souboru",
   "prompt_settings": "Nastavení dotazu",
   "book_name": "Název knihy",
@@ -186,11 +185,17 @@
     "remove_acronym": "Odstranit akronym",
     "show_images": "Zobrazit výběr",
     "add_copy": "Přidat repozitáře a verze",
-    "remove_copy": "Odstranit repozitáře a verze"
+    "remove_copy": "Odstranit repozitáře a verze",
+    "querySettings": "Nastavení dotazu",
+    "addNewFile": "Přidat nový soubor",
+    "zoomIn": "Zvětšit",
+    "zoomOut": "Zmenšit",
+    "originalSize": "Originální velikost"
   },
   "desc": {
     "fileName": "Jméno souboru",
     "numberOfPages": "Počet stránek",
-    "numberOfLetters": "Počet dopisů"
+    "numberOfLetters": "Počet dopisů",
+    "page": "Stránka"
   }
 }

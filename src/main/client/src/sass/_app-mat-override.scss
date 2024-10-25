@@ -104,5 +104,10 @@
       }
     }
   }
+
+  .mat-mdc-icon-button.mat-mdc-button-base {
+    --mdc-icon-button-state-layer-size: 36px;
+    padding: 0;
+  }
 }
 

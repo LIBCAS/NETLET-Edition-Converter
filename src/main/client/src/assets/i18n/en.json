@@ -17,7 +17,6 @@
   "annotate": "Annotation",
   "analyze": "Analysis",
   "Analysis": "Analysis",
-  "new_file": "Add New File",
   "file_settings": "File settings",
   "prompt_settings": "Prompt settings",
   "book_name": "Book Title",
@@ -186,11 +185,17 @@
     "remove_acronym": "Remove acronym",
     "show_images": "Show selection",
     "add_copy": "Add repository",
-    "remove_copy": "Remove repository"
+    "remove_copy": "Remove repository",
+    "querySettings": "Query settings",
+    "addNewFile": "Add a new file",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "originalSize": "Original size"
   },
   "desc": {
     "fileName": "File name",
     "numberOfPages": "Number of pages",
-    "numberOfLetters": "Number of letters"
+    "numberOfLetters": "Number of letters",
+    "page": "Page"
   }
 }
