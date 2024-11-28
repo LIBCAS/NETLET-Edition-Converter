@@ -38,7 +38,7 @@ import { TemplateDialogComponent } from 'src/app/components/template-dialog/temp
   imports: [FormsModule, AngularSplitModule, NgIf, ViewerComponent,
     MatToolbarModule, RouterModule, TranslateModule, DatePipe, MatMenuModule,
     MatTabsModule, MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatListModule,
-    MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
+    MatInputModule, NgFor, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
 })
 export class EditorComponent {
 
@@ -513,8 +513,13 @@ export class EditorComponent {
   }
 
   templateFromLetter() {
+    const t: FileTemplate = FileTemplate.newTemplateFromLetter(this.letter);
+    if (!this.state.fileConfig.templates) {
+      this.state.fileConfig.templates = [];
+    }
+    this.state.fileConfig.templates.push(t);
     const dialogRef = this.dialog.open(TemplateDialogComponent, {
-      data: this.state.fileConfig,
+      data: {template: t} ,
       width: '800px'
     });
 

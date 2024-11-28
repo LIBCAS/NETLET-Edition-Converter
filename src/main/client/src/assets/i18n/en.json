@@ -157,6 +157,7 @@
     "save": "Save",
     "remove": "Remove",
     "export": "Export",
+    "edit_templates": "Edit templates",
     "template_from_letter": "Create templateb from letter",
     "set_block": "Set text from block (+ctrl to add)",
     "add_block": "Add text from block",

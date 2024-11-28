@@ -3,7 +3,7 @@ import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
@@ -17,6 +17,7 @@ import { AppState } from 'src/app/app-state';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TemplateDialogComponent } from '../template-dialog/template-dialog.component';
 
 @Component({
   selector: 'app-file-settings-dialog',
@@ -42,7 +43,8 @@ export class FileSettingsDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public fileConfig: FileConfig,
     public state: AppState,
-    private service: AppService
+    private service: AppService,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -66,6 +68,17 @@ getAuthors(e: string) {
 
   save() {
     this.service.saveFile(this.state.selectedFile.filename, this.fileConfig).subscribe(res => {});
+  }
+
+  editTemplates() {
+    const dialogRef = this.dialog.open(TemplateDialogComponent, {
+      data: {} ,
+      width: '800px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+    });
   }
 
   addTemplate() {

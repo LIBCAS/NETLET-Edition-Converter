@@ -19,9 +19,10 @@
         <mat-label>{{ 'Columns' | translate }}</mat-label>
         <input matInput type="number" name="columns" [(ngModel)]="fileConfig.columns">
       </mat-form-field>
+       
     </div>
 
-    <div class="app-fxLayout app-row app-center-v app-mb-4">
+    <!-- <div class="app-fxLayout app-row app-center-v app-mb-4">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'templates' | translate }}</mat-label>
         <mat-select [(ngModel)]="selectedTemplate">
@@ -96,15 +97,20 @@
           </mat-form-field>
         </div>
       </fieldset>
-    </div>
+    </div> -->
 
-    <div class="app-mb-4">
+    <div class="app-fxLayout app-row app-center-v app-mb-4">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>chatGPT model</mat-label>
         <mat-select [(ngModel)]="fileConfig.gptModel">
           <mat-option *ngFor="let t of state.gptModels" [value]="t">{{ t }}</mat-option>
       </mat-select>
       </mat-form-field>
+      <div class="app-fxFlex app-ml-3">
+        <button mat-flat-button (click)="editTemplates()" [matTooltip]="'action.edit_templates' | translate">
+          <mat-icon>dynamic_feed</mat-icon>{{ 'action.edit_templates' | translate}}
+        </button>
+      </div>
     </div>
 
     <div class="app-mb-4">

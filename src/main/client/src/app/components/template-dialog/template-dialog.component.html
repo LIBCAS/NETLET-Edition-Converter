@@ -1,13 +1,13 @@
-<h1 mat-dialog-title>{{ 'templates' | translate }}: {{ fileConfig.name }}</h1>
+<h1 mat-dialog-title>{{ 'templates' | translate }}: {{ state.fileConfig.name }}</h1>
 <div mat-dialog-content class="app-letter">
-  <div *ngIf="fileConfig">
+  <div *ngIf="state.fileConfig">
 
 
     <div class="app-fxLayout app-row app-center-v app-mb-4">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'templates' | translate }}</mat-label>
         <mat-select [(ngModel)]="selectedTemplate">
-          <mat-option *ngFor="let t of fileConfig.templates" [value]="t">{{ t.name }}</mat-option>
+          <mat-option *ngFor="let t of state.fileConfig.templates" [value]="t">{{ t.name }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
@@ -89,7 +89,7 @@
   <button mat-flat-button [disabled]="!selectedTemplate" color="primary" (click)="save()">{{ 'Save' | translate
     }}</button>
   <button mat-flat-button color="primary" (click)="addTemplate()">{{ 'action.add_template' | translate }}</button>
-  <button mat-flat-button color="primary" [disabled]="!selectedTemplate || fileConfig.templates.length === 1"
+  <button mat-flat-button color="primary" [disabled]="!selectedTemplate || state.fileConfig.templates.length === 1"
     (click)="deleteTemplate()">{{ 'Delete' | translate }}</button>
   <button mat-button color="primary" [mat-dialog-close]="null">{{ 'Close' | translate }}</button>
 </div>

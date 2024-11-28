@@ -157,6 +157,7 @@
     "save": "Uložit",
     "remove": "Odstranit",
     "export": "Export",
+    "edit_templates": "Editovat šablony",
     "template_from_letter": "Přidat šablonu z dopisu",
     "set_block": "Nastavit text z bloku (+ctrl přidat)",
     "add_block": "Pridat text z bloku",

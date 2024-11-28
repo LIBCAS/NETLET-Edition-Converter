@@ -17,6 +17,7 @@ import { AngularSplitModule } from 'angular-split';
 import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { FileTemplate, FileConfig } from 'src/app/shared/file-config';
+import { Letter } from 'src/app/shared/letter';
 
 @Component({
   selector: 'app-template-dialog',
@@ -39,14 +40,19 @@ export class TemplateDialogComponent {
   collections: {id: string, tenant: string, name: string}[] = [];
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public fileConfig: FileConfig,
+    @Inject(MAT_DIALOG_DATA) public data: {template: FileTemplate},
     public state: AppState,
     private service: AppService
   ) { }
 
   ngOnInit() {
     this.getAuthors('');
-    this.selectedTemplate = this.fileConfig.templates[0];
+    if (this.data.template) {
+      this.selectedTemplate = this.data.template;
+    } else {
+      this.selectedTemplate = this.state.fileConfig.templates[0];
+    }
+    
   }
 
 
@@ -57,23 +63,34 @@ getAuthors(e: string) {
 }
 
   save() {
-    this.service.saveFile(this.state.selectedFile.filename, this.fileConfig).subscribe(res => {});
+    this.service.saveFile(this.state.selectedFile.filename, this.state.fileConfig).subscribe(res => {});
+  }
+
+  addTemplateFromLetter(letter: Letter) {
+    const t: FileTemplate = new FileTemplate();
+    t.name = 'Šablona z dopisu ' + (letter.id);
+    t.def_author = letter.author_db?.name;
+    t.def_recipient = letter.recipient_db?.name;
+    t.copies_archive = letter.copies[0].archive;
+    t.copies_collection = letter.copies[0].collection;
+    t.copies_repository = letter.copies[0].repository;
+    
   }
 
   addTemplate() {
     const t: FileTemplate = new FileTemplate();
-    t.name = 'Šablona ' + (this.fileConfig.templates.length + 1);
-    if (!this.fileConfig.templates) {
-      this.fileConfig.templates = [];
+    t.name = 'Šablona ' + (this.state.fileConfig.templates.length + 1);
+    if (!this.state.fileConfig.templates) {
+      this.state.fileConfig.templates = [];
     }
-    this.fileConfig.templates.push(t);
+    this.state.fileConfig.templates.push(t);
     this.selectedTemplate = t;
   }
 
   deleteTemplate() {
-    const idx = this.fileConfig.templates.findIndex(t => t.name === this.selectedTemplate.name);
-    this.fileConfig.templates.splice(idx, 1);
-    this.selectedTemplate = this.fileConfig.templates[0];
+    const idx = this.state.fileConfig.templates.findIndex(t => t.name === this.selectedTemplate.name);
+    this.state.fileConfig.templates.splice(idx, 1);
+    this.selectedTemplate = this.state.fileConfig.templates[0];
   }
 
   getLocations(e: string, type: string) {
