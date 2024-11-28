@@ -87,6 +87,10 @@ export class AppService {
     return this.post(`/data/translate`, text);
   }
 
+  translateToEn(text: any) {
+    return this.post(`/data/translate_to_en`, text);
+  }
+
   annotate(data: any) {
     return this.post(`/data/annotate`, data);
   }

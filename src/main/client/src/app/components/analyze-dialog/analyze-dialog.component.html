@@ -180,6 +180,7 @@
             <mat-label>{{ 'field.abstract_cs' | translate}}</mat-label>
             <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract_cs"></textarea>
             <mat-icon matSuffix (click)="toggleKeep('abstract_cs')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['abstract_cs']">push_pin</mat-icon>
+            <mat-icon matSuffix (click)="translateAbstract()" [matTooltip]="'translate' | translate"  >translate</mat-icon>
         </mat-form-field>
     </div>
 

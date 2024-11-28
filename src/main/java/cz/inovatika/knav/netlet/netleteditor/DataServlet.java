@@ -408,6 +408,25 @@ public class DataServlet extends HttpServlet {
                 return json;
             }
         },
+        TRANSLATE_TO_EN {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+                JSONObject json = new JSONObject();
+                try {
+                    if (request.getMethod().equals("POST")) {
+                        String text = IOUtils.toString(request.getInputStream(), "UTF-8");
+
+                        json = Translator.translate(text, "cs", "en");
+                    }
+
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    json.put("error", ex.toString());
+                }
+                return json;
+            }
+        },
         DETECT_LANG {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {

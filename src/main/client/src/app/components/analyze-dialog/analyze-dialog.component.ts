@@ -29,7 +29,7 @@ import { InfoUsageDialogComponent } from '../info-usage-dialog/info-usage-dialog
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } } 
  ],
   standalone: true,
-  imports: [FormsModule, TranslateModule, NgIf, NgFor, NgTemplateOutlet,
+  imports: [FormsModule, TranslateModule, NgIf, NgFor, 
     MatFormFieldModule, MatInputModule, MatTabsModule,
     MatCheckboxModule, DatePipe, MatListModule, CdkDrag, CdkDragHandle, MatSelectModule, MatTooltipModule,
     MatButtonModule, MatIconModule, MatDialogModule, MatProgressSpinnerModule, MatProgressBarModule]
@@ -101,6 +101,16 @@ export class AnalyzeDialogComponent {
     this.service.translate(this._letter.full_text).subscribe((resp: any) => {
       this.translation = resp;
       // this.loading = false;
+    });
+  }
+
+  translateAbstract() {
+    this.loading = true;
+
+    this.service.translateToEn(this._letter.abstract_cs).subscribe((resp: any) => {
+      this._letterAnalyzed.abstract_en = resp.text;
+      this._letter.abstract_en = resp.text;
+      this.loading = false;
     });
   }
 

@@ -64,6 +64,23 @@ public class Translator {
         }
     }
 
+    public static JSONObject translate(String text, String src_lang, String dest_lang) {
+        JSONObject ret = new JSONObject();
+        try {
+            
+            ret = new JSONObject()
+                    .put("lang", src_lang);
+            String r = request(text, src_lang, dest_lang);
+            ret.put("text", r);
+
+        } catch (URISyntaxException | IOException | InterruptedException ex) {
+            Logger.getLogger(NameTag.class.getName()).log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        return ret;
+
+    }
+
     public static JSONObject translate(String text) {
         JSONObject ret = new JSONObject();
         try {
