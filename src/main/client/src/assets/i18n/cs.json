@@ -72,7 +72,10 @@
     "copies_collection": "Sbírka",
     "copies_signature": "Signatura",
     "template": "Šablona",
-    "locations": "Repozitáře"
+    "locations": "Repozitáře",
+    "places_meta": "Místa odeslání a určení",
+    "places_meta_marked": "Označení",
+    "places_meta_type": "Typ"
   },
   "tags" : {
     "a":"Numbers in addresses",
@@ -160,11 +163,11 @@
     "edit_templates": "Editovat šablony",
     "template_from_letter": "Přidat šablonu z dopisu",
     "set_block": "Nastavit text z bloku (+ctrl přidat)",
-    "add_block": "Pridat text z bloku",
+    "add_block": "Přidat text z bloku",
     "set_line": "Nastavit text z radku (+ctrl přidat)",
-    "add_line": "Pridat text z radku",
+    "add_line": "Přidat text z radku",
     "set_word": "Nastavit text ze slova (+ctrl přidat)",
-    "add_word": "Pridat text ze slova",
+    "add_word": "Přidat text ze slova",
     "add_selection": "Přidat výběr",
     "remove_selection": "Odstranit výběr",
     "copy": "CTRL+C",
@@ -191,7 +194,8 @@
     "addNewFile": "Přidat nový soubor",
     "zoomIn": "Zvětšit",
     "zoomOut": "Zmenšit",
-    "originalSize": "Originální velikost"
+    "originalSize": "Originální velikost",
+    "add_place_meta": "Přidat místo odeslání a určení"
   },
   "desc": {
     "fileName": "Jméno souboru",

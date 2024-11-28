@@ -72,7 +72,10 @@
     "copies_collection": "Collection",
     "copies_signature": "Signature",
     "template": "Template",
-    "locations": "Repositories"
+    "locations": "Repositories",
+    "places_meta": "Places",
+    "places_meta_marked": "Marked",
+    "places_meta_type": "Type"
   },
   "tags": {
     "a": "Numbers in addresses",
@@ -191,7 +194,8 @@
     "addNewFile": "Add a new file",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
-    "originalSize": "Original size"
+    "originalSize": "Original size",
+    "add_place_meta": "Add place"
   },
   "desc": {
     "fileName": "File name",
