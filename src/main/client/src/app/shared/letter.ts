@@ -36,6 +36,12 @@ export interface AutorMeta {
     salutation: string
 }
 
+export interface AutorDb{ 
+    id: string, 
+    tenant: string, 
+    name: string 
+}
+
 export class PlaceMeta {
     id: number;
     type: string;
@@ -64,14 +70,20 @@ export class Letter {
     signature: string;
     sign_off: string;
 
+    authors_meta: AutorMeta[];
     l_author: number;
-    author: string;
-    recipient: string;
-    authors_db: { id: string, tenant: string, name: string }[] = [];
-    recipients_db: { id: string, tenant: string, name: string }[] = [];
-    author_db: { id: string, tenant: string, name: string };
-    recipient_db: { id: string, tenant: string, name: string };
-    origin: string;
+    author: string; // Podpis - Jméno použité v dopise
+    recipient: string; // Oslovení
+    authors_db: AutorDb[] = [];
+    recipients_db: AutorDb[] = [];
+    author_db: AutorDb;
+    recipient_db: AutorDb;
+
+
+    places_meta: PlaceMeta[];
+    origin: string; // Místo odeslání
+
+
     full_text: string;
     entities: Entity[];
     nametags: NameTag[];
@@ -129,8 +141,6 @@ export class Letter {
     keywords: number[];
 
 
-    authors_meta: AutorMeta[];
-    places_meta: PlaceMeta[];
 
     template: FileTemplate;
     analysis: any;

@@ -66,17 +66,6 @@ getAuthors(e: string) {
     this.service.saveFile(this.state.selectedFile.filename, this.state.fileConfig).subscribe(res => {});
   }
 
-  addTemplateFromLetter(letter: Letter) {
-    const t: FileTemplate = new FileTemplate();
-    t.name = 'Šablona z dopisu ' + (letter.id);
-    t.def_author = letter.author_db?.name;
-    t.def_recipient = letter.recipient_db?.name;
-    t.copies_archive = letter.copies[0].archive;
-    t.copies_collection = letter.copies[0].collection;
-    t.copies_repository = letter.copies[0].repository;
-    
-  }
-
   addTemplate() {
     const t: FileTemplate = new FileTemplate();
     t.name = 'Šablona ' + (this.state.fileConfig.templates.length + 1);
