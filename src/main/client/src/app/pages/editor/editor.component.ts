@@ -106,14 +106,9 @@ export class EditorComponent {
       this.service.getConfig(this.state.selectedFile.filename).subscribe((res: any) => {
         this.state.fileConfig = res;
         if (!this.state.fileConfig.templates) {
-          this.state.fileConfig.templates = [{
-            name: 'template_0',
-            def_author: this.state.fileConfig.def_author,
-            def_recipient: this.state.fileConfig.def_recipient,
-            copies_repository: null,
-            copies_archive: null,
-            copies_collection: null}
-          ];
+          const t: FileTemplate = new FileTemplate();
+          t.name = 'template_0';
+          this.state.fileConfig.templates = [t];
         }
         if (this.state.fileConfig.searchParams) {
           this.searchParams = this.state.fileConfig.searchParams;
@@ -146,8 +141,8 @@ export class EditorComponent {
     this.letter = new Letter();
     this.letter.template = t;
     this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-    this.letter.author = t.def_author;
-    this.letter.recipient = t.def_recipient;
+    this.letter.author = t.author;
+    this.letter.recipient = t.recipient;
     // this.letter.copies_repository = t.copies_repository;
     // this.letter.copies_archive = t.copies_archive;
     // this.letter.copies_collection = t.copies_collection;

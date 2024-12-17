@@ -18,6 +18,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -87,7 +88,7 @@ public class PDFThumbsGenerator {
         try {
             ret.put("images", generateImages(fileName, true));
             ret.put("alto", generateAlto(fileName, true, false));
-        } catch (Exception ex) {
+        } catch (JSONException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
         return ret;

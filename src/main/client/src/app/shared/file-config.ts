@@ -14,10 +14,7 @@ export class FileTemplate {
   author_db: AutorDb;
   recipient: string; 
   recipient_db: AutorDb;
-
   place_meta: PlaceMeta;
-
-
   copies_repository: string; 
   copies_archive: string; 
   copies_collection: string;
@@ -41,8 +38,6 @@ export class FileTemplate {
 export class FileConfig {
   name: string;
   columns: number;
-  def_author: string;
-  def_recipient: string;
   replacements: { orig: string, dest: string }[];
   searchParams: SearchParams;
   ignored: { [id: string]: boolean };

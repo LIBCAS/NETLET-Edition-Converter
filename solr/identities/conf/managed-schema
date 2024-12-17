@@ -59,16 +59,18 @@ Managed external dictionaries
     <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW"  />
     
     <field name="table" type="string" indexed="true" stored="true"  />
-    <field name="table_id" type="string" indexed="true" stored="true"  />
+    <field name="table_id" type="pint" indexed="true" stored="true"  />
     <field name="tenant" type="string" indexed="true" stored="true"  />
     <field name="name" type="text_cz" indexed="true" stored="true" multiValued="false" />
     <field name="name_lower" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
+    <field name="name_sort" type="icu_sort_cs" indexed="true" stored="true" multiValued="false" />
     <field name="surname" type="text_cs" indexed="true" stored="true" multiValued="false" />
     <field name="forename" type="text_cs" indexed="true" stored="true" multiValued="false" />
     <field name="alternative_names" type="text_cs" indexed="true" stored="true" multiValued="true" />
     <field name="type" type="string" indexed="true" stored="true"  />
   
   <copyField source="name" dest="name_lower"/>
+  <copyField source="name" dest="name_sort"/>
 	
 
     <!-- uncomment the following to ignore any fields that don't already match an existing 
@@ -603,5 +605,15 @@ Managed external dictionaries
        <str name="paramkey">param value</str>
      </similarity>
     -->
+    <fieldType name="icu_sort_cs" class="solr.ICUCollationField"  locale="cs" strength="tertiary">
+        <!--
+      <analyzer>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.TrimFilterFactory" />
+        <filter class="solr.ICUCollationKeyFilterFactory" locale="cs" strength="primary"/>
+      </analyzer>
+        -->
+    </fieldType>
 
 </schema>

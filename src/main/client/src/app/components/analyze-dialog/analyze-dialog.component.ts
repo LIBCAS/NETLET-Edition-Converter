@@ -136,23 +136,23 @@ export class AnalyzeDialogComponent {
     this._letterAnalyzed.recipient = analysis.recipient;
     if (!this._letterAnalyzed.author || this._letterAnalyzed.author === 'neuvedeno') {
       if (this._letterAnalyzed.recipient) {
-        if (this._letterAnalyzed.recipient.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
-          this._letterAnalyzed.author = this.state.fileConfig.def_recipient;
-        } else if (this._letterAnalyzed.recipient.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
-          this._letterAnalyzed.author = this.state.fileConfig.def_author;
+        if (this._letterAnalyzed.recipient.toLowerCase() === this.data.letter.author.toLowerCase()) {
+          this._letterAnalyzed.author = this.data.letter.recipient;
+        } else if (this._letterAnalyzed.recipient.toLowerCase() === this.data.letter.recipient.toLowerCase()) {
+          this._letterAnalyzed.author = this.data.letter.author;
         }
       } else {
-        this._letterAnalyzed.author = this.state.fileConfig.def_author;
+        this._letterAnalyzed.author = this.data.letter.author;
       }
 
     }
     if (!this._letterAnalyzed.recipient || this._letterAnalyzed.recipient === 'neuvedeno') {
-      if (this._letterAnalyzed.author.toLowerCase() === this.state.fileConfig.def_recipient.toLowerCase()) {
-        this._letterAnalyzed.recipient = this.state.fileConfig.def_author;
-      } else if (this._letterAnalyzed.author.toLowerCase() === this.state.fileConfig.def_author.toLowerCase()) {
-        this._letterAnalyzed.recipient = this.state.fileConfig.def_recipient;
+      if (this._letterAnalyzed.author.toLowerCase() === this.data.letter.recipient.toLowerCase()) {
+        this._letterAnalyzed.recipient = this.data.letter.author;
+      } else if (this._letterAnalyzed.author.toLowerCase() === this.data.letter.author.toLowerCase()) {
+        this._letterAnalyzed.recipient = this.data.letter.recipient;
       } else {
-        this._letterAnalyzed.recipient = this.state.fileConfig.def_recipient;
+        this._letterAnalyzed.recipient = this.data.letter.recipient;
       }
     }
 

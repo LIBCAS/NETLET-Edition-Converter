@@ -449,6 +449,7 @@ public class Indexer {
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery("name_lower:" + prefix + "*")
                     .setFields("id,tenant,name")
+                    .setSort(SolrQuery.SortClause.asc("name_sort"))
                     .setRows(10);
             if (!tenant.isBlank()) {
                 query.addFilterQuery("tenant:"+tenant);

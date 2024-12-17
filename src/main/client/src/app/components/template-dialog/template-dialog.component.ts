@@ -59,6 +59,15 @@ export class TemplateDialogComponent {
 getAuthors(e: string) {
   this.service.getAuthors(e, this.state.fileConfig.tenant ? this.state.fileConfig.tenant : '').subscribe((resp: any) => {
     this.authors_db = resp.authors;
+    if (!this.selectedTemplate.author_db) {
+      this.selectedTemplate.author_db = JSON.parse(JSON.stringify(this.authors_db[0]));
+    }
+
+    if (!this.selectedTemplate.recipient_db) {
+      this.selectedTemplate.recipient_db = JSON.parse(JSON.stringify(this.authors_db[0]));
+    }
+
+    
   });
 }
 
