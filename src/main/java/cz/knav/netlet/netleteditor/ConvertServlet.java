@@ -1,4 +1,4 @@
-package cz.inovatika.knav.netlet.netleteditor;
+package cz.knav.netlet.netleteditor;
 
 import java.io.File;
 import java.io.IOException;

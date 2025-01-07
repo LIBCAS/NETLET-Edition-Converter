@@ -1,4 +1,4 @@
-package cz.inovatika.knav.netlet.netleteditor;
+package cz.knav.netlet.netleteditor;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

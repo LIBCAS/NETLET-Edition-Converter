@@ -1,8 +1,8 @@
-package cz.inovatika.knav.netlet.netleteditor.alto;
+package cz.knav.netlet.netleteditor.alto;
 
 import com.alibaba.fastjson2.JSON;
-import cz.inovatika.knav.netlet.netleteditor.Options;
-import cz.inovatika.knav.netlet.netleteditor.Storage;
+import cz.knav.netlet.netleteditor.Options;
+import cz.knav.netlet.netleteditor.Storage;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;

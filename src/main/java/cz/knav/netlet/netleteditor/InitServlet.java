@@ -1,6 +1,6 @@
-package cz.inovatika.knav.netlet.netleteditor;
+package cz.knav.netlet.netleteditor;
 
-import cz.inovatika.knav.netlet.netleteditor.index.Indexer;
+import cz.knav.netlet.netleteditor.index.Indexer;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ScheduledFuture;

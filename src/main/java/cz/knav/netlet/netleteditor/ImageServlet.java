@@ -1,5 +1,5 @@
  
-package cz.inovatika.knav.netlet.netleteditor;
+package cz.knav.netlet.netleteditor;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

@@ -1,11 +1,11 @@
-package cz.inovatika.knav.netlet.netleteditor;
+package cz.knav.netlet.netleteditor;
 
-import cz.inovatika.knav.netlet.netleteditor.index.Annotator;
-import cz.inovatika.knav.netlet.netleteditor.index.HikoKeywordsIndexer;
-import cz.inovatika.knav.netlet.netleteditor.index.Indexer;
-import cz.inovatika.knav.netlet.netleteditor.index.NameTag;
-import cz.inovatika.knav.netlet.netleteditor.index.SolrTaggerAnalyzer;
-import cz.inovatika.knav.netlet.netleteditor.index.Translator;
+import cz.knav.netlet.netleteditor.index.Annotator;
+import cz.knav.netlet.netleteditor.index.HikoKeywordsIndexer;
+import cz.knav.netlet.netleteditor.index.Indexer;
+import cz.knav.netlet.netleteditor.index.NameTag;
+import cz.knav.netlet.netleteditor.index.SolrTaggerAnalyzer;
+import cz.knav.netlet.netleteditor.index.Translator;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

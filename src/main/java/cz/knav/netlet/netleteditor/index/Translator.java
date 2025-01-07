@@ -1,4 +1,4 @@
-package cz.inovatika.knav.netlet.netleteditor.index;
+package cz.knav.netlet.netleteditor.index;
 
 import com.google.common.base.Optional;
 import com.optimaize.langdetect.LanguageDetector;
@@ -10,7 +10,7 @@ import com.optimaize.langdetect.profiles.LanguageProfileReader;
 import com.optimaize.langdetect.text.CommonTextObjectFactories;
 import com.optimaize.langdetect.text.TextObject;
 import com.optimaize.langdetect.text.TextObjectFactory;
-import cz.inovatika.knav.netlet.netleteditor.Options;
+import cz.knav.netlet.netleteditor.Options;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;

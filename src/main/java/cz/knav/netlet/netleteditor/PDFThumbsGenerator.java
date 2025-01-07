@@ -1,6 +1,6 @@
-package cz.inovatika.knav.netlet.netleteditor;
+package cz.knav.netlet.netleteditor;
 
-import cz.inovatika.knav.netlet.netleteditor.index.Indexer;
+import cz.knav.netlet.netleteditor.index.Indexer;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;

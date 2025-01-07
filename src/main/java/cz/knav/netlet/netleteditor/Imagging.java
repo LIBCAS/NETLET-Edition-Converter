@@ -1,4 +1,4 @@
-package cz.inovatika.knav.netlet.netleteditor;
+package cz.knav.netlet.netleteditor;
 
 import java.awt.Color;
 import java.awt.Graphics;

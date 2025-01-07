@@ -1,5 +1,5 @@
 
-package cz.inovatika.knav.netlet.netleteditor.alto;
+package cz.knav.netlet.netleteditor.alto;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.annotation.JSONField;

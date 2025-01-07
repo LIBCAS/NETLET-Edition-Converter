@@ -1,12 +1,12 @@
 
-package cz.inovatika.knav.netlet.netleteditor.index;
+package cz.knav.netlet.netleteditor.index;
 
 import com.knuddels.jtokkit.Encodings;
 import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.EncodingRegistry;
 import com.knuddels.jtokkit.api.ModelType;
-import cz.inovatika.knav.netlet.netleteditor.Imagging;
-import cz.inovatika.knav.netlet.netleteditor.Options;
+import cz.knav.netlet.netleteditor.Imagging;
+import cz.knav.netlet.netleteditor.Options;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.StringTokenizer;

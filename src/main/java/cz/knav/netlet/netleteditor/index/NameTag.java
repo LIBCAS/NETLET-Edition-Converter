@@ -1,6 +1,6 @@
-package cz.inovatika.knav.netlet.netleteditor.index;
+package cz.knav.netlet.netleteditor.index;
 
-import cz.inovatika.knav.netlet.netleteditor.Options;
+import cz.knav.netlet.netleteditor.Options;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
