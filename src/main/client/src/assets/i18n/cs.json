@@ -75,7 +75,8 @@
     "locations": "Repozitáře",
     "places_meta": "Místa odeslání a určení",
     "places_meta_marked": "Označení",
-    "places_meta_type": "Typ"
+    "places_meta_type": "Typ",
+    "notes_private": "Poznámka pro zpracovatele"
   },
   "tags" : {
     "a":"Numbers in addresses",

@@ -18,10 +18,12 @@ export class FileTemplate {
   copies_repository: string; 
   copies_archive: string; 
   copies_collection: string;
+  notes_private: string;
 
   public static newTemplateFromLetter(letter: Letter): FileTemplate {
     const t: FileTemplate = new FileTemplate();
     t.name = 'Šablona z dopisu ' + (letter.id);
+    t.notes_private = letter.notes_private;
     t.author = letter.author;
     t.author_db = letter.author_db;
     t.recipient = letter.recipient;

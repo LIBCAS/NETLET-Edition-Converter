@@ -19,6 +19,12 @@
         <input matInput type="text" name="name" [(ngModel)]="selectedTemplate.name">
       </mat-form-field>
     </div>
+    <div class="app-mb-4">
+      <mat-form-field class="app-w-100" appearance="outline">
+        <mat-label>{{'field.notes_private' | translate}}</mat-label>
+        <textarea rows="5" matInput [(ngModel)]="selectedTemplate.notes_private" name="notes_private" #notes_private></textarea>
+      </mat-form-field>
+    </div>
     <div class="app-fxLayout app-row app-center-v app-mb-4" *ngIf="selectedTemplate.author_db">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'def_author' | translate }}</mat-label>

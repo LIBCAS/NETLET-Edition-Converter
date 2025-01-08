@@ -75,7 +75,8 @@
     "locations": "Repositories",
     "places_meta": "Places",
     "places_meta_marked": "Marked",
-    "places_meta_type": "Type"
+    "places_meta_type": "Type",
+    "notes_private": "Note for processor"
   },
   "tags": {
     "a": "Numbers in addresses",
