@@ -3,7 +3,7 @@ import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveF
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AppService } from 'src/app/app.service';
 import { AltoBlock, AltoLine, AltoString } from 'src/app/shared/alto';
-import { Entity, Letter, LetterCopy } from 'src/app/shared/letter';
+import { Entity, Letter, LetterCopy, PlaceMeta } from 'src/app/shared/letter';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -446,6 +446,12 @@ export class EditorComponent {
           copy.archive = this.letter.copies_archive;
           copy.collection = this.letter.copies_collection;
           this.letter.copies.push(copy);
+        }
+
+        if (!this.letter.places_meta) {
+          this.letter.places_meta = [];
+          const pm = new PlaceMeta();
+          this.letter.places_meta.push(pm);
         }
 
         this.gotoResult(res.response.docs[0], false, idx);
