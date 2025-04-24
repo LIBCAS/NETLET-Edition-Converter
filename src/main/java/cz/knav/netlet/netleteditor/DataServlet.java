@@ -151,11 +151,11 @@ public class DataServlet extends HttpServlet {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = PDFThumbsGenerator.getDocuments();
-                ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
-                JSONArray gptModels = new JSONArray();
-                gptModels.put("gpt-3.5-turbo");
-                gptModels.put("gpt-4o");
-                ret.put("gptModels", gptModels);
+                ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant")); 
+//                JSONArray gptModels = new JSONArray();
+//                gptModels.put("gpt-3.5-turbo");
+//                gptModels.put("gpt-4o");
+//                ret.put("gptModels", gptModels);
                 return ret;
             }
         },
@@ -348,8 +348,10 @@ public class DataServlet extends HttpServlet {
                 JSONObject json = new JSONObject();
                 try {
                     HikoKeywordsIndexer hi = new HikoKeywordsIndexer();
-                    json.put("identities", hi.identities());
-                    json.put("locations", hi.locations());
+                    //json.put("identities", hi.identities());
+                    //json.put("locations", hi.locations());
+                    // json.put("places", hi.places());
+                    json.put("letter_place", hi.letter_place());
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
@@ -541,6 +543,23 @@ public class DataServlet extends HttpServlet {
                                 request.getParameter("tenant"), 
                                 request.getParameter("type"))
                                 .getJSONObject("response").getJSONArray("docs"));
+                return ret;
+            }
+        },
+        GET_PLACES {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                if (request.getParameter("tenant") != null) {
+                ret.put("places", 
+                        Indexer.getPlaces(request.getParameter("tenant"))
+                                .getJSONObject("response").getJSONArray("docs"));
+                ret.put("letter_place", 
+                        Indexer.getLetterPlace(request.getParameter("tenant"))
+                                .getJSONObject("response").getJSONArray("docs"));
+                    
+                }
+                ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant")); 
                 return ret;
             }
         },

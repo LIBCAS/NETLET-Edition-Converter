@@ -334,5 +334,134 @@ public class HikoKeywordsIndexer {
         ret.put("total", success);
         return ret;
     }
+    
+    public JSONObject places() {
+        Date start = new Date();
+        JSONObject ret = new JSONObject();
+        int tindexed = 0;
+        int success = 0;
+        try {
+            client = Indexer.getClient();
+            List<String> tenants = getTenants();
+            for (String tenant : tenants) {
+                String t = tenant + "__places";
+                PreparedStatement ps = getConnection().prepareStatement("select * from " + t);
+                try (ResultSet rs = ps.executeQuery()) {
+                    tindexed = 0;
+                    while (rs.next()) {
+
+                        SolrInputDocument doc = new SolrInputDocument();
+                        
+                        String id = tenant + "_" + rs.getInt("id");
+
+                        doc.addField("id", id);
+                        doc.addField("table", t);
+                        doc.addField("table_id", rs.getInt("id"));
+                        doc.addField("tenant", tenant);
+                        doc.addField("name", rs.getString("name"));
+                        doc.addField("country", rs.getString("country"));
+                        doc.addField("note", rs.getString("note"));
+                        doc.addField("latitude", rs.getString("latitude"));
+                        doc.addField("longitude", rs.getString("longitude"));
+                        doc.addField("geoname_id", rs.getInt("geoname_id"));
+                        doc.addField("division", rs.getString("division"));
+                        doc.addField("coords", rs.getString("latitude") + "," + rs.getString("longitude"));
+
+
+                        client.add("places", doc);
+                        success++;
+                        if (success % 500 == 0) {
+                            client.commit("places");
+                            LOGGER.log(Level.INFO, "Indexed {0} docs", success);
+                        }
+
+                        ret.put(t, tindexed++);
+
+                    }
+                    rs.close();
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, null, e);
+                    ret.put("error" + t, e);
+                }
+                ps.close();
+            }
+        } catch (NamingException | SQLException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        Date end = new Date();
+        ret.put("ellapsed time", DurationFormatUtils.formatDuration(end.getTime() - start.getTime(), "HH:mm:ss.S"));
+        ret.put("total", success);
+        return ret;
+    }
+    
+    public JSONObject letter_place() {
+        Date start = new Date();
+        JSONObject ret = new JSONObject();
+        int tindexed = 0;
+        int success = 0;
+        try {
+            client = Indexer.getClient();
+            List<String> tenants = getTenants();
+            
+        
+            for (String tenant : tenants) {
+                String t = tenant + "__letter_place";
+                String sql = "select * from " + tenant + "__letter_place as LP, " + tenant + "__places as P, " + tenant + "__letters as L "
+                        +  "where LP.letter_id = L.id AND LP.place_id = P.id"; 
+                PreparedStatement ps = getConnection().prepareStatement(sql);
+                try (ResultSet rs = ps.executeQuery()) {
+                    tindexed = 0;
+                    while (rs.next()) {
+
+                        SolrInputDocument doc = new SolrInputDocument();
+                        
+                        String id = tenant + "_" + rs.getInt("LP.id");
+
+                        doc.addField("id", id);
+                        doc.addField("table", t);
+                        doc.addField("table_id", rs.getInt("LP.id"));
+                        doc.addField("tenant", tenant);
+                        doc.addField("letter_id", rs.getInt("LP.letter_id"));
+                        doc.addField("place_id", rs.getInt("LP.place_id"));
+                        doc.addField("role", rs.getString("LP.role"));
+                        
+                        doc.addField("date_computed", rs.getDate("L.date_computed"));
+                        
+                        doc.addField("name", rs.getString("P.name"));
+                        doc.addField("country", rs.getString("P.country"));
+                        doc.addField("note", rs.getString("P.note"));
+                        doc.addField("latitude", rs.getString("P.latitude"));
+                        doc.addField("longitude", rs.getString("P.longitude"));
+                        doc.addField("geoname_id", rs.getInt("P.geoname_id"));
+                        doc.addField("division", rs.getString("P.division"));
+                        doc.addField("coords", rs.getString("P.latitude") + "," + rs.getString("P.longitude"));
+
+                        client.add("letter_place", doc);
+                        success++;
+                        if (success % 500 == 0) {
+                            client.commit("letter_place");
+                            LOGGER.log(Level.INFO, "Indexed {0} docs", success);
+                        }
+
+                        ret.put(t, tindexed++);
+
+                    }
+                    rs.close();
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, null, e);
+                    ret.put("error" + t, e);
+                }
+                ps.close();
+            }
+        } catch (NamingException | SQLException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        Date end = new Date();
+        ret.put("ellapsed time", DurationFormatUtils.formatDuration(end.getTime() - start.getTime(), "HH:mm:ss.S"));
+        ret.put("total", success);
+        return ret;
+    }
 
 }

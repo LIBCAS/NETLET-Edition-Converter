@@ -21,7 +21,7 @@
     "dbKeywordTables": ["keywords", "professions"],
     "nametagUrl": "http://lindat.mff.cuni.cz/services/nametag/api/",
     "translationUrl": "https://lindat.mff.cuni.cz/services/translation/api/v2/languages/",
-
+    "gptModels": ["gpt-3.5-turbo", "gpt-4o", "gpt-4.1"],
     "annotator": {
         "model": "gpt-3.5-turbo",
         "response_format": { "type": "json_object" },
