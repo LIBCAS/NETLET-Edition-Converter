@@ -14,16 +14,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.FileItem;
+import org.apache.commons.fileupload2.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload2.jakarta.servlet6.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.language.detect.LanguageResult;
 import org.json.JSONArray;
@@ -86,13 +86,13 @@ public class DataServlet extends HttpServlet {
         PDF {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                JSONObject ret = new JSONObject();
+                JSONObject ret = new JSONObject(); 
                 // Create a factory for disk-based file items
                 DiskFileItemFactory factory = new DiskFileItemFactory();
 
 // Configure a repository (to ensure a secure temp location is used)
                 ServletContext servletContext = req.getServletContext();
-                File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+                File repository = (File) servletContext.getAttribute("jakarta.servlet.context.tempdir");
                 factory.setRepository(repository);
 
 // Create a new file upload handler

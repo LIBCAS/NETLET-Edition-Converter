@@ -12,7 +12,7 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <context.name>/</context.name>
+        <context.name>/netleteditor/</context.name>
         <skipNg>false</skipNg>
     </properties>
     
@@ -79,12 +79,6 @@
             <version>8.2.0</version>
         </dependency>
         <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.4</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-langdetect</artifactId>
             <version>1.25</version>
@@ -95,9 +89,9 @@
             <version>2.0.0-ALPHA</version>
         </dependency>
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <version>7.0</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
             <scope>provided</scope>
         </dependency>
     
@@ -118,7 +112,11 @@
             <artifactId>jtokkit</artifactId>
             <version>1.0.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-fileupload2-jakarta</artifactId>
+            <version>2.0.0-M1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -209,21 +207,21 @@
                 <executions> 
                     <execution> 
                         <id>replace-for-index</id>
-                        <phase>prepare-package</phase> 
+                        <phase>generate-resources</phase> 
                         <goals> 
                             <goal>replace</goal> 
                         </goals>  
                         <configuration> 
                             <file>${project.basedir}/src/main/webapp/index.html</file> 
                             <replacements> 
-                                <!--                <replacement> 
-                                  <token>&lt;!doctype html&gt;</token> 
-                                  <value>&lt;%@page contentType="text/html" pageEncoding="UTF-8"%&gt;&lt;!doctype html&gt;</value> 
+                                <replacement> 
+                                    <token>&lt;!doctype html&gt;</token> 
+                                    <value>&lt;%@page contentType="text/html" pageEncoding="UTF-8"%&gt;&lt;!doctype html&gt;</value> 
                                 </replacement>
                                 <replacement> 
-                                  <token>base href="/"</token> 
-                                  <value>base href="${context.name}"</value> 
-                                </replacement> -->
+                                    <token>base href="/"</token> 
+                                    <value>base href="${context.name}"</value> 
+                                </replacement> 
                             </replacements> 
                         </configuration> 
                     </execution> 
@@ -258,8 +256,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>21</source>
+                    <target>21</target>
                     <compilerArguments>
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>
@@ -268,7 +266,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.3</version>
+                <version>3.3.1</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
