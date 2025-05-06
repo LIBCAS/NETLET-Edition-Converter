@@ -93,6 +93,8 @@ Managed external dictionaries
   <field name="keywords" type="string" indexed="false" stored="true" multiValued="true" />
   <field name="keywords_en" type="string" indexed="true" stored="true" multiValued="true" />
   <field name="keywords_cs" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="keywords_category_cs" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="keywords_category_en" type="string" indexed="true" stored="true" multiValued="true" />
 
   <field name="identities" type="string" indexed="true" stored="true" multiValued="true" />
   <field name="places" type="string" indexed="true" stored="true" multiValued="true" />
