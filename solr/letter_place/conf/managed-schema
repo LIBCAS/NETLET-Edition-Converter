@@ -98,6 +98,29 @@ Managed external dictionaries
 
   <field name="identities" type="string" indexed="true" stored="true" multiValued="true" />
   <field name="places" type="string" indexed="true" stored="true" multiValued="true" />
+  
+  <field name="professions" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_id" type="pint" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_en" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_cs" type="string" indexed="true" stored="true" multiValued="true" />
+  
+  <field name="professions_author_cs" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_recipient_cs" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_mentioned_cs" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_author_en" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_recipient_en" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_mentioned_en" type="string" indexed="true" stored="true" multiValued="true" />
+
+  <field name="professions_category_id" type="pint" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_category_cs" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_category_en" type="string" indexed="true" stored="true" multiValued="true" />
+  
+  <field name="professions_category_author_cs" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_category_recipient_cs" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_category_mentioned_cs" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_category_author_en" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_category_recipient_en" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="professions_category_mentioned_en" type="string" indexed="true" stored="true" multiValued="true" />
 
   <field name="origin" type="pint" indexed="true" stored="true"  />
   <field name="destination" type="pint" indexed="true" stored="true"  />
