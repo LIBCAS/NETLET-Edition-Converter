@@ -20,10 +20,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.fileupload2.core.DiskFileItemFactory;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.fileupload2.FileItem;
-import org.apache.commons.fileupload2.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload2.jakarta.servlet6.ServletFileUpload;
+//import org.apache.commons.fileupload2.FileItem;
+//import org.apache.commons.fileupload2.disk.DiskFileItemFactory;
+//import org.apache.commons.fileupload2.jakarta.servlet6.ServletFileUpload;
+
+
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.language.detect.LanguageResult;
 import org.json.JSONArray;
@@ -83,70 +86,77 @@ public class DataServlet extends HttpServlet {
     }
 
     enum Actions {
-        PDF {
+        UPLOAD {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject(); 
-                // Create a factory for disk-based file items
-                DiskFileItemFactory factory = new DiskFileItemFactory();
-
-// Configure a repository (to ensure a secure temp location is used)
-                ServletContext servletContext = req.getServletContext();
-                File repository = (File) servletContext.getAttribute("jakarta.servlet.context.tempdir");
-                factory.setRepository(repository);
-
-// Create a new file upload handler
-                ServletFileUpload upload = new ServletFileUpload(factory);
-
-// Parse the request
-                List<FileItem> items = upload.parseRequest(req);
-
-                JSONObject fileSettings = new JSONObject();
-                String filename = null;
-
-                // Process the uploaded items
-                Iterator<FileItem> iter = items.iterator();
-                while (iter.hasNext()) {
-                    FileItem item = iter.next();
-                    if (item.isFormField()) {
-                        // neni
-                        fileSettings.put(item.getFieldName(), item.getString("UTF-8"));
-                    } else {
-                        filename = item.getName();
-                        String pdfDir = Storage.pdfDir(filename);
-                        File d = new File(pdfDir);
-                        d.mkdirs();
-                        String fileName = pdfDir + File.separator + item.getName();
-                        File uploadedFile = new File(fileName);
-                        if (uploadedFile.exists()) {
-                            try {
-                                boolean deleted = uploadedFile.delete();
-                                if (!deleted) {
-                                    return ret.put("error", "can't delete file");  
-                                }
-                            } catch (Exception ioex) {
-                                LOGGER.log(Level.SEVERE, null, ioex);
-                                return ret.put("error", "can't delete file");
-                            }
-                        }
-                        File f2 = new File(fileName);
-                        item.write(f2);
-                        if (f2.exists()) {
-                            new Thread(() -> PDFThumbsGenerator.processFile(item.getName())).start();
-                            ret.put("msg", "process started");
-                        } else {
-                            ret.put("msg", "not exists");
-                        }
-                    }
-                } 
-                if (filename != null) {
-                    File f = Storage.configFile(filename);
-                    fileSettings.put("prompt", Options.getInstance().getString("defaultPrompt").replace("###NAME###", "z knihy \"" + fileSettings.optString("name", "") + "\""));
-                    FileUtils.writeStringToFile(f, fileSettings.toString(), "UTF-8");
-                }
                 return ret;
             }
         },
+//        PDF {
+//            @Override
+//            JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
+//                JSONObject ret = new JSONObject(); 
+//
+//                
+//
+//// Configure a repository (to ensure a secure temp location is used)
+//                ServletContext servletContext = req.getServletContext();
+//                File repository = (File) servletContext.getAttribute("jakarta.servlet.context.tempdir");
+//                factory.setRepository(repository);
+//
+//// Create a new file upload handler
+//                ServletFileUpload upload = new ServletFileUpload(factory);
+//
+//// Parse the request
+//                List<FileItem> items = upload.parseRequest(req);
+//
+//                JSONObject fileSettings = new JSONObject();
+//                String filename = null;
+//
+//                // Process the uploaded items
+//                Iterator<FileItem> iter = items.iterator();
+//                while (iter.hasNext()) {
+//                    FileItem item = iter.next();
+//                    if (item.isFormField()) {
+//                        // neni
+//                        fileSettings.put(item.getFieldName(), item.getString("UTF-8"));
+//                    } else {
+//                        filename = item.getName();
+//                        String pdfDir = Storage.pdfDir(filename);
+//                        File d = new File(pdfDir);
+//                        d.mkdirs();
+//                        String fileName = pdfDir + File.separator + item.getName();
+//                        File uploadedFile = new File(fileName);
+//                        if (uploadedFile.exists()) {
+//                            try {
+//                                boolean deleted = uploadedFile.delete();
+//                                if (!deleted) {
+//                                    return ret.put("error", "can't delete file");  
+//                                }
+//                            } catch (Exception ioex) {
+//                                LOGGER.log(Level.SEVERE, null, ioex);
+//                                return ret.put("error", "can't delete file");
+//                            }
+//                        }
+//                        File f2 = new File(fileName);
+//                        item.write(f2);
+//                        if (f2.exists()) {
+//                            new Thread(() -> PDFThumbsGenerator.processFile(item.getName())).start();
+//                            ret.put("msg", "process started");
+//                        } else {
+//                            ret.put("msg", "not exists");
+//                        }
+//                    }
+//                } 
+//                if (filename != null) {
+//                    File f = Storage.configFile(filename);
+//                    fileSettings.put("prompt", Options.getInstance().getString("defaultPrompt").replace("###NAME###", "z knihy \"" + fileSettings.optString("name", "") + "\""));
+//                    FileUtils.writeStringToFile(f, fileSettings.toString(), "UTF-8");
+//                }
+//                return ret;
+//            }
+//        },
         DOCUMENTS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {

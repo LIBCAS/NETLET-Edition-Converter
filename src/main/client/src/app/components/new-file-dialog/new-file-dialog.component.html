@@ -1,6 +1,5 @@
-<h1 mat-dialog-title cdkDrag
-cdkDragRootElement=".cdk-overlay-pane" 
-cdkDragHandle >{{ 'action.addNewFile' | translate }}</h1>
+<h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>{{ 'action.addNewFile' | translate }}
+</h1>
 <div mat-dialog-content class="app-letter">
 
   <div class="app-mb-4">
@@ -10,12 +9,14 @@ cdkDragHandle >{{ 'action.addNewFile' | translate }}</h1>
     </mat-form-field>
   </div>
   <div class="app-fxLayout app-row app-center-v app-mb-4">
-    
+
     <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>Tenant</mat-label>
       <mat-select [(ngModel)]="tenant">
-        <mat-option *ngFor="let t of state.tenants" [value]="t">{{ t }}</mat-option>
-    </mat-select>
+        @for(t of state.tenants; track $index; let idx = $index){
+        <mat-option [value]="t">{{ t }}</mat-option>
+        }
+      </mat-select>
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
       <mat-label>{{ 'def_author' | translate }}</mat-label>
@@ -35,11 +36,13 @@ cdkDragHandle >{{ 'action.addNewFile' | translate }}</h1>
 
   <mat-divider class="app-mt-4"></mat-divider>
 
-  <input type="file" #fileUpload ng2FileSelect [uploader]="uploader" style="display:none;" (change)="onFileSelected($event)" accept="application/pdf">
+  <input type="file" #fileUpload ng2FileSelect [uploader]="uploader" style="display:none;"
+    (change)="onFileSelected($event)" accept="application/pdf">
   <div class="app-fxLayout app-row app-center-v">
     <mat-form-field appearance="outline" class="app-fxFlex app-form-field-center-v-fix">
       <input matInput type="text" name="selectedCover" [(ngModel)]="selectedFile">
-      <button matPrefix mat-stroked-button color="primary" class="app-mr-2 app-ml-2" (click)="fileUpload.click()">{{ 'action.choose_file' | translate }}</button>
+      <button matPrefix mat-stroked-button color="primary" class="app-mr-2 app-ml-2" (click)="fileUpload.click()">{{
+        'action.choose_file' | translate }}</button>
     </mat-form-field>
   </div>
   <mat-progress-bar mode="indeterminate" [value]="uploader.progress" *ngIf="uploader.isUploading"></mat-progress-bar>
@@ -48,6 +51,7 @@ cdkDragHandle >{{ 'action.addNewFile' | translate }}</h1>
 </div>
 
 <div mat-dialog-actions>
-    <button [disabled]="!selectedFile || !tenant" mat-flat-button color="primary" (click)="uploadFile()">{{ 'action.upload' | translate }}</button>
-    <button mat-flat-button [mat-dialog-close]="false">{{ 'action.close' | translate }}</button>
+  <button [disabled]="!selectedFile || !tenant" mat-flat-button color="primary" (click)="uploadFile()">{{
+    'action.upload' | translate }}</button>
+  <button mat-flat-button [mat-dialog-close]="false">{{ 'action.close' | translate }}</button>
 </div>

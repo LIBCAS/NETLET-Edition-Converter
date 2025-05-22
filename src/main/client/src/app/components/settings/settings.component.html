@@ -8,23 +8,20 @@
       </mat-form-field>
     </div>
   </div>
-  
+
   <div class=" app-row app-center-v app-mb-4">
     <fieldset class="app-w-100 app-fxFlex">
       <legend>{{ 'Acronyms' | translate }}</legend>
 
       <mat-form-field class="app-w-100 app-mb-4" appearance="outline">
         <mat-label>{{ 'field.locations' | translate }}</mat-label>
-        <input matInput name="locations" [formControl]="location_str" [value]="location_str.value.name ? location_str.value.name : ''" [matAutocomplete]="autoRepos1">
+        <input matInput name="locations" [formControl]="location_str"
+          [value]="location_str.value.name ? location_str.value.name : ''" [matAutocomplete]="autoRepos1">
         <mat-autocomplete #autoRepos1="matAutocomplete" (optionSelected)="selectLocation($event)">
 
           @for (option of filteredLocations | async; track option) {
-            <mat-option [value]="option">{{option.name}} ({{ 'field.copies_' + option.type | translate }})</mat-option>
+          <mat-option [value]="option">{{option.name}} ({{ 'field.copies_' + option.type | translate }})</mat-option>
           }
-
-          <!-- <mat-option *ngFor="let a of locations_db" [value]="a">
-            {{a.name}}
-          </mat-option> -->
         </mat-autocomplete>
       </mat-form-field>
 
@@ -39,16 +36,19 @@
             </button>
           </mat-form-field>
         </div>
-        
-        <div *ngFor="let k of location.acronyms; let idx = index; let last = last;" class="app-keyword app-fxLayout app-center-v">
+
+        @for(k of location.acronyms; track $index; let idx = $index; let last = $last){
+        <div class="app-keyword app-fxLayout app-center-v">
           <span class="app-fxFlex app-center-v">{{ k }}</span>
-          <button mat-icon-button (click)="removeAcronym(idx)" [matTooltip]="'action.remove_acronym' | translate"><mat-icon>clear</mat-icon></button>
+          <button mat-icon-button (click)="removeAcronym(idx)"
+            [matTooltip]="'action.remove_acronym' | translate"><mat-icon>clear</mat-icon></button>
           <span class="app-pipe app-in-element" *ngIf="!last"></span>
         </div>
+        }
 
       </div>
-      
-      
+
+
     </fieldset>
   </div>
 </div>

@@ -14,6 +14,20 @@
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>UploadFileServlet</servlet-name>
+        <servlet-class>cz.knav.netlet.netleteditor.UploadFileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UploadFileServlet</servlet-name>
+        <url-pattern>/upload</url-pattern>
+        <multipart-config>
+            <location>/tmp</location>
+            <max-file-size>2000848820</max-file-size>
+            <file-size-threshold>1048576</file-size-threshold>
+        </multipart-config>
+    </servlet-mapping>
+    
+    <servlet>
         <servlet-name>StaticServlet</servlet-name>
         <jsp-file>/index.jsp</jsp-file>
     </servlet>

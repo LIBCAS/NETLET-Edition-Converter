@@ -1,50 +1,70 @@
 <div class="app-fxLayout app-column app-fill">
   <div class="app-controlbar app-fxLayout app-row app-pl-4 app-pr-4 app-center-v">
     <div class="app-fxFlex">
-      <button mat-icon-button (click)="regenerateAlto()" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button>
-      <button mat-icon-button (click)="zoomImg(1.2)" [matTooltip]="'action.zoomIn' | translate"><mat-icon>zoom_in</mat-icon></button>
-      <button mat-icon-button (click)="zoomImg(.8)" [matTooltip]="'action.zoomOut' | translate"><mat-icon>zoom_out</mat-icon></button>
-      <button mat-icon-button (click)="zoomImgReset()" [matTooltip]="'action.originalSize' | translate"><mat-icon>zoom_in_map</mat-icon></button>
+      <button mat-icon-button (click)="regenerateAlto()"
+        [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button>
+      <button mat-icon-button (click)="zoomImg(1.2)"
+        [matTooltip]="'action.zoomIn' | translate"><mat-icon>zoom_in</mat-icon></button>
+      <button mat-icon-button (click)="zoomImg(.8)"
+        [matTooltip]="'action.zoomOut' | translate"><mat-icon>zoom_out</mat-icon></button>
+      <button mat-icon-button (click)="zoomImgReset()"
+        [matTooltip]="'action.originalSize' | translate"><mat-icon>zoom_in_map</mat-icon></button>
     </div>
     <span class="app-label">{{ 'desc.page' | translate }}:</span>
     <input [(ngModel)]="state.currentPage" (change)="getPage()" min="1" max="numPages" />
     <span class="app-ml-6 app-mr-4">{{ 'z ' | translate }}<strong>{{ state.numPages }}</strong></span>
-    <button mat-icon-button [matTooltip]="'Previous' | translate" (click)="prevPage()"><mat-icon>navigate_before</mat-icon></button>
-    <button mat-icon-button [matTooltip]="'Next' | translate" (click)="nextPage()"><mat-icon>navigate_next</mat-icon></button>
+    <button mat-icon-button [matTooltip]="'Previous' | translate"
+      (click)="prevPage()"><mat-icon>navigate_before</mat-icon></button>
+    <button mat-icon-button [matTooltip]="'Next' | translate"
+      (click)="nextPage()"><mat-icon>navigate_next</mat-icon></button>
   </div>
   <div class="app-fxFlex app-oa-y" #scroller>
     <div style="position: relative;" [cdkContextMenuTriggerFor]="context_menu">
-      <img [src]="config.context + 'api/img/full?filename=' + file + '&page=' + (state.currentPage-1)"  (load)="getInfo()" #image 
-      style="position: absolute;"
-      [style.width]="_imgW + 'px'"  />
+      <img [src]="config.context + 'api/img/full?filename=' + file + '&page=' + (state.currentPage-1)"
+        (load)="getInfo()" #image style="position: absolute;" [style.width]="_imgW + 'px'" />
       <canvas id="autoCanvas" #autoCanvas></canvas>
       <canvas id="selCanvas" #selCanvas></canvas>
     </div>
-    
+
     <ng-template #context_menu>
       <div class="app-context-menu mat-elevation-z8" *ngIf="state.selectedBlocks.length > 0" cdkMenu>
-        <div cdkMenuItem *ngFor="let f of state.fields" class="app-fxLayout app-row app-center-v">
+
+        @for(f of state.fields; track $index; let idx = $index){
+        <div cdkMenuItem class="app-fxLayout app-row app-center-v">
           <strong class="app-mr-1 app-fxFlex app-label">{{ 'field.' + f | translate }}: </strong>
-          <mat-icon class="app-suffix app-color-block" (click)="setField(f, 'block', $event)" [matTooltip]="'action.set_block' | translate">menu_open</mat-icon>
-          <mat-icon class="app-suffix app-color-line" (click)="setField(f, 'line', $event)" [matTooltip]="'action.set_line' | translate">menu_open</mat-icon>
-          <mat-icon class="app-suffix app-color-word" (click)="setField(f, 'word', $event)" [matTooltip]="'action.set_word' | translate">menu_open</mat-icon>
+          <mat-icon class="app-suffix app-color-block" (click)="setField(f, 'block', $event)"
+            [matTooltip]="'action.set_block' | translate">menu_open</mat-icon>
+          <mat-icon class="app-suffix app-color-line" (click)="setField(f, 'line', $event)"
+            [matTooltip]="'action.set_line' | translate">menu_open</mat-icon>
+          <mat-icon class="app-suffix app-color-word" (click)="setField(f, 'word', $event)"
+            [matTooltip]="'action.set_word' | translate">menu_open</mat-icon>
         </div>
-        <ng-container *ngFor="let copy of letter.copies; let idx = index">
-          <div cdkMenuItem class="app-fxLayout app-row app-center-v">---</div>
-          <div cdkMenuItem *ngFor="let f of state.copyFields" class="app-fxLayout app-row app-center-v">
-            <strong class="app-mr-1 app-fxFlex app-label">{{ 'field.' + f | translate }} {{ idx + 1 }}: </strong>
-            <mat-icon class="app-suffix app-color-block" (click)="setField(f + '_' + idx, 'block', $event)" [matTooltip]="'action.set_block' | translate">menu_open</mat-icon>
-            <mat-icon class="app-suffix app-color-line" (click)="setField(f + '_' + idx, 'line', $event)" [matTooltip]="'action.set_line' | translate">menu_open</mat-icon>
-            <mat-icon class="app-suffix app-color-word" (click)="setField(f + '_' + idx, 'word', $event)" [matTooltip]="'action.set_word' | translate">menu_open</mat-icon>
-          </div>
-        </ng-container>
+        }
+        @for(copy of letter.copies; track $index; let idx = $index){
+        <div cdkMenuItem class="app-fxLayout app-row app-center-v">---</div>
+
+        @for(f of state.copyFields; track $index; let idx = $index){
+        <div cdkMenuItem class="app-fxLayout app-row app-center-v">
+          <strong class="app-mr-1 app-fxFlex app-label">{{ 'field.' + f | translate }} {{ idx + 1 }}: </strong>
+          <mat-icon class="app-suffix app-color-block" (click)="setField(f + '_' + idx, 'block', $event)"
+            [matTooltip]="'action.set_block' | translate">menu_open</mat-icon>
+          <mat-icon class="app-suffix app-color-line" (click)="setField(f + '_' + idx, 'line', $event)"
+            [matTooltip]="'action.set_line' | translate">menu_open</mat-icon>
+          <mat-icon class="app-suffix app-color-word" (click)="setField(f + '_' + idx, 'word', $event)"
+            [matTooltip]="'action.set_word' | translate">menu_open</mat-icon>
+        </div>
+        }
+        }
         <div cdkMenuItem class="app-fxLayout app-row app-center-v">
           <strong class="app-mr-1 app-fxFlex app-label">{{ 'action.copy' | translate }}: </strong>
-          <mat-icon class="app-suffix app-color-block" (click)="copyToClipboard('block')" [matTooltip]="'action.copy_block' | translate">content_copy</mat-icon>
-          <mat-icon class="app-suffix app-color-line" (click)="copyToClipboard('line')" [matTooltip]="'action.copy_line' | translate">content_copy</mat-icon>
-          <mat-icon class="app-suffix app-color-word" (click)="copyToClipboard('word')" [matTooltip]="'action.copy_word' | translate">content_copy</mat-icon>
+          <mat-icon class="app-suffix app-color-block" (click)="copyToClipboard('block')"
+            [matTooltip]="'action.copy_block' | translate">content_copy</mat-icon>
+          <mat-icon class="app-suffix app-color-line" (click)="copyToClipboard('line')"
+            [matTooltip]="'action.copy_line' | translate">content_copy</mat-icon>
+          <mat-icon class="app-suffix app-color-word" (click)="copyToClipboard('word')"
+            [matTooltip]="'action.copy_word' | translate">content_copy</mat-icon>
         </div>
-        
+
       </div>
     </ng-template>
   </div>

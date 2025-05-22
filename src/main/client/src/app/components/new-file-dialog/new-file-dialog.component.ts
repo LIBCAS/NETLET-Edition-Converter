@@ -31,7 +31,7 @@ export class NewFileDialogComponent {
   def_author: string;
   def_recipient: string;
 
-  public uploader: FileUploader = new FileUploader({ url: 'api/data/pdf' });
+  public uploader: FileUploader = new FileUploader({ url: 'api/upload' });
   selectedFile: string;
   progressMsg: string;
 
@@ -50,7 +50,7 @@ export class NewFileDialogComponent {
 
   uploadFile() {
     const opts: FileUploaderOptions = {
-      url: 'api/data/pdf',
+      url: 'api/upload',
       additionalParameter: {
         name: this.name,
         columns: this.columns,

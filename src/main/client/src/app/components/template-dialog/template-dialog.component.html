@@ -7,12 +7,14 @@
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'templates' | translate }}</mat-label>
         <mat-select [(ngModel)]="selectedTemplate">
-          <mat-option *ngFor="let t of state.fileConfig.templates" [value]="t">{{ t.name }}</mat-option>
+          @for(t of state.fileConfig.templates; track $index; let idx = $index){
+          <mat-option [value]="t">{{ t.name }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
 
-<hr/>
+    <hr />
     <div class="app-mb-4">
       <mat-form-field class="app-w-100" appearance="outline">
         <mat-label>{{'template_name' | translate}}</mat-label>
@@ -22,7 +24,8 @@
     <div class="app-mb-4">
       <mat-form-field class="app-w-100" appearance="outline">
         <mat-label>{{'field.notes_private' | translate}}</mat-label>
-        <textarea rows="5" matInput [(ngModel)]="selectedTemplate.notes_private" name="notes_private" #notes_private></textarea>
+        <textarea rows="5" matInput [(ngModel)]="selectedTemplate.notes_private" name="notes_private"
+          #notes_private></textarea>
       </mat-form-field>
     </div>
     <div class="app-fxLayout app-row app-center-v app-mb-4" *ngIf="selectedTemplate.author_db">
@@ -31,9 +34,11 @@
         <input matInput name="def_author" [(ngModel)]="selectedTemplate.author_db.name" [matAutocomplete]="auto"
           (keyup)="getAuthors(selectedTemplate.author_db.name)">
         <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let a of authors_db" [value]="a.name">
+          @for(a of authors_db; track $index; let idx = $index){
+          <mat-option [value]="a.name">
             {{a.name}}
           </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
 
@@ -42,9 +47,11 @@
         <input matInput name="def_recipient" [(ngModel)]="selectedTemplate.recipient_db.name" [matAutocomplete]="auto2"
           (keyup)="getAuthors(selectedTemplate.recipient_db.name)">
         <mat-autocomplete #auto2="matAutocomplete">
-          <mat-option *ngFor="let a of authors_db" [value]="a.name">
+          @for(a of authors_db; track $index; let idx = $index){
+          <mat-option [value]="a.name">
             {{a.name}}
           </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
     </div>
@@ -56,9 +63,11 @@
           (change)="getLocations(selectedTemplate.copies_repository, 'repository')"
           (keyup)="getLocations(selectedTemplate.copies_repository, 'repository')">
         <mat-autocomplete #autoRepos="matAutocomplete">
-          <mat-option *ngFor="let a of repositories" [value]="a.name">
+          @for(a of repositories; track $index; let idx = $index){
+          <mat-option [value]="a.name">
             {{a.name}}
           </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
 
@@ -68,9 +77,11 @@
           [matAutocomplete]="autoArchives" (change)="getLocations(selectedTemplate.copies_archive, 'archive')"
           (keyup)="getLocations(selectedTemplate.copies_archive, 'archive')">
         <mat-autocomplete #autoArchives="matAutocomplete">
-          <mat-option *ngFor="let a of archives" [value]="a.name">
+          @for(a of archives; track $index; let idx = $index){
+          <mat-option [value]="a.name">
             {{a.name}}
           </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
 
@@ -80,9 +91,11 @@
           [matAutocomplete]="autoCollections" (change)="getLocations(selectedTemplate.copies_collection, 'collection')"
           (keyup)="getLocations(selectedTemplate.copies_collection, 'collection')">
         <mat-autocomplete #autoCollections="matAutocomplete">
-          <mat-option *ngFor="let a of collections" [value]="a.name">
+          @for(a of collections; track $index; let idx = $index){
+          <mat-option [value]="a.name">
             {{a.name}}
           </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
     </div>
