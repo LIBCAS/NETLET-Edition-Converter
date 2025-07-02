@@ -5,7 +5,7 @@
     "images_dir": "images",
     "alto_dir": "alto",
     "txt_dir": "txt",
-    
+
     "PERO": {
         "server_url": "https://pero-ocr.fit.vutbr.cz/api/",
         "api_key": ""
@@ -24,7 +24,9 @@
     "gptModels": ["gpt-3.5-turbo", "gpt-4o", "gpt-4.1"],
     "annotator": {
         "model": "gpt-3.5-turbo",
-        "response_format": { "type": "json_object" },
+        "response_format": {
+            "type": "json_object"
+        },
         "messages": [],
         "temperature": 0,
         "max_tokens": 4048,
@@ -32,30 +34,30 @@
         "frequency_penalty": 0,
         "presence_penalty": 0
     },
-    "chatGPTMessages" :[
-            {
-                "role": "system",
-                "content": "You are an librarian assistent. You receive a text which is a historical letter. Reply in Czech."
-            },
-            {
-                "role": "system",
-                "content": "Oslovení je na začátku dopisu. Incipit a explicit musi byt v originalnim jazyku. Definice incipitu – první věta či větný celek textu dokumentu, bez úvodního pozdravu a oslovení, cca. 10 slov. Definice explicitu – poslední věta či větný celek textu dokumentu, pred rozloučením, bez závěrečného pozdravu a podpisu, cca. 10 slov"
-            }, 
-            {
-                "role": "system",
-                "content": "Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract_cs: string, abstract_en: string, sender: string, recipient: string, date_as_show_in_text: string, date: Date, location: string, incipit: string, explicit: string, sign_off: string, signature: string, summary: text }"
-            }, 
-            {
-                "role": "user",
-                "content": ""
-            }
-        ],
-    "openAIKey" :"",
+    "chatGPTMessages": [
+        {
+            "role": "system",
+            "content": "You are an librarian assistent. You receive a text which is a historical letter. Reply in Czech."
+        },
+        {
+            "role": "system",
+            "content": "Oslovení je na začátku dopisu. Incipit a explicit musi byt v originalnim jazyku. Definice incipitu – první věta či větný celek textu dokumentu, bez úvodního pozdravu a oslovení, cca. 10 slov. Definice explicitu – poslední věta či větný celek textu dokumentu, pred rozloučením, bez závěrečného pozdravu a podpisu, cca. 10 slov"
+        }, 
+        {
+            "role": "system",
+            "content": "Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract_cs: string, abstract_en: string, sender: string, recipient: string, date_as_show_in_text: string, date: Date, location: string, incipit: string, explicit: string, sign_off: string, signature: string, summary: text }"
+        }, 
+        {
+            "role": "user",
+            "content": ""
+        }
+    ],
+    "openAIKey": "",
     "chatGPT": {
-       "max_tokens":  7000
+        "max_tokens": 7000
     },
     "defaultPrompt": "Jsi pomocník, který dostane korespondenci (dopis) ###NAME###. Napis abstrakt v češtině v {words/100} větách.",
-    "file_config" : {
+    "file_config": {
         "name": "",
         "columns": 1,
         "def_author": "",
@@ -64,5 +66,26 @@
         "searchParams": {},
         "ignored": {},
         "prompt": ""
-      }
+    },
+    "hiko": {
+        "api_point": ".historicka-korespondence.cz/api/v2/",
+        "bearer": "",
+        "test_mappings": {
+            "brezina": "hiko-test",
+            "deml": "hiko-test2",
+            "blekastad": "hiko-test3",
+            "kalivoda": "hiko-test4",
+            "komensky": "hiko-test5",
+            "marci": "hiko-test6",
+            "musil": "hiko-test7",
+            "neumann": "hiko-test8",
+            "pamatky": "hiko-test9",
+            "patocka": "hiko-test10",
+            "polanus": "hiko-test11",
+            "sachs": "hiko-test12",
+            "studenti": "hiko-test13",
+            "tgm": "hiko-test14",
+            "ucenci": "hiko-test15"
+        }
+    }
 }

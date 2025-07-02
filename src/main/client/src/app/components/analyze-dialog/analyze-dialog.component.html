@@ -15,7 +15,7 @@
         <mat-form-field class="app-fxFlex" >
             <mat-label>chatGPT model</mat-label>
             <mat-select [(ngModel)]="data.gptModel">
-            @for(t of state.gptModels; track $index; let idx = $index){
+            @for(t of state.gptModels; track idx; let idx = $index){
                 <mat-option [value]="t">{{ t }}</mat-option>
             }
           </mat-select>
@@ -23,7 +23,7 @@
         <mat-checkbox [(ngModel)]="showImages">{{ 'action.show_images' | translate }}</mat-checkbox>
     </div>
     <div class="app-mb-4" *ngIf="showImages">
-        @for(sel of data.letter.selection; track $index; let idx = $index){
+        @for(sel of data.letter.selection; track idx; let idx = $index){
             <img class="app-fxFlex" style="height: 100px; border: 1px solid #aaa; margin-right: 2px;" [src]="getImgUrl(sel)" />
         }
     </div>
@@ -221,7 +221,7 @@
         </mat-tab>
         <mat-tab label="NameTag">
             <div class="app-pt-4 app-pb-4 app-pr-4">
-            @for(entity of nametags; track $index; let idx = $index){
+            @for(entity of nametags; track idx; let idx = $index){
                 <div>
                     <mat-checkbox [id]="'nametag_' + idx" [name]="'nametag_' + idx" type="checkbox"
                         [(ngModel)]="entity.selected">{{entity.text}} ({{ 'tags.' + entity.type |

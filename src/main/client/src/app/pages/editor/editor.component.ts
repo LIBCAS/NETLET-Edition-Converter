@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ViewerComponent } from '../../components/viewer/viewer.component';
-import { NgIf, NgTemplateOutlet, NgFor, DatePipe } from '@angular/common';
+import { NgIf, NgTemplateOutlet, NgFor, DatePipe, CommonModule } from '@angular/common';
 import { AngularSplitModule, SplitComponent } from 'angular-split';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
@@ -35,10 +35,10 @@ import { TemplateDialogComponent } from 'src/app/components/template-dialog/temp
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'cs' },
   ],
-  imports: [FormsModule, AngularSplitModule, NgIf, ViewerComponent,
+  imports: [CommonModule, FormsModule, AngularSplitModule, NgIf, ViewerComponent,
     MatToolbarModule, RouterModule, TranslateModule, DatePipe, MatMenuModule,
     MatTabsModule, MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatListModule,
-    MatInputModule, NgFor, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
+    MatInputModule, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
 })
 export class EditorComponent {
 
@@ -209,7 +209,7 @@ export class EditorComponent {
       //     }
       //   }
       //     data.field = data.field +'_' + idx;
-        
+
       // }
       // console.log(idx, this.letter.copies)
       this.letter.copies[idx][parts[1] as keyof LetterCopy] = text;
@@ -520,7 +520,7 @@ export class EditorComponent {
     }
     this.state.fileConfig.templates.push(t);
     const dialogRef = this.dialog.open(TemplateDialogComponent, {
-      data: {template: t} ,
+      data: { template: t },
       width: '800px'
     });
 
@@ -552,6 +552,42 @@ export class EditorComponent {
     this.service.removeLetter(this.state.selectedFile.filename, this.letter.id).subscribe((res: any) => {
       this.getLetters();
     });
+
+  }
+
+  importLetter() {
+    const id = window.prompt('Id to import. Tenant: ' + this.state.fileConfig.tenant);
+    if (id) {
+      console.log(id);
+      this.service.importFromHiko(id, this.state.fileConfig.tenant).subscribe((res:any) => {
+        console.log(res)
+        this.letter = res;
+        // this.letter.template = t;
+        this.letter.hiko_id = res.id;
+        this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
+        this.letter.tenant = this.state.fileConfig.tenant;
+
+
+
+        this.letter.authors_db = res.identities.filter((i: any) => i.pivot.role === "author");
+        this.letter.author_db = this.letter.authors_db[0];
+        this.letter.author = this.letter.author_db.name;
+
+        this.letter.recipients_db = res.identities.filter((i: any) => i.pivot.role === "recipient");
+        this.letter.recipient_db = this.letter.recipients_db[0];
+        this.letter.recipient = this.letter.recipient_db.name;
+
+        this.letter.date = res.date_computed;
+        
+        //const copy = new LetterCopy();
+        // copy.repository = t.copies_repository;
+        // copy.archive = t.copies_archive;
+        // copy.collection = t.copies_collection;
+        //this.letter.copies.push(copy);
+        this.letter.full_text = '';
+        this.view = 'fields';
+      });
+    }
 
   }
 

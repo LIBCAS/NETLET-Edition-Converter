@@ -1,6 +1,6 @@
-<div *ngIf="_letter" class="app-letter app-icons">
+<div *ngIf="_letter" class="app-letter app-icons" >
   <div *ngIf="_letter.selection?.length > 0" class="app-fxLayout app-row app-center-v app-mb-4">
-    @for(sel of _letter.selection; track $index; let idx = $index){
+    @for(sel of _letter.selection; track idx; let idx = $index){
     <div (click)="gotoPage(sel.page)">
       <mat-icon class="mat-icon-close" (click)="removeSelection(sel.page)"
         [matTooltip]="'action.remove_selection' | translate">close</mat-icon>
@@ -47,7 +47,7 @@
     </mat-form-field>
   </div>
 
-  <div class="app-fxLayout app-row app-center-v app-mb-4">
+  <div class="app-fxLayout app-row app-center-v app-mb-4" >
     <mat-form-field class="app-fxFlex">
       <mat-label>{{ 'field.author' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.author" name="author" /><span matSuffix></span>
@@ -159,7 +159,7 @@
 
   <fieldset class="app-mb-4">
     <legend>{{ 'field.places_meta' | translate }}</legend>
-    @for(place_meta of _letter.places_meta; track $index; let idx = $index){
+    @for(place_meta of _letter.places_meta; track idx; let idx = $index){
     <fieldset>
       <legend> #{{ idx + 1 }}. </legend>
       <button *ngIf="idx > 0" mat-icon-button (click)="removeCopy(idx)"
@@ -174,7 +174,7 @@
           <ng-container matSuffix
             *ngTemplateOutlet="icons; context:{ field: 'places_meta_marked_' + idx }"></ng-container>
           <mat-autocomplete #autoRepos="matAutocomplete">
-            @for(a of repositories; track $index; let idx = $index){
+            @for(a of repositories; track idx; let idx = $index){
             <mat-option [value]="a.name">
               {{a.name}}
             </mat-option>
@@ -190,7 +190,7 @@
           <ng-container matSuffix
             *ngTemplateOutlet="icons; context:{ field: 'places_meta_type_' + idx }"></ng-container>
           <mat-autocomplete #autoArchives="matAutocomplete">
-            @for(a of archives; track $index; let idx = $index){
+            @for(a of archives; track idx; let idx = $index){
             <mat-option [value]="a.name">
               {{a.name}}
             </mat-option>
@@ -210,7 +210,7 @@
 
   <fieldset class="app-mb-4">
     <legend>{{ 'field.copies' | translate }}</legend>
-    @for(copy of _letter.copies; track $index; let idx = $index){
+    @for(copy of _letter.copies; track idx; let idx = $index){
     <fieldset>
       <legend> #{{ idx + 1 }}. </legend>
       <button *ngIf="idx > 0" mat-icon-button (click)="removeCopy(idx)"
@@ -225,7 +225,7 @@
           <ng-container matSuffix
             *ngTemplateOutlet="icons; context:{ field: 'copies_repository_' + idx }"></ng-container>
           <mat-autocomplete #autoRepos="matAutocomplete">
-            @for(a of repositories; track $index; let idx = $index){
+            @for(a of repositories; track idx; let idx = $index){
             <mat-option [value]="a.name">
               {{a.name}}
             </mat-option>
@@ -240,7 +240,7 @@
             matSuffix></span>
           <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_archive_' + idx }"></ng-container>
           <mat-autocomplete #autoArchives="matAutocomplete">
-            @for(a of archives; track $index; let idx = $index){
+            @for(a of archives; track idx; let idx = $index){
             <mat-option [value]="a.name">
               {{a.name}}
             </mat-option>
@@ -256,7 +256,7 @@
           <ng-container matSuffix
             *ngTemplateOutlet="icons; context:{ field: 'copies_collection_' + idx }"></ng-container>
           <mat-autocomplete #autoCollections="matAutocomplete">
-            @for( a of collections; track $index; let idx = $index){
+            @for( a of collections; track idx; let idx = $index){
             <mat-option [value]="a.name">
               {{a.name}}
             </mat-option>
@@ -311,7 +311,7 @@
     </mat-tab>
     <mat-tab label="NameTag">
       <div class="app-pt-4 app-pb-4 app-pr-4">
-        @for( entity of _letter.nametags; track $index; let idx = $index){
+        @for( entity of _letter.nametags; track idx; let idx = $index){
         <div>
           <mat-checkbox [id]="'nametag_' + idx" [name]="'nametag_' + idx" type="checkbox"
             [(ngModel)]="entity.selected">{{entity.text}} ({{ 'tags.' + entity.type | translate}})</mat-checkbox>

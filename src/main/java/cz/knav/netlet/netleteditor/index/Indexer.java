@@ -385,9 +385,14 @@ public class Indexer {
                 id = filename + new Date().getTime();
                 data.put("id", id);
             }
+            
             Http2SolrClient solr = (Http2SolrClient) getClient(); 
             SolrInputDocument idoc = new SolrInputDocument();
             idoc.setField("id", id);
+            if (data.has("hiko_id")) {
+                idoc.setField("hiko_id", data.getInt("hiko_id"));
+            }
+            idoc.setField("tenant", data.optString("tenant"));
             idoc.setField("filename", filename);
             idoc.setField("file_id", hashString(filename));
             idoc.setField("data", data.toString());

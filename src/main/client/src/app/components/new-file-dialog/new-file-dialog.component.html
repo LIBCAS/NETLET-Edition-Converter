@@ -13,7 +13,7 @@
     <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>Tenant</mat-label>
       <mat-select [(ngModel)]="tenant">
-        @for(t of state.tenants; track $index; let idx = $index){
+        @for(t of state.tenants; track idx; let idx = $index){
         <mat-option [value]="t">{{ t }}</mat-option>
         }
       </mat-select>

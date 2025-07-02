@@ -29,7 +29,7 @@
     <ng-template #context_menu>
       <div class="app-context-menu mat-elevation-z8" *ngIf="state.selectedBlocks.length > 0" cdkMenu>
 
-        @for(f of state.fields; track $index; let idx = $index){
+        @for(f of state.fields; track idx; let idx = $index){
         <div cdkMenuItem class="app-fxLayout app-row app-center-v">
           <strong class="app-mr-1 app-fxFlex app-label">{{ 'field.' + f | translate }}: </strong>
           <mat-icon class="app-suffix app-color-block" (click)="setField(f, 'block', $event)"
@@ -40,10 +40,10 @@
             [matTooltip]="'action.set_word' | translate">menu_open</mat-icon>
         </div>
         }
-        @for(copy of letter.copies; track $index; let idx = $index){
+        @for(copy of letter.copies; track idx; let idx = $index){
         <div cdkMenuItem class="app-fxLayout app-row app-center-v">---</div>
 
-        @for(f of state.copyFields; track $index; let idx = $index){
+        @for(f of state.copyFields; track idx; let idx = $index){
         <div cdkMenuItem class="app-fxLayout app-row app-center-v">
           <strong class="app-mr-1 app-fxFlex app-label">{{ 'field.' + f | translate }} {{ idx + 1 }}: </strong>
           <mat-icon class="app-suffix app-color-block" (click)="setField(f + '_' + idx, 'block', $event)"

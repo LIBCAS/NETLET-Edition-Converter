@@ -12,7 +12,7 @@
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'tenant' | translate }}</mat-label>
         <mat-select [(ngModel)]="fileConfig.tenant">
-            @for(t of state.tenants; track $index; let idx = $index){
+            @for(t of state.tenants; track idx; let idx = $index){
           <mat-option [value]="t">{{ t }}</mat-option>
             }
       </mat-select>
@@ -28,7 +28,7 @@
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>chatGPT model</mat-label>
         <mat-select [(ngModel)]="fileConfig.gptModel">
-            @for(t of state.gptModels; track $index; let idx = $index){
+            @for(t of state.gptModels; track idx; let idx = $index){
           <mat-option [value]="t">{{ t }}</mat-option>
             }
       </mat-select>

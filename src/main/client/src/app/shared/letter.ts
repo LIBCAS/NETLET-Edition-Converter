@@ -15,7 +15,7 @@ export class LetterCopy {
     signature: string;
     location_note: string
 
-    
+
     // copies_repository: string;
     // copies_archive: string;
     // copies_collection: string;
@@ -36,10 +36,10 @@ export interface AutorMeta {
     salutation: string
 }
 
-export interface AutorDb{ 
-    id: string, 
-    tenant: string, 
-    name: string 
+export interface AutorDb {
+    id: string,
+    tenant: string,
+    name: string
 }
 
 export class PlaceMeta {
@@ -59,6 +59,11 @@ export interface NameTag { pos: number[], text: string, type: string, selected: 
 export class Letter {
     [key: string]: any;
     id: string;
+
+    // hiko fields
+    hiko_id: number;
+    tenant: string;
+
     startPage: number;
     endPage: number;
     date: string;
@@ -140,9 +145,145 @@ export class Letter {
     status: string;
     keywords: number[];
 
-
-
     template: FileTemplate;
     analysis: any;
     selection: { page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string }[];
+}
+
+
+export class KeywordHIKO {
+    keyword_category_id: number;
+    updated_at: Date;
+    name: {
+        cs: string;
+        en: string;
+    };
+    created_at: Date;
+    pivot: {
+        keyword_id: number;
+        letter_id: number
+    };
+    id: number
+}
+
+export class CopyHIKO {
+    preservation: string;
+    type: string;
+    copy: string;
+    manifestation_notes: string;
+    l_number: string;
+    repository: string;
+    archive: string;
+    collection: string;
+    ms_manifestation: string;
+    signature: string;
+    location_note: string;
+}
+
+export class UserHIKO {
+    role: string;
+    updated_at: Date;
+    deactivated_at: Date;
+    name: string;
+    created_at: Date;
+    email_verified_at: Date;
+    id: number;
+    email: string;
+}
+
+
+export class MediaHIKO {
+    id: number;
+    model_type: string;
+    model_id: number;
+    collection_name: string;
+    name: string;
+    file_name: string;
+    mime_type: string;
+    disk: string;
+    size: number;
+    manipulations: string;
+    custom_properties: string;
+    generated_conversions: string;
+    responsive_images: string;
+    order_column: number;
+    created_at: Date;
+    updated_at: Date;
+}
+
+export class LetterHIKO {
+    id: number;
+    uuid: string;
+    created_at: Date;
+
+    date_year: number;
+    date_is_range: boolean;
+    date_marked: string;
+    range_day: number;
+    range_month: number;
+    range_year: number;
+    date_inferred: boolean;
+    date_uncertain: boolean;
+    date_computed: Date;
+    date_note: string;
+    date_approximate: boolean;
+
+    // value je id? Je to string?
+    authors: { value: string; marked: string }[];
+    author_uncertain: boolean;
+    author_inferred: boolean;
+    author_note: string;
+
+    recipients: { value: string; marked: string; salutation: string }[];
+    recipient_uncertain: boolean;
+    recipient_inferred: boolean;
+    recipient_note: string;
+
+    // Jen string? Nesparovat s identities?
+    mentioned: string[];
+    people_mentioned_note: string;
+
+    origins: { value: string; marked: string }[];
+    origin_inferred: boolean;
+    origin_uncertain: boolean;
+    origin_note: string;
+
+    destinations: { value: string; marked: string }[];
+    destination_inferred: boolean;
+    destination_uncertain: boolean;
+    destination_note: string;
+
+    languages: string[];
+
+    // Jen string? Nesparovat s keywords v db?
+    local_keywords: string[];
+    global_keywords: string[];
+    keywords: KeywordHIKO[];
+
+    incipit: string;
+    explicit: string;
+    notes_private: string;
+    notes_public: string;
+    related_resources: { title: string; link: string }[];
+    copies: CopyHIKO[];
+    copyright: string;
+
+
+    status: string; // mui byt draft?
+    approval: string;
+    action: string; // musi byt edit? ne create?
+
+    // Jak spravne
+    abstract: {
+        cs: string;
+        en: string;
+    }
+    abstract_cs: string;
+    abstract_en: string;
+
+    // Pridat ??
+    content: string;
+    content_stripped: string;
+    history: string;
+
 }

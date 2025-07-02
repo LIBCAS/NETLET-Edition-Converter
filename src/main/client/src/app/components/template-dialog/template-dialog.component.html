@@ -7,7 +7,7 @@
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'templates' | translate }}</mat-label>
         <mat-select [(ngModel)]="selectedTemplate">
-          @for(t of state.fileConfig.templates; track $index; let idx = $index){
+          @for(t of state.fileConfig.templates; track idx; let idx = $index){
           <mat-option [value]="t">{{ t.name }}</mat-option>
           }
         </mat-select>
@@ -34,7 +34,7 @@
         <input matInput name="def_author" [(ngModel)]="selectedTemplate.author_db.name" [matAutocomplete]="auto"
           (keyup)="getAuthors(selectedTemplate.author_db.name)">
         <mat-autocomplete #auto="matAutocomplete">
-          @for(a of authors_db; track $index; let idx = $index){
+          @for(a of authors_db; track idx; let idx = $index){
           <mat-option [value]="a.name">
             {{a.name}}
           </mat-option>
@@ -47,7 +47,7 @@
         <input matInput name="def_recipient" [(ngModel)]="selectedTemplate.recipient_db.name" [matAutocomplete]="auto2"
           (keyup)="getAuthors(selectedTemplate.recipient_db.name)">
         <mat-autocomplete #auto2="matAutocomplete">
-          @for(a of authors_db; track $index; let idx = $index){
+          @for(a of authors_db; track idx; let idx = $index){
           <mat-option [value]="a.name">
             {{a.name}}
           </mat-option>
@@ -63,7 +63,7 @@
           (change)="getLocations(selectedTemplate.copies_repository, 'repository')"
           (keyup)="getLocations(selectedTemplate.copies_repository, 'repository')">
         <mat-autocomplete #autoRepos="matAutocomplete">
-          @for(a of repositories; track $index; let idx = $index){
+          @for(a of repositories; track idx; let idx = $index){
           <mat-option [value]="a.name">
             {{a.name}}
           </mat-option>
@@ -77,7 +77,7 @@
           [matAutocomplete]="autoArchives" (change)="getLocations(selectedTemplate.copies_archive, 'archive')"
           (keyup)="getLocations(selectedTemplate.copies_archive, 'archive')">
         <mat-autocomplete #autoArchives="matAutocomplete">
-          @for(a of archives; track $index; let idx = $index){
+          @for(a of archives; track idx; let idx = $index){
           <mat-option [value]="a.name">
             {{a.name}}
           </mat-option>
@@ -91,7 +91,7 @@
           [matAutocomplete]="autoCollections" (change)="getLocations(selectedTemplate.copies_collection, 'collection')"
           (keyup)="getLocations(selectedTemplate.copies_collection, 'collection')">
         <mat-autocomplete #autoCollections="matAutocomplete">
-          @for(a of collections; track $index; let idx = $index){
+          @for(a of collections; track idx; let idx = $index){
           <mat-option [value]="a.name">
             {{a.name}}
           </mat-option>

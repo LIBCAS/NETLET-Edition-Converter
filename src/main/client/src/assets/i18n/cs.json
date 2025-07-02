@@ -160,6 +160,7 @@
     "next_letter": "Následující dopis",
     "save": "Uložit",
     "remove": "Odstranit",
+    "import": "Import",
     "export": "Export",
     "edit_templates": "Editovat šablony",
     "template_from_letter": "Přidat šablonu z dopisu",

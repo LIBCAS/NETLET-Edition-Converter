@@ -38,11 +38,13 @@
               <button mat-icon-button [matMenuTriggerFor]="menu"
                 [matTooltip]="'action.new_letter' | translate"><mat-icon>add_circle</mat-icon></button>
               <mat-menu #menu="matMenu">
-                @for(t of state.fileConfig.templates; track $index; let idx = $index){
+                @for(t of state.fileConfig.templates; track $index){
                 <button mat-menu-item (click)="newLetter(t)">{{ t.name }}</button>
                 }
               </mat-menu>
             </ng-container>
+            <button mat-icon-button (click)="importLetter()"
+              [matTooltip]="'action.import' | translate"><mat-icon>file_open</mat-icon></button>
             <button [disabled]="!letter" mat-icon-button (click)="saveLetter()"
               [matTooltip]="'action.save' | translate"><mat-icon>save</mat-icon></button>
             <button mat-icon-button [disabled]="selectedResult === 0" (click)="prevLetter()"
@@ -62,9 +64,9 @@
         <div *ngIf="view == 'letters'" class="app-fxFlex app-p-4 app-oa-y">
           <mat-list>
             <div mat-subheader>{{ 'Letters' | translate }}: ({{letters?.length}})</div>
-            @for(l of letters; track $index; let idx = $index){
-            <mat-list-item [class.app-selected]="l.id === currentLetterId" (click)="selectResult(l, false, idx)"
-              class="app-pt-4 app-pb-4">
+            @for(l of letters; track idx; let idx = $index){
+            <mat-list-item [class.app-selected]="l.id === currentLetterId" [class.app-nodb]="!l.hiko_id" (click)="selectResult(l, false, idx)"
+              class="app-result app-pt-4 app-pb-4">
               <div matListItemTitle [class.app-ignore]="ignored[l.id]">
                 {{'Page(s)' | translate}}: {{ l.data.page_number }} <ng-container *ngIf="l.data.end_page_number"> - {{
                   l.data.end_page_number }}</ng-container>
@@ -76,7 +78,7 @@
             }
           </mat-list>
         </div>
-        <div *ngIf="view == 'fields'" class="app-fxFlex app-p-4 app-oa-y">
+        <div *ngIf="view == 'fields'" class="app-fxFlex app-p-4 app-oa-y"  [class.app-nodb]="!letter.hiko_id">
           <app-letter-fields [letter]="letter" (onSetField)="setField($event)"
             (onShouldRefresh)="refreshLetters($event)"></app-letter-fields>
         </div>
@@ -98,7 +100,7 @@
               <div matListItemTitle (click)="selectResult(doc, false, idx)" [class.app-ignore]="ignored[doc.id]">page:
                 {{ doc.page }}</div>
 
-              @for(line of doc.lines; track $index; let idx = $index){
+              @for(line of doc.lines; track $index){
               <div matListItemLine>{{ state.getLineText(line) }}</div>
               }
             </mat-list-item>

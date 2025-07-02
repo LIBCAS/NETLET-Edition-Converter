@@ -186,4 +186,11 @@ export class AppService {
     return this.post(url, data);
   }
 
+  importFromHiko(id: string, tenant: string) {
+    const params: HttpParams = new HttpParams()
+    .set('id', id)
+    .set('tenant', tenant);
+    return this.get(`/data/get_letter_hiko`, params); 
+  }
+
 }

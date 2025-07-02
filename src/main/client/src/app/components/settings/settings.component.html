@@ -37,7 +37,7 @@
           </mat-form-field>
         </div>
 
-        @for(k of location.acronyms; track $index; let idx = $index; let last = $last){
+        @for(k of location.acronyms; track idx; let idx = $index; let last = $last){
         <div class="app-keyword app-fxLayout app-center-v">
           <span class="app-fxFlex app-center-v">{{ k }}</span>
           <button mat-icon-button (click)="removeAcronym(idx)"

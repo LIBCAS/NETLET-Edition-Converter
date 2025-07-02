@@ -1,6 +1,7 @@
 package cz.knav.netlet.netleteditor;
 
 import cz.knav.netlet.netleteditor.index.Annotator;
+import cz.knav.netlet.netleteditor.index.DbIndexer;
 import cz.knav.netlet.netleteditor.index.HikoKeywordsIndexer;
 import cz.knav.netlet.netleteditor.index.Indexer;
 import cz.knav.netlet.netleteditor.index.NameTag;
@@ -9,18 +10,15 @@ import cz.knav.netlet.netleteditor.index.Translator;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.commons.fileupload2.core.DiskFileItemFactory;
 import org.apache.commons.io.FileUtils;
 //import org.apache.commons.fileupload2.FileItem;
 //import org.apache.commons.fileupload2.disk.DiskFileItemFactory;
@@ -29,7 +27,6 @@ import org.apache.commons.io.FileUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.language.detect.LanguageResult;
-import org.json.JSONArray;
 import org.json.JSONML;
 import org.json.JSONObject;
 
@@ -162,6 +159,7 @@ public class DataServlet extends HttpServlet {
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = PDFThumbsGenerator.getDocuments();
                 ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant")); 
+                ret.put("gptModels", Options.getInstance().getJSONArray("gptModels"));
 //                JSONArray gptModels = new JSONArray();
 //                gptModels.put("gpt-3.5-turbo");
 //                gptModels.put("gpt-4o");
@@ -581,6 +579,35 @@ public class DataServlet extends HttpServlet {
                 ret.put("recipient", Indexer.checkAuthor(request.getParameter("recipient"), request.getParameter("tenant")).getJSONObject("response").getJSONArray("docs"));
                 return ret;
             }
+        },
+        GET_LETTERS_HIKO {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                try {
+                    ret = DbIndexer.getLettersFromHIKO(request.getParameter("tenant"));
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    ret.put("error", ex);
+                }
+                return ret;
+            }
+
+        },
+        GET_LETTER_HIKO {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                try {
+                    String id = request.getParameter("id");
+                    ret = DbIndexer.getLetterFromHIKO(request.getParameter("tenant"), id);
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    ret.put("error", ex);
+                }
+                return ret;
+            }
+
         };
 
         abstract JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception;
