@@ -68,8 +68,9 @@
         "prompt": ""
     },
     "hiko": {
-        "api_point": ".historicka-korespondence.cz/api/v2/",
+        "api": ".historicka-korespondence.cz/api/v2/",
         "bearer": "",
+        "isTest": true, 
         "test_mappings": {
             "brezina": "hiko-test",
             "deml": "hiko-test2",
