@@ -67,12 +67,12 @@ export class LetterFieldsComponent {
     } else {
       this.datum.setValue(null);
     }
-    if (this._letter.authors_db) {
-      this._letter.author_db = this._letter.authors_db.find(a => a.id === this._letter.author_db.id);
-    }
-    if (this._letter.recipients_db) {
-      this._letter.recipient_db = this._letter.recipients_db.find(a => a.id === this._letter.recipient_db.id);
-    }
+    // if (this._letter.authors_db) {
+    //   this._letter.author_db = this._letter.authors_db.find(a => a.id === this._letter.author_db.id);
+    // }
+    // if (this._letter.recipients_db) {
+    //   this._letter.recipient_db = this._letter.recipients_db.find(a => a.id === this._letter.recipient_db.id);
+    // }
     
 
   }
@@ -110,7 +110,7 @@ export class LetterFieldsComponent {
   }
 
   findTags() {
-    this.service.findTags(this._letter.full_text, this.state.fileConfig.tenant).subscribe((resp: any) => {
+    this.service.findTags(this._letter.content, this.state.fileConfig.tenant).subscribe((resp: any) => {
       this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
@@ -121,7 +121,7 @@ export class LetterFieldsComponent {
   }
 
   detectLang() {
-    this.service.detectLang(this._letter.full_text).subscribe((resp: any) => {
+    this.service.detectLang(this._letter.content).subscribe((resp: any) => {
       alert(resp.lang)
     });
   }
@@ -130,21 +130,21 @@ export class LetterFieldsComponent {
 
     const dialogRef = this.dialog.open(TranslationDialogComponent, {
       width: '800px',
-      data: this._letter.full_text,
+      data: this._letter.content,
     });
   }
 
   checkAuthors() {
-    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.fileConfig.tenant).subscribe((resp: any) => {
-      this._letter.authors_db = resp.author;
-      this._letter.recipients_db = resp.recipient;
-      if (this._letter.authors_db.length > 0){
-        this._letter.author_db = this._letter.authors_db[0];
-      }
-      if (this._letter.recipients_db.length > 0){
-        this._letter.recipient_db = this._letter.recipients_db[0];
-      }
-    });
+    // this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.fileConfig.tenant).subscribe((resp: any) => {
+    //   this._letter.authors_db = resp.author;
+    //   this._letter.recipients_db = resp.recipient;
+    //   if (this._letter.authors_db.length > 0){
+    //     this._letter.author_db = this._letter.authors_db[0];
+    //   }
+    //   if (this._letter.recipients_db.length > 0){
+    //     this._letter.recipient_db = this._letter.recipients_db[0];
+    //   }
+    // });
   }
 
   wordCount(str: string) {
@@ -170,14 +170,14 @@ export class LetterFieldsComponent {
   }
 
   analyze() {
-    // if (!this._letter.full_text) {
+    // if (!this._letter.content) {
     //   if (this.state.selectedBlocks.length === 0) {
     //     const tBlocks: AltoBlock[] = this.state.alto.Layout.Page.PrintSpace.TextBlock;
     //     this.state.selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
     //       return true;
     //     });
     //   }
-    //   this._letter.full_text = this.state.getBlockText(this.state.selectedBlocks);
+    //   this._letter.content = this.state.getBlockText(this.state.selectedBlocks);
 
     //   if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
     //     this._letter.startPage = this.state.currentPage;
@@ -193,7 +193,7 @@ export class LetterFieldsComponent {
     let prompt = this.state.fileConfig.prompt;
     const brackets: string = this.brackets(prompt);
     if (brackets) {
-      let ex = brackets.replace('words', this.wordCount(this._letter.full_text) + '');
+      let ex = brackets.replace('words', this.wordCount(this._letter.content) + '');
       const val = Math.max(3, Math.floor(eval(ex)));
       prompt = prompt.replaceAll('{' + brackets + '}', val + '');
     }
@@ -205,7 +205,7 @@ export class LetterFieldsComponent {
       panelClass: 'analize-dialog',
       data: { 
         letter: this._letter, 
-        // text: this._letter.full_text, 
+        // text: this._letter.content, 
         prompt: prompt, 
         gptModel: this.state.fileConfig.gptModel ? this.state.fileConfig.gptModel : this.state.gptModels[0] }
     });
@@ -219,7 +219,7 @@ export class LetterFieldsComponent {
         this.datum.setValue(null);
       }
 
-      this.onShouldRefresh.emit(this._letter.id);
+      this.onShouldRefresh.emit(this._letter.netlet_id);
     })
   }
 
@@ -232,7 +232,7 @@ export class LetterFieldsComponent {
       this._letter.endPage = this.state.currentPage;
     }
     this.service.saveLetter(this.state.selectedFile.filename, this._letter).subscribe((res: any) => {
-      this.onShouldRefresh.emit(this._letter.id);
+      this.onShouldRefresh.emit(this._letter.netlet_id);
       
     });
   }
@@ -305,7 +305,7 @@ export class LetterFieldsComponent {
       this._letter.selection.sort((s1, s2) =>  s1.page - s2.page);
     }
 
-    this._letter.full_text = this.getTextFromSelection(this._letter.selection);
+    this._letter.content = this.getTextFromSelection(this._letter.selection);
   }
 
   setField(field: string, textBox: string, e: MouseEvent) {
@@ -321,9 +321,9 @@ export class LetterFieldsComponent {
       } 
 
       if (append) {
-        this._letter.full_text += '\n\n' + this.state.getBlockText(this.state.selectedBlocks);
+        this._letter.content += '\n\n' + this.state.getBlockText(this.state.selectedBlocks);
       } else {
-        this._letter.full_text = this.state.getBlockText(this.state.selectedBlocks);
+        this._letter.content = this.state.getBlockText(this.state.selectedBlocks);
       }
 
       if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
@@ -340,10 +340,10 @@ export class LetterFieldsComponent {
 
   switchAuthors() {
 
-    const a = this._letter.author;
-    const r = this._letter.recipient;
-    this._letter.author = r;
-    this._letter.recipient = a;
+    const a = this._letter.authors;
+    const r = this._letter.recipients;
+    this._letter.authors = r;
+    this._letter.recipients = a;
 
   }
 
@@ -388,7 +388,7 @@ export class LetterFieldsComponent {
 
   removeSelection(page: number) {
     this._letter.selection = this._letter.selection.filter(s => s.page !== page);
-    this._letter.full_text = this.getTextFromSelection(this._letter.selection);
+    this._letter.content = this.getTextFromSelection(this._letter.selection);
   }
 
   setMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>, control: FormControl) {
@@ -410,20 +410,6 @@ export class LetterFieldsComponent {
 
   removeCopy(idx: number) {
     this._letter.copies.splice(idx, 1);
-  }
-
-  addPlaceMeta() {
-    const pm = new PlaceMeta();
-    pm.marked = this._letter.template.copies_repository;
-    pm.type = this._letter.template.copies_archive;
-    if (!this._letter.places_meta) {
-      this._letter.places_meta = [];
-    }
-    this._letter.places_meta.push(pm);
-  }
-
-  removePlaceMeta(idx: number) {
-    this._letter.places_meta.splice(idx, 1);
   }
 
 }

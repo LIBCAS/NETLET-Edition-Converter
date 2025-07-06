@@ -21,7 +21,7 @@
   <div class="app-mb-4">
     <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.full_text' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.full_text" name="full_text"></textarea>
+      <textarea rows="5" matInput [(ngModel)]="_letter.content" name="full_text"></textarea>
       <div class="app-pt-4 app-mb-n2 app-text-right">
         <ng-container *ngTemplateOutlet="icons; context:{ field: 'full_text' }"></ng-container>
       </div>
@@ -55,9 +55,9 @@
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.author_db' | translate}}</mat-label>
-      <mat-select [(ngModel)]="_letter.author_db">
-        @for(a of _letter.authors_db; track a.id; let idx = $index){
-        <mat-option [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
+      <mat-select [(ngModel)]="_letter.authors">
+        @for(a of _letter.authors; track a.id; let idx = $index){
+        <mat-option [value]="a">{{a.marked}}</mat-option>
         }
       </mat-select>
     </mat-form-field>
@@ -69,9 +69,9 @@
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
-      <mat-select [(ngModel)]="_letter.recipient_db">
-        @for(a of _letter.recipients_db; track a.id; let idx = $index){
-        <mat-option [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
+      <mat-select [(ngModel)]="_letter.recipients">
+        @for(a of _letter.recipients; track a.id; let idx = $index){
+        <mat-option [value]="a">{{a.marked}}</mat-option>
         }
       </mat-select>
     </mat-form-field>
@@ -157,55 +157,7 @@
     </mat-form-field>
   </div>
 
-  <fieldset class="app-mb-4">
-    <legend>{{ 'field.places_meta' | translate }}</legend>
-    @for(place_meta of _letter.places_meta; track idx; let idx = $index){
-    <fieldset>
-      <legend> #{{ idx + 1 }}. </legend>
-      <button *ngIf="idx > 0" mat-icon-button (click)="removeCopy(idx)"
-        [matTooltip]="'action.remove_copy' | translate"><mat-icon>delete_forever</mat-icon></button>
-      <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex">
-          <mat-label>{{ 'field.places_meta_marked' | translate }}</mat-label>
-          <input matInput [(ngModel)]="place_meta.marked" [name]="'places_meta_marked_' + idx"
-            [matAutocomplete]="autoRepos" (focus)="getLocations(place_meta.marked, 'marked')"
-            (change)="getLocations(place_meta.marked, 'marked')"
-            (keyup)="getLocations(place_meta.marked, 'marked')"><span matSuffix></span>
-          <ng-container matSuffix
-            *ngTemplateOutlet="icons; context:{ field: 'places_meta_marked_' + idx }"></ng-container>
-          <mat-autocomplete #autoRepos="matAutocomplete">
-            @for(a of repositories; track idx; let idx = $index){
-            <mat-option [value]="a.name">
-              {{a.name}}
-            </mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-
-        <mat-form-field class="app-fxFlex app-ml-3">
-          <mat-label>{{ 'field.places_meta_type' | translate}}</mat-label>
-          <input matInput [(ngModel)]="place_meta.type" [name]="'places_meta_type_' + idx"
-            [matAutocomplete]="autoArchives" (change)="getLocations(place_meta.type, 'type')"
-            (keyup)="getLocations(place_meta.type, 'type')"><span matSuffix></span>
-          <ng-container matSuffix
-            *ngTemplateOutlet="icons; context:{ field: 'places_meta_type_' + idx }"></ng-container>
-          <mat-autocomplete #autoArchives="matAutocomplete">
-            @for(a of archives; track idx; let idx = $index){
-            <mat-option [value]="a.name">
-              {{a.name}}
-            </mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-
-      </div>
-    </fieldset>
-    }
-    <button mat-flat-button color="primary" (click)="addPlaceMeta()" [matTooltip]="'action.add_place_meta' | translate"
-      class="app-mt-4 app-mb-2">
-      <mat-icon>queue</mat-icon>{{ 'action.add_place_meta' | translate }}
-    </button>
-  </fieldset>
+  
 
 
   <fieldset class="app-mb-4">

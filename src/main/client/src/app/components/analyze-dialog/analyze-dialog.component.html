@@ -8,7 +8,7 @@
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.full_text' | translate}}</mat-label>
-            <textarea rows="5" matInput [(ngModel)]="_letter.full_text" name="full_text"></textarea>
+            <textarea rows="5" matInput [(ngModel)]="_letter.content" name="full_text"></textarea>
         </mat-form-field>
     </div>
     <div class="app-mb-4">
@@ -102,9 +102,9 @@
 
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.author_db' | translate}}</mat-label>
-            <mat-select [(ngModel)]="_letter.author_db">
-            @for(a of _letter.authors_db; track a.id; let idx = $index){
-                <mat-option [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
+            <mat-select [(ngModel)]="_letter.author">
+            @for(a of _letter.authors; track a.id; let idx = $index){
+                <mat-option [value]="a">{{a.marked}}</mat-option>
             }
             </mat-select>
         </mat-form-field>
@@ -116,9 +116,9 @@
         </mat-form-field>
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
-            <mat-select [(ngModel)]="_letter.recipient_db">
-            @for(a of _letter.authors_db; track a.id; let idx = $index){
-                <mat-option [value]="a">{{a.name}} ({{ a.tenant }})</mat-option>
+            <mat-select [(ngModel)]="_letter.recipient">
+            @for(a of _letter.recipients; track a.id; let idx = $index){
+                <mat-option [value]="a">{{a.marked}}</mat-option>
             }
             </mat-select>
         </mat-form-field>

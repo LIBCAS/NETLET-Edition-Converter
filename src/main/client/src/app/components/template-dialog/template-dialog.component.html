@@ -31,8 +31,8 @@
     <div class="app-fxLayout app-row app-center-v app-mb-4" *ngIf="selectedTemplate.author_db">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'def_author' | translate }}</mat-label>
-        <input matInput name="def_author" [(ngModel)]="selectedTemplate.author_db.name" [matAutocomplete]="auto"
-          (keyup)="getAuthors(selectedTemplate.author_db.name)">
+        <input matInput name="def_author" [(ngModel)]="selectedTemplate.author_db.marked" [matAutocomplete]="auto"
+          (keyup)="getAuthors(selectedTemplate.author_db.marked)">
         <mat-autocomplete #auto="matAutocomplete">
           @for(a of authors_db; track idx; let idx = $index){
           <mat-option [value]="a.name">
@@ -44,8 +44,8 @@
 
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'def_recipient' | translate }}</mat-label>
-        <input matInput name="def_recipient" [(ngModel)]="selectedTemplate.recipient_db.name" [matAutocomplete]="auto2"
-          (keyup)="getAuthors(selectedTemplate.recipient_db.name)">
+        <input matInput name="def_recipient" [(ngModel)]="selectedTemplate.recipient_db.marked" [matAutocomplete]="auto2"
+          (keyup)="getAuthors(selectedTemplate.recipient_db.marked)">
         <mat-autocomplete #auto2="matAutocomplete">
           @for(a of authors_db; track idx; let idx = $index){
           <mat-option [value]="a.name">

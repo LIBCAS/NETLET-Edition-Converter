@@ -4,6 +4,7 @@ import cz.knav.netlet.netleteditor.index.Annotator;
 import cz.knav.netlet.netleteditor.index.DbIndexer;
 import cz.knav.netlet.netleteditor.index.HikoKeywordsIndexer;
 import cz.knav.netlet.netleteditor.index.Indexer;
+import cz.knav.netlet.netleteditor.index.LetterMapping;
 import cz.knav.netlet.netleteditor.index.NameTag;
 import cz.knav.netlet.netleteditor.index.SolrTaggerAnalyzer;
 import cz.knav.netlet.netleteditor.index.Translator;
@@ -601,6 +602,21 @@ public class DataServlet extends HttpServlet {
                 try {
                     String id = request.getParameter("id");
                     ret = DbIndexer.getLetterFromHIKO(request.getParameter("tenant"), id);
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    ret.put("error", ex);
+                }
+                return ret;
+            }
+
+        },
+        TR {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                try {
+                    LetterMapping lt = new LetterMapping();
+                    ret = lt.transform();
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     ret.put("error", ex);

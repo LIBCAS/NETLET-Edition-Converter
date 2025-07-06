@@ -83,7 +83,7 @@ export class AnalyzeDialogComponent {
 
 
   findTags() {
-    this.service.findTags(this._letter.full_text, this.state.fileConfig.tenant).subscribe((resp: any) => {
+    this.service.findTags(this._letter.content, this.state.fileConfig.tenant).subscribe((resp: any) => {
       this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
@@ -98,7 +98,7 @@ export class AnalyzeDialogComponent {
       this.preklad.nativeElement.focus();
     }, 10);
 
-    this.service.translate(this._letter.full_text).subscribe((resp: any) => {
+    this.service.translate(this._letter.content).subscribe((resp: any) => {
       this.translation = resp;
       // this.loading = false;
     });
@@ -115,7 +115,7 @@ export class AnalyzeDialogComponent {
   }
 
   detectLang() {
-    this.service.detectLang(this._letter.full_text).subscribe((resp: any) => {
+    this.service.detectLang(this._letter.content).subscribe((resp: any) => {
       // alert(resp.languages)
       this._letterAnalyzed.languages = resp.languages;
       this._letter.languages = this._letterAnalyzed.languages;
@@ -199,7 +199,7 @@ export class AnalyzeDialogComponent {
   annotate() {
     const orig = this._letterAnalyzed.abstract_cs;
     // this._letter.abstract_cs = 'processing...';
-    this.service.annotate({text: this._letter.full_text, prompt: this.data.prompt, gptModel: this.data.gptModel}).subscribe((resp: any) => {
+    this.service.annotate({text: this._letter.content, prompt: this.data.prompt, gptModel: this.data.gptModel}).subscribe((resp: any) => {
       this.loading = false;
       if (resp.error) {
         console.log(resp);
@@ -240,14 +240,14 @@ export class AnalyzeDialogComponent {
 
   checkAuthors() {
     this.service.checkAuthors(this._letterAnalyzed.author, this._letterAnalyzed.recipient, this.state.fileConfig.tenant).subscribe((resp: any) => {
-      this._letterAnalyzed.authors_db = resp.author;
-      this._letterAnalyzed.recipients_db = resp.recipient;
-      if (this._letterAnalyzed.authors_db.length > 0) {
-        this._letterAnalyzed.author_db = this._letterAnalyzed.authors_db[0];
-      }
-      if (this._letterAnalyzed.recipients_db.length > 0) {
-        this._letterAnalyzed.recipient_db = this._letterAnalyzed.recipients_db[0];
-      }
+      // this._letterAnalyzed.author = resp.author;
+      // this._letterAnalyzed.recipient_note = resp.recipient;
+      // if (this._letterAnalyzed.authors_db.length > 0) {
+      //   this._letterAnalyzed.author_db = this._letterAnalyzed.authors_db[0];
+      // }
+      // if (this._letterAnalyzed.recipients_db.length > 0) {
+      //   this._letterAnalyzed.recipient_db = this._letterAnalyzed.recipients_db[0];
+      // }
     });
   }
 
@@ -301,16 +301,15 @@ export class AnalyzeDialogComponent {
 
     this.data.letter.incipit = this._letterAnalyzed.incipit;
     this.data.letter.explicit = this._letterAnalyzed.explicit;
-    this.data.letter.full_text = this._letterAnalyzed.full_text;
+    this.data.letter.content = this._letterAnalyzed.content;
 
     this.data.letter.entities = this.entities;
     this.data.letter.nametags = this.nametags;
-    // this.data.letter.usage = this.usage;
 
-    this.data.letter.authors_db = this._letterAnalyzed.authors_db;
-    this.data.letter.author_db = this._letterAnalyzed.author_db;
-    this.data.letter.recipients_db = this._letterAnalyzed.recipients_db;
-    this.data.letter.recipient_db = this._letterAnalyzed.recipient_db;
+    // this.data.letter.authors_db = this._letterAnalyzed.authors_db;
+    // this.data.letter.author_db = this._letterAnalyzed.author_db;
+    // this.data.letter.recipients_db = this._letterAnalyzed.recipients_db;
+    // this.data.letter.recipient_db = this._letterAnalyzed.recipient_db;
 
     this.data.letter.analysis = this._letterAnalyzed.analysis;
 

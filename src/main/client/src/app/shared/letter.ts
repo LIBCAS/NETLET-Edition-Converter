@@ -56,7 +56,7 @@ export interface Entity {
 
 export interface NameTag { pos: number[], text: string, type: string, selected: boolean };
 
-export class Letter {
+export class LetterOld {
     [key: string]: any;
     id: string;
 
@@ -228,27 +228,25 @@ export class LetterHIKO {
     date_note: string;
     date_approximate: boolean;
 
-    // value je id? Je to string?
-    authors: { value: string; marked: string }[];
+    authors: { id: number; marked: string }[];
     author_uncertain: boolean;
     author_inferred: boolean;
     author_note: string;
 
-    recipients: { value: string; marked: string; salutation: string }[];
+    recipients: { id: number; marked: string; salutation?: string }[];
     recipient_uncertain: boolean;
     recipient_inferred: boolean;
     recipient_note: string;
 
-    // Jen string? Nesparovat s identities?
     mentioned: string[];
     people_mentioned_note: string;
 
-    origins: { value: string; marked: string }[];
+    origins: { id: number; marked: string }[];
     origin_inferred: boolean;
     origin_uncertain: boolean;
     origin_note: string;
 
-    destinations: { value: string; marked: string }[];
+    destinations: { id: number; marked: string }[];
     destination_inferred: boolean;
     destination_uncertain: boolean;
     destination_note: string;
@@ -286,4 +284,38 @@ export class LetterHIKO {
     content_stripped: string;
     history: string;
 
+}
+
+export class Letter extends LetterHIKO {
+    
+    [key: string]: any;
+    netlet_id: string;
+
+    // hiko fields
+    hiko_id: number;
+    tenant: string;
+
+    startPage: number;
+    endPage: number;
+    letter_number: string;
+    letter_title: string;
+    page_number: number;
+    end_page_number: number;
+
+    // As detected by AI
+    date: string; 
+    author: string;
+    recipient: string;
+    origin: string;
+    salutation: string;
+    signature: string;
+    sign_off: string;
+    summary: string;
+    
+    entities: Entity[];
+    nametags: NameTag[];
+
+    template: FileTemplate;
+    analysis: any;
+    selection: { page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string }[];
 }

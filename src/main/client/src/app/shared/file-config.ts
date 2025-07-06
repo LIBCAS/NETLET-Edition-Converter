@@ -11,10 +11,9 @@ export class FileTemplate {
   name: string; 
   // def_author: string; 
   author: string;
-  author_db: AutorDb;
+  author_db: { id: number; marked: string };
   recipient: string; 
-  recipient_db: AutorDb;
-  place_meta: PlaceMeta;
+  recipient_db: { id: number; marked: string };
   copies_repository: string; 
   copies_archive: string; 
   copies_collection: string;
@@ -24,11 +23,10 @@ export class FileTemplate {
     const t: FileTemplate = new FileTemplate();
     t.name = 'Šablona z dopisu ' + (letter.id);
     t.notes_private = letter.notes_private;
-    t.author = letter.author;
-    t.author_db = letter.author_db;
-    t.recipient = letter.recipient;
-    t.recipient_db = letter.recipient_db;
-    t.place_meta = letter.places_meta[0];
+    t.author = letter.authors[0].marked;
+    t.author_db = letter.authors[0];
+    t.recipient = letter.recipients[0].marked;
+    t.recipient_db = letter.recipients[0];
 
     t.copies_archive = letter.copies[0].archive;
     t.copies_collection = letter.copies[0].collection;

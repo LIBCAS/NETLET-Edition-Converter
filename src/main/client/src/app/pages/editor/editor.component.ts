@@ -3,7 +3,7 @@ import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveF
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AppService } from 'src/app/app.service';
 import { AltoBlock, AltoLine, AltoString } from 'src/app/shared/alto';
-import { Entity, Letter, LetterCopy, PlaceMeta } from 'src/app/shared/letter';
+import { CopyHIKO, Entity, Letter, LetterCopy, PlaceMeta } from 'src/app/shared/letter';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -140,27 +140,24 @@ export class EditorComponent {
   newLetter(t: FileTemplate) {
     this.letter = new Letter();
     this.letter.template = t;
-    this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-    this.letter.author = t.author;
-    this.letter.recipient = t.recipient;
-    // this.letter.copies_repository = t.copies_repository;
-    // this.letter.copies_archive = t.copies_archive;
-    // this.letter.copies_collection = t.copies_collection;
+    this.letter.netlet_id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
+    this.letter.authors.push({marked: t.author_db.marked, id: t.author_db.id});
+    this.letter.recipients.push({marked: t.recipient_db.marked, id: t.recipient_db.id});
     const copy = new LetterCopy();
     copy.repository = t.copies_repository;
     copy.archive = t.copies_archive;
     copy.collection = t.copies_collection;
     this.letter.copies.push(copy);
-    this.letter.full_text = '';
+    this.letter.content = '';
     this.view = 'fields';
   }
 
   switchAuthors() {
 
-    const a = this.letter.author;
-    const r = this.letter.recipient;
-    this.letter.author = r;
-    this.letter.recipient = a;
+    const a = this.letter.authors;
+    const r = this.letter.recipients;
+    this.letter.authors = r;
+    this.letter.recipients = a;
 
   }
 
@@ -212,7 +209,7 @@ export class EditorComponent {
 
       // }
       // console.log(idx, this.letter.copies)
-      this.letter.copies[idx][parts[1] as keyof LetterCopy] = text;
+      this.letter.copies[idx][parts[1] as keyof CopyHIKO] = text;
     } else if (data.append && this.letter[data.field as keyof Letter]) {
       this.letter[data.field as keyof Letter] += ' ' + text;
     } else {
@@ -442,23 +439,17 @@ export class EditorComponent {
         if (!this.letter.copies) {
           this.letter.copies = [];
           const copy = new LetterCopy();
-          copy.repository = this.letter.copies_repository;
-          copy.archive = this.letter.copies_archive;
-          copy.collection = this.letter.copies_collection;
+          copy.repository = this.letter['copies_repository'];
+          copy.archive = this.letter['copies_archive'];
+          copy.collection = this.letter['copies_collection'];
           this.letter.copies.push(copy);
-        }
-
-        if (!this.letter.places_meta) {
-          this.letter.places_meta = [];
-          const pm = new PlaceMeta();
-          this.letter.places_meta.push(pm);
         }
 
         this.gotoResult(res.response.docs[0], false, idx);
 
       } else {
         this.newLetter(this.state.fileConfig.templates[0]);
-        this.letter.id = id;
+        this.letter.netlet_id = id;
         this.letter.startPage = this.state.currentPage;
       }
       this.view = 'fields';
@@ -549,7 +540,7 @@ export class EditorComponent {
   }
 
   removeLetter() {
-    this.service.removeLetter(this.state.selectedFile.filename, this.letter.id).subscribe((res: any) => {
+    this.service.removeLetter(this.state.selectedFile.filename, this.letter.netlet_id).subscribe((res: any) => {
       this.getLetters();
     });
 
@@ -564,18 +555,18 @@ export class EditorComponent {
         this.letter = res;
         // this.letter.template = t;
         this.letter.hiko_id = res.id;
-        this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
+        this.letter.netlet_id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
         this.letter.tenant = this.state.fileConfig.tenant;
 
 
 
-        this.letter.authors_db = res.identities.filter((i: any) => i.pivot.role === "author");
-        this.letter.author_db = this.letter.authors_db[0];
-        this.letter.author = this.letter.author_db.name;
+        // this.letter.authors_db = res.identities.filter((i: any) => i.pivot.role === "author");
+        // this.letter.author_db = this.letter.authors_db[0];
+        // this.letter.author = this.letter.author_db.name;
 
-        this.letter.recipients_db = res.identities.filter((i: any) => i.pivot.role === "recipient");
-        this.letter.recipient_db = this.letter.recipients_db[0];
-        this.letter.recipient = this.letter.recipient_db.name;
+        // this.letter.recipients_db = res.identities.filter((i: any) => i.pivot.role === "recipient");
+        // this.letter.recipient_db = this.letter.recipients_db[0];
+        // this.letter.recipient = this.letter.recipient_db.name;
 
         this.letter.date = res.date_computed;
         
@@ -584,7 +575,7 @@ export class EditorComponent {
         // copy.archive = t.copies_archive;
         // copy.collection = t.copies_collection;
         //this.letter.copies.push(copy);
-        this.letter.full_text = '';
+        // this.letter.full_text = '';
         this.view = 'fields';
       });
     }
