@@ -1,14 +1,15 @@
 <h1 mat-dialog-title cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle  style="cursor: move;">{{ 'Analysis' |
     translate }}
-    <div *ngIf="loading" class="app-fxLayout app-row ">
+    @if (loading) {
+    <div class="app-fxLayout app-row ">
         <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
-    </div></h1>
+    </div>}</h1>
 <div mat-dialog-content class="app-letter">
 
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.full_text' | translate}}</mat-label>
-            <textarea rows="5" matInput [(ngModel)]="_letter.content" name="full_text"></textarea>
+            <textarea rows="5" matInput [(ngModel)]="_letter.hiko.content" name="full_text"></textarea>
         </mat-form-field>
     </div>
     <div class="app-mb-4">
@@ -22,11 +23,13 @@
         </mat-form-field>
         <mat-checkbox [(ngModel)]="showImages">{{ 'action.show_images' | translate }}</mat-checkbox>
     </div>
-    <div class="app-mb-4" *ngIf="showImages">
-        @for(sel of data.letter.selection; track idx; let idx = $index){
+    @if (showImages) {
+    <div class="app-mb-4">
+        @for(sel of data.letter.ai.selection; track idx; let idx = $index){
             <img class="app-fxFlex" style="height: 100px; border: 1px solid #aaa; margin-right: 2px;" [src]="getImgUrl(sel)" />
         }
     </div>
+}
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.prompt' | translate}}</mat-label>
@@ -37,7 +40,7 @@
         <mat-icon class="material-icons-outlined">search_insights</mat-icon>
         {{ 'action.analyze' | translate}}
     </button>&#160;
-    <button [disabled]="data.gptModel !== 'gpt-4o' || !data.letter.selection" mat-flat-button color="primary" (click)="analyzeImages()" class="app-mb-4">
+    <button [disabled]="data.gptModel !== 'gpt-4o' || !data.letter.ai.selection" mat-flat-button color="primary" (click)="analyzeImages()" class="app-mb-4">
         <mat-icon class="material-icons-outlined">image_search</mat-icon>
         {{ 'action.analyze_images' | translate}}
     </button>&#160;
@@ -56,17 +59,19 @@
     </button>
     
     <mat-divider class="app-mt-4"></mat-divider>
-
-    <div class="app-fxLayout app-row app-mb-4" *ngIf="translation?.lang">
+@if (translation?.lang) {
+    <div class="app-fxLayout app-row app-mb-4">
         <strong>{{ 'Detected language' | translate }}</strong>:{{ translation.lang }}
     </div>
-    <div class="app-mb-4" *ngIf="translation?.text">
+}
+    @if (translation?.text) {
+    <div class="app-mb-4">
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'Translation' | translate}}</mat-label>
             <textarea rows="5" matInput [value]="translation.text" name="translation_text" #preklad></textarea>
         </mat-form-field>
     </div>
-
+    }
     <mat-divider class="app-mt-4"></mat-divider>
 
 
@@ -92,35 +97,48 @@
             <mat-icon matSuffix (click)="toggleKeep('end_page_number')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['end_page_number']">push_pin</mat-icon>
         </mat-form-field>
     </div>
-
-    <div class="app-fxLayout app-row app-center-v app-mb-4">
+    <div class="app-fxLayout app-row app-center-v app-mb-4 app-icons">
         <mat-form-field class="app-fxFlex">
             <mat-label>{{ 'field.author' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.author" name="author" />
-            <mat-icon matSuffix (click)="toggleKeep('author')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['author']">push_pin</mat-icon>
+            <mat-icon matSuffix (click)="toggleKeep('author')" [matTooltip]="'action.keep_value' | translate" class="app-suffix"  [class.material-icons-outlined]="!keepFields['author']">push_pin</mat-icon>
+            @if(author_db.id === -1 && _letter.author) {
+                <mat-icon matSuffix (click)="createIndentity(_letter.author)" [title]="'action.create_identity' | translate" class="app-suffix">person_add_alt</mat-icon>
+            }
         </mat-form-field>
 
-        <mat-form-field class="app-fxFlex app-ml-3">
+        <mat-form-field class="app-fxFlex app-ml-3" [class.app-field-error]="author_db.id === -1">
             <mat-label>{{ 'field.author_db' | translate}}</mat-label>
-            <mat-select [(ngModel)]="_letter.author">
-            @for(a of _letter.authors; track a.id; let idx = $index){
-                <mat-option [value]="a">{{a.marked}}</mat-option>
+            <mat-select [(ngModel)]="author_db">
+                <mat-option [value]="noauthor">{{noauthor.marked}}</mat-option>
+            @for(a of authors_db; track a.id; let idx = $index){
+                <mat-option [value]="a">{{a.name}}</mat-option>
             }
             </mat-select>
+            @if(authors_db.length === 0) {
+                <mat-icon matSuffix (click)="checkAuthors(true)" [title]="'action.check_authors' | translate" color="primary" class="material-icons-outlined app-ml-2 app-mr-2">how_to_reg</mat-icon>
+            }
         </mat-form-field>
 
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.recipient' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.recipient" name="recipient">
-            <mat-icon matSuffix (click)="toggleKeep('recipient')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['recipient']">push_pin</mat-icon>
+            <mat-icon matSuffix (click)="toggleKeep('recipient')" [matTooltip]="'action.keep_value' | translate" class="app-suffix" [class.material-icons-outlined]="!keepFields['recipient']">push_pin</mat-icon>
+            @if(recipient_db.id === -1 && _letter.recipient) {
+                <mat-icon matSuffix (click)="createIndentity(_letter.recipient)" [title]="'action.create_identity' | translate" class="app-suffix">person_add_alt</mat-icon>
+            }
         </mat-form-field>
-        <mat-form-field class="app-fxFlex app-ml-3">
+        <mat-form-field class="app-fxFlex app-ml-3" [class.app-field-error]="recipient_db.id === -1">
             <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
-            <mat-select [(ngModel)]="_letter.recipient">
-            @for(a of _letter.recipients; track a.id; let idx = $index){
-                <mat-option [value]="a">{{a.marked}}</mat-option>
+            <mat-select [(ngModel)]="recipient_db">
+            <mat-option [value]="norecipient">{{norecipient.marked}}</mat-option>
+            @for(a of recipients_db; track a.id; let idx = $index){
+                <mat-option [value]="a">{{a.name}}</mat-option>
             }
             </mat-select>
+            @if(recipients_db.length === 0) {
+                <mat-icon matSuffix (click)="checkAuthors(true)" [title]="'action.check_authors' | translate" color="primary" class="material-icons-outlined app-ml-2 app-mr-2">how_to_reg</mat-icon>
+            }
         </mat-form-field>
     </div>
     
@@ -152,7 +170,7 @@
     <div class="app-mb-4">
         <mat-form-field class="app-fxFlex">
             <mat-label>{{ 'field.date_marked' | translate}}</mat-label>
-            <input matInput [(ngModel)]="_letter.date_marked" name="date" />
+            <input matInput [(ngModel)]="_letter.hiko.date_marked" name="date" />
         </mat-form-field>
 
         <mat-form-field class="app-fxFlex">
@@ -162,7 +180,7 @@
 
         <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.languages' | translate}}</mat-label>
-            <input matInput [(ngModel)]="_letter.languages" name="languages">
+            <input matInput [(ngModel)]="_letter.hiko.languages" name="languages">
             <mat-icon matSuffix (click)="toggleKeep('languages')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['languages']">push_pin</mat-icon>
         </mat-form-field>
     </div>
@@ -170,7 +188,7 @@
     <div class="app-mb-4 ">
         <mat-form-field class="app-w-100"  >
             <mat-label>{{ 'field.incipit' | translate}}</mat-label>
-            <input rows="5" matInput [(ngModel)]="_letter.incipit" name="incipit" />
+            <input rows="5" matInput [(ngModel)]="_letter.hiko.incipit" name="incipit" />
             <mat-icon matSuffix (click)="toggleKeep('incipit')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['incipit']">push_pin</mat-icon>
         </mat-form-field>
     </div>
@@ -178,7 +196,7 @@
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.explicit' | translate}}</mat-label>
-            <input rows="2" matInput [(ngModel)]="_letter.explicit" name="explicit" />
+            <input rows="2" matInput [(ngModel)]="_letter.hiko.explicit" name="explicit" />
             <mat-icon matSuffix (click)="toggleKeep('explicit')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['explicit']">push_pin</mat-icon>
         </mat-form-field>
     </div>
@@ -186,7 +204,7 @@
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.abstract_cs' | translate}}</mat-label>
-            <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract_cs"></textarea>
+            <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.cs" name="abstract_cs"></textarea>
             <mat-icon matSuffix (click)="toggleKeep('abstract_cs')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['abstract_cs']">push_pin</mat-icon>
             <mat-icon matSuffix (click)="translateAbstract()" [matTooltip]="'translate' | translate"  >translate</mat-icon>
         </mat-form-field>
@@ -195,7 +213,7 @@
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.abstract_en' | translate}}</mat-label>
-            <textarea rows="5" matInput [(ngModel)]="_letter.abstract_en" name="abstract_en"></textarea>
+            <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.en" name="abstract_en"></textarea>
             <mat-icon matSuffix (click)="toggleKeep('abstract_en')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['abstract_en']">push_pin</mat-icon>
         </mat-form-field>
     </div>
@@ -203,7 +221,7 @@
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.summary' | translate}}</mat-label>
-            <textarea rows="5" matInput [(ngModel)]="_letter.summary" name="summary"></textarea>
+            <textarea rows="5" matInput [(ngModel)]="_letter.ai.summary" name="summary"></textarea>
             <mat-icon matSuffix (click)="toggleKeep('summary')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['summary']">push_pin</mat-icon>
         </mat-form-field>
     </div>
@@ -235,6 +253,6 @@
 </div>
 
 <div mat-dialog-actions>
-    <button mat-flat-button (click)="save()" color="primary">{{ 'Save' | translate }}</button>
+    <button mat-flat-button [disabled]="!isValid()" (click)="save()" color="primary">{{ 'Save' | translate }}</button>
     <button mat-flat-button [mat-dialog-close]="false">{{ 'Close' | translate }}</button>
 </div>

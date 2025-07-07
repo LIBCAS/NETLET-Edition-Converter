@@ -128,9 +128,9 @@ export class AppService {
     return this.get(url);
   }
 
-  checkAuthors(author: string, recipient: string, tenant: string): Observable<any> {
+  checkAuthors(author: string, recipient: string, tenant: string, extended: boolean): Observable<any> {
     const params: HttpParams = new HttpParams()
-    .set('author', author).set('recipient', recipient).set('tenant', tenant);
+    .set('author', author).set('recipient', recipient).set('tenant', tenant).set('extended', extended);
     return this.get(`/data/check_authors`, params);
     
   }
@@ -191,6 +191,11 @@ export class AppService {
     .set('id', id)
     .set('tenant', tenant);
     return this.get(`/data/get_letter_hiko`, params); 
+  }
+
+  exportToHiko(data: any, tenant: string) {
+    const url = `/data/save_letter_hiko?tenant=${tenant}`;
+    return this.post(url, data);
   }
 
 }

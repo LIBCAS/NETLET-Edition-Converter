@@ -577,8 +577,14 @@ public class DataServlet extends HttpServlet {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
-                ret.put("author", Indexer.checkAuthor(request.getParameter("author"), request.getParameter("tenant")).getJSONObject("response").getJSONArray("docs"));
-                ret.put("recipient", Indexer.checkAuthor(request.getParameter("recipient"), request.getParameter("tenant")).getJSONObject("response").getJSONArray("docs"));
+                ret.put("req_author", request.getParameter("author"));
+                ret.put("req_recipient", request.getParameter("recipient"));
+                ret.put("author", Indexer.checkAuthor(request.getParameter("author"), 
+                        request.getParameter("tenant"),
+                        Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
+                ret.put("recipient", Indexer.checkAuthor(request.getParameter("recipient"), 
+                        request.getParameter("tenant"),
+                        Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
                 return ret;
             }
         },
@@ -603,6 +609,22 @@ public class DataServlet extends HttpServlet {
                 try {
                     String id = request.getParameter("id");
                     ret = DbIndexer.getLetterFromHIKO(request.getParameter("tenant"), id);
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    ret.put("error", ex);
+                }
+                return ret;
+            }
+
+        },
+        SAVE_LETTER_HIKO {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                try {
+                    String js = IOUtils.toString(request.getInputStream(), "UTF-8");
+                    HikoIndexer hi = new HikoIndexer();
+                    ret = hi.saveLetter(js, request.getParameter("tenant"));
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     ret.put("error", ex);

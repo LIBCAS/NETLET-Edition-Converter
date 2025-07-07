@@ -236,7 +236,7 @@ public class Indexer {
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery("*")
                     .addFilterQuery("filename:\"" + filename + "\"")
-                    .setFields("*,data:[json]")
+                    .setFields("*,hiko:[json],ai:[json]")
                     .addSort("startPage", SolrQuery.ORDER.asc)
                     .addSort("page_number", SolrQuery.ORDER.asc)
                     .setRows(1000);
@@ -344,7 +344,7 @@ public class Indexer {
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery("*")
                     .addFilterQuery("id:\"" + id + "\"")
-                    .setFields("*,data:[json]")
+                    .setFields("*,hiko:[json],ai:[json]")
                     .setRows(1);
             query.set("wt", "json");
             String jsonResponse;
@@ -377,7 +377,7 @@ public class Indexer {
         }
   }
 
-    public static JSONObject saveLetter(String filename, JSONObject data) {
+    public static JSONObject saveLetter(String filename, JSONObject data ) {
         JSONObject ret = new JSONObject();
         try {
             String id = data.optString("id", null);
@@ -391,11 +391,14 @@ public class Indexer {
             idoc.setField("id", id);
             if (data.has("hiko_id")) {
                 idoc.setField("hiko_id", data.getInt("hiko_id"));
+            } else if (data.optJSONObject("hiko", new JSONObject()).has("id")) {
+                idoc.setField("hiko_id", data.optJSONObject("hiko").getInt("id"));
             }
             idoc.setField("tenant", data.optString("tenant"));
             idoc.setField("filename", filename);
             idoc.setField("file_id", hashString(filename));
-            idoc.setField("data", data.toString());
+            idoc.setField("hiko", data.getJSONObject("hiko").toString());
+            idoc.setField("ai", data.getJSONObject("ai").toString());
             idoc.setField("startPage", data.optInt("startPage", 0));
             if (data.has("page_number")) {
                 idoc.setField("page_number", data.getInt("page_number"));
@@ -414,19 +417,26 @@ public class Indexer {
         return ret;
     }
 
-    public static JSONObject checkAuthor(String name, String tenant) {
+    public static JSONObject checkAuthor(String name, String tenant, boolean extended) {
         JSONObject ret = new JSONObject();
         try {
 
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery(name)
-                    .setFields("id,tenant,name")
-                    .setRows(10);
+                    .setFields("id:table_id,tenant,name,score");
             query.set("qf", "name_lower^5 name^2 alternative_names");
             if (!tenant.isBlank()) {
-                query.set("bq", "tenant:"+tenant+"^10");
+                // query.set("bq", "tenant:"+tenant+"^10");
+                query.addFilterQuery("tenant:"+tenant);
             }
-            query.set("tie", "0.9");
+            query.set("tie", "0.1");
+            if (extended) {
+                query.set("mm", "90%");
+                query.setRows(20);
+            } else {
+                query.set("mm", "2<90%");
+                query.setRows(10);
+            }
             query.set("defType", "edismax");
             query.set("wt", "json");
             String jsonResponse;

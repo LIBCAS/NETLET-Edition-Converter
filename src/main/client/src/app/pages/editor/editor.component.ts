@@ -140,24 +140,24 @@ export class EditorComponent {
   newLetter(t: FileTemplate) {
     this.letter = new Letter();
     this.letter.template = t;
-    this.letter.netlet_id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-    this.letter.authors.push({marked: t.author_db.marked, id: t.author_db.id});
-    this.letter.recipients.push({marked: t.recipient_db.marked, id: t.recipient_db.id});
+    this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
+    this.letter.hiko.authors.push({marked: t.author_db.marked, id: t.author_db.id});
+    this.letter.hiko.recipients.push({marked: t.recipient_db.marked, id: t.recipient_db.id});
     const copy = new LetterCopy();
     copy.repository = t.copies_repository;
     copy.archive = t.copies_archive;
     copy.collection = t.copies_collection;
-    this.letter.copies.push(copy);
-    this.letter.content = '';
+    this.letter.hiko.copies.push(copy);
+    this.letter.hiko.content = '';
     this.view = 'fields';
   }
 
   switchAuthors() {
 
-    const a = this.letter.authors;
-    const r = this.letter.recipients;
-    this.letter.authors = r;
-    this.letter.recipients = a;
+    const a = this.letter.hiko.authors;
+    const r = this.letter.hiko.recipients;
+    this.letter.hiko.authors = r;
+    this.letter.hiko.recipients = a;
 
   }
 
@@ -209,7 +209,7 @@ export class EditorComponent {
 
       // }
       // console.log(idx, this.letter.copies)
-      this.letter.copies[idx][parts[1] as keyof CopyHIKO] = text;
+      this.letter.hiko.copies[idx][parts[1] as keyof CopyHIKO] = text;
     } else if (data.append && this.letter[data.field as keyof Letter]) {
       this.letter[data.field as keyof Letter] += ' ' + text;
     } else {
@@ -419,37 +419,33 @@ export class EditorComponent {
   openLetter(id: string) {
     this.service.getLetter(id).subscribe(res => {
       if (res.response.docs.length > 0) {
-        this.letter = res.response.docs[0].data;
+        this.letter = res.response.docs[0];
         if (!this.letter.startPage) {
           this.letter.startPage = this.state.currentPage;
         } else {
           this.state.currentPage = this.letter.startPage;
         }
-        if (!this.letter.id) {
-          this.letter.startPage = this.state.currentPage;
-        } else {
-          this.state.currentPage = this.letter.startPage;
-        }
+        
         const idx = this.letters.findIndex(l => l.id === id);
 
         if (!this.letter.template) {
           this.letter.template = this.state.fileConfig.templates[0];
         }
 
-        if (!this.letter.copies) {
-          this.letter.copies = [];
+        if (!this.letter.hiko.copies) {
+          this.letter.hiko.copies = [];
           const copy = new LetterCopy();
           copy.repository = this.letter['copies_repository'];
           copy.archive = this.letter['copies_archive'];
           copy.collection = this.letter['copies_collection'];
-          this.letter.copies.push(copy);
+          this.letter.hiko.copies.push(copy);
         }
 
         this.gotoResult(res.response.docs[0], false, idx);
 
       } else {
         this.newLetter(this.state.fileConfig.templates[0]);
-        this.letter.netlet_id = id;
+        this.letter.id = id;
         this.letter.startPage = this.state.currentPage;
       }
       this.view = 'fields';
@@ -477,7 +473,7 @@ export class EditorComponent {
 
     this.selectedResult = idx;
     this.withSelection = keepSelection;
-    this.state.currentPage = doc.data.startPage;
+    this.state.currentPage = doc.hiko.startPage;
     this.getPage(keepSelection);
 
 
@@ -540,7 +536,7 @@ export class EditorComponent {
   }
 
   removeLetter() {
-    this.service.removeLetter(this.state.selectedFile.filename, this.letter.netlet_id).subscribe((res: any) => {
+    this.service.removeLetter(this.state.selectedFile.filename, this.letter.id).subscribe((res: any) => {
       this.getLetters();
     });
 
@@ -555,7 +551,7 @@ export class EditorComponent {
         this.letter = res;
         // this.letter.template = t;
         this.letter.hiko_id = res.id;
-        this.letter.netlet_id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
+        this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
         this.letter.tenant = this.state.fileConfig.tenant;
 
 
@@ -583,7 +579,13 @@ export class EditorComponent {
   }
 
   exportLetter() {
-    console.log(this.letter);
+    this.service.exportToHiko(this.letter.hiko, this.state.fileConfig.tenant).subscribe((res:any) => {
+      console.log(res);
+      if (res.id) {
+        this.letter.hiko_id = res.id;
+        this.letter.hiko.id = res.id;
+      }
+    });
   }
 
   nextLetter() {

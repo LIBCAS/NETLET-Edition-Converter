@@ -21,16 +21,16 @@ export class FileTemplate {
 
   public static newTemplateFromLetter(letter: Letter): FileTemplate {
     const t: FileTemplate = new FileTemplate();
-    t.name = 'Šablona z dopisu ' + (letter.id);
-    t.notes_private = letter.notes_private;
-    t.author = letter.authors[0].marked;
-    t.author_db = letter.authors[0];
-    t.recipient = letter.recipients[0].marked;
-    t.recipient_db = letter.recipients[0];
+    t.name = 'Šablona z dopisu ' + (letter.hiko.id);
+    t.notes_private = letter.hiko.notes_private;
+    t.author = letter.hiko.authors[0].marked;
+    t.author_db = letter.hiko.authors[0];
+    t.recipient = letter.hiko.recipients[0].marked;
+    t.recipient_db = letter.hiko.recipients[0];
 
-    t.copies_archive = letter.copies[0].archive;
-    t.copies_collection = letter.copies[0].collection;
-    t.copies_repository = letter.copies[0].repository;
+    t.copies_archive = letter.hiko.copies[0].archive;
+    t.copies_collection = letter.hiko.copies[0].collection;
+    t.copies_repository = letter.hiko.copies[0].repository;
     return t;
   }
 };

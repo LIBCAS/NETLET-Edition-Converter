@@ -68,12 +68,12 @@
             <mat-list-item [class.app-selected]="l.id === currentLetterId" [class.app-nodb]="!l.hiko_id" (click)="selectResult(l, false, idx)"
               class="app-result app-pt-4 app-pb-4">
               <div matListItemTitle [class.app-ignore]="ignored[l.id]">
-                {{'Page(s)' | translate}}: {{ l.data.page_number }} <ng-container *ngIf="l.data.end_page_number"> - {{
-                  l.data.end_page_number }}</ng-container>
+                {{'Page(s)' | translate}}: {{ l.page_number }} <ng-container *ngIf="l.end_page_number"> - {{
+                  l.end_page_number }}</ng-container>
               </div>
-              <div matListItemLine>{{ l.data.date | date : 'dd.MM.yyyy' }}</div>
-              <div matListItemLine>{{l.data.incipit}}</div>
-              <div matListItemLine>{{l.data.content.substring(0, 100)}}...</div>
+              <div matListItemLine>{{ l.date | date : 'dd.MM.yyyy' }}</div>
+              <div matListItemLine>{{l.hiko.incipit}}</div>
+              <div matListItemLine>{{l.hiko.content.substring(0, 100)}}...</div>
             </mat-list-item>
             }
           </mat-list>

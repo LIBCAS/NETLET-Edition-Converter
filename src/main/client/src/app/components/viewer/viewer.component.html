@@ -40,7 +40,7 @@
             [matTooltip]="'action.set_word' | translate">menu_open</mat-icon>
         </div>
         }
-        @for(copy of letter.copies; track idx; let idx = $index){
+        @for(copy of letter.hiko.copies; track idx; let idx = $index){
         <div cdkMenuItem class="app-fxLayout app-row app-center-v">---</div>
 
         @for(f of state.copyFields; track idx; let idx = $index){

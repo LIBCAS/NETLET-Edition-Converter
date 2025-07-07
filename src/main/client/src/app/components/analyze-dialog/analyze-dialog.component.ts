@@ -1,4 +1,4 @@
-import { DatePipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, Inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +29,7 @@ import { InfoUsageDialogComponent } from '../info-usage-dialog/info-usage-dialog
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } } 
  ],
   standalone: true,
-  imports: [FormsModule, TranslateModule, NgIf, NgFor, 
+  imports: [FormsModule, TranslateModule, 
     MatFormFieldModule, MatInputModule, MatTabsModule,
     MatCheckboxModule, DatePipe, MatListModule, CdkDrag, CdkDragHandle, MatSelectModule, MatTooltipModule,
     MatButtonModule, MatIconModule, MatDialogModule, MatProgressSpinnerModule, MatProgressBarModule]
@@ -53,6 +53,13 @@ export class AnalyzeDialogComponent {
   entities: Entity[] = [];
   nametag: string;
   nametags: { pos: number[], text: string, type: string, selected: boolean }[];
+
+  authors_db: { id: number, marked: string, name: string }[] = [];
+  author_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+  noauthor = {marked:'', id:-1};
+  recipients_db: { id: number, marked: string, name: string }[] = [];
+  recipient_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+  norecipient = {marked:'', id:-1};
 
   constructor(
     private dialogRef: MatDialogRef<AnalyzeDialogComponent>,
@@ -83,7 +90,7 @@ export class AnalyzeDialogComponent {
 
 
   findTags() {
-    this.service.findTags(this._letter.content, this.state.fileConfig.tenant).subscribe((resp: any) => {
+    this.service.findTags(this._letter.hiko.content, this.state.fileConfig.tenant).subscribe((resp: any) => {
       this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
@@ -98,7 +105,7 @@ export class AnalyzeDialogComponent {
       this.preklad.nativeElement.focus();
     }, 10);
 
-    this.service.translate(this._letter.content).subscribe((resp: any) => {
+    this.service.translate(this._letter.hiko.content).subscribe((resp: any) => {
       this.translation = resp;
       // this.loading = false;
     });
@@ -107,18 +114,18 @@ export class AnalyzeDialogComponent {
   translateAbstract() {
     this.loading = true;
 
-    this.service.translateToEn(this._letter.abstract_cs).subscribe((resp: any) => {
-      this._letterAnalyzed.abstract_en = resp.text;
-      this._letter.abstract_en = resp.text;
+    this.service.translateToEn(this._letter.hiko.abstract.cs).subscribe((resp: any) => {
+      this._letterAnalyzed.hiko.abstract.en = resp.text;
+      this._letter.hiko.abstract.en = resp.text;
       this.loading = false;
     });
   }
 
   detectLang() {
-    this.service.detectLang(this._letter.content).subscribe((resp: any) => {
+    this.service.detectLang(this._letter.hiko.content).subscribe((resp: any) => {
       // alert(resp.languages)
-      this._letterAnalyzed.languages = resp.languages;
-      this._letter.languages = this._letterAnalyzed.languages;
+      this._letterAnalyzed.hiko.languages = resp.languages;
+      this._letter.hiko.languages = this._letterAnalyzed.hiko.languages;
     });
   }
 
@@ -127,7 +134,7 @@ export class AnalyzeDialogComponent {
   }
 
   setAnalysis(analysis: any) {
-    this._letterAnalyzed.analysis = analysis;
+    this._letterAnalyzed.ai.analysis = analysis;
     this._letterAnalyzed.letter_number = analysis.letter_number;
     this._letterAnalyzed.letter_title = analysis.letter_title;
     this._letterAnalyzed.page_number = analysis.page_number;
@@ -160,19 +167,19 @@ export class AnalyzeDialogComponent {
     this._letterAnalyzed.sign_off = analysis.sign_off;
     this._letterAnalyzed.signature = analysis.signature;
 
-    this._letterAnalyzed.abstract_cs = analysis.abstract_cs;
-    this._letterAnalyzed.abstract_en = analysis.abstract_en;
-    this._letterAnalyzed.summary = analysis.summary;
+    this._letterAnalyzed.hiko.abstract.cs = analysis.abstract_cs;
+    this._letterAnalyzed.hiko.abstract.en = analysis.abstract_en;
+    this._letterAnalyzed.ai.summary = analysis.summary;
 
     this._letterAnalyzed.origin = analysis.location || analysis.place;
-    this._letterAnalyzed.date_marked = analysis.date_as_show_in_text;
+    this._letterAnalyzed.hiko.date_marked = analysis.date_as_show_in_text;
     this._letterAnalyzed.date = analysis.date;
     if (this.isDate(this._letterAnalyzed.date)) {
       this.datum = new Date(analysis.date);
     }
 
-    this._letterAnalyzed.incipit = analysis.incipit;
-    this._letterAnalyzed.explicit = analysis.explicit;
+    this._letterAnalyzed.hiko.incipit = analysis.incipit;
+    this._letterAnalyzed.hiko.explicit = analysis.explicit;
     // this._letterAnalyzed.full_text = this.data.letter.full_text;
 
     this.setCurrentLetter();
@@ -197,9 +204,8 @@ export class AnalyzeDialogComponent {
   }
 
   annotate() {
-    const orig = this._letterAnalyzed.abstract_cs;
     // this._letter.abstract_cs = 'processing...';
-    this.service.annotate({text: this._letter.content, prompt: this.data.prompt, gptModel: this.data.gptModel}).subscribe((resp: any) => {
+    this.service.annotate({text: this._letter.hiko.content, prompt: this.data.prompt, gptModel: this.data.gptModel}).subscribe((resp: any) => {
       this.loading = false;
       if (resp.error) {
         console.log(resp);
@@ -208,7 +214,7 @@ export class AnalyzeDialogComponent {
       } else {
         this.setAnalysis(JSON.parse(resp.choices[0].message.content));
         this.usage = resp.usage;
-        this.checkAuthors();
+        this.checkAuthors(false);
       }
     });
   }
@@ -220,7 +226,7 @@ export class AnalyzeDialogComponent {
       // selection: this.data.letter.selection,
       prompt: this.data.prompt,
       gptModel: this.data.gptModel,
-      selection: this.data.letter.selection
+      selection: this.data.letter.ai.selection
     };
 
     this.loading = true;
@@ -233,22 +239,31 @@ export class AnalyzeDialogComponent {
       } else {
         this.setAnalysis(JSON.parse(resp.choices[0].message.content));
         this.usage = resp.usage;
-        this.checkAuthors();
+        this.checkAuthors(false);
       }
     });
   }
 
-  checkAuthors() {
-    this.service.checkAuthors(this._letterAnalyzed.author, this._letterAnalyzed.recipient, this.state.fileConfig.tenant).subscribe((resp: any) => {
-      // this._letterAnalyzed.author = resp.author;
-      // this._letterAnalyzed.recipient_note = resp.recipient;
-      // if (this._letterAnalyzed.authors_db.length > 0) {
-      //   this._letterAnalyzed.author_db = this._letterAnalyzed.authors_db[0];
-      // }
-      // if (this._letterAnalyzed.recipients_db.length > 0) {
-      //   this._letterAnalyzed.recipient_db = this._letterAnalyzed.recipients_db[0];
-      // }
+  createIndentity(marked: string) {
+
+  }
+
+  checkAuthors(extended: boolean) {
+
+    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.fileConfig.tenant, extended).subscribe((resp: any) => {
+      this.authors_db = resp.author;
+      this.recipients_db = resp.recipient;
+      if (this.authors_db.length > 0) {
+        this.author_db = this.authors_db[0];
+      }
+      if (this.recipients_db.length > 0) {
+        this.recipient_db = this.recipients_db[0];
+      }
     });
+  }
+
+  isValid() {
+    return this.author_db.id !== -1 && this.recipient_db.id !== -1;
   }
 
   save() {
@@ -256,6 +271,8 @@ export class AnalyzeDialogComponent {
     keys.forEach(k => {
       if (!this.keepFields[k]) {
         this.data.letter[k] = this._letterAnalyzed[k];
+        this.data.letter.hiko.authors = [{id: this.author_db.id, marked: this._letter.author}];
+        this.data.letter.hiko.recipients = [{id: this.recipient_db.id, marked: this._letter.recipient}];
       }
     });
 
@@ -276,7 +293,7 @@ export class AnalyzeDialogComponent {
       this.data.letter.endPage = this.state.currentPage;
     }
 
-    this.data.letter.languages = this._letterAnalyzed.languages;
+    this.data.letter.hiko.languages = this._letterAnalyzed.hiko.languages;
 
     this.data.letter.letter_number = this._letterAnalyzed.letter_number;
     this.data.letter.letter_title = this._letterAnalyzed.letter_title;
@@ -289,19 +306,19 @@ export class AnalyzeDialogComponent {
 
     this.data.letter.author = this._letterAnalyzed.author;
     this.data.letter.recipient = this._letterAnalyzed.recipient;
-    this.data.letter.abstract_cs = this._letterAnalyzed.abstract_cs;
-    this.data.letter.summary = this._letterAnalyzed.summary;
+    this.data.letter.hiko.abstract.cs = this._letterAnalyzed.hiko.abstract.cs;
+    this.data.letter.ai.summary = this._letterAnalyzed.ai.summary;
     this.data.letter.origin = this._letterAnalyzed.origin;
 
     if (this.datum) {
       console.log(this.datum)
     }
     this.data.letter.date = this._letterAnalyzed.date;
-    this.data.letter.date_marked = this._letterAnalyzed.date_marked;
+    this.data.letter.hiko.date_marked = this._letterAnalyzed.hiko.date_marked;
 
-    this.data.letter.incipit = this._letterAnalyzed.incipit;
-    this.data.letter.explicit = this._letterAnalyzed.explicit;
-    this.data.letter.content = this._letterAnalyzed.content;
+    this.data.letter.hiko.incipit = this._letterAnalyzed.hiko.incipit;
+    this.data.letter.hiko.explicit = this._letterAnalyzed.hiko.explicit;
+    this.data.letter.hiko.content = this._letterAnalyzed.hiko.content;
 
     this.data.letter.entities = this.entities;
     this.data.letter.nametags = this.nametags;
@@ -311,7 +328,7 @@ export class AnalyzeDialogComponent {
     // this.data.letter.recipients_db = this._letterAnalyzed.recipients_db;
     // this.data.letter.recipient_db = this._letterAnalyzed.recipient_db;
 
-    this.data.letter.analysis = this._letterAnalyzed.analysis;
+    this.data.letter.ai.analysis = this._letterAnalyzed.ai.analysis;
 
     this.service.saveLetter(this.state.selectedFile.filename, this.data.letter).subscribe((res: any) => {
       if (res.error) {

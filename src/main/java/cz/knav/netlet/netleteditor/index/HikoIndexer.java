@@ -29,6 +29,53 @@ public class HikoIndexer {
 
     public static final Logger LOGGER = Logger.getLogger(HikoIndexer.class.getName());
 
+    public JSONObject saveLetter(String data, String tenant) {
+        Date start = new Date();
+        JSONObject ret = new JSONObject();
+        LOGGER.log(Level.INFO, "Saving letter in hiko");
+        String t = tenant;
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+        }
+        String url = Options.getInstance().getJSONObject("hiko").getString("api")
+                .replace("{tenant}", t)
+                + "/letter";
+        String id = new JSONObject(data).optString("id", null);
+        LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1}", new Object[]{tenant, url});
+        try (HttpClient httpclient = HttpClient
+                .newBuilder()
+                .build()) {
+            HttpRequest request;
+            if (id != null) {
+                url += "/" + id;
+                request = HttpRequest.newBuilder()
+                        .uri(new URI(url))
+                        .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
+                        .header("Accept", "application/json")
+                        .PUT(HttpRequest.BodyPublishers.ofString(data))
+                        .build();
+            } else {
+                url += "s";
+                request = HttpRequest.newBuilder()
+                        .uri(new URI(url))
+                        .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
+                        .header("Accept", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(data))
+                        .build();
+            }
+
+            HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
+            ret = new JSONObject(response.body());
+        } catch (URISyntaxException | IOException | InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+
+        Date end = new Date();
+        ret.put("ellapsed time", DurationFormatUtils.formatDuration(end.getTime() - start.getTime(), "HH:mm:ss.S"));
+        LOGGER.log(Level.INFO, "Letter Saved!");
+        return ret;
+    }
+
     public JSONObject indexIdentities() throws URISyntaxException, IOException, InterruptedException {
         Date start = new Date();
         JSONObject ret = new JSONObject();
@@ -59,7 +106,6 @@ public class HikoIndexer {
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t)
                 + "/identities?per_page=100";
-        System.out.println(Options.getInstance().getJSONObject("hiko").getString("bearer"));
         int tindexed = 0;
         LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1}", new Object[]{tenant, url});
         try (HttpClient httpclient = HttpClient

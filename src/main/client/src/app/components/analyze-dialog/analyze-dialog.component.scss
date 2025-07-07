@@ -2,3 +2,13 @@
     // overflow: hidden;
     resize: inline;
   }
+
+  ::ng-deep {
+  .app-icons {
+    .mat-mdc-form-field:not(.app-calendar) {
+      .mat-mdc-form-field-icon-suffix {
+        min-width: 0px !important;
+      }
+    }  
+  }
+}

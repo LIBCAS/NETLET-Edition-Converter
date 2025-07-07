@@ -271,25 +271,22 @@ export class LetterHIKO {
     approval: string;
     action: string; // musi byt edit? ne create?
 
-    // Jak spravne
+    // Jak spravn
     abstract: {
         cs: string;
         en: string;
-    }
-    abstract_cs: string;
-    abstract_en: string;
+    } = {cs: '', en: ''}
 
     // Pridat ??
     content: string;
     content_stripped: string;
-    history: string;
 
 }
 
-export class Letter extends LetterHIKO {
-    
+export class Letter  {
+
     [key: string]: any;
-    netlet_id: string;
+    id: string;
 
     // hiko fields
     hiko_id: number;
@@ -303,19 +300,23 @@ export class Letter extends LetterHIKO {
     end_page_number: number;
 
     // As detected by AI
-    date: string; 
+    date: string;
     author: string;
     recipient: string;
     origin: string;
     salutation: string;
     signature: string;
     sign_off: string;
-    summary: string;
-    
+
     entities: Entity[];
     nametags: NameTag[];
 
+    ai: {
+        analysis: any;
+        summary: string;
+        selection: { page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string }[];
+    }
+
+    hiko: LetterHIKO;
     template: FileTemplate;
-    analysis: any;
-    selection: { page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string }[];
 }

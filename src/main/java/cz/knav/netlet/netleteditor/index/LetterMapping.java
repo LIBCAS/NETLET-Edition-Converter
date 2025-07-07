@@ -100,6 +100,7 @@ public class LetterMapping {
 
         JSONObject data_old = new JSONObject(doc.getString("data"));
         JSONObject data_new = new JSONObject();
+        JSONObject ai = new JSONObject();
                 
         data_new.put("hiko_id", data_old.opt("hiko_id"));
         data_new.put("startPage", data_old.opt("startPage"));
@@ -110,24 +111,25 @@ public class LetterMapping {
         data_new.put("signature", data_old.opt("signature"));
         data_new.put("languages", data_old.opt("languages"));
         data_new.put("letter_number", data_old.opt("letter_number"));
-        data_new.put("summary", data_old.opt("summary"));
 
         JSONObject a = new JSONObject()
                 .put("cs", data_old.opt("abstract_cs"))
                 .put("en", data_old.opt("abstract_en"));
-        data_new.put("abstract", "a");
+        data_new.put("abstract", a); 
 
         data_new.put("explicit", data_old.opt("explicit"));
         data_new.put("incipit", data_old.opt("incipit"));
+        data_new.put("content", data_old.opt("full_text"));
 
         data_new.put("page_number", data_old.opt("page_number"));
+        
         data_new.put("letter_title", data_old.opt("letter_title"));
         data_new.put("salutation", data_old.opt("salutation"));
         data_new.put("sign_off", data_old.opt("sign_off"));
-
-        data_new.put("selection", data_old.opt("selection"));
-        data_new.put("analysis", data_old.opt("analysis"));
-        data_new.put("content", data_old.opt("full_text"));
+        
+        ai.put("summary", data_old.opt("summary"));
+        ai.put("selection", data_old.opt("selection"));
+        ai.put("analysis", data_old.opt("analysis"));
 
         if (data_old.has("author_db")) {
             JSONObject au = new JSONObject()
@@ -170,7 +172,8 @@ public class LetterMapping {
 
         data_new.put("status", "draft");
 
-        idoc.setField("data", data_new.toString());
-        solr.add("letters", idoc);
+        idoc.setField("hiko", data_new.toString());
+        idoc.setField("ai", ai.toString());
+        solr.add("letters", idoc); 
     }
 }

@@ -110,7 +110,7 @@ export class LetterFieldsComponent {
   }
 
   findTags() {
-    this.service.findTags(this._letter.content, this.state.fileConfig.tenant).subscribe((resp: any) => {
+    this.service.findTags(this._letter.hiko.content, this.state.fileConfig.tenant).subscribe((resp: any) => {
       this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
@@ -121,7 +121,7 @@ export class LetterFieldsComponent {
   }
 
   detectLang() {
-    this.service.detectLang(this._letter.content).subscribe((resp: any) => {
+    this.service.detectLang(this._letter.hiko.content).subscribe((resp: any) => {
       alert(resp.lang)
     });
   }
@@ -130,7 +130,7 @@ export class LetterFieldsComponent {
 
     const dialogRef = this.dialog.open(TranslationDialogComponent, {
       width: '800px',
-      data: this._letter.content,
+      data: this._letter.hiko.content,
     });
   }
 
@@ -193,7 +193,7 @@ export class LetterFieldsComponent {
     let prompt = this.state.fileConfig.prompt;
     const brackets: string = this.brackets(prompt);
     if (brackets) {
-      let ex = brackets.replace('words', this.wordCount(this._letter.content) + '');
+      let ex = brackets.replace('words', this.wordCount(this._letter.hiko.content) + '');
       const val = Math.max(3, Math.floor(eval(ex)));
       prompt = prompt.replaceAll('{' + brackets + '}', val + '');
     }
@@ -219,7 +219,7 @@ export class LetterFieldsComponent {
         this.datum.setValue(null);
       }
 
-      this.onShouldRefresh.emit(this._letter.netlet_id);
+      this.onShouldRefresh.emit(this._letter.id);
     })
   }
 
@@ -232,7 +232,7 @@ export class LetterFieldsComponent {
       this._letter.endPage = this.state.currentPage;
     }
     this.service.saveLetter(this.state.selectedFile.filename, this._letter).subscribe((res: any) => {
-      this.onShouldRefresh.emit(this._letter.netlet_id);
+      this.onShouldRefresh.emit(this._letter.id);
       
     });
   }
@@ -262,15 +262,15 @@ export class LetterFieldsComponent {
     if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
       this._letter.startPage = this.state.currentPage;
     }
-    if (!this._letter.selection) {
-      this._letter.selection = [];
+    if (!this._letter.ai.selection) {
+      this._letter.ai.selection = [];
     }
 
 
     const blocks: AltoBlock[] = this.state.selection ? 
       this.state.getBlocksFromSelection(this.state.selection) : this.state.alto.Layout.Page.PrintSpace.TextBlock;
 
-    const page = this._letter.selection.find(s => s.page === this.state.currentPage);
+    const page = this._letter.ai.selection.find(s => s.page === this.state.currentPage);
     if (page) {
       
       if (!this.state.selection) {
@@ -289,29 +289,29 @@ export class LetterFieldsComponent {
       
     } else {
       if (this.state.selection) {
-        this._letter.selection.push({
+        this._letter.ai.selection.push({
           page: this.state.currentPage,
           selection: [this.state.selection],
           blocks: blocks,
           text: this.state.getBlockText(blocks)
         });
       } else {
-        this._letter.selection.push({
+        this._letter.ai.selection.push({
           page: this.state.currentPage,
           blocks: blocks,
           text: this.state.getBlockText(blocks)
         });
       }
-      this._letter.selection.sort((s1, s2) =>  s1.page - s2.page);
+      this._letter.ai.selection.sort((s1, s2) =>  s1.page - s2.page);
     }
 
-    this._letter.content = this.getTextFromSelection(this._letter.selection);
+    this._letter.hiko.content = this.getTextFromSelection(this._letter.ai.selection);
   }
 
   setField(field: string, textBox: string, e: MouseEvent) {
     const append: boolean = e.ctrlKey;
     const blockIds: string[] = [];
-    if (field === 'full_text' && textBox === 'block') {
+    if (field === 'content' && textBox === 'block') {
 
       if (this.state.selectedBlocks.length === 0) {
         const tBlocks: AltoBlock[] = this.state.alto.Layout.Page.PrintSpace.TextBlock;
@@ -321,9 +321,9 @@ export class LetterFieldsComponent {
       } 
 
       if (append) {
-        this._letter.content += '\n\n' + this.state.getBlockText(this.state.selectedBlocks);
+        this._letter.hiko.content += '\n\n' + this.state.getBlockText(this.state.selectedBlocks);
       } else {
-        this._letter.content = this.state.getBlockText(this.state.selectedBlocks);
+        this._letter.hiko.content = this.state.getBlockText(this.state.selectedBlocks);
       }
 
       if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
@@ -340,10 +340,10 @@ export class LetterFieldsComponent {
 
   switchAuthors() {
 
-    const a = this._letter.authors;
-    const r = this._letter.recipients;
-    this._letter.authors = r;
-    this._letter.recipients = a;
+    const a = this._letter.hiko.authors;
+    const r = this._letter.hiko.recipients;
+    this._letter.hiko.authors = r;
+    this._letter.hiko.recipients = a;
 
   }
 
@@ -387,8 +387,8 @@ export class LetterFieldsComponent {
   }
 
   removeSelection(page: number) {
-    this._letter.selection = this._letter.selection.filter(s => s.page !== page);
-    this._letter.content = this.getTextFromSelection(this._letter.selection);
+    this._letter.ai.selection = this._letter.ai.selection.filter(s => s.page !== page);
+    this._letter.hiko.content = this.getTextFromSelection(this._letter.ai.selection);
   }
 
   setMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>, control: FormControl) {
@@ -405,11 +405,11 @@ export class LetterFieldsComponent {
     copy.repository = this._letter.template.copies_repository;
     copy.archive = this._letter.template.copies_archive;
     copy.collection = this._letter.template.copies_collection;
-    this._letter.copies.push(copy);
+    this._letter.hiko.copies.push(copy);
   }
 
   removeCopy(idx: number) {
-    this._letter.copies.splice(idx, 1);
+    this._letter.hiko.copies.splice(idx, 1);
   }
 
 }

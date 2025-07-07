@@ -1,6 +1,6 @@
 <div *ngIf="_letter" class="app-letter app-icons" >
-  <div *ngIf="_letter.selection?.length > 0" class="app-fxLayout app-row app-center-v app-mb-4">
-    @for(sel of _letter.selection; track idx; let idx = $index){
+  <div *ngIf="_letter.ai.selection?.length > 0" class="app-fxLayout app-row app-center-v app-mb-4">
+    @for(sel of _letter.ai.selection; track idx; let idx = $index){
     <div (click)="gotoPage(sel.page)">
       <mat-icon class="mat-icon-close" (click)="removeSelection(sel.page)"
         [matTooltip]="'action.remove_selection' | translate">close</mat-icon>
@@ -21,9 +21,9 @@
   <div class="app-mb-4">
     <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.full_text' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.content" name="full_text"></textarea>
+      <textarea rows="5" matInput [(ngModel)]="_letter.hiko.content" name="content"></textarea>
       <div class="app-pt-4 app-mb-n2 app-text-right">
-        <ng-container *ngTemplateOutlet="icons; context:{ field: 'full_text' }"></ng-container>
+        <ng-container *ngTemplateOutlet="icons; context:{ field: 'content' }"></ng-container>
       </div>
     </mat-form-field>
   </div>
@@ -55,8 +55,8 @@
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.author_db' | translate}}</mat-label>
-      <mat-select [(ngModel)]="_letter.authors">
-        @for(a of _letter.authors; track a.id; let idx = $index){
+      <mat-select [(ngModel)]="_letter.hiko.authors">
+        @for(a of _letter.hiko.authors; track a.id; let idx = $index){
         <mat-option [value]="a">{{a.marked}}</mat-option>
         }
       </mat-select>
@@ -69,8 +69,8 @@
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
-      <mat-select [(ngModel)]="_letter.recipients">
-        @for(a of _letter.recipients; track a.id; let idx = $index){
+      <mat-select [(ngModel)]="_letter.hiko.recipients">
+        @for(a of _letter.hiko.recipients; track a.id; let idx = $index){
         <mat-option [value]="a">{{a.marked}}</mat-option>
         }
       </mat-select>
@@ -93,12 +93,12 @@
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.date_marked' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.date_marked" id="date_marked" name="date_marked"><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.hiko.date_marked" id="date_marked" name="date_marked"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'date_marked' }"></ng-container>
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.languages' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.languages" name="languages">
+      <input matInput [(ngModel)]="_letter.hiko.languages" name="languages">
     </mat-form-field>
   </div>
 
@@ -123,7 +123,7 @@
   <div class="app-mb-4">
     <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.incipit' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.incipit" name="incipit"><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.hiko.incipit" name="incipit"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'incipit' }"></ng-container>
     </mat-form-field>
   </div>
@@ -131,7 +131,7 @@
   <div class="app-mb-4">
     <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.explicit' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.explicit" name="explicit"><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.hiko.explicit" name="explicit"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'explicit' }"></ng-container>
     </mat-form-field>
   </div>
@@ -139,21 +139,21 @@
   <div class="app-mb-4">
     <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.abstract_cs' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.abstract_cs" name="abstract_cs" #abstract_cs></textarea>
+      <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.cs" name="abstract_cs" #abstract_cs></textarea>
     </mat-form-field>
   </div>
 
   <div class="app-mb-4">
     <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.abstract_en' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.abstract_en" name="abstract_en" #abstract_en></textarea>
+      <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.en" name="abstract_en" #abstract_en></textarea>
     </mat-form-field>
   </div>
 
   <div class="app-mb-4">
     <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.notes_private' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.notes_private" name="notes_private" #notes_private></textarea>
+      <textarea rows="5" matInput [(ngModel)]="_letter.hiko.notes_private" name="notes_private" #notes_private></textarea>
     </mat-form-field>
   </div>
 
@@ -162,7 +162,7 @@
 
   <fieldset class="app-mb-4">
     <legend>{{ 'field.copies' | translate }}</legend>
-    @for(copy of _letter.copies; track idx; let idx = $index){
+    @for(copy of _letter.hiko.copies; track idx; let idx = $index){
     <fieldset>
       <legend> #{{ idx + 1 }}. </legend>
       <button *ngIf="idx > 0" mat-icon-button (click)="removeCopy(idx)"
