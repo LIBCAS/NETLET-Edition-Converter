@@ -216,7 +216,11 @@ export class LetterHIKO {
     uuid: string;
     created_at: Date;
 
+    date: string;
+    date_computed: string;
     date_year: number;
+    date_month: number;
+    date_day: number;
     date_is_range: boolean;
     date_marked: string;
     range_day: number;
@@ -224,16 +228,15 @@ export class LetterHIKO {
     range_year: number;
     date_inferred: boolean;
     date_uncertain: boolean;
-    date_computed: Date;
     date_note: string;
     date_approximate: boolean;
 
-    authors: { id: number; marked: string }[];
+    authors: { id: number; marked: string; name?: string }[];
     author_uncertain: boolean;
     author_inferred: boolean;
     author_note: string;
 
-    recipients: { id: number; marked: string; salutation?: string }[];
+    recipients: { id: number; marked: string; salutation?: string; name?: string }[];
     recipient_uncertain: boolean;
     recipient_inferred: boolean;
     recipient_note: string;
@@ -241,12 +244,12 @@ export class LetterHIKO {
     mentioned: string[];
     people_mentioned_note: string;
 
-    origins: { id: number; marked: string }[];
+    origins: { id: number; marked: string; name?: string }[];
     origin_inferred: boolean;
     origin_uncertain: boolean;
     origin_note: string;
 
-    destinations: { id: number; marked: string }[];
+    destinations: { id: number; marked: string; name?: string }[];
     destination_inferred: boolean;
     destination_uncertain: boolean;
     destination_note: string;
@@ -304,6 +307,7 @@ export class Letter  {
     author: string;
     recipient: string;
     origin: string;
+    destination: string;
     salutation: string;
     signature: string;
     sign_off: string;
@@ -312,11 +316,11 @@ export class Letter  {
     nametags: NameTag[];
 
     ai: {
+        date: Date;
         analysis: any;
-        summary: string;
-        selection: { page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string }[];
-    }
+    }[]
 
+    selection: { page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string }[];
     hiko: LetterHIKO;
     template: FileTemplate;
 }

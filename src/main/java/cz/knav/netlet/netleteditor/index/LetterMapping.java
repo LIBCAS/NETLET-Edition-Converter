@@ -31,8 +31,6 @@ public class LetterMapping {
 
     public JSONObject transform() {
         JSONObject ret = new JSONObject();
-//        String url = Options.getInstance().getString("solr", "http://localhost:8983/solr/")
-//                + "/letters_old/export?q=*:*&wt=json&sort=ide%20asc&fl=*";
         String url = Options.getInstance().getString("solr", "http://localhost:8983/solr/")
                 + "/letters_old/select?rows=100&q=-hiko_id:*&wt=json&fl=*";
 
@@ -43,7 +41,7 @@ public class LetterMapping {
             for (int i = 0; i < fs.length(); i++) {
                     files.put(fs.getJSONObject(i).getString("filename"), fs.getJSONObject(i));
                 }
-            ret.put("files", files);
+            // ret.put("files", files);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(url))
                     .GET()
@@ -69,19 +67,6 @@ public class LetterMapping {
 
     private void transformDoc(JSONObject doc, SolrClient solr) throws SolrServerException, IOException {
         SolrInputDocument idoc = new SolrInputDocument();
-
-//    <field name="hiko_id" type="pint" indexed="true" stored="true"  />
-//    <field name="tenant" type="string" indexed="true" stored="true"  />
-//
-//    <field name="filename" type="string" indexed="true" stored="true"  />
-//    <field name="file_id" type="string" indexed="true" stored="true"  />
-//    <field name="startPage" type="pint" indexed="true" stored="true"  />
-//    <field name="page_number" type="pint" indexed="true" stored="true" sortMissingLast="true" />
-//    <field name="data" type="string_big" indexed="false" stored="true"/>
-//    <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW" />
-//    <field name="author" type="string" indexed="true" stored="true" multiValued="true" />
-//    <field name="recipient" type="string" indexed="true" stored="true" multiValued="true"  />
-//    <field name="date" type="pdate" indexed="true" stored="true" />
         idoc.setField("id", doc.getString("id"));
         idoc.setField("hiko_id", doc.optString("hiko_id"));
         idoc.setField("filename", doc.getString("filename"));
@@ -99,8 +84,12 @@ public class LetterMapping {
         
 
         JSONObject data_old = new JSONObject(doc.getString("data"));
+        
+        if (data_old.has("selection")) {
+            idoc.setField("selection", data_old.get("selection").toString());
+        }
+        
         JSONObject data_new = new JSONObject();
-        JSONObject ai = new JSONObject();
                 
         data_new.put("hiko_id", data_old.opt("hiko_id"));
         data_new.put("startPage", data_old.opt("startPage"));
@@ -127,14 +116,19 @@ public class LetterMapping {
         data_new.put("salutation", data_old.opt("salutation"));
         data_new.put("sign_off", data_old.opt("sign_off"));
         
-        ai.put("summary", data_old.opt("summary"));
-        ai.put("selection", data_old.opt("selection"));
-        ai.put("analysis", data_old.opt("analysis"));
+        JSONArray ai = new JSONArray();
+        ai.put(new JSONObject()
+                .put("date", doc.get("indextime"))
+                .put("analysis", data_old.opt("analysis")));
 
         if (data_old.has("author_db")) {
             JSONObject au = new JSONObject()
                     .put("id", Integer.valueOf(data_old.getJSONObject("author_db").getString("id").split("_")[1]))
-                    .put("marked", data_old.getJSONObject("author_db").getString("name"));
+                    .put("name", data_old.getJSONObject("author_db").getString("name"));
+            
+            if (doc.has("author")) {
+                au.put("marked", doc.getJSONArray("author").getString(0));
+            }
             data_new.append("authors", au);
         }
         if (doc.has("author")) {
@@ -144,7 +138,10 @@ public class LetterMapping {
         if (data_old.has("recipient_db")) {
             JSONObject au = new JSONObject()
                     .put("id", Integer.valueOf(data_old.getJSONObject("recipient_db").getString("id").split("_")[1]))
-                    .put("marked", data_old.getJSONObject("recipient_db").getString("name"));
+                    .put("name", data_old.getJSONObject("recipient_db").getString("name")); 
+            if (doc.has("recipient")) {
+                au.put("marked", doc.getJSONArray("recipient").getString(0));
+            }
             data_new.append("recipients", au);
         }
         if (doc.has("recipient")) {
@@ -155,12 +152,14 @@ public class LetterMapping {
             JSONObject au = new JSONObject()
                     .put("marked", data_old.getString("origin"));
             data_new.append("origins", au);
+            idoc.setField("origin", data_old.get("origin"));
         }
 
         if (data_old.has("destination")) {
             JSONObject au = new JSONObject()
                     .put("marked", data_old.getString("destination"));
             data_new.append("destinations", au);
+            idoc.setField("destination", data_old.get("destination"));
         }
 
 //        if (data_old.has("copies")) {

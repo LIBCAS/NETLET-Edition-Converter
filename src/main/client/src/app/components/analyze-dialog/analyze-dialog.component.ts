@@ -16,10 +16,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
-import { Entity, Letter } from 'src/app/shared/letter';
+import { Entity, Letter, LetterHIKO } from 'src/app/shared/letter';
 import { AppConfiguration } from 'src/app/app-configuration';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { InfoUsageDialogComponent } from '../info-usage-dialog/info-usage-dialog.component';
+import { now } from 'moment';
 
 @Component({
   selector: 'app-analyze-dialog',
@@ -54,12 +55,21 @@ export class AnalyzeDialogComponent {
   nametag: string;
   nametags: { pos: number[], text: string, type: string, selected: boolean }[];
 
-  authors_db: { id: number, marked: string, name: string }[] = [];
+  authors_db: { id: number, marked: string, name?: string }[] = [];
   author_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
   noauthor = {marked:'', id:-1};
-  recipients_db: { id: number, marked: string, name: string }[] = [];
+  recipients_db: { id: number, marked: string, name?: string }[] = [];
   recipient_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
   norecipient = {marked:'', id:-1};
+  
+    
+  
+    origins_db: { id: number, marked: string, name?: string }[] = [];
+    origin_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    noorigin = {marked:'', id:-1, name: ''};
+    destinations_db: { id: number, marked: string, name?: string }[] = [];
+    destination_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    nodestination = {marked:'', id:-1, name: ''};
 
   constructor(
     private dialogRef: MatDialogRef<AnalyzeDialogComponent>,
@@ -73,6 +83,8 @@ export class AnalyzeDialogComponent {
   ngOnInit() {
     // this.analyze();
     this._letterAnalyzed = new Letter();
+    this._letterAnalyzed.hiko = new LetterHIKO();
+
     this._letter = new Letter();
     this.setCurrentLetterInit();
     // if (this.data.letter.analysis) {
@@ -134,13 +146,18 @@ export class AnalyzeDialogComponent {
   }
 
   setAnalysis(analysis: any) {
-    this._letterAnalyzed.ai.analysis = analysis;
+    if (!this._letterAnalyzed.ai) {
+      this._letterAnalyzed.ai = [];
+    }
+    this._letterAnalyzed.ai.unshift({analysis: analysis, date: new Date()});
+    // this._letterAnalyzed.ai.summary = analysis.summary;
+    // this._letterAnalyzed.ai.analysis = analysis;
+
     this._letterAnalyzed.letter_number = analysis.letter_number;
     this._letterAnalyzed.letter_title = analysis.letter_title;
     this._letterAnalyzed.page_number = analysis.page_number;
     this._letterAnalyzed.end_page_number = analysis.end_page_number;
     this._letterAnalyzed.author = analysis.sender;
-    this._letterAnalyzed.recipient = analysis.recipient;
     if (!this._letterAnalyzed.author || this._letterAnalyzed.author === 'neuvedeno') {
       if (this._letterAnalyzed.recipient) {
         if (this._letterAnalyzed.recipient.toLowerCase() === this.data.letter.author.toLowerCase()) {
@@ -151,8 +168,9 @@ export class AnalyzeDialogComponent {
       } else {
         this._letterAnalyzed.author = this.data.letter.author;
       }
-
     }
+
+    this._letterAnalyzed.recipient = analysis.recipient;
     if (!this._letterAnalyzed.recipient || this._letterAnalyzed.recipient === 'neuvedeno') {
       if (this._letterAnalyzed.author.toLowerCase() === this.data.letter.recipient.toLowerCase()) {
         this._letterAnalyzed.recipient = this.data.letter.author;
@@ -163,15 +181,17 @@ export class AnalyzeDialogComponent {
       }
     }
 
+    this._letterAnalyzed.origin = analysis.location || analysis.place;
+    this._letterAnalyzed.destination = analysis.destination;
+
+
+
     this._letterAnalyzed.salutation = analysis.salutation;
     this._letterAnalyzed.sign_off = analysis.sign_off;
     this._letterAnalyzed.signature = analysis.signature;
 
     this._letterAnalyzed.hiko.abstract.cs = analysis.abstract_cs;
     this._letterAnalyzed.hiko.abstract.en = analysis.abstract_en;
-    this._letterAnalyzed.ai.summary = analysis.summary;
-
-    this._letterAnalyzed.origin = analysis.location || analysis.place;
     this._letterAnalyzed.hiko.date_marked = analysis.date_as_show_in_text;
     this._letterAnalyzed.date = analysis.date;
     if (this.isDate(this._letterAnalyzed.date)) {
@@ -190,6 +210,23 @@ export class AnalyzeDialogComponent {
     keys.forEach(k => {
         this._letter[k] = this.data.letter[k];
     });
+    if (this.data.letter.hiko.authors) {
+      this.authors_db = this.data.letter.hiko.authors;
+      this.author_db = this.data.letter.hiko.authors[0];
+    }
+    if (this.data.letter.hiko.recipients) {
+      this.recipients_db = this.data.letter.hiko.recipients;
+      this.recipient_db = this.data.letter.hiko.recipients[0];
+    }
+    
+    if (this._letter.hiko.origins) {
+      this.origins_db = this._letter.hiko.origins;
+      this.origin_db = this._letter.hiko.origins[0];
+    }
+    if (this._letter.hiko.destinations) {
+      this.destinations_db = this._letter.hiko.destinations;
+      this.destination_db = this._letter.hiko.destinations[0];
+    }
   }
 
   setCurrentLetter() {
@@ -215,6 +252,7 @@ export class AnalyzeDialogComponent {
         this.setAnalysis(JSON.parse(resp.choices[0].message.content));
         this.usage = resp.usage;
         this.checkAuthors(false);
+        this.checkPlaces(false);
       }
     });
   }
@@ -226,7 +264,7 @@ export class AnalyzeDialogComponent {
       // selection: this.data.letter.selection,
       prompt: this.data.prompt,
       gptModel: this.data.gptModel,
-      selection: this.data.letter.ai.selection
+      selection: this.data.letter.selection
     };
 
     this.loading = true;
@@ -262,6 +300,15 @@ export class AnalyzeDialogComponent {
     });
   }
 
+  
+
+  checkPlaces(extended: boolean) {
+    this.service.checkPlaces(this._letter.origin, this._letter.destination, this.state.fileConfig.tenant, extended).subscribe((resp: any) => {
+      this.origins_db = resp.origin;
+      this.destinations_db = resp.destination;
+    });
+  }
+
   isValid() {
     return this.author_db.id !== -1 && this.recipient_db.id !== -1;
   }
@@ -271,8 +318,10 @@ export class AnalyzeDialogComponent {
     keys.forEach(k => {
       if (!this.keepFields[k]) {
         this.data.letter[k] = this._letterAnalyzed[k];
-        this.data.letter.hiko.authors = [{id: this.author_db.id, marked: this._letter.author}];
-        this.data.letter.hiko.recipients = [{id: this.recipient_db.id, marked: this._letter.recipient}];
+        this.data.letter.hiko.authors = [{id: this.author_db.id, marked: this._letter.author, name: this.author_db.name}];
+        this.data.letter.hiko.recipients = [{id: this.recipient_db.id, marked: this._letter.recipient, name: this.recipient_db.name}];
+        this.data.letter.hiko.origins = [{id: this.origin_db.id, marked: this._letter.origin, name: this.origin_db.name}];
+        this.data.letter.hiko.destinations = [{id: this.destination_db.id, marked: this._letter.destination, name: this.destination_db.name}];
       }
     });
 
@@ -281,63 +330,6 @@ export class AnalyzeDialogComponent {
         this.service.showSnackBarError(res.error);
       } else {
         this.service.showSnackBar(res.msg);
-      }
-    });
-  }
-
-  saveAll() {
-    if (!this.data.letter.startPage) {
-      this.data.letter.startPage = this.state.currentPage;
-    }
-    if (!this.data.letter.endPage) {
-      this.data.letter.endPage = this.state.currentPage;
-    }
-
-    this.data.letter.hiko.languages = this._letterAnalyzed.hiko.languages;
-
-    this.data.letter.letter_number = this._letterAnalyzed.letter_number;
-    this.data.letter.letter_title = this._letterAnalyzed.letter_title;
-    this.data.letter.page_number = this._letterAnalyzed.page_number;
-    this.data.letter.end_page_number = this._letterAnalyzed.end_page_number;
-    this.data.letter.salutation = this._letterAnalyzed.salutation;
-    this.data.letter.sign_off = this._letterAnalyzed.sign_off;
-    this.data.letter.signature = this._letterAnalyzed.signature;
-
-
-    this.data.letter.author = this._letterAnalyzed.author;
-    this.data.letter.recipient = this._letterAnalyzed.recipient;
-    this.data.letter.hiko.abstract.cs = this._letterAnalyzed.hiko.abstract.cs;
-    this.data.letter.ai.summary = this._letterAnalyzed.ai.summary;
-    this.data.letter.origin = this._letterAnalyzed.origin;
-
-    if (this.datum) {
-      console.log(this.datum)
-    }
-    this.data.letter.date = this._letterAnalyzed.date;
-    this.data.letter.hiko.date_marked = this._letterAnalyzed.hiko.date_marked;
-
-    this.data.letter.hiko.incipit = this._letterAnalyzed.hiko.incipit;
-    this.data.letter.hiko.explicit = this._letterAnalyzed.hiko.explicit;
-    this.data.letter.hiko.content = this._letterAnalyzed.hiko.content;
-
-    this.data.letter.entities = this.entities;
-    this.data.letter.nametags = this.nametags;
-
-    // this.data.letter.authors_db = this._letterAnalyzed.authors_db;
-    // this.data.letter.author_db = this._letterAnalyzed.author_db;
-    // this.data.letter.recipients_db = this._letterAnalyzed.recipients_db;
-    // this.data.letter.recipient_db = this._letterAnalyzed.recipient_db;
-
-    this.data.letter.ai.analysis = this._letterAnalyzed.ai.analysis;
-
-    this.service.saveLetter(this.state.selectedFile.filename, this.data.letter).subscribe((res: any) => {
-      if (res.error) {
-        this.service.showSnackBarError(res.error);
-      } else {
-        this.service.showSnackBar(res.msg);
-        // this.dialogRef.close({
-        //   datum: this.datum
-        // })
       }
     });
   }

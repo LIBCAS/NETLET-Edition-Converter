@@ -45,7 +45,7 @@
         }, 
         {
             "role": "system",
-            "content": "Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract_cs: string, abstract_en: string, sender: string, recipient: string, date_as_show_in_text: string, date: Date, location: string, incipit: string, explicit: string, sign_off: string, signature: string, summary: text }"
+            "content": "Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract_cs: string, abstract_en: string, sender: string, recipient: string, date_as_show_in_text: string, date: Date, location: string, destination: string, incipit: string, explicit: string, sign_off: string, signature: string, summary: text }"
         }, 
         {
             "role": "user",

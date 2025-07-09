@@ -67,9 +67,12 @@ Managed external dictionaries
     <field name="alto_id" type="string" indexed="true" stored="true"  />
     <field name="hiko" type="string_big" indexed="false" stored="true"/>
     <field name="ai" type="string_big" indexed="false" stored="true"/>
+    <field name="selection" type="string_big" indexed="false" stored="true"/>
     <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW" />
-    <field name="author" type="string" indexed="true" stored="true" multiValued="true" />
-    <field name="recipient" type="string" indexed="true" stored="true" multiValued="true"  />
+    <field name="author" type="string" indexed="true" stored="true" />
+    <field name="recipient" type="string" indexed="true" stored="true"  />
+    <field name="origin" type="string" indexed="true" stored="true"  />
+    <field name="destination" type="string" indexed="true" stored="true"   />
     <field name="date" type="pdate" indexed="true" stored="true" />
 	
 

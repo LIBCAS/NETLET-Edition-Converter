@@ -67,6 +67,7 @@ Managed external dictionaries
     <field name="latitude" type="float" indexed="true" stored="true" />
     <field name="longitude" type="float" indexed="true" stored="true" />
     <field name="name_lower" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
+    <field name="alternative_names" type="text_cz" indexed="true" stored="true" multiValued="true" />
     <field name="geoname_id" type="int" indexed="true" stored="true" />
     <field name="division" type="string" indexed="true" stored="true"  />
     <field name="coords" type="location_rpt" indexed="true" stored="true"  />

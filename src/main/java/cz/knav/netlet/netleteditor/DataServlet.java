@@ -556,6 +556,21 @@ public class DataServlet extends HttpServlet {
                 return ret;
             }
         },
+        CHECK_PLACES {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                ret.put("req_origin", request.getParameter("origin"));
+                ret.put("req_destination", request.getParameter("destination"));
+                ret.put("origin", Indexer.checkPlaces(request.getParameter("origin"), 
+                        request.getParameter("tenant"),
+                        Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
+                ret.put("destination", Indexer.checkPlaces(request.getParameter("destination"), 
+                        request.getParameter("tenant"),
+                        Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
+                return ret;
+            }
+        },
         GET_PLACES {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -641,6 +656,21 @@ public class DataServlet extends HttpServlet {
                 try {
                     HikoIndexer hi = new HikoIndexer();
                     json.put("identities", hi.indexIdentities());
+                } catch (Exception ex) { 
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    json.put("error", ex.toString());
+                }
+                return json;
+            }
+        },
+        INDEX_PLACES {
+            @Override
+            JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
+
+                JSONObject json = new JSONObject();
+                try {
+                    HikoIndexer hi = new HikoIndexer();
+                    json.put("identities", hi.indexPlaces());
                 } catch (Exception ex) { 
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());

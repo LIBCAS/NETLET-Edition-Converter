@@ -25,7 +25,7 @@
     </div>
     @if (showImages) {
     <div class="app-mb-4">
-        @for(sel of data.letter.ai.selection; track idx; let idx = $index){
+        @for(sel of data.letter.selection; track idx; let idx = $index){
             <img class="app-fxFlex" style="height: 100px; border: 1px solid #aaa; margin-right: 2px;" [src]="getImgUrl(sel)" />
         }
     </div>
@@ -40,7 +40,7 @@
         <mat-icon class="material-icons-outlined">search_insights</mat-icon>
         {{ 'action.analyze' | translate}}
     </button>&#160;
-    <button [disabled]="data.gptModel !== 'gpt-4o' || !data.letter.ai.selection" mat-flat-button color="primary" (click)="analyzeImages()" class="app-mb-4">
+    <button [disabled]="data.gptModel !== 'gpt-4o' || !data.letter.selection" mat-flat-button color="primary" (click)="analyzeImages()" class="app-mb-4">
         <mat-icon class="material-icons-outlined">image_search</mat-icon>
         {{ 'action.analyze_images' | translate}}
     </button>&#160;
@@ -141,16 +141,52 @@
             }
         </mat-form-field>
     </div>
+
+    <div class="app-fxLayout app-row app-center-v app-mb-4" >
+    <mat-form-field class="app-fxFlex">
+      <mat-label>{{ 'field.origin' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.origin" name="origin" /><span matSuffix></span>
+    </mat-form-field>
+    <mat-form-field class="app-fxFlex app-ml-3">
+
+      <mat-label>{{ 'field.origin_db' | translate}}</mat-label>
+            <mat-select [(ngModel)]="origin_db">
+                <mat-option [value]="noauthor">{{noorigin.name}}</mat-option>
+            @for(a of origins_db; track a.id; let idx = $index){
+                <mat-option [value]="a">{{a.name}}</mat-option>
+            }
+            </mat-select>
+            @if(origins_db.length === 0) {
+                <mat-icon matSuffix (click)="checkPlaces(true)" [title]="'action.check_authors' | translate" color="primary" class="material-icons-outlined app-ml-2 app-mr-2">where_to_vote</mat-icon>
+            }
+    </mat-form-field>
+    
+    <mat-form-field class="app-fxFlex">
+      <mat-label>{{ 'field.destination' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.destination" name="recipient"><span matSuffix></span>
+    </mat-form-field>
+    <mat-form-field class="app-fxFlex app-ml-3">
+
+      <mat-label>{{ 'field.destination_db' | translate}}</mat-label>
+            <mat-select [(ngModel)]="destination_db">
+            <mat-option [value]="norecipient">{{nodestination.name}}</mat-option>
+            @for(a of destinations_db; track a.id; let idx = $index){
+                <mat-option [value]="a">{{a.name}}</mat-option>
+            }
+            </mat-select>
+            @if(destinations_db.length === 0) {
+                <mat-icon matSuffix (click)="checkPlaces(true)" [title]="'action.check_authors' | translate" color="primary" class="material-icons-outlined app-ml-2 app-mr-2">where_to_vote</mat-icon>
+            }
+    </mat-form-field>
+    <button mat-flat-button (click)="checkPlaces(true)" [title]="'action.check_authors' | translate">
+      <mat-icon color="primary" class="material-icons-outlined app-ml-2 app-mr-2">where_to_vote</mat-icon>
+    </button>
+  </div>
     
 
     <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex">
-            <mat-label>{{ 'field.origin' | translate}}</mat-label>
-            <input matInput [(ngModel)]="_letter.origin" name="origin" />
-            <mat-icon matSuffix (click)="toggleKeep('origin')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['origin']">push_pin</mat-icon>
-        </mat-form-field>
 
-        <mat-form-field class="app-fxFlex app-ml-3">
+        <mat-form-field class="app-fxFlex">
             <mat-label>{{ 'field.salutation' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.salutation" name="salutation">
             <mat-icon matSuffix (click)="toggleKeep('salutation')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['salutation']">push_pin</mat-icon>
@@ -221,7 +257,7 @@
     <div class="app-mb-4">
         <mat-form-field class="app-w-100">
             <mat-label>{{ 'field.summary' | translate}}</mat-label>
-            <textarea rows="5" matInput [(ngModel)]="_letter.ai.summary" name="summary"></textarea>
+            <textarea rows="5" matInput [(ngModel)]="_letter.ai[0].analysis.summary" name="summary"></textarea>
             <mat-icon matSuffix (click)="toggleKeep('summary')" [matTooltip]="'action.keep_value' | translate"  [class.material-icons-outlined]="!keepFields['summary']">push_pin</mat-icon>
         </mat-form-field>
     </div>

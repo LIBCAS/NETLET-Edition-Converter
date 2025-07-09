@@ -181,6 +181,8 @@
     "upload": "Upload",
     "close": "Close",
     "analyze": "Analyze",
+    "useAnalysis": "Use analysis",
+    "showCurrent": "Show current",
     "analyze_images": "Analyze using images",
     "AI": "Artificial intelligence",
     "process": "Process with AI",

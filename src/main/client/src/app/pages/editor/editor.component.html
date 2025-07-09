@@ -28,6 +28,8 @@
             <!-- <button mat-icon-button (click)="changeView('search')" [class.app-active]="view == 'search'" [matTooltip]="'Search' | translate"><mat-icon color="primary">search</mat-icon></button> -->
           </div>
           <div>
+            <button mat-icon-button (click)="log()"
+              [matTooltip]="'action.log' | translate"><mat-icon>log</mat-icon></button>
             <button mat-icon-button (click)="getLetters()"
               [matTooltip]="'action.refresh' | translate"><mat-icon>refresh</mat-icon></button>
             <ng-container *ngIf="state.fileConfig.templates.length === 1">
@@ -45,6 +47,8 @@
             </ng-container>
             <button mat-icon-button (click)="importLetter()"
               [matTooltip]="'action.import' | translate"><mat-icon>file_open</mat-icon></button>
+            <button [disabled]="!letter || !letter.hiko_id" mat-icon-button (click)="viewLetterInHIKO()"
+              [matTooltip]="'action.save' | translate"><mat-icon>open_in_new_off</mat-icon></button>
             <button [disabled]="!letter" mat-icon-button (click)="saveLetter()"
               [matTooltip]="'action.save' | translate"><mat-icon>save</mat-icon></button>
             <button mat-icon-button [disabled]="selectedResult === 0" (click)="prevLetter()"
@@ -78,11 +82,11 @@
             }
           </mat-list>
         </div>
-        <div *ngIf="view == 'fields'" class="app-fxFlex app-p-4 app-oa-y"  [class.app-nodb]="!letter.hiko_id">
+        <div *ngIf="view === 'fields'" class="app-fxFlex app-p-4 app-oa-y"  [class.app-nodb]="!letter.hiko_id">
           <app-letter-fields [letter]="letter" (onSetField)="setField($event)"
             (onShouldRefresh)="refreshLetters($event)"></app-letter-fields>
         </div>
-        <div *ngIf="view == 'search'" class="app-fxFlex app-p-4 app-oa-y">
+        <div *ngIf="view === 'search'" class="app-fxFlex app-p-4 app-oa-y">
           <div>
             <button mat-flat-button color="primary" (click)="findSimilar()" class="app-mr-4">Similar</button>
             <mat-checkbox id="onlyBox" type="checkbox" [(ngModel)]="onlyBox" class="app-mr-4">Only box</mat-checkbox>

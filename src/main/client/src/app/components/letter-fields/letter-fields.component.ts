@@ -28,6 +28,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Moment } from 'moment';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FORMATS } from '@angular/material-moment-adapter';
 import { MultiDateFormat } from 'src/app/shared/multi-date-format';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 @Component({
@@ -48,11 +50,13 @@ import { MultiDateFormat } from 'src/app/shared/multi-date-format';
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, NgIf, RouterModule, TranslateModule, DatePipe,
     MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatAutocompleteModule, MatCardModule,
-    MatTabsModule, MatButtonModule, MatFormFieldModule, MatListModule, MatTooltipModule,
-    MatInputModule, NgTemplateOutlet, NgFor, MatIconModule, MatDialogModule, MatCheckboxModule]
+    MatTabsModule, MatButtonModule, MatFormFieldModule, MatListModule, MatTooltipModule, 
+    MatMenuModule, MatProgressBarModule,
+    MatInputModule, NgTemplateOutlet, MatIconModule, MatDialogModule, MatCheckboxModule]
 })
 export class LetterFieldsComponent {
 
+  loading = false;
   showSelection = false;
   imgUrl = '';
 
@@ -62,22 +66,49 @@ export class LetterFieldsComponent {
       return;
     }
     this._letter = value;
+    this._letter = value;
     if (!isNaN(Date.parse(this._letter.date))) {
       this.datum.setValue(new Date(this._letter.date));
     } else {
       this.datum.setValue(null);
     }
-    // if (this._letter.authors_db) {
-    //   this._letter.author_db = this._letter.authors_db.find(a => a.id === this._letter.author_db.id);
-    // }
-    // if (this._letter.recipients_db) {
-    //   this._letter.recipient_db = this._letter.recipients_db.find(a => a.id === this._letter.recipient_db.id);
-    // }
     
+    if (this._letter.hiko.authors) {
+      this.authors_db = this._letter.hiko.authors;
+      this.author_db = this._letter.hiko.authors[0];
+    }
+    if (this._letter.hiko.recipients) {
+      this.recipients_db = this._letter.hiko.recipients;
+      this.recipient_db = this._letter.hiko.recipients[0];
+    }
+    
+    if (this._letter.hiko.origins) {
+      this.origins_db = this._letter.hiko.origins;
+      this.origin_db = this._letter.hiko.origins[0];
+    }
+    if (this._letter.hiko.destinations) {
+      this.destinations_db = this._letter.hiko.destinations;
+      this.destination_db = this._letter.hiko.destinations[0];
+    }
 
   }
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
   @Output() onShouldRefresh = new EventEmitter<string>();
+  
+    authors_db: { id: number, marked: string, name?: string }[] = [];
+    author_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    noauthor = {marked:'', id:-1, name: ''};
+    recipients_db: { id: number, marked: string, name?: string }[] = [];
+    recipient_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    norecipient = {marked:'', id:-1, name: ''};
+    
+  
+    origins_db: { id: number, marked: string, name?: string }[] = [];
+    origin_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    noorigin = {marked:'', id:-1, name: ''};
+    destinations_db: { id: number, marked: string, name?: string }[] = [];
+    destination_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    nodestination = {marked:'', id:-1, name: ''};
 
   entities: Entity[] = [];
   nametag: string;
@@ -122,7 +153,9 @@ export class LetterFieldsComponent {
 
   detectLang() {
     this.service.detectLang(this._letter.hiko.content).subscribe((resp: any) => {
-      alert(resp.lang)
+      //alert(resp.lang)
+      // alert(resp.languages)
+      this._letter.hiko.languages = resp.languages;
     });
   }
 
@@ -134,17 +167,34 @@ export class LetterFieldsComponent {
     });
   }
 
-  checkAuthors() {
-    // this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.fileConfig.tenant).subscribe((resp: any) => {
-    //   this._letter.authors_db = resp.author;
-    //   this._letter.recipients_db = resp.recipient;
-    //   if (this._letter.authors_db.length > 0){
-    //     this._letter.author_db = this._letter.authors_db[0];
-    //   }
-    //   if (this._letter.recipients_db.length > 0){
-    //     this._letter.recipient_db = this._letter.recipients_db[0];
-    //   }
-    // });
+  setAuthorDb(e: any) {
+    this._letter.hiko.authors = [this.author_db];
+  }
+
+  setRecipientDb(e: any) {
+    this._letter.hiko.recipients = [this.recipient_db];
+  }
+
+  setOriginDb(e: any) {
+    this._letter.hiko.origins = [this.origin_db];
+  }
+
+  setDestinationDb(e: any) {
+    this._letter.hiko.recipients = [this.recipient_db];
+  }
+
+  checkAuthors(extended: boolean) {
+    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.fileConfig.tenant, extended).subscribe((resp: any) => {
+      this.authors_db = resp.author;
+      this.recipients_db = resp.recipient;
+    });
+  }
+
+  checkPlaces(extended: boolean) {
+    this.service.checkPlaces(this._letter.origin, this._letter.destination, this.state.fileConfig.tenant, extended).subscribe((resp: any) => {
+      this.origins_db = resp.origin;
+      this.destinations_db = resp.destination;
+    });
   }
 
   wordCount(str: string) {
@@ -169,25 +219,137 @@ export class LetterFieldsComponent {
     return ma[1];
   }
 
+  getPrompt() {
+    let prompt = this.state.fileConfig.prompt;
+    const brackets: string = this.brackets(prompt);
+    if (brackets) {
+      let ex = brackets.replace('words', this.wordCount(this._letter.hiko.content) + '');
+      const val = Math.max(3, Math.floor(eval(ex)));
+      prompt = prompt.replaceAll('{' + brackets + '}', val + '');
+    }
+    return prompt;
+  }
+
+  showCurrent() {
+    this.onShouldRefresh.emit(this._letter.id);
+  }
+
+  showAnalysis(a: any) {
+    this._letter.letter_number = a.analysis.letter_number;
+    this._letter.letter_title = a.analysis.letter_title;
+    this._letter.page_number = a.analysis.page_number;
+    this._letter.end_page_number = a.analysis.end_page_number;
+    this._letter.author = a.analysis.sender;
+    if (!this._letter.author || this._letter.author === 'neuvedeno') {
+      if (this._letter.recipient) {
+        if (this._letter.recipient.toLowerCase() === this._letter.author.toLowerCase()) {
+          this._letter.author = this._letter.recipient;
+        } else if (this._letter.recipient.toLowerCase() === this._letter.recipient.toLowerCase()) {
+          this._letter.author = this._letter.author;
+        }
+      } else {
+        this._letter.author = this._letter.author;
+      }
+    }
+
+    this._letter.recipient = a.analysis.recipient;
+    if (!this._letter.recipient || this._letter.recipient === 'neuvedeno') {
+      if (this._letter.author.toLowerCase() === this._letter.recipient.toLowerCase()) {
+        this._letter.recipient = this._letter.author;
+      } else if (this._letter.author.toLowerCase() === this._letter.author.toLowerCase()) {
+        this._letter.recipient = this._letter.recipient;
+      } else {
+        this._letter.recipient = this._letter.recipient;
+      }
+    }
+
+    this._letter.origin = a.analysis.location || a.analysis.place;
+    this._letter.destination = a.analysis.destination;
+
+
+
+    this._letter.salutation = a.analysis.salutation;
+    this._letter.sign_off = a.analysis.sign_off;
+    this._letter.signature = a.analysis.signature;
+
+    this._letter.hiko.abstract.cs = a.analysis.abstract_cs;
+    this._letter.hiko.abstract.en = a.analysis.abstract_en;
+    this._letter.hiko.date_marked = a.analysis.date_as_show_in_text;
+    this._letter.date = a.analysis.date;
+    if (this.isDate(this._letter.date)) {
+      this.datum.setValue(new Date(a.analysis.date));
+    }
+
+    this._letter.hiko.incipit = a.analysis.incipit;
+    this._letter.hiko.explicit = a.analysis.explicit;
+    // this._letterAnalyzed.full_text = this.data.letter.full_text;
+
+  }
+
+  analyzeByModel(gptModel: string) {
+
+    this.loading = true;
+    this.findTags();
+    if (gptModel === 'gpt-3.5-turbo') {
+      this.annotate(gptModel);
+    } else {
+      this.analyzeImages(gptModel);
+    }
+    
+    this.detectLang();
+  }
+
+  analyzeImages(gptModel: string) {
+    // const pages = this.data.letter.selection.map(s => s.page+'');
+    const d = {
+      filename: this.state.selectedFile.filename,
+      // selection: this.data.letter.selection,
+      prompt: this.getPrompt(),
+      gptModel: gptModel,
+      selection: this._letter.selection
+    };
+
+    this.loading = true;
+    this.service.analyzeImages(d).subscribe((resp: any) => {
+      this.loading = false;
+      if (resp.error) {
+        console.log(resp);
+        this.service.showSnackBarError(resp.error, 'action.close');
+        // this.letter.abstract_cs = orig;
+      } else {
+        this.setAnalysis(resp);
+        this.checkAuthors(false);
+      }
+    });
+  }
+
+  annotate(gptModel: string) {
+    this.service.annotate({text: this._letter.hiko.content, prompt: this.getPrompt(), gptModel: gptModel}).subscribe((resp: any) => {
+      this.loading = false;
+      if (resp.error) {
+        console.log(resp);
+        this.service.showSnackBarError(resp.error, 'action.close');
+        // this.letter.abstract_cs = orig;
+      } else {
+        this.setAnalysis(resp);
+        this.checkAuthors(false);
+        this.checkPlaces(false);
+      }
+    });
+  }
+
+  setAnalysis(resp: any) {
+        
+    const analysis = JSON.parse(resp.choices[0].message.content);
+    if (!this._letter.ai) {
+      this._letter.ai = [];
+    }
+    const a = {date: new Date(), analysis: analysis };
+    this._letter.ai.unshift(a);
+    this.showAnalysis(a);
+  }
+
   analyze() {
-    // if (!this._letter.content) {
-    //   if (this.state.selectedBlocks.length === 0) {
-    //     const tBlocks: AltoBlock[] = this.state.alto.Layout.Page.PrintSpace.TextBlock;
-    //     this.state.selectedBlocks = tBlocks.filter((tb: AltoBlock) => {
-    //       return true;
-    //     });
-    //   }
-    //   this._letter.content = this.state.getBlockText(this.state.selectedBlocks);
-
-    //   if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
-    //     this._letter.startPage = this.state.currentPage;
-    //   }
-
-    //   this._letter.selection = [{
-    //       page: this.state.currentPage
-    //     }
-    //   ];
-    // }
     
 
     let prompt = this.state.fileConfig.prompt;
@@ -262,15 +424,15 @@ export class LetterFieldsComponent {
     if (!this._letter.startPage || this._letter.startPage > this.state.currentPage) {
       this._letter.startPage = this.state.currentPage;
     }
-    if (!this._letter.ai.selection) {
-      this._letter.ai.selection = [];
+    if (!this._letter.selection) {
+      this._letter.selection = [];
     }
 
 
     const blocks: AltoBlock[] = this.state.selection ? 
       this.state.getBlocksFromSelection(this.state.selection) : this.state.alto.Layout.Page.PrintSpace.TextBlock;
 
-    const page = this._letter.ai.selection.find(s => s.page === this.state.currentPage);
+    const page = this._letter.selection.find(s => s.page === this.state.currentPage);
     if (page) {
       
       if (!this.state.selection) {
@@ -289,23 +451,23 @@ export class LetterFieldsComponent {
       
     } else {
       if (this.state.selection) {
-        this._letter.ai.selection.push({
+        this._letter.selection.push({
           page: this.state.currentPage,
           selection: [this.state.selection],
           blocks: blocks,
           text: this.state.getBlockText(blocks)
         });
       } else {
-        this._letter.ai.selection.push({
+        this._letter.selection.push({
           page: this.state.currentPage,
           blocks: blocks,
           text: this.state.getBlockText(blocks)
         });
       }
-      this._letter.ai.selection.sort((s1, s2) =>  s1.page - s2.page);
+      this._letter.selection.sort((s1, s2) =>  s1.page - s2.page);
     }
 
-    this._letter.hiko.content = this.getTextFromSelection(this._letter.ai.selection);
+    this._letter.hiko.content = this.getTextFromSelection(this._letter.selection);
   }
 
   setField(field: string, textBox: string, e: MouseEvent) {
@@ -387,8 +549,8 @@ export class LetterFieldsComponent {
   }
 
   removeSelection(page: number) {
-    this._letter.ai.selection = this._letter.ai.selection.filter(s => s.page !== page);
-    this._letter.hiko.content = this.getTextFromSelection(this._letter.ai.selection);
+    this._letter.selection = this._letter.selection.filter(s => s.page !== page);
+    this._letter.hiko.content = this.getTextFromSelection(this._letter.selection);
   }
 
   setMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>, control: FormControl) {
@@ -410,6 +572,10 @@ export class LetterFieldsComponent {
 
   removeCopy(idx: number) {
     this._letter.hiko.copies.splice(idx, 1);
+  }
+
+  isDate(date: string) {
+    return !isNaN(Date.parse(date));
   }
 
 }

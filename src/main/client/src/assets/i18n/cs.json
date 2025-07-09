@@ -182,6 +182,8 @@
     "upload": "Nahrát",
     "close": "Zavřít",
     "analyze": "Analyzovat",
+    "useAnalysis": "Použít analyzu",
+    "showCurrent": "Zobrazit aktualní",
     "analyze_images": "Analyzovat z obrázků",
     "AI": "Umělá Inteligence",
     "process": "Zpracovat pomoci AI",

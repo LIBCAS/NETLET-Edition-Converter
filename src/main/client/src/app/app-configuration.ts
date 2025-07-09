@@ -18,6 +18,18 @@ import { AppState } from './app-state';
         return this.config.defaultLang;
     }
 
+    public get hikoUrl() {
+        return this.config.hikoUrl;
+    }
+
+    public get isTest() {
+        return this.config.isTest;
+    }
+
+    public get test_mappings() {
+        return this.config.test_mappings;
+    }
+
     constructor(
         private http: HttpClient,
         public state: AppState) { }

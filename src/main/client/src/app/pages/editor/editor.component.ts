@@ -25,6 +25,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { FileSettingsDialogComponent } from 'src/app/components/file-settings-dialog/file-settings-dialog.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { TemplateDialogComponent } from 'src/app/components/template-dialog/template-dialog.component';
+import { AppConfiguration } from 'src/app/app-configuration';
 
 
 @Component({
@@ -73,6 +74,7 @@ export class EditorComponent {
     private router: Router,
     private route: ActivatedRoute,
     public state: AppState,
+    public config: AppConfiguration,
     private service: AppService,
     private readonly formBuilder: FormBuilder,
     public dialog: MatDialog) { }
@@ -163,7 +165,9 @@ export class EditorComponent {
 
   refreshLetters(id: string) {
     if (id) {
-      if (this.currentLetterId) {
+      if (this.currentLetterId === id) {
+        this.openLetter(id);
+      } else if (this.currentLetterId) {
         this.router.navigate(['../', id], { relativeTo: this.route });
       } else {
         this.router.navigate([id], { relativeTo: this.route });
@@ -396,10 +400,10 @@ export class EditorComponent {
     this.service.getLetters(this.state.selectedFile.filename).subscribe((resp: any) => {
       this.letters = resp.response.docs;
 
-      this.getPage();
       if (this.currentLetterId) {
         this.openLetter(this.currentLetterId);
       } else {
+        this.getPage();
         this.view = 'letters'
       }
 
@@ -469,11 +473,11 @@ export class EditorComponent {
   }
 
 
-  gotoResult(doc: any, keepSelection: boolean, idx: number) {
+  gotoResult(doc: Letter, keepSelection: boolean, idx: number) {
 
     this.selectedResult = idx;
     this.withSelection = keepSelection;
-    this.state.currentPage = doc.hiko.startPage;
+    this.state.currentPage = doc.startPage;
     this.getPage(keepSelection);
 
 
@@ -523,6 +527,16 @@ export class EditorComponent {
     });
   }
 
+  viewLetterInHIKO() {
+    const tenant = this.config.isTest ? this.config.test_mappings[this.state.fileConfig.tenant] : this.state.fileConfig.tenant;
+    window.open(this.config.hikoUrl.replace('{tenant}', tenant).replace('{id}', this.letter.hiko_id + ''), 'hiko');
+  }
+
+  log() {
+    console.log(this.letter)
+  }
+  
+
   saveLetter() {
     if (!this.letter.startPage) {
       this.letter.startPage = this.state.currentPage;
@@ -530,6 +544,8 @@ export class EditorComponent {
     if (!this.letter.endPage) {
       this.letter.endPage = this.state.currentPage;
     }
+
+    
     this.service.saveLetter(this.state.selectedFile.filename, this.letter).subscribe((res: any) => {
       this.refreshLetters('');
     });
@@ -579,11 +595,22 @@ export class EditorComponent {
   }
 
   exportLetter() {
+    if (this.letter.hiko.date) {
+      const d: Date = new Date(this.letter.hiko.date);
+      console.log(d);
+      this.letter.hiko.date_computed = this.letter.hiko.date;
+      this.letter.hiko.date_year = d.getFullYear();
+      this.letter.hiko.date_month = d.getMonth() + 1;
+      this.letter.hiko.date_day = d.getUTCDate();
+    }
+    //return;
     this.service.exportToHiko(this.letter.hiko, this.state.fileConfig.tenant).subscribe((res:any) => {
-      console.log(res);
-      if (res.id) {
+      if (res.errors) {
+        this.service.showSnackBar(res.message, '', true);
+      } else if (res.id) {
         this.letter.hiko_id = res.id;
         this.letter.hiko.id = res.id;
+        this.saveLetter();
       }
     });
   }
