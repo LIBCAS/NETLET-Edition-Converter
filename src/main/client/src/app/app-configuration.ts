@@ -30,6 +30,10 @@ import { AppState } from './app-state';
         return this.config.test_mappings;
     }
 
+    public get copyValues() {
+        return this.config.copyValues;
+    }
+
     constructor(
         private http: HttpClient,
         public state: AppState) { }

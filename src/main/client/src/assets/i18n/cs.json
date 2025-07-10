@@ -65,7 +65,7 @@
     "copies": "Repozitáře a verze",
     "Copy": "Repozitáře",
     "type": "Typ dokumentu",
-    "preservation": "Uchování",
+    "preservation": "Dochování",
     "copy": "Typ kopie",
     "copies_repository": "Repozitář",
     "copies_archive": "Archiv",
@@ -160,8 +160,10 @@
     "next_letter": "Následující dopis",
     "save": "Uložit",
     "remove": "Odstranit",
-    "import": "Import",
-    "export": "Export",
+    "remove_alert": "Opravdu chcete smazat dopis?",
+    "import_from_hiko": "Import dopis z HIKO",
+    "export_to_hiko": "Export dopis do HIKO",
+    "view_in_hiko": "Zobrazit v HIKO",
     "edit_templates": "Editovat šablony",
     "template_from_letter": "Přidat šablonu z dopisu",
     "set_block": "Nastavit text z bloku (+ctrl přidat)",
@@ -206,5 +208,34 @@
     "numberOfPages": "Počet stránek",
     "numberOfLetters": "Počet dopisů",
     "page": "Stránka"
+  },
+  "copyValues": {
+    "type": {
+      "vccard":"Navštívenka/Vizitka",
+      "greeting card":"Přání",
+      "invitation card":"Pozvánka",
+      "letter":"Dopis",
+      "picture postcard":"Pohlednice",
+      "postcard":"Dopisnice",
+      "telegram":"Telegram",
+      "type_other":"Jiné"
+    },
+    "preservation": {
+      "carbon copy":"Průklep",
+      "copy":"Kopie/Opis",
+      "draft":"Koncept",
+      "original":"Odeslaný originál",
+      "photocopy":"Fotokopie",
+      "digitalcopy":"Digitální kopie",
+      "extract":"Výtah",
+      "printed":"Tištěný dopis",
+      "other":"Jiné"
+    },
+    "copy": {
+      "handwritten":"Rukopis",
+      "typewritten":"Strojopis",
+      "mode_printed":"Tisk",
+      "mode_other":"Jiné"
+    }
   }
 }

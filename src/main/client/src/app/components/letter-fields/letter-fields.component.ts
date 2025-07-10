@@ -167,20 +167,48 @@ export class LetterFieldsComponent {
     });
   }
 
+  checkAuthorDb() {
+    if (this._letter.hiko.authors?.length > 0) {
+      this._letter.hiko.authors[0].marked = this._letter.author;
+    }
+  }
+
   setAuthorDb(e: any) {
     this._letter.hiko.authors = [this.author_db];
+    this._letter.hiko.authors[0].marked = this._letter.author;
+  }
+
+  checkRecipientDb() {
+    if (this._letter.hiko.recipients?.length > 0) {
+      this._letter.hiko.recipients[0].marked = this._letter.recipient;
+    }
   }
 
   setRecipientDb(e: any) {
     this._letter.hiko.recipients = [this.recipient_db];
+    this._letter.hiko.recipients[0].marked = this._letter.recipient;
+  }
+
+  checkOriginDb() {
+    if (this._letter.hiko.origins?.length > 0) {
+      this._letter.hiko.origins[0].marked = this._letter.origin;
+    }
   }
 
   setOriginDb(e: any) {
     this._letter.hiko.origins = [this.origin_db];
+    this._letter.hiko.origins[0].marked = this._letter.origin;
+  }
+
+  checkDestinationDb() {
+    if (this._letter.hiko.destinations?.length > 0) {
+      this._letter.hiko.destinations[0].marked = this._letter.destination;
+    }
   }
 
   setDestinationDb(e: any) {
-    this._letter.hiko.recipients = [this.recipient_db];
+    this._letter.hiko.destinations = [this.destination_db];
+    this._letter.hiko.destinations[0].marked = this._letter.destination;
   }
 
   checkAuthors(extended: boolean) {

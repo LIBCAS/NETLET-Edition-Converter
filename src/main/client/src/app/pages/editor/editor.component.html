@@ -45,10 +45,6 @@
                 }
               </mat-menu>
             </ng-container>
-            <button mat-icon-button (click)="importLetter()"
-              [matTooltip]="'action.import' | translate"><mat-icon>file_open</mat-icon></button>
-            <button [disabled]="!letter || !letter.hiko_id" mat-icon-button (click)="viewLetterInHIKO()"
-              [matTooltip]="'action.save' | translate"><mat-icon>open_in_new_off</mat-icon></button>
             <button [disabled]="!letter" mat-icon-button (click)="saveLetter()"
               [matTooltip]="'action.save' | translate"><mat-icon>save</mat-icon></button>
             <button mat-icon-button [disabled]="selectedResult === 0" (click)="prevLetter()"
@@ -56,12 +52,16 @@
             <button mat-icon-button [disabled]="selectedResult === letters.length - 1" (click)="nextLetter()"
               [matTooltip]="'action.next_letter' | translate"><mat-icon>navigate_next</mat-icon></button>
             <!-- <button mat-icon-button (click)="toggleIgnoreAndNext()" [matTooltip]="'ignore' | translate"><mat-icon>gpp_bad</mat-icon></button> -->
-            <button [disabled]="!letter" mat-icon-button (click)="removeLetter()"
+            <button class="app-color-warning" [disabled]="!letter" mat-icon-button (click)="removeLetter()"
               [matTooltip]="'action.remove' | translate"><mat-icon>delete_forever</mat-icon></button>
-            <button [disabled]="!letter" mat-icon-button (click)="exportLetter()"
-              [matTooltip]="'action.export' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
             <button [disabled]="!letter" mat-icon-button (click)="templateFromLetter()"
               [matTooltip]="'action.template_from_letter' | translate"><mat-icon>dynamic_feed</mat-icon></button>
+            <button class="app-hiko" mat-icon-button (click)="importFromHIKO()"
+              [matTooltip]="'action.import_from_hiko' | translate"><mat-icon>file_open</mat-icon></button>
+            <button class="app-hiko" [disabled]="!letter" mat-icon-button (click)="exportToHIKO()"
+              [matTooltip]="'action.export_to_hiko' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
+            <button class="app-hiko" [disabled]="!letter || !letter.hiko_id" mat-icon-button (click)="viewLetterInHIKO()"
+              [matTooltip]="'action.view_in_hiko' | translate"><mat-icon>open_in_new_off</mat-icon></button>
             <!-- <button mat-icon-button (click)="regenerateAlto()" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button> -->
           </div>
         </div>

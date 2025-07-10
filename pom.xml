@@ -246,10 +246,10 @@
                                     <token>&lt;!doctype html&gt;</token> 
                                     <value>&lt;%@page contentType="text/html" pageEncoding="UTF-8"%&gt;&lt;!doctype html&gt;</value> 
                                 </replacement> 
-                                <replacement> 
-<!--                                    <token>"context": "/",</token> 
-                                    <value>"context": "${context.name}",</value> -->
-                                </replacement> 
+<!--                                <replacement> 
+                                    <token>"context": "/",</token> 
+                                    <value>"context": "${context.name}",</value>
+                                </replacement>  -->
                             </replacements> 
                         </configuration> 
                     </execution> 

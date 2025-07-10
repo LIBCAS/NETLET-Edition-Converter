@@ -72,7 +72,7 @@
   <div class="app-fxLayout app-row app-center-v app-mb-4" >
     <mat-form-field class="app-fxFlex">
       <mat-label>{{ 'field.author' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.author" name="author" /><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.author" name="author"  (change)="checkAuthorDb()"/><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'author' }"></ng-container>
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3">
@@ -91,7 +91,7 @@
     <mat-icon (click)="switchAuthors()" class="app-ml-2 app-mr-2">sync_alt</mat-icon>
     <mat-form-field class="app-fxFlex">
       <mat-label>{{ 'field.recipient' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.recipient" name="recipient"><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.recipient" name="recipient" (change)="checkRecipientDb()"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'recipient' }"></ng-container>
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3">
@@ -116,7 +116,7 @@
   <div class="app-fxLayout app-row app-center-v app-mb-4" >
     <mat-form-field class="app-fxFlex">
       <mat-label>{{ 'field.origin' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.origin" name="origin" /><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.origin" name="origin" (change)="checkOriginDb()" /><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'origin' }"></ng-container>
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3">
@@ -135,7 +135,7 @@
     
     <mat-form-field class="app-fxFlex">
       <mat-label>{{ 'field.destination' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.destination" name="recipient"><span matSuffix></span>
+      <input matInput [(ngModel)]="_letter.destination" name="destination" (change)="checkDestinationDb()"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'destination' }"></ng-container>
     </mat-form-field>
     <mat-form-field class="app-fxFlex app-ml-3">
@@ -298,19 +298,36 @@
       <div class="app-fxLayout app-row app-center-v app-mb-4">
         <mat-form-field class="app-fxFlex">
           <mat-label>{{ 'field.type' | translate}}</mat-label>
-          <input matInput [(ngModel)]="copy.type" name="copies_type"><span matSuffix></span>
-          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_type_' + idx }"></ng-container>
+          <!-- <input matInput [(ngModel)]="copy.type" name="copies_type"><span matSuffix></span>
+          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_type_' + idx }"></ng-container> -->
+          <mat-select [(ngModel)]="copy.type" name="copies_type">
+             @for(a of config.copyValues.type; track $index){
+                <mat-option [value]="a">{{ 'copyValues.type.' + a | translate}}</mat-option>
+            }
+          </mat-select>
         </mat-form-field>
         <mat-form-field class="app-fxFlex app-ml-3">
           <mat-label>{{ 'field.preservation' | translate}}</mat-label>
-          <input matInput [(ngModel)]="copy.preservation" name="copies_preservation"><span matSuffix></span>
+          <!-- <input matInput [(ngModel)]="copy.preservation" name="copies_preservation"><span matSuffix></span>
           <ng-container matSuffix
-            *ngTemplateOutlet="icons; context:{ field: 'copies_preservation_' + idx }"></ng-container>
+            *ngTemplateOutlet="icons; context:{ field: 'copies_preservation_' + idx }"></ng-container> -->
+          
+          <mat-select [(ngModel)]="copy.preservation" name="copies_preservation">
+             @for(a of config.copyValues.preservation; track $index){
+                <mat-option [value]="a">{{ 'copyValues.preservation.' + a | translate}}</mat-option>
+            }
+          </mat-select>
         </mat-form-field>
         <mat-form-field class="app-fxFlex app-ml-3">
           <mat-label>{{ 'field.copy' | translate}}</mat-label>
-          <input matInput [(ngModel)]="copy.copy" name="copies_copy"><span matSuffix></span>
-          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_copy_' + idx }"></ng-container>
+          <!-- <input matInput [(ngModel)]="copy.copy" name="copies_copy"><span matSuffix></span>
+          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_copy_' + idx }"></ng-container> -->
+          
+          <mat-select [(ngModel)]="copy.copy" name="copies_copy">
+             @for(a of config.copyValues.copy; track $index){
+                <mat-option [value]="a">{{ 'copyValues.copy.' + a | translate}}</mat-option>
+            }
+          </mat-select>
         </mat-form-field>
       </div>
     </fieldset>

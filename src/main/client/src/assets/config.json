@@ -4,20 +4,49 @@
   "hikoUrl": "https://{tenant}.historicka-korespondence.cz/letters/{id}/edit",
   "isTest": true,
   "test_mappings": {
-      "brezina": "hiko-test",
-      "deml": "hiko-test2",
-      "blekastad": "hiko-test3",
-      "kalivoda": "hiko-test4",
-      "komensky": "hiko-test5",
-      "marci": "hiko-test6",
-      "musil": "hiko-test7",
-      "neumann": "hiko-test8",
-      "pamatky": "hiko-test9",
-      "patocka": "hiko-test10",
-      "polanus": "hiko-test11",
-      "sachs": "hiko-test12",
-      "studenti": "hiko-test13",
-      "tgm": "hiko-test14",
-      "ucenci": "hiko-test15"
+    "brezina": "hiko-test",
+    "deml": "hiko-test2",
+    "blekastad": "hiko-test3",
+    "kalivoda": "hiko-test4",
+    "komensky": "hiko-test5",
+    "marci": "hiko-test6",
+    "musil": "hiko-test7",
+    "neumann": "hiko-test8",
+    "pamatky": "hiko-test9",
+    "patocka": "hiko-test10",
+    "polanus": "hiko-test11",
+    "sachs": "hiko-test12",
+    "studenti": "hiko-test13",
+    "tgm": "hiko-test14",
+    "ucenci": "hiko-test15"
+  },
+  "copyValues": {
+    "type": [
+      "vccard",
+      "greeting card",
+      "invitation card",
+      "letter",
+      "picture postcard",
+      "postcard",
+      "telegram",
+      "type_other"
+    ],
+    "preservation": [
+      "carbon copy",
+      "copy",
+      "draft",
+      "original",
+      "photocopy",
+      "digitalcopy",
+      "extract",
+      "printed",
+      "other"
+    ],
+    "copy": [
+      "handwritten",
+      "typewritten",
+      "mode_printed",
+      "mode_other"
+    ]
   }
 }

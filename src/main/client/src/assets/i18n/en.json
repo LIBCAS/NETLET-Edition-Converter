@@ -60,7 +60,7 @@
     "end_page_number": "Last Page in book",
     "salutation": "Salutation",
     "sign_off": "Sign off",
-    "signature": "Signature",
+    "signature": "Shelfmark",
     "languages": "Languages",
     "copies": "Repositories and versions",
     "Copy": "Repository",
@@ -160,7 +160,10 @@
     "next_letter": "Next letter",
     "save": "Save",
     "remove": "Remove",
-    "export": "Export",
+    "remove_alert": "Are you sure you want to delete the letter?",
+    "import_from_hiko": "Import letter from HIKO",
+    "export_to_hiko": "Export letter to HIKO",
+    "view_in_hiko": "View in HIKO",
     "edit_templates": "Edit templates",
     "template_from_letter": "Create templateb from letter",
     "set_block": "Set text from block (+ctrl to add)",
@@ -205,5 +208,34 @@
     "numberOfPages": "Number of pages",
     "numberOfLetters": "Number of letters",
     "page": "Page"
+  },
+  "copyValues": {
+    "type": {
+      "vccard":"Calling/Visiting card",
+      "greeting card":"Greeting card",
+      "invitation card":"Invitation card",
+      "letter":"Letter",
+      "picture postcard":"Picture postcard",
+      "postcard":"Blank postcard",
+      "telegram":"Telegram",
+      "type_other":"Other"
+    },
+    "preservation": {
+      "carbon copy":"Carbon copy",
+      "copy":"Copy/Transcription",
+      "draft":"Draft",
+      "original":"Sent original",
+      "photocopy":"Photocopy",
+      "digitalcopy":"Digital copy",
+      "extract":"Extract",
+      "printed":"Printed letter",
+      "other":"Other"
+    },
+    "copy": {
+      "handwritten":"Handwritten",
+      "typewritten":"Typewritten",
+      "mode_printed":"Printed",
+      "mode_other":"Other"
+    }
   }
 }

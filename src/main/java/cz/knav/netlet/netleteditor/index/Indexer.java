@@ -404,6 +404,7 @@ public class Indexer {
             if (data.has("page_number")) {
                 idoc.setField("page_number", data.getInt("page_number"));
             }
+            idoc.setField("letter_number", data.optString("letter_number"));
             idoc.setField("author", data.optString("author"));
             idoc.setField("recipient", data.optString("recipient"));
             idoc.setField("origin", data.optString("origin"));
@@ -530,7 +531,7 @@ public class Indexer {
         try {
 
             Http2SolrClient solr = (Http2SolrClient) getClient();
-            SolrQuery query = new SolrQuery(name)
+            SolrQuery query = new SolrQuery()
                     .setFields("id:table_id,name");
             query.set("qf", "name_lower^5 name^2 alternative_names");
             if (!tenant.isBlank()) {
@@ -539,9 +540,11 @@ public class Indexer {
             }
             query.set("tie", "0.1");
             if (extended) {
+                query.setQuery(name + "*");
                 query.set("mm", "90%");
                 query.setRows(20);
             } else {
+                query.setQuery(name);
                 query.set("mm", "2<90%");
                 query.setRows(10);
             }

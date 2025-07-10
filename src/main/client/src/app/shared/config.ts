@@ -7,4 +7,5 @@ export class Configuration {
   hikoUrl: string;
   isTest: boolean;
   test_mappings: {[tenant: string]: string};
+  copyValues: {type: string[], preservation: string[], copy: string[]};
 }

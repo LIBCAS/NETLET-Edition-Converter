@@ -21,6 +21,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.net.URISyntaxException;
 import org.apache.commons.io.FileUtils;
 //import org.apache.commons.fileupload2.FileItem;
 //import org.apache.commons.fileupload2.disk.DiskFileItemFactory;
@@ -29,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.language.detect.LanguageResult;
+import org.json.JSONException;
 import org.json.JSONML;
 import org.json.JSONObject;
 
@@ -672,6 +674,21 @@ public class DataServlet extends HttpServlet {
                     HikoIndexer hi = new HikoIndexer();
                     json.put("identities", hi.indexPlaces());
                 } catch (Exception ex) { 
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    json.put("error", ex.toString());
+                }
+                return json;
+            }
+        },
+        INDEX_LOCATIONS {
+            @Override
+            JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
+
+                JSONObject json = new JSONObject();
+                try {
+                    HikoIndexer hi = new HikoIndexer();
+                    json.put("locations", hi.indexLocations());
+                } catch (IOException | InterruptedException | URISyntaxException | JSONException ex) { 
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
                 }

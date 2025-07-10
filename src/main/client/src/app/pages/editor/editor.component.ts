@@ -13,7 +13,7 @@ import { ViewerComponent } from '../../components/viewer/viewer.component';
 import { NgIf, NgTemplateOutlet, NgFor, DatePipe, CommonModule } from '@angular/common';
 import { AngularSplitModule, SplitComponent } from 'angular-split';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FileTemplate, SearchParams } from 'src/app/shared/file-config';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
@@ -73,6 +73,7 @@ export class EditorComponent {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private translateService: TranslateService,
     public state: AppState,
     public config: AppConfiguration,
     private service: AppService,
@@ -143,8 +144,8 @@ export class EditorComponent {
     this.letter = new Letter();
     this.letter.template = t;
     this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-    this.letter.hiko.authors.push({marked: t.author_db.marked, id: t.author_db.id});
-    this.letter.hiko.recipients.push({marked: t.recipient_db.marked, id: t.recipient_db.id});
+    this.letter.hiko.authors.push({ marked: t.author_db.marked, id: t.author_db.id });
+    this.letter.hiko.recipients.push({ marked: t.recipient_db.marked, id: t.recipient_db.id });
     const copy = new LetterCopy();
     copy.repository = t.copies_repository;
     copy.archive = t.copies_archive;
@@ -429,7 +430,7 @@ export class EditorComponent {
         } else {
           this.state.currentPage = this.letter.startPage;
         }
-        
+
         const idx = this.letters.findIndex(l => l.id === id);
 
         if (!this.letter.template) {
@@ -535,7 +536,7 @@ export class EditorComponent {
   log() {
     console.log(this.letter)
   }
-  
+
 
   saveLetter() {
     if (!this.letter.startPage) {
@@ -545,24 +546,46 @@ export class EditorComponent {
       this.letter.endPage = this.state.currentPage;
     }
 
-    
+    // if (this.letter.hiko.authors.length > 0) {
+    //   this.letter.hiko.authors[0].marked = this.letter.author;
+    // }
+
+    // if (this.letter.hiko.authors.length > 0) {
+    //   this.letter.hiko.authors[0].marked = this.letter.author;
+    // }
+
+    // if (this.letter.hiko.authors.length > 0) {
+    //   this.letter.hiko.authors[0].marked = this.letter.author;
+    // }
+
+    // if (this.letter.hiko.authors.length > 0) {
+    //   this.letter.hiko.authors[0].marked = this.letter.author;
+    // }
+
+    // this.letter.hiko.recipients = [{id: this.recipient_db.id, marked: this._letter.recipient, name: this.recipient_db.name}];
+    // this.letter.hiko.origins = [{id: this.origin_db.id, marked: this._letter.origin, name: this.origin_db.name}];
+    // this.letter.hiko.destinations = [{id: this.destination_db.id, marked: this._letter.destination, name: this.destination_db.name}];
+
+
     this.service.saveLetter(this.state.selectedFile.filename, this.letter).subscribe((res: any) => {
       this.refreshLetters('');
     });
   }
 
   removeLetter() {
-    this.service.removeLetter(this.state.selectedFile.filename, this.letter.id).subscribe((res: any) => {
-      this.getLetters();
-    });
+    const c = window.confirm(this.translateService.instant('action.remove_alert'));
+    if (c) {
+      this.service.removeLetter(this.state.selectedFile.filename, this.letter.id).subscribe((res: any) => {
+        this.getLetters();
+      });
+    }
 
   }
 
-  importLetter() {
+  importFromHIKO() {
     const id = window.prompt('Id to import. Tenant: ' + this.state.fileConfig.tenant);
     if (id) {
-      console.log(id);
-      this.service.importFromHiko(id, this.state.fileConfig.tenant).subscribe((res:any) => {
+      this.service.importFromHiko(id, this.state.fileConfig.tenant).subscribe((res: any) => {
         console.log(res)
         this.letter = res;
         // this.letter.template = t;
@@ -581,7 +604,7 @@ export class EditorComponent {
         // this.letter.recipient = this.letter.recipient_db.name;
 
         this.letter.date = res.date_computed;
-        
+
         //const copy = new LetterCopy();
         // copy.repository = t.copies_repository;
         // copy.archive = t.copies_archive;
@@ -594,17 +617,22 @@ export class EditorComponent {
 
   }
 
-  exportLetter() {
+  exportToHIKO() {
     if (this.letter.hiko.date) {
       const d: Date = new Date(this.letter.hiko.date);
-      console.log(d);
       this.letter.hiko.date_computed = this.letter.hiko.date;
       this.letter.hiko.date_year = d.getFullYear();
       this.letter.hiko.date_month = d.getMonth() + 1;
       this.letter.hiko.date_day = d.getUTCDate();
     }
+    this.letter.hiko.content_stripped = this.letter.hiko.content;
+
+    if (this.letter.letter_number) {
+      this.letter.hiko.copies[0].l_number = this.letter.letter_number;
+    }
+
     //return;
-    this.service.exportToHiko(this.letter.hiko, this.state.fileConfig.tenant).subscribe((res:any) => {
+    this.service.exportToHiko(this.letter.hiko, this.state.fileConfig.tenant).subscribe((res: any) => {
       if (res.errors) {
         this.service.showSnackBar(res.message, '', true);
       } else if (res.id) {
