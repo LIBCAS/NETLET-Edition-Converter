@@ -215,6 +215,7 @@ export class LetterHIKO {
     id: number;
     uuid: string;
     created_at: Date;
+    updated_at: Date;
 
     date: string;
     date_computed: string;
@@ -290,10 +291,12 @@ export class Letter  {
 
     [key: string]: any;
     id: string;
+    file_id: string;
+    filename: string;
+    tenant: string;
 
     // hiko fields
     hiko_id: number;
-    tenant: string;
 
     startPage: number;
     endPage: number;

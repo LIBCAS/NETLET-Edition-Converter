@@ -254,11 +254,19 @@ fieldset {
 .app-result{
   margin-bottom: 5px;
 }
-.app-nodb{
-  border-left: 2px solid coral;
+
+.app-has-hiko{
+  border-left: 2px solid var(--app-hiko-color);
 }
 
 .app-field-error {
   background-color: rgb(255, 179, 80);
-
 }
+
+.mat-mdc-snack-bar-container {
+    &.app-snack-error {
+      --mdc-snackbar-container-color: var(--app-color-warning);
+      --mat-mdc-snack-bar-button-color: #fff;
+      --mdc-snackbar-supporting-text-color: #fff;
+    }
+  }

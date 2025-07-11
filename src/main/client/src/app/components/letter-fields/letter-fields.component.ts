@@ -66,7 +66,7 @@ export class LetterFieldsComponent {
       return;
     }
     this._letter = value;
-    this._letter = value;
+    console.log(this._letter)
     if (!isNaN(Date.parse(this._letter.date))) {
       this.datum.setValue(new Date(this._letter.date));
     } else {

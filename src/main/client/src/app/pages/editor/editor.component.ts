@@ -586,32 +586,121 @@ export class EditorComponent {
     const id = window.prompt('Id to import. Tenant: ' + this.state.fileConfig.tenant);
     if (id) {
       this.service.importFromHiko(id, this.state.fileConfig.tenant).subscribe((res: any) => {
-        console.log(res)
-        this.letter = res;
+        //console.log(res)
+        if (res.error) {
+          this.service.showSnackBarError( this.translateService.instant(res.error));
+          return;
+        }
+        const letter = new Letter();
         // this.letter.template = t;
-        this.letter.hiko_id = res.id;
-        this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-        this.letter.tenant = this.state.fileConfig.tenant;
+        letter.hiko_id = res.id;
+
+        letter.date = res.date_computed;
 
 
+        const authors = res.identities.filter((i: any) => i.pivot.role === "author").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+        if (authors.length > 0) {
+          letter.author = authors[0].marked ? authors[0].marked : authors[0].name;
+        }
 
-        // this.letter.authors_db = res.identities.filter((i: any) => i.pivot.role === "author");
-        // this.letter.author_db = this.letter.authors_db[0];
-        // this.letter.author = this.letter.author_db.name;
+        const recipients = res.identities.filter((i: any) => i.pivot.role === "recipient").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+        if (recipients.length > 0) {
+          letter.recipient = recipients[0].marked ? recipients[0].marked : recipients[0].name;
+        }
 
-        // this.letter.recipients_db = res.identities.filter((i: any) => i.pivot.role === "recipient");
-        // this.letter.recipient_db = this.letter.recipients_db[0];
-        // this.letter.recipient = this.letter.recipient_db.name;
+        const mentioned = res.identities.filter((i: any) => i.pivot.role === "mentioned").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+        
+        const origins = res.identities.filter((i: any) => i.pivot.role === "origin").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+        if (origins.length > 0) {
+          letter.origin = origins[0].marked ? origins[0].marked : origins[0].name;
+        }
+        
+        const destinations = res.identities.filter((i: any) => i.pivot.role === "destination").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+        if (destinations.length > 0) {
+          letter.destination = destinations[0].marked ? destinations[0].marked : destinations[0].name;
+        }
+        
+        letter.hiko = {
+            id: res.id,
+            uuid: res.uuid,
+            created_at: res.created_at,
+            updated_at: res.updated_at,
 
-        this.letter.date = res.date_computed;
 
-        //const copy = new LetterCopy();
-        // copy.repository = t.copies_repository;
-        // copy.archive = t.copies_archive;
-        // copy.collection = t.copies_collection;
-        //this.letter.copies.push(copy);
-        // this.letter.full_text = '';
+            date: res.date_computed,
+            date_computed: res.date_computed,
+            date_year: res.date_year,
+            date_month: res.date_month,
+            date_day: res.date_day,
+            date_is_range: res.date_is_range,
+            date_marked: res.date_marked,
+            range_day: res.range_day,
+            range_month: res.range_month,
+            range_year: res.range_year,
+            date_inferred: res.date_inferred,
+            date_uncertain: res.date_uncertain,
+            date_note: res.date_note,
+            date_approximate: res.date_approximate,
+            authors: authors,
+            author_uncertain: res.author_uncertain,
+            author_inferred: res.author_inferred,
+            author_note: res.author_note,
+
+            recipients: recipients,
+            recipient_uncertain: res.recipient_uncertain,
+            recipient_inferred: res.recipient_inferred,
+            recipient_note: res.recipient_note,
+
+            mentioned: mentioned,
+            people_mentioned_note: res.people_mentioned_note,
+
+            origins: origins,
+            origin_inferred: res.origin_inferred,
+            origin_uncertain: res.origin_uncertain,
+            origin_note: res.origin_note,
+
+            destinations: destinations,
+            destination_inferred: res.destination_inferred,
+            destination_uncertain: res.destination_uncertain,
+            destination_note: res.destination_note,
+
+            languages: res.languages,
+
+            local_keywords: res.local_keywords,
+            global_keywords: res.global_keywords,
+            keywords: res.keywords,
+
+            incipit: res.incipit,
+            explicit: res.explicit,
+            notes_private: res.notes_private,
+            notes_public: res.notes_public,
+            related_resources: res.related_resources,
+            copies: res.copies,
+            copyright: res.copyright,
+
+
+            status: res.status,
+            approval: res.approval,
+            action: res.action,
+
+            abstract: res.abstract,
+
+            content: res.content_stripped,
+            content_stripped: res.content_stripped
+          };
+
+        letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
+        letter.tenant = this.state.fileConfig.tenant;
+        letter.ai = [];
+        letter.selection = [];
+
+        
+        letter.template = this.state.fileConfig.templates[0];
+
         this.view = 'fields';
+        this.letter = letter;
+        this.letters.push(letter);
+        // this.openLetter(letter.id);
       });
     }
 

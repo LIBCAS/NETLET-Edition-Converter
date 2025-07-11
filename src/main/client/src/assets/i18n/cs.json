@@ -36,6 +36,7 @@
   "templates": "Šablony",
   "new_template_name": "Nová šablona",
   "template_name": "Název šablony",
+  "id_not_exists": "Id neexistuje v HIKO",
   "field": {
     "author": "Autor", 
     "author_db": "Autor v HIKO db", 

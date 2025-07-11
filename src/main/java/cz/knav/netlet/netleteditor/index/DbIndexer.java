@@ -119,20 +119,37 @@ public class DbIndexer {
     }
     
     public static JSONObject getLettersFromHIKO(String tenant) throws IOException {
-        JSONObject config = Options.getInstance().getJSONObject("hiko");
-        String url = "https://" + config.getJSONObject("test_mappings").getString(tenant) + config.getString("api_point") + "letters";
+        
+        String t = tenant;
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+        }
+        String url = Options.getInstance().getJSONObject("hiko").getString("api")
+                .replace("{tenant}", t)
+                + "/letters";
+        
         return doRequest(url);
     }
     
     public static JSONObject getLetterFromHIKO(String tenant, String id) throws IOException {
-        JSONObject config = Options.getInstance().getJSONObject("hiko");
-        String url = "https://" + config.getJSONObject("test_mappings").getString(tenant) + config.getString("api_point") + "letter/" + id;
+        String t = tenant;
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+        }
+        String url = Options.getInstance().getJSONObject("hiko").getString("api")
+                .replace("{tenant}", t)
+                + "/letter/" + id;
         return doRequest(url);
     }
     
     public static JSONObject addLetterFromHIKO(String tenant, String id) throws IOException {
-        JSONObject config = Options.getInstance().getJSONObject("hiko");
-        String url = "https://" + config.getJSONObject("test_mappings").getString(tenant) + config.getString("api_point") + "letter/" + id;
+        String t = tenant;
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+        }
+        String url = Options.getInstance().getJSONObject("hiko").getString("api")
+                .replace("{tenant}", t)
+                + "/letter/" + id;
         return doRequest(url);
     }
 
