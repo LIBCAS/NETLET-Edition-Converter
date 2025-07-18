@@ -4,6 +4,7 @@ import { Observable, catchError, of, switchMap, tap } from 'rxjs';
 import { Configuration } from './shared/config';
 import { isPlatformBrowser } from '@angular/common';
 import { AppState } from './app-state';
+import { AuthService } from './auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -46,13 +47,14 @@ import { AppState } from './app-state';
         return this.http.get('assets/config.json').pipe(
             switchMap((cfg: any) => {
                 this.config = cfg as Configuration;
-                return this.http.get('api/data/documents').pipe(tap((res: any) => {
-                    this.state.tenants = Object.keys(res.tenants);
-                    this.state.gptModels = res.gptModels;
-                    this.state.files = res.dirs;
-                    this.state.files.forEach(f => {
-                        f.letters = res.totals[f.filename] ? res.totals[f.filename] : 0;
-                    });
+                return this.http.get('api/data/tenants').pipe(tap((res: any) => {
+                    this.state.tenants = res.tenants;
+                    this.state.user = res.user;
+                    // this.state.gptModels = res.gptModels;
+                    // this.state.files = res.dirs;
+                    // this.state.files.forEach(f => {
+                    //     f.letters = res.totals[f.filename] ? res.totals[f.filename] : 0;
+                    // });
                 }));
             }),
             catchError((err) => {

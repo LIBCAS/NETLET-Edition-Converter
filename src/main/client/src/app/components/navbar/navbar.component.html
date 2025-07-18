@@ -5,8 +5,11 @@
     </a>
   </div>
   <div class="app-fxLayout app-row app-center-v">
-   <!-- <a mat-button >{{ 'Login' | translate }}</a> -->
+    @if (state.user) {
+   <a mat-button >{{ state.user.name }}</a>
+   <a mat-button (click)="logout()" >{{ 'action.logout' | translate }}</a>
    <button mat-button (click)="openSettings()">{{ 'action.querySettings' | translate }}</button>
+   }
    <button mat-button [matMenuTriggerFor]="menu">{{ translator.currentLang | translate}}</button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onLanguageChanged('cs')">Český</button>

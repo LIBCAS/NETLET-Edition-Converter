@@ -1,13 +1,15 @@
 import { Injectable } from "@angular/core";
 import { AltoBlock, AltoLine, AltoString } from "./shared/alto";
 import { FileConfig, AltoSelection } from "./shared/file-config";
+import { User } from "./shared/user";
 
 @Injectable({
   providedIn: 'root'
 }) export class AppState {
 
+    public user: User;
   alto: any;
-  tenants: string[];
+  tenants: string[] = [];
   files: { filename: string, file_id: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number }[] = [];
   selectedFile: { filename: string, file_id: string, config: FileConfig, imgs: number, txt: number, alto: number, letters: number };
   fileConfig: FileConfig;

@@ -37,6 +37,7 @@
   "new_template_name": "Nová šablona",
   "template_name": "Název šablony",
   "id_not_exists": "Id neexistuje v HIKO",
+  "loginPage": "Přihlášení",
   "field": {
     "author": "Autor", 
     "author_db": "Autor v HIKO db", 
@@ -77,7 +78,9 @@
     "places_meta": "Místa odeslání a určení",
     "places_meta_marked": "Označení",
     "places_meta_type": "Typ",
-    "notes_private": "Poznámka pro zpracovatele"
+    "notes_private": "Poznámka pro zpracovatele",
+    "email": "E-mail",
+    "password": "Heslo"
   },
   "tags" : {
     "a":"Numbers in addresses",
@@ -202,7 +205,9 @@
     "zoomIn": "Zvětšit",
     "zoomOut": "Zmenšit",
     "originalSize": "Originální velikost",
-    "add_place_meta": "Přidat místo odeslání a určení"
+    "add_place_meta": "Přidat místo odeslání a určení",
+    "login": "Přihlásit",
+    "logout": "Odhlásit"
   },
   "desc": {
     "fileName": "Jméno souboru",

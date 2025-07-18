@@ -8,6 +8,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
 import { SettingsComponent } from '../settings/settings.component';
+import { AppState } from 'src/app/app-state';
+import { AuthService } from 'src/app/auth.service';
 
 
 @Component({
@@ -22,7 +24,10 @@ export class NavbarComponent {
 
   constructor(
     public dialog: MatDialog,
-    public translator: TranslateService) { }
+    public translator: TranslateService,
+    public state: AppState,
+    private auth: AuthService
+  ) { }
 
   onLanguageChanged(lang: string) {
     //localStorage.setItem('lang', lang);
@@ -41,5 +46,9 @@ export class NavbarComponent {
     dialogRef.afterClosed().subscribe(result => {
 
     });
+  }
+
+  logout() {
+    this.auth.logout();
   }
 }

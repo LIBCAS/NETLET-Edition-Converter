@@ -21,15 +21,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.net.URISyntaxException;
+import java.util.Set;
 import org.apache.commons.io.FileUtils;
 //import org.apache.commons.fileupload2.FileItem;
 //import org.apache.commons.fileupload2.disk.DiskFileItemFactory;
 //import org.apache.commons.fileupload2.jakarta.servlet6.ServletFileUpload;
 
-
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.language.detect.LanguageResult;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONML;
 import org.json.JSONObject;
@@ -66,7 +68,7 @@ public class DataServlet extends HttpServlet {
                 if (json != null) {
                     response.getWriter().println(json.toString(2));
                 }
-                
+
             } else {
                 response.getWriter().print("actionNameParam -> " + actionNameParam);
             }
@@ -90,18 +92,18 @@ public class DataServlet extends HttpServlet {
         UPLOAD {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                JSONObject ret = new JSONObject(); 
+                JSONObject ret = new JSONObject();
                 return ret;
             }
         },
-//        PDF {
-//            @Override
-//            JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-//                JSONObject ret = new JSONObject(); 
-//
-//                
-//
-//// Configure a repository (to ensure a secure temp location is used)
+        //        PDF {
+        //            @Override
+        //            JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
+        //                JSONObject ret = new JSONObject(); 
+        //
+        //                
+        //
+        //// Configure a repository (to ensure a secure temp location is used)
 //                ServletContext servletContext = req.getServletContext();
 //                File repository = (File) servletContext.getAttribute("jakarta.servlet.context.tempdir");
 //                factory.setRepository(repository);
@@ -161,13 +163,39 @@ public class DataServlet extends HttpServlet {
         DOCUMENTS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                JSONObject ret = PDFThumbsGenerator.getDocuments();
-                ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant")); 
+                JSONObject ret = new JSONObject();
+                JSONObject user = LoginController.getUser(request);
+                String utenant = "";
+                if (user != null) {
+                    utenant = user.optString("tenant");
+                }
+                ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
+                    
+                JSONArray fs = PDFThumbsGenerator.getDocuments().getJSONArray(("dirs"));
+                for (int i = 0; i < fs.length(); i++) {
+                    String tenant = fs.getJSONObject(i).getJSONObject("config").getString("tenant");
+                    if (utenant == null || utenant.equals(tenant)) {
+                        ret.append("dirs", fs.getJSONObject(i));
+                    }
+                }
                 ret.put("gptModels", Options.getInstance().getJSONArray("gptModels"));
-//                JSONArray gptModels = new JSONArray();
-//                gptModels.put("gpt-3.5-turbo");
-//                gptModels.put("gpt-4o");
-//                ret.put("gptModels", gptModels);
+                return ret;
+            }
+        },
+        LOGIN {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                return LoginController.login(request);
+            }
+        },
+        TENANTS {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                JSONObject user = LoginController.getUser(request);
+                Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
+                ret.put("tenants", tenants);
+                ret.put("user", user);
                 return ret;
             }
         },
@@ -483,9 +511,9 @@ public class DataServlet extends HttpServlet {
                 JSONObject ret = new JSONObject();
                 if (request.getMethod().equals("POST")) {
                     JSONObject data = new JSONObject(IOUtils.toString(request.getInputStream(), "UTF-8"));
-                    ret = Annotator.analyzeImages(data.getString("filename"), 
-                            data.getJSONArray("selection"), 
-                            data.getString("prompt"), 
+                    ret = Annotator.analyzeImages(data.getString("filename"),
+                            data.getJSONArray("selection"),
+                            data.getString("prompt"),
                             data.optString("gptModel"));
                     // return ret.put("response", Annotator.annotateMock(text));
                 }
@@ -550,9 +578,9 @@ public class DataServlet extends HttpServlet {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
-                ret.put("locations", 
-                        Indexer.getLocations(request.getParameter("prefix"), 
-                                request.getParameter("tenant"), 
+                ret.put("locations",
+                        Indexer.getLocations(request.getParameter("prefix"),
+                                request.getParameter("tenant"),
                                 request.getParameter("type"))
                                 .getJSONObject("response").getJSONArray("docs"));
                 return ret;
@@ -564,10 +592,10 @@ public class DataServlet extends HttpServlet {
                 JSONObject ret = new JSONObject();
                 ret.put("req_origin", request.getParameter("origin"));
                 ret.put("req_destination", request.getParameter("destination"));
-                ret.put("origin", Indexer.checkPlaces(request.getParameter("origin"), 
+                ret.put("origin", Indexer.checkPlaces(request.getParameter("origin"),
                         request.getParameter("tenant"),
                         Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
-                ret.put("destination", Indexer.checkPlaces(request.getParameter("destination"), 
+                ret.put("destination", Indexer.checkPlaces(request.getParameter("destination"),
                         request.getParameter("tenant"),
                         Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
                 return ret;
@@ -578,15 +606,15 @@ public class DataServlet extends HttpServlet {
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
                 if (request.getParameter("tenant") != null) {
-                ret.put("places", 
-                        Indexer.getPlaces(request.getParameter("tenant"))
-                                .getJSONObject("response").getJSONArray("docs"));
-                ret.put("letter_place", 
-                        Indexer.getLetterPlace(request.getParameter("tenant"))
-                                .getJSONObject("response").getJSONArray("docs"));
-                    
+                    ret.put("places",
+                            Indexer.getPlaces(request.getParameter("tenant"))
+                                    .getJSONObject("response").getJSONArray("docs"));
+                    ret.put("letter_place",
+                            Indexer.getLetterPlace(request.getParameter("tenant"))
+                                    .getJSONObject("response").getJSONArray("docs"));
+
                 }
-                ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant")); 
+                ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
                 return ret;
             }
         },
@@ -596,10 +624,10 @@ public class DataServlet extends HttpServlet {
                 JSONObject ret = new JSONObject();
                 ret.put("req_author", request.getParameter("author"));
                 ret.put("req_recipient", request.getParameter("recipient"));
-                ret.put("author", Indexer.checkAuthor(request.getParameter("author"), 
+                ret.put("author", Indexer.checkAuthor(request.getParameter("author"),
                         request.getParameter("tenant"),
                         Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
-                ret.put("recipient", Indexer.checkAuthor(request.getParameter("recipient"), 
+                ret.put("recipient", Indexer.checkAuthor(request.getParameter("recipient"),
                         request.getParameter("tenant"),
                         Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
                 return ret;
@@ -658,7 +686,7 @@ public class DataServlet extends HttpServlet {
                 try {
                     HikoIndexer hi = new HikoIndexer();
                     json.put("identities", hi.indexIdentities());
-                } catch (Exception ex) { 
+                } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
                 }
@@ -673,7 +701,7 @@ public class DataServlet extends HttpServlet {
                 try {
                     HikoIndexer hi = new HikoIndexer();
                     json.put("identities", hi.indexPlaces());
-                } catch (Exception ex) { 
+                } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
                 }
@@ -688,7 +716,7 @@ public class DataServlet extends HttpServlet {
                 try {
                     HikoIndexer hi = new HikoIndexer();
                     json.put("locations", hi.indexLocations());
-                } catch (IOException | InterruptedException | URISyntaxException | JSONException ex) { 
+                } catch (IOException | InterruptedException | URISyntaxException | JSONException ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
                 }

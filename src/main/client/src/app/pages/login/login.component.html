@@ -1,0 +1,36 @@
+<div class="app-p-4 app-fxLayout app-column app-fill">
+  <mat-card class="app-mb-4 mat-elevation-z2 app-login">
+
+    <mat-card-header>
+      <mat-card-title class="app-mb-2">{{ 'loginPage' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+    <div class="app-fxLayout app-row app-center-v app-mb-4">
+        <mat-form-field class="app-fxFlex" appearance="outline">
+            <mat-label>Tenant</mat-label>
+            <mat-select [(ngModel)]="tenant">
+                @for(t of state.tenants; track idx; let idx = $index){
+                <mat-option [value]="t">{{ t }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="app-fxLayout app-row app-center-v app-mb-4">
+        <mat-form-field class="app-fxFlex" appearance="outline">
+            <mat-label>{{ 'field.email' | translate}}</mat-label>
+            <input matInput [(ngModel)]="email" name="email"/>
+        </mat-form-field>
+
+    </div>
+    <div class="app-fxLayout app-row app-center-v app-mb-4">
+        <mat-form-field class="app-fxFlex" appearance="outline">
+            <mat-label>{{ 'field.password' | translate}}</mat-label>
+            <input matInput [(ngModel)]="pwd" name="password" type="password" />
+        </mat-form-field>
+    </div>
+    <button [disabled]="!tenant" mat-flat-button color="primary" class="app-mr-2 app-ml-2" (click)="login()">{{
+        'action.login' | translate }}</button>
+        
+    </mat-card-content>
+  </mat-card>
+</div>

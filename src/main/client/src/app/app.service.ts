@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,12 +33,16 @@ export class AppService {
   
   private get<T>(url: string, params: HttpParams = new HttpParams(), responseType?: any): Observable<T> {
     // const r = re ? re : 'json';
-    const options = { params, responseType, withCredentials: true };
+    const headers = new HttpHeaders({
+      'Accept-Language': 'cs'
+    })
+    const options = { params, responseType, headers };
     return this.http.get<T>(`${this.config.context}api${url}`, options);
 
   }
 
   private post(url: string, obj: any) {
+    const options = { withCredentials: true };
     return this.http.post<any>(`${this.config.context}api${url}`, obj);
   }
   
@@ -203,6 +207,16 @@ export class AppService {
   exportToHiko(data: any, tenant: string) {
     const url = `/data/save_letter_hiko?tenant=${tenant}`;
     return this.post(url, data);
+  }
+
+  login(data: any, tenant: string) {
+    const url = `/user/login?tenant=${tenant}`;
+    return this.post(url, data);
+  }
+
+  logout(tenant: string) {
+    const url = `/user/logout?tenant=${tenant}`;
+    return this.post(url, {});
   }
 
 }

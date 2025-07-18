@@ -37,6 +37,7 @@
   "new_template_name": "New template",
   "template_name": "Název šablony",
   "id_not_exists": "Id doesn't exists in HIKO",
+  "loginPage": "Login",
   "field": {
     "author": "Author",
     "author_db": "Author in HIKO db", 
@@ -77,7 +78,9 @@
     "places_meta": "Places",
     "places_meta_marked": "Marked",
     "places_meta_type": "Type",
-    "notes_private": "Note for processor"
+    "notes_private": "Note for processor",
+    "email": "E-mail",
+    "password": "Password"
   },
   "tags": {
     "a": "Numbers in addresses",
@@ -202,7 +205,9 @@
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "originalSize": "Original size",
-    "add_place_meta": "Add place"
+    "add_place_meta": "Add place",
+    "login": "Login",
+    "logout": "Logout"
   },
   "desc": {
     "fileName": "File name",
