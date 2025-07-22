@@ -9,14 +9,14 @@
     </div>
 
     <div class="app-fxLayout app-row app-center-v app-mb-4">
-      <mat-form-field class="app-fxFlex" appearance="outline">
+      <!-- <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'tenant' | translate }}</mat-label>
         <mat-select [(ngModel)]="fileConfig.tenant">
             @for(t of state.tenants; track idx; let idx = $index){
           <mat-option [value]="t">{{ t }}</mat-option>
             }
       </mat-select>
-      </mat-form-field>
+      </mat-form-field> -->
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'Columns' | translate }}</mat-label>
         <input matInput type="number" name="columns" [(ngModel)]="fileConfig.columns">

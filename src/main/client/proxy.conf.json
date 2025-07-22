@@ -1,8 +1,13 @@
 {
-  "/api": {
+  "/api/**": {
     "target": "http://localhost:8080/netleteditor/api/",
+    "ignorePath": false,
     "logLevel": "debug",
-    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api":""
+    },
+    "changeOrigin": false,
+    "withCredentials": true,
     "secure": false
   }
 }

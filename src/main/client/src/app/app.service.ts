@@ -36,14 +36,17 @@ export class AppService {
     const headers = new HttpHeaders({
       'Accept-Language': 'cs'
     })
-    const options = { params, responseType, headers };
+    const options = { params, responseType, headers, withCredentials: true  };
     return this.http.get<T>(`${this.config.context}api${url}`, options);
 
   }
 
   private post(url: string, obj: any) {
-    const options = { withCredentials: true };
-    return this.http.post<any>(`${this.config.context}api${url}`, obj);
+    const headers = new HttpHeaders({
+      'Accept-Language': 'cs'
+    })
+    const options = { headers, withCredentials: true };
+    return this.http.post<any>(`${this.config.context}api${url}`, obj, options);
   }
   
   /**

@@ -24,7 +24,7 @@ import { TemplateDialogComponent } from '../template-dialog/template-dialog.comp
   templateUrl: './file-settings-dialog.component.html',
   styleUrls: ['./file-settings-dialog.component.scss'],
   standalone: true,
-  imports: [FormsModule, AngularSplitModule, NgIf, NgFor, RouterModule, TranslateModule, 
+  imports: [FormsModule, AngularSplitModule, NgIf, RouterModule, TranslateModule, 
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule,
     MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule]
 })
@@ -53,7 +53,7 @@ export class FileSettingsDialogComponent {
 
 
 getAuthors(e: string) {
-  this.service.getAuthors(e, this.state.fileConfig.tenant ? this.state.fileConfig.tenant : '').subscribe((resp: any) => {
+  this.service.getAuthors(e, this.state.user.tenant ? this.state.user.tenant : '').subscribe((resp: any) => {
     this.authors_db = resp.authors;
     // this._letter.authors_db = resp.author;
     // this._letter.recipients_db = resp.recipient;
@@ -91,7 +91,7 @@ getAuthors(e: string) {
   }
 
   getLocations(e: string, type: string) {
-    this.service.getLocations(e, this.state.fileConfig.tenant ? this.state.fileConfig.tenant : '', type).subscribe((resp: any) => {
+    this.service.getLocations(e, this.state.user.tenant ? this.state.user.tenant : '', type).subscribe((resp: any) => {
       this.locations_db = resp.locations;
       switch(type) {
         case 'repository': this.repositories = this.locations_db.filter(l => l.type === 'repository'); break;

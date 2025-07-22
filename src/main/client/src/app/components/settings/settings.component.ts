@@ -92,7 +92,7 @@ export class SettingsComponent {
   }
 
   getLocations() {
-    this.service.getAllLocations(this.state.fileConfig?.tenant ? this.state.fileConfig.tenant : '').subscribe((resp: any) => {
+    this.service.getAllLocations(this.state.user.tenant ? this.state.user.tenant : '').subscribe((resp: any) => {
       this.locations_db = resp.locations;
     });
   }

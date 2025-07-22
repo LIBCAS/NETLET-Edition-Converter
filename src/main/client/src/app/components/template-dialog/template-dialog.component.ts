@@ -57,7 +57,7 @@ export class TemplateDialogComponent {
 
 
 getAuthors(e: string) {
-  this.service.getAuthors(e, this.state.fileConfig.tenant ? this.state.fileConfig.tenant : '').subscribe((resp: any) => {
+  this.service.getAuthors(e, this.state.user.tenant ? this.state.user.tenant : '').subscribe((resp: any) => {
     this.authors_db = resp.authors;
     if (!this.selectedTemplate.author_db) {
       this.selectedTemplate.author_db = JSON.parse(JSON.stringify(this.authors_db[0]));
@@ -92,7 +92,7 @@ getAuthors(e: string) {
   }
 
   getLocations(e: string, type: string) {
-    this.service.getLocations(e, this.state.fileConfig.tenant ? this.state.fileConfig.tenant : '', type).subscribe((resp: any) => {
+    this.service.getLocations(e, this.state.user.tenant ? this.state.user.tenant : '', type).subscribe((resp: any) => {
       this.locations_db = resp.locations;
       switch(type) {
         case 'repository': this.repositories = this.locations_db.filter(l => l.type === 'repository'); break;

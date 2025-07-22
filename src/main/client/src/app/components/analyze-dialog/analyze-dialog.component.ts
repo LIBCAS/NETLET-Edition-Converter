@@ -102,7 +102,7 @@ export class AnalyzeDialogComponent {
 
 
   findTags() {
-    this.service.findTags(this._letter.hiko.content, this.state.fileConfig.tenant).subscribe((resp: any) => {
+    this.service.findTags(this._letter.hiko.content, this.state.user.tenant).subscribe((resp: any) => {
       this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
@@ -288,7 +288,7 @@ export class AnalyzeDialogComponent {
 
   checkAuthors(extended: boolean) {
 
-    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.fileConfig.tenant, extended).subscribe((resp: any) => {
+    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.user.tenant, extended).subscribe((resp: any) => {
       this.authors_db = resp.author;
       this.recipients_db = resp.recipient;
       if (this.authors_db.length > 0) {
@@ -303,7 +303,7 @@ export class AnalyzeDialogComponent {
   
 
   checkPlaces(extended: boolean) {
-    this.service.checkPlaces(this._letter.origin, this._letter.destination, this.state.fileConfig.tenant, extended).subscribe((resp: any) => {
+    this.service.checkPlaces(this._letter.origin, this._letter.destination, this.state.user.tenant, extended).subscribe((resp: any) => {
       this.origins_db = resp.origin;
       this.destinations_db = resp.destination;
     });

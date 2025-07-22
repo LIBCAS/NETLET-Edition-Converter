@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -59,7 +60,17 @@ public class DataServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
         response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        response.setHeader("Connection", "Keep-Alive"); 
         response.setDateHeader("Expires", 0); // Proxies.
+        HttpSession session = request.getSession();
+            if (request.getParameter("JSESSIONID") != null) {
+                Cookie userCookie = new Cookie("JSESSIONID", request.getParameter("JSESSIONID"));
+                response.addCookie(userCookie);
+            } else {
+                String sessionId = session.getId();
+                Cookie userCookie = new Cookie("JSESSIONID", sessionId);
+                response.addCookie(userCookie);
+            }
         try {
             String actionNameParam = request.getPathInfo().substring(1);
             if (actionNameParam != null) {
@@ -188,7 +199,7 @@ public class DataServlet extends HttpServlet {
                 return LoginController.login(request);
             }
         },
-        TENANTS {
+        INIT {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();

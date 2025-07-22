@@ -141,7 +141,7 @@ export class LetterFieldsComponent {
   }
 
   findTags() {
-    this.service.findTags(this._letter.hiko.content, this.state.fileConfig.tenant).subscribe((resp: any) => {
+    this.service.findTags(this._letter.hiko.content, this.state.user.tenant).subscribe((resp: any) => {
       this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
@@ -212,14 +212,14 @@ export class LetterFieldsComponent {
   }
 
   checkAuthors(extended: boolean) {
-    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.fileConfig.tenant, extended).subscribe((resp: any) => {
+    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.user.tenant, extended).subscribe((resp: any) => {
       this.authors_db = resp.author;
       this.recipients_db = resp.recipient;
     });
   }
 
   checkPlaces(extended: boolean) {
-    this.service.checkPlaces(this._letter.origin, this._letter.destination, this.state.fileConfig.tenant, extended).subscribe((resp: any) => {
+    this.service.checkPlaces(this._letter.origin, this._letter.destination, this.state.user.tenant, extended).subscribe((resp: any) => {
       this.origins_db = resp.origin;
       this.destinations_db = resp.destination;
     });
@@ -538,7 +538,7 @@ export class LetterFieldsComponent {
   }
 
   getLocations(e: string, type: string) {
-    this.service.getLocations(e, this.state.fileConfig.tenant ? this.state.fileConfig.tenant : '', type).subscribe((resp: any) => {
+    this.service.getLocations(e, this.state.user.tenant ? this.state.user.tenant : '', type).subscribe((resp: any) => {
       this.locations_db = resp.locations;
       switch(type) {
         case 'repository': this.repositories = this.locations_db.filter(l => l.type === 'repository'); break;

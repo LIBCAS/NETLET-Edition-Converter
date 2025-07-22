@@ -9,7 +9,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'home', component: HomeComponent, canActivate: [authGuard]},
   {path: 'editor/:file', component: EditorComponent, canActivate: [authGuard]},
-  {path: 'editor/:file/:letter', component: EditorComponent},
+  {path: 'editor/:file/:letter', component: EditorComponent, canActivate: [authGuard]},
   {path: '', redirectTo: 'home', pathMatch: 'full'}
 ];
 

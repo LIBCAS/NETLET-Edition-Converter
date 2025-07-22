@@ -6,7 +6,7 @@
   </div>
   <div class="app-fxLayout app-row app-center-v">
     @if (state.user) {
-   <a mat-button >{{ state.user.name }}</a>
+   <a mat-button >{{ state.user.name }} ({{ state.user.tenant }})</a>
    <a mat-button (click)="logout()" >{{ 'action.logout' | translate }}</a>
    <button mat-button (click)="openSettings()">{{ 'action.querySettings' | translate }}</button>
    }

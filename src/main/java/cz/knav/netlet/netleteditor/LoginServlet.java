@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
@@ -16,8 +18,8 @@ import org.json.JSONObject;
  * @author alber
  */
 @WebServlet(name = "LoginServlet", urlPatterns = {"/user/*"})
-public class LoginServlet extends HttpServlet { 
-    
+public class LoginServlet extends HttpServlet {
+
     public static final Logger LOGGER = Logger.getLogger(LoginServlet.class.getName());
 
     /**
@@ -32,9 +34,10 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
-//        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
-//        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
-//        response.setDateHeader("Expires", 0); // Proxies.
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        response.setDateHeader("Expires", 0); // Proxies.
+        response.setHeader("Connection", "keep-alive");
         try {
             String actionNameParam = request.getPathInfo().substring(1);
             if (actionNameParam != null) {
@@ -62,22 +65,29 @@ public class LoginServlet extends HttpServlet {
             response.getWriter().print(e1.toString());
         }
     }
-    
-    
 
     enum Actions {
         LOGIN {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                HttpSession session = request.getSession();
+                if (request.getParameter("JSESSIONID") != null) {
+                    Cookie userCookie = new Cookie("JSESSIONID", request.getParameter("JSESSIONID"));
+                    response.addCookie(userCookie);
+                } else {
+                    String sessionId = session.getId();
+                    Cookie userCookie = new Cookie("JSESSIONID", sessionId);
+                    response.addCookie(userCookie);
+                }
                 return LoginController.login(request);
             }
         },
         LOGOUT {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                return LoginController.logout(request); 
+                return LoginController.logout(request);
             }
-        }; 
+        };
 
         abstract JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception;
     }

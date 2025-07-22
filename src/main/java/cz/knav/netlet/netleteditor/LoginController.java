@@ -2,6 +2,7 @@
 package cz.knav.netlet.netleteditor;
 
 import static cz.knav.netlet.netleteditor.index.HikoIndexer.LOGGER;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
@@ -57,7 +58,9 @@ public class LoginController {
             HttpResponse<String> response = httpclient.send(hrequest, HttpResponse.BodyHandlers.ofString());
             JSONObject j = new JSONObject(response.body());
             j.put("tenant", request.getParameter("tenant"));
-            request.getSession().setAttribute("user", j);
+            
+            HttpSession session = request.getSession();
+            session.setAttribute("user", j);
             ret = j.getJSONObject("data").getJSONObject("user");
         } catch (URISyntaxException | IOException | InterruptedException ex) {
             ret.put("error", ex.toString());

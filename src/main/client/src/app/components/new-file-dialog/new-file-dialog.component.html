@@ -10,15 +10,15 @@
   </div>
   <div class="app-fxLayout app-row app-center-v app-mb-4">
 
-    <mat-form-field class="app-fxFlex" appearance="outline">
+    <!-- <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>Tenant</mat-label>
       <mat-select [(ngModel)]="tenant">
         @for(t of state.tenants; track idx; let idx = $index){
         <mat-option [value]="t">{{ t }}</mat-option>
         }
       </mat-select>
-    </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+    </mat-form-field> -->
+    <mat-form-field class="app-fxFlex" appearance="outline">
       <mat-label>{{ 'def_author' | translate }}</mat-label>
       <input matInput name="def_author" [(ngModel)]="def_author">
     </mat-form-field>

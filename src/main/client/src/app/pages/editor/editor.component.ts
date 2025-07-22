@@ -529,7 +529,7 @@ export class EditorComponent {
   }
 
   viewLetterInHIKO() {
-    const tenant = this.config.isTest ? this.config.test_mappings[this.state.fileConfig.tenant] : this.state.fileConfig.tenant;
+    const tenant = this.config.isTest ? this.config.test_mappings[this.state.user.tenant] : this.state.user.tenant;
     window.open(this.config.hikoUrl.replace('{tenant}', tenant).replace('{id}', this.letter.hiko_id + ''), 'hiko');
   }
 
@@ -583,9 +583,9 @@ export class EditorComponent {
   }
 
   importFromHIKO() {
-    const id = window.prompt('Id to import. Tenant: ' + this.state.fileConfig.tenant);
+    const id = window.prompt('Id to import. Tenant: ' + this.state.user.tenant);
     if (id) {
-      this.service.importFromHiko(id, this.state.fileConfig.tenant).subscribe((res: any) => {
+      this.service.importFromHiko(id, this.state.user.tenant).subscribe((res: any) => {
         //console.log(res)
         if (res.error) {
           this.service.showSnackBarError( this.translateService.instant(res.error));
@@ -690,7 +690,7 @@ export class EditorComponent {
           };
 
         letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-        letter.tenant = this.state.fileConfig.tenant;
+        letter.tenant = this.state.user.tenant;
         letter.ai = [];
         letter.selection = [];
 
@@ -721,7 +721,7 @@ export class EditorComponent {
     }
 
     //return;
-    this.service.exportToHiko(this.letter.hiko, this.state.fileConfig.tenant).subscribe((res: any) => {
+    this.service.exportToHiko(this.letter.hiko, this.state.user.tenant).subscribe((res: any) => {
       if (res.errors) {
         this.service.showSnackBar(res.message, '', true);
       } else if (res.id) {
