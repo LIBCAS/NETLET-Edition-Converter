@@ -80,6 +80,8 @@ Managed external dictionaries
 
   <!-- Fields from letters -->
   <field name="date_computed" type="pdate" indexed="true" stored="true" />
+  <field name="date_computed_range" type="rdate" indexed="true" stored="true" />
+  <field name="date_computed_s" type="string" indexed="true" stored="true" />
   <field name="date_year" type="pint" indexed="true" stored="true" />
 
   <!-- Fields from identity_letters -->
@@ -136,6 +138,8 @@ Managed external dictionaries
   <!--dynamicField
   name="*" type="ignored" multiValued="true" /-->
 
+  <copyField source="date_computed" dest="date_computed_range" />
+  <copyField source="date_computed" dest="date_computed_s" />
   <!-- Field to use to determine and enforce document uniqueness.
       Unless this field is marked with required="false", it will be a required field
     -->
@@ -282,6 +286,9 @@ Managed external dictionaries
   <fieldType name="tdates" class="solr.TrieDateField" docValues="true" precisionStep="6"
     positionIncrementGap="0" multiValued="true" />
 
+    
+  <fieldType name="rdate" class="solr.DateRangeField" />
+  <fieldType name="rdates" class="solr.DateRangeField" multiValued="true" />
 
   <!--Binary
   data type. The data should be sent/retrieved in as Base64 encoded Strings -->

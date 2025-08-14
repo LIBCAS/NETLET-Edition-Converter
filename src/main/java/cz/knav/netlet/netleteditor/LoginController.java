@@ -28,7 +28,15 @@ public class LoginController {
         } else {
             return (JSONObject)session.getAttribute("user");
         }
-        
+    }
+    
+    public static JSONObject getUserToken(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (session == null || session.getAttribute("user") == null) {
+            return null;
+        } else {
+            return (JSONObject)session.getAttribute("token");
+        }
     }
     
     

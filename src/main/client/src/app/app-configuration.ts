@@ -47,7 +47,7 @@ import { AuthService } from './auth.service';
         return this.http.get('assets/config.json').pipe(
             switchMap((cfg: any) => {
                 this.config = cfg as Configuration;
-                return this.http.get('api/data/init').pipe(tap((res: any) => {
+                return this.http.get('api/user/init').pipe(tap((res: any) => {
                     this.state.tenants = res.tenants;
                     this.state.user = res.user;
                     // this.state.gptModels = res.gptModels;

@@ -60,17 +60,17 @@ public class DataServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
         response.setHeader("Pragma", "no-cache"); // HTTP 1.0
-        response.setHeader("Connection", "Keep-Alive"); 
+        response.setHeader("Connection", "Keep-Alive");
         response.setDateHeader("Expires", 0); // Proxies.
-        HttpSession session = request.getSession();
-            if (request.getParameter("JSESSIONID") != null) {
-                Cookie userCookie = new Cookie("JSESSIONID", request.getParameter("JSESSIONID"));
-                response.addCookie(userCookie);
-            } else {
-                String sessionId = session.getId();
-                Cookie userCookie = new Cookie("JSESSIONID", sessionId);
-                response.addCookie(userCookie);
-            }
+//        HttpSession session = request.getSession();
+//            if (request.getParameter("JSESSIONID") != null) {
+//                Cookie userCookie = new Cookie("JSESSIONID", request.getParameter("JSESSIONID"));
+//                response.addCookie(userCookie);
+//            } else {
+//                String sessionId = session.getId();
+//                Cookie userCookie = new Cookie("JSESSIONID", sessionId);
+//                response.addCookie(userCookie);
+//            }
         try {
             String actionNameParam = request.getPathInfo().substring(1);
             if (actionNameParam != null) {
@@ -181,7 +181,7 @@ public class DataServlet extends HttpServlet {
                     utenant = user.optString("tenant");
                 }
                 ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
-                    
+
                 JSONArray fs = PDFThumbsGenerator.getDocuments().getJSONArray(("dirs"));
                 for (int i = 0; i < fs.length(); i++) {
                     String tenant = fs.getJSONObject(i).getJSONObject("config").getString("tenant");
@@ -190,23 +190,6 @@ public class DataServlet extends HttpServlet {
                     }
                 }
                 ret.put("gptModels", Options.getInstance().getJSONArray("gptModels"));
-                return ret;
-            }
-        },
-        LOGIN {
-            @Override
-            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                return LoginController.login(request);
-            }
-        },
-        INIT {
-            @Override
-            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                JSONObject ret = new JSONObject();
-                JSONObject user = LoginController.getUser(request);
-                Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
-                ret.put("tenants", tenants);
-                ret.put("user", user);
                 return ret;
             }
         },
@@ -678,9 +661,17 @@ public class DataServlet extends HttpServlet {
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
                 try {
-                    String js = IOUtils.toString(request.getInputStream(), "UTF-8");
-                    HikoIndexer hi = new HikoIndexer();
-                    ret = hi.saveLetter(js, request.getParameter("tenant"));
+
+                    JSONObject user = LoginController.getUser(request);
+                    String token = "";
+                    if (user != null) {
+                        token = user.optString("token");
+                        String js = IOUtils.toString(request.getInputStream(), "UTF-8");
+                        HikoIndexer hi = new HikoIndexer();
+                        ret = hi.saveLetter(js, request.getParameter("tenant"), token);
+                    } else {
+                        ret.put("error",  "not logged");
+                    }
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     ret.put("error", ex);

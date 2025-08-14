@@ -29,7 +29,7 @@ public class HikoIndexer {
 
     public static final Logger LOGGER = Logger.getLogger(HikoIndexer.class.getName());
 
-    public JSONObject saveLetter(String data, String tenant) {
+    public JSONObject saveLetter(String data, String tenant, String token) {
         Date start = new Date();
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Saving letter in hiko");
@@ -50,7 +50,7 @@ public class HikoIndexer {
                 url += "/" + id;
                 request = HttpRequest.newBuilder()
                         .uri(new URI(url))
-                        .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
+                        .header("Authorization", token)
                         .header("Accept", "application/json")
                         .header("Content-Type", "application/json")
                         .PUT(HttpRequest.BodyPublishers.ofString(data))
@@ -59,7 +59,7 @@ public class HikoIndexer {
                 url += "s";
                 request = HttpRequest.newBuilder()
                         .uri(new URI(url))
-                        .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
+                        .header("Authorization", token)
                         .header("Accept", "application/json")
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(data))
