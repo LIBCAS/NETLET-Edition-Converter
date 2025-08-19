@@ -127,6 +127,8 @@ Managed external dictionaries
 
   <field name="origin" type="pint" indexed="true" stored="true"  />
   <field name="destination" type="pint" indexed="true" stored="true"  />
+  <field name="origin_name" type="string" indexed="true" stored="true" multiValued="true" />
+  <field name="destination_name" type="string" indexed="true" stored="true" multiValued="true" />
 
   <!-- uncomment the following to ignore any fields that don't already match an existing 
         field name or dynamic field, rather than reporting them as an error. 
