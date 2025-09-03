@@ -162,7 +162,7 @@
       <!-- <input matInput [matDatepicker]="picker" [formControl]="datum" >
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker> -->
-      <input matInput [matDatepicker]="dp2" [placeholder]="'field.date' | translate" [formControl]="datum">
+      <input matInput [matDatepicker]="dp2" [placeholder]="'field.date' | translate" [formControl]="datum" (dateChange)="setDatum()">
       <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
       <mat-datepicker #dp2 (monthSelected)="setMonthAndYear($event, dp2, datum)"
         (yearSelected)="setMonthAndYear($event, dp2, datum)" startView="multi-year"></mat-datepicker>

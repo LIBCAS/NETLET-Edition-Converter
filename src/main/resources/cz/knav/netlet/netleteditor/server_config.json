@@ -70,7 +70,7 @@
     "hiko": {
         "api": ".historicka-korespondence.cz/api/v2/",
         "bearer": "",
-        "isTest": true, 
+        "isECTest": true,   
         "test_mappings": {
             "brezina": "hiko-test",
             "deml": "hiko-test2",

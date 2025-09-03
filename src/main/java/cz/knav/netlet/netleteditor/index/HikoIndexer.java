@@ -34,7 +34,7 @@ public class HikoIndexer {
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Saving letter in hiko");
         String t = tenant;
-        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
@@ -102,7 +102,7 @@ public class HikoIndexer {
 
     private void indexTenantIdentities(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
-        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
@@ -187,7 +187,7 @@ public class HikoIndexer {
 
     private void indexTenantPlaces(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
-        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
@@ -275,7 +275,7 @@ public class HikoIndexer {
 
     private void indexTenantLocations(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
-        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) { 
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")

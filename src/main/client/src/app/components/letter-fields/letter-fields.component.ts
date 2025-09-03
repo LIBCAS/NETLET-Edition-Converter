@@ -586,8 +586,13 @@ export class LetterFieldsComponent {
       ctrlValue.setMonth(normalizedMonthAndYear.month());
       ctrlValue.setFullYear(normalizedMonthAndYear.year());
       control.setValue(ctrlValue);
+
     // this.seriesDateTo = ctrlValue;
     //  datepicker.close();
+  }
+
+  setDatum() {
+    this._letter.date = this.datum.value;
   }
 
   addCopy() {

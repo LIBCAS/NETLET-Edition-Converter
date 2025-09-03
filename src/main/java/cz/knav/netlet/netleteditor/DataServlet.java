@@ -26,9 +26,6 @@ import jakarta.servlet.http.HttpSession;
 import java.net.URISyntaxException;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
-//import org.apache.commons.fileupload2.FileItem;
-//import org.apache.commons.fileupload2.disk.DiskFileItemFactory;
-//import org.apache.commons.fileupload2.jakarta.servlet6.ServletFileUpload;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.language.detect.LanguageResult;
@@ -60,17 +57,8 @@ public class DataServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
         response.setHeader("Pragma", "no-cache"); // HTTP 1.0
-        response.setHeader("Connection", "Keep-Alive");
         response.setDateHeader("Expires", 0); // Proxies.
-//        HttpSession session = request.getSession();
-//            if (request.getParameter("JSESSIONID") != null) {
-//                Cookie userCookie = new Cookie("JSESSIONID", request.getParameter("JSESSIONID"));
-//                response.addCookie(userCookie);
-//            } else {
-//                String sessionId = session.getId();
-//                Cookie userCookie = new Cookie("JSESSIONID", sessionId);
-//                response.addCookie(userCookie);
-//            }
+        response.setHeader("Connection", "keep-alive");
         try {
             String actionNameParam = request.getPathInfo().substring(1);
             if (actionNameParam != null) {
@@ -171,16 +159,46 @@ public class DataServlet extends HttpServlet {
 //                return ret;
 //            }
 //        },
+        INIT {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                JSONObject user = LoginController.getUser(request);
+                Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
+                ret.put("tenants", tenants);
+                ret.put("user", user);
+                ret.put("gptModels", Options.getInstance().getJSONArray("gptModels"));
+                return ret;
+            }
+        },
+        LOGIN {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                HttpSession session = request.getSession();
+                if (request.getParameter("JSESSIONID") != null) {
+                    Cookie userCookie = new Cookie("JSESSIONID", request.getParameter("JSESSIONID"));
+                    response.addCookie(userCookie);
+                } else {
+                    String sessionId = session.getId();
+                    Cookie userCookie = new Cookie("JSESSIONID", sessionId);
+                    response.addCookie(userCookie);
+                }
+                return LoginController.login(request);
+            }
+        },
         DOCUMENTS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
                 JSONObject user = LoginController.getUser(request);
+                ret.put("user", user);
                 String utenant = "";
                 if (user != null) {
                     utenant = user.optString("tenant");
                 }
+                utenant = "brezina";
                 ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
+                ret.put("totals", Indexer.getLettersTotals().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("filename")); 
 
                 JSONArray fs = PDFThumbsGenerator.getDocuments().getJSONArray(("dirs"));
                 for (int i = 0; i < fs.length(); i++) {

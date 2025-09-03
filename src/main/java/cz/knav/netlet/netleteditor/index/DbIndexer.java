@@ -121,7 +121,7 @@ public class DbIndexer {
     public static JSONObject getLettersFromHIKO(String tenant) throws IOException {
         
         String t = tenant;
-        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
@@ -133,7 +133,7 @@ public class DbIndexer {
     
     public static JSONObject getLetterFromHIKO(String tenant, String id) throws IOException {
         String t = tenant;
-        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
@@ -144,7 +144,7 @@ public class DbIndexer {
     
     public static JSONObject addLetterFromHIKO(String tenant, String id) throws IOException {
         String t = tenant;
-        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) { 
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")

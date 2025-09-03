@@ -43,7 +43,7 @@ public class LoginController {
     public static JSONObject login(HttpServletRequest request) {
         JSONObject ret = new JSONObject();
         String t = request.getParameter("tenant");
-        if (Options.getInstance().getJSONObject("hiko").optBoolean("isTest", true)) {
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) { 
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(t);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
@@ -70,6 +70,7 @@ public class LoginController {
             HttpSession session = request.getSession();
             session.setAttribute("user", j);
             ret = j.getJSONObject("data").getJSONObject("user");
+            System.out.println(ret);
         } catch (URISyntaxException | IOException | InterruptedException ex) {
             ret.put("error", ex.toString());
             LOGGER.log(Level.SEVERE, null, ex);

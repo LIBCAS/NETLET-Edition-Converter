@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -11,11 +11,13 @@ import { AppConfiguration } from './app-configuration';
 })
 export class AppService {
 
+   http: HttpClient;
   constructor(
-    private http: HttpClient,
     private translateService: TranslateService,
     private snackBar: MatSnackBar,
-    private config: AppConfiguration) { }
+    private config: AppConfiguration) { 
+      this.http = inject(HttpClient);
+    }
 
     showSnackBar(s: string, r: string = '', error: boolean = false, duration: number = 2000) {
       const right = r !== '' ? this.translateService.instant(r) : '';
@@ -36,7 +38,8 @@ export class AppService {
     const headers = new HttpHeaders({
       'Accept-Language': 'cs'
     })
-    const options = { params, responseType, headers, withCredentials: true  };
+    // const options = { params, responseType, headers, withCredentials: true  };
+    const options = { params, responseType  };
     return this.http.get<T>(`${this.config.context}api${url}`, options);
 
   }
@@ -55,7 +58,7 @@ export class AppService {
    */
   getDocuments() {
     const params: HttpParams = new HttpParams();
-    return this.get(`/data/documents`, params);
+    return this.http.get('api/data/documents')
   }
 
   getDocument(file: string) {
@@ -213,7 +216,7 @@ export class AppService {
   }
 
   login(data: any, tenant: string) {
-    const url = `/user/login?tenant=${tenant}`;
+    const url = `/data/login?tenant=${tenant}`;
     return this.post(url, data);
   }
 

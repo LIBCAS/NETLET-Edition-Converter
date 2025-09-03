@@ -22,7 +22,6 @@ export function createTranslateLoader(http: HttpClient) {
 
 bootstrapApplication(AppComponent, {
     providers: [
-        provideHttpClient(),
         importProvidersFrom(BrowserModule, AppRoutingModule, 
         // CommonModule,
         AngularSplitModule, FormsModule, ReactiveFormsModule, TranslateModule.forRoot({
@@ -35,6 +34,7 @@ bootstrapApplication(AppComponent, {
         AppState, AuthService, AppConfiguration, AppService,
         { provide: APP_INITIALIZER, useFactory: (config: AppConfiguration) => () => config.load(), deps: [AppConfiguration], multi: true },
         TranslateService,
+        provideHttpClient(), 
         provideAnimations(),
         importProvidersFrom(MatSnackBarModule),
     ]

@@ -1,5 +1,6 @@
 package cz.knav.netlet.netleteditor;
 
+import cz.knav.netlet.netleteditor.index.Indexer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -76,6 +78,33 @@ public class LoginServlet extends HttpServlet {
                 Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
                 ret.put("tenants", tenants);
                 ret.put("user", user);
+                ret.put("gptModels", Options.getInstance().getJSONArray("gptModels"));
+                return ret;
+            }
+        },
+        
+        DOCUMENTS {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                JSONObject user = LoginController.getUser(request);
+                ret.put("user", user);
+                String utenant = "";
+                if (user != null) {
+                    utenant = user.optString("tenant");
+                }
+                utenant = "brezina";
+                ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
+                ret.put("totals", Indexer.getLettersTotals().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("filename")); 
+
+                JSONArray fs = PDFThumbsGenerator.getDocuments().getJSONArray(("dirs"));
+                for (int i = 0; i < fs.length(); i++) {
+                    String tenant = fs.getJSONObject(i).getJSONObject("config").getString("tenant");
+                    if (utenant == null || utenant.equals(tenant)) {
+                        ret.append("dirs", fs.getJSONObject(i));
+                    }
+                }
+                ret.put("gptModels", Options.getInstance().getJSONArray("gptModels"));
                 return ret;
             }
         },
