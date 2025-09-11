@@ -81,6 +81,14 @@ export class EditorComponent {
     public dialog: MatDialog) { }
 
   ngOnInit() {
+    if (this.state.files?.length === 0) {
+      this.getDocuments();
+    } else {
+      this.initData();
+    }
+  }
+
+  initData() {
     this.state.currentPage = 1;
     this.route.paramMap.subscribe((params: any) => {
       if (params.get('letter')) {
@@ -129,10 +137,22 @@ export class EditorComponent {
         }
       });
     });
-
+    this.setAreas();
   }
 
-  ngAfterViewInit() {
+  getDocuments() {
+    this.service.getDocuments().subscribe((res: any) => {
+      this.state.tenants = Object.keys(res.tenants);
+      this.state.files = res.dirs;
+      this.state.files.sort((f1, f2) => f1.config.name.localeCompare(f2.config.name, 'cs-CZ'));
+      this.state.files.forEach(f => {
+        f.letters = res.totals[f.filename] ? res.totals[f.filename] : 0;
+      });
+      this.initData();
+    });
+  }
+
+  setAreas() {
     setTimeout(() => {
       const w = this.splitArea.displayedAreas[0].component.elRef.nativeElement.clientWidth;
       this.viewerWidth = w;
@@ -143,9 +163,22 @@ export class EditorComponent {
   newLetter(t: FileTemplate) {
     this.letter = new Letter();
     this.letter.template = t;
+    if (!this.letter.template) {
+      const t: FileTemplate = new FileTemplate();
+      t.name = 'Šablona ' + (this.state.fileConfig.templates.length + 1);
+      if (!this.state.fileConfig.templates) {
+        this.state.fileConfig.templates = [];
+      }
+      this.state.fileConfig.templates.push(t);
+      this.letter.template = t;
+    }
     this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-    this.letter.hiko.authors.push({ marked: t.author_db.marked, id: t.author_db.id });
-    this.letter.hiko.recipients.push({ marked: t.recipient_db.marked, id: t.recipient_db.id });
+    if (this.letter.hiko.authors) {
+      this.letter.hiko.authors.push({ marked: t.author_db?.marked, id: t.author_db?.id });
+    }
+    if (this.letter.hiko.recipients) {
+      this.letter.hiko.recipients.push({ marked: t.recipient_db?.marked, id: t.recipient_db?.id });
+    }
     const copy = new LetterCopy();
     copy.repository = t.copies_repository;
     copy.archive = t.copies_archive;
@@ -588,7 +621,7 @@ export class EditorComponent {
       this.service.importFromHiko(id, this.state.user.tenant).subscribe((res: any) => {
         //console.log(res)
         if (res.error) {
-          this.service.showSnackBarError( this.translateService.instant(res.error));
+          this.service.showSnackBarError(this.translateService.instant(res.error));
           return;
         }
         const letter = new Letter();
@@ -609,92 +642,92 @@ export class EditorComponent {
         }
 
         const mentioned = res.identities.filter((i: any) => i.pivot.role === "mentioned").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
-        
+
         const origins = res.identities.filter((i: any) => i.pivot.role === "origin").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
         if (origins.length > 0) {
           letter.origin = origins[0].marked ? origins[0].marked : origins[0].name;
         }
-        
+
         const destinations = res.identities.filter((i: any) => i.pivot.role === "destination").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
         if (destinations.length > 0) {
           letter.destination = destinations[0].marked ? destinations[0].marked : destinations[0].name;
         }
-        
+
         letter.hiko = {
-            id: res.id,
-            uuid: res.uuid,
-            created_at: res.created_at,
-            updated_at: res.updated_at,
+          id: res.id,
+          uuid: res.uuid,
+          created_at: res.created_at,
+          updated_at: res.updated_at,
 
 
-            date: res.date_computed,
-            date_computed: res.date_computed,
-            date_year: res.date_year,
-            date_month: res.date_month,
-            date_day: res.date_day,
-            date_is_range: res.date_is_range,
-            date_marked: res.date_marked,
-            range_day: res.range_day,
-            range_month: res.range_month,
-            range_year: res.range_year,
-            date_inferred: res.date_inferred,
-            date_uncertain: res.date_uncertain,
-            date_note: res.date_note,
-            date_approximate: res.date_approximate,
-            authors: authors,
-            author_uncertain: res.author_uncertain,
-            author_inferred: res.author_inferred,
-            author_note: res.author_note,
+          date: res.date_computed,
+          date_computed: res.date_computed,
+          date_year: res.date_year,
+          date_month: res.date_month,
+          date_day: res.date_day,
+          date_is_range: res.date_is_range,
+          date_marked: res.date_marked,
+          range_day: res.range_day,
+          range_month: res.range_month,
+          range_year: res.range_year,
+          date_inferred: res.date_inferred,
+          date_uncertain: res.date_uncertain,
+          date_note: res.date_note,
+          date_approximate: res.date_approximate,
+          authors: authors,
+          author_uncertain: res.author_uncertain,
+          author_inferred: res.author_inferred,
+          author_note: res.author_note,
 
-            recipients: recipients,
-            recipient_uncertain: res.recipient_uncertain,
-            recipient_inferred: res.recipient_inferred,
-            recipient_note: res.recipient_note,
+          recipients: recipients,
+          recipient_uncertain: res.recipient_uncertain,
+          recipient_inferred: res.recipient_inferred,
+          recipient_note: res.recipient_note,
 
-            mentioned: mentioned,
-            people_mentioned_note: res.people_mentioned_note,
+          mentioned: mentioned,
+          people_mentioned_note: res.people_mentioned_note,
 
-            origins: origins,
-            origin_inferred: res.origin_inferred,
-            origin_uncertain: res.origin_uncertain,
-            origin_note: res.origin_note,
+          origins: origins,
+          origin_inferred: res.origin_inferred,
+          origin_uncertain: res.origin_uncertain,
+          origin_note: res.origin_note,
 
-            destinations: destinations,
-            destination_inferred: res.destination_inferred,
-            destination_uncertain: res.destination_uncertain,
-            destination_note: res.destination_note,
+          destinations: destinations,
+          destination_inferred: res.destination_inferred,
+          destination_uncertain: res.destination_uncertain,
+          destination_note: res.destination_note,
 
-            languages: res.languages,
+          languages: res.languages,
 
-            local_keywords: res.local_keywords,
-            global_keywords: res.global_keywords,
-            keywords: res.keywords,
+          local_keywords: res.local_keywords,
+          global_keywords: res.global_keywords,
+          keywords: res.keywords,
 
-            incipit: res.incipit,
-            explicit: res.explicit,
-            notes_private: res.notes_private,
-            notes_public: res.notes_public,
-            related_resources: res.related_resources,
-            copies: res.copies,
-            copyright: res.copyright,
+          incipit: res.incipit,
+          explicit: res.explicit,
+          notes_private: res.notes_private,
+          notes_public: res.notes_public,
+          related_resources: res.related_resources,
+          copies: res.copies,
+          copyright: res.copyright,
 
 
-            status: res.status,
-            approval: res.approval,
-            action: res.action,
+          status: res.status,
+          approval: res.approval,
+          action: res.action,
 
-            abstract: res.abstract,
+          abstract: res.abstract,
 
-            content: res.content_stripped,
-            content_stripped: res.content_stripped
-          };
+          content: res.content_stripped,
+          content_stripped: res.content_stripped
+        };
 
         letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
         letter.tenant = this.state.user.tenant;
         letter.ai = [];
         letter.selection = [];
 
-        
+
         letter.template = this.state.fileConfig.templates[0];
 
         this.view = 'fields';

@@ -196,7 +196,6 @@ public class DataServlet extends HttpServlet {
                 if (user != null) {
                     utenant = user.optString("tenant");
                 }
-                utenant = "brezina";
                 ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
                 ret.put("totals", Indexer.getLettersTotals().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("filename")); 
 

@@ -2,7 +2,6 @@
 package cz.knav.netlet.netleteditor;
 
 import static cz.knav.netlet.netleteditor.index.HikoIndexer.LOGGER;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;

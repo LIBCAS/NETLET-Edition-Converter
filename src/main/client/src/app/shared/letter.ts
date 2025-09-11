@@ -267,7 +267,7 @@ export class LetterHIKO {
     notes_private: string;
     notes_public: string;
     related_resources: { title: string; link: string }[];
-    copies: CopyHIKO[];
+    copies: CopyHIKO[] = [];
     copyright: string;
 
 
@@ -324,6 +324,6 @@ export class Letter  {
     }[]
 
     selection: { page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string }[];
-    hiko: LetterHIKO;
+    hiko: LetterHIKO = new LetterHIKO();
     template: FileTemplate;
 }
