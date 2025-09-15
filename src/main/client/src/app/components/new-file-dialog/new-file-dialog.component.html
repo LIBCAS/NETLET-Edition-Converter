@@ -51,7 +51,7 @@
 </div>
 
 <div mat-dialog-actions>
-  <button [disabled]="!selectedFile || !tenant" mat-flat-button color="primary" (click)="uploadFile()">{{
+  <button [disabled]="!selectedFile" mat-flat-button color="primary" (click)="uploadFile()">{{
     'action.upload' | translate }}</button>
   <button mat-flat-button [mat-dialog-close]="false">{{ 'action.close' | translate }}</button>
 </div>

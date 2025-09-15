@@ -82,11 +82,12 @@ export class LetterFieldsComponent {
       this.recipient_db = this._letter.hiko.recipients[0];
     }
     
-    if (this._letter.hiko.origins) {
+    if (this._letter.hiko.origins?.length > 0) {
       this.origins_db = this._letter.hiko.origins;
       this.origin_db = this._letter.hiko.origins[0];
     }
-    if (this._letter.hiko.destinations) {
+    
+    if (this._letter.hiko.destinations?.length > 0) {
       this.destinations_db = this._letter.hiko.destinations;
       this.destination_db = this._letter.hiko.destinations[0];
     }
@@ -104,10 +105,10 @@ export class LetterFieldsComponent {
     
   
     origins_db: { id: number, marked: string, name?: string }[] = [];
-    origin_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    origin_db: { id: number, marked: string, name?: string } = {marked:'', id:-1, name: ''};
     noorigin = {marked:'', id:-1, name: ''};
     destinations_db: { id: number, marked: string, name?: string }[] = [];
-    destination_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    destination_db: { id: number, marked: string, name?: string } = {marked:'', id:-1, name: ''};
     nodestination = {marked:'', id:-1, name: ''};
 
   entities: Entity[] = [];
@@ -225,6 +226,26 @@ export class LetterFieldsComponent {
     });
   }
 
+  displayFn(o: any) {
+    return o ? o.name : '';
+  }
+
+  checkPlacesOrigin(e: any, extended: boolean) {
+    const val = e.target ? e.target.value : e;
+    this.service.checkPlaces(val, null, this.state.user.tenant, true).subscribe((resp: any) => {
+      this.origins_db = resp.origin;
+      this.destinations_db = resp.destination;
+    });
+  }
+
+  checkPlacesDestination(e: any, extended: boolean) {
+    const val = e.target ? e.target.value : e;
+    this.service.checkPlaces(null, val, this.state.user.tenant, true).subscribe((resp: any) => {
+      this.origins_db = resp.origin;
+      this.destinations_db = resp.destination;
+    });
+  }
+
   wordCount(str: string) {
     if (!str) {
       return 0;
@@ -293,6 +314,8 @@ export class LetterFieldsComponent {
 
     this._letter.origin = a.analysis.location || a.analysis.place;
     this._letter.destination = a.analysis.destination;
+
+    // v db
 
 
 

@@ -27,7 +27,6 @@ export class NewFileDialogComponent {
 
   name: string;
   columns: number;
-  tenant: string;
   def_author: string;
   def_recipient: string;
 
@@ -42,6 +41,7 @@ export class NewFileDialogComponent {
 
 
   onFileSelected(e: any) {
+    console.log(e)
     const file: File = e.target.files[0];
     if (file) {
       this.selectedFile = file.name;
@@ -56,7 +56,7 @@ export class NewFileDialogComponent {
         columns: this.columns,
         def_author: this.def_author,
         def_recipient: this.def_recipient,
-        tenant: this.tenant
+        tenant: this.state.user.tenant
       }
     };
     this.progressMsg = 'uploading...'

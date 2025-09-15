@@ -532,7 +532,8 @@ public class Indexer {
 
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery()
-                    .setFields("id:table_id,name");
+                    .setFields("id:table_id,name")
+                    .setSort("name_sort",SolrQuery.ORDER.asc );
             query.set("qf", "name_lower^5 name^2 alternative_names");
             if (!tenant.isBlank()) {
                 // query.set("bq", "tenant:"+tenant+"^10");
@@ -540,9 +541,9 @@ public class Indexer {
             }
             query.set("tie", "0.1");
             if (extended) {
-                query.setQuery(name + "*");
+                query.setQuery(name+"*");
                 query.set("mm", "90%");
-                query.setRows(20);
+                query.setRows(1000);
             } else {
                 query.setQuery(name);
                 query.set("mm", "2<90%");
@@ -550,6 +551,7 @@ public class Indexer {
             }
             query.set("defType", "edismax");
             query.set("wt", "json");
+            query.setSort("name_sort", SolrQuery.ORDER.asc);
             String jsonResponse;
 
             QueryRequest qreq = new QueryRequest(query);

@@ -48,14 +48,19 @@ import { AuthService } from './auth.service';
             switchMap((cfg: any) => {
                 this.config = cfg as Configuration;
                 return this.http.get('api/data/init').pipe(tap((res: any) => {
-                //return this.http.get('api/data/documents').pipe(tap((res: any) => {
+                    //return this.http.get('api/data/documents').pipe(tap((res: any) => {
                     this.state.tenants = res.tenants;
                     this.state.user = res.user;
+                    this.state.user = {
+                        id: 1,
+                        tenant: 'brezina',
+                        name: 'alb',
+                        email: 'alb',
+                        email_verified_at: null,
+                        role: 'alb'
+                    };
+
                     this.state.gptModels = res.gptModels;
-                    // this.state.files = res.dirs;
-                    // this.state.files.forEach(f => {
-                    //      f.letters = res.totals[f.filename] ? res.totals[f.filename] : 0;
-                    //  });
                 }));
             }),
             catchError((err) => {

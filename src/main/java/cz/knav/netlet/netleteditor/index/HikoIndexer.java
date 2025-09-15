@@ -248,6 +248,9 @@ public class HikoIndexer {
                 url = resp.optString("next_page_url", null);
                 Thread.sleep(1000);
             }
+        } catch (Exception ex) {
+            ret.put(tenant, ex.toString());
+            LOGGER.log(Level.SEVERE, "Error in tenant {0} -> {1}", new Object[]{tenant, ex.toString()});
         }
     }
     

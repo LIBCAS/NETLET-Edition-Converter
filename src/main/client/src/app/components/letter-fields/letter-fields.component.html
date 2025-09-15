@@ -119,41 +119,45 @@
       <input matInput [(ngModel)]="_letter.origin" name="origin" (change)="checkOriginDb()" /><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'origin' }"></ng-container>
     </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3">
 
-      <mat-label>{{ 'field.origin_db' | translate}}</mat-label>
-            <mat-select [(ngModel)]="origin_db" (selectionChange)="setOriginDb($event)" >
-                <mat-option [value]="noauthor">{{noorigin.name}}</mat-option>
-            @for(a of origins_db; track a.id; let idx = $index){
-                <mat-option [value]="a">{{a.name}}</mat-option>
-            }
-            </mat-select>
-            @if(origins_db.length === 0) {
-                <mat-icon matSuffix (click)="checkPlaces(true)" [title]="'action.check_authors' | translate" color="primary" class="material-icons-outlined app-ml-2 app-mr-2">where_to_vote</mat-icon>
-            }
+    <mat-form-field class="app-fxFlex app-ml-3">
+      <mat-label>{{ 'field.origin_db' | translate }}</mat-label>
+      <input matInput [(ngModel)]="origin_db.name"
+        name="origin_db" id="origin_db"
+        [matAutocomplete]="autoOrigin"
+        (focus)="checkPlacesOrigin(_letter.origin, false)"
+        (keyup)="checkPlacesOrigin(origin_db.name, true)">
+      <mat-autocomplete #autoOrigin="matAutocomplete" [displayWith]="displayFn">
+        @for(a of origins_db; track idx; let idx = $index){
+        <mat-option [value]="a">
+          {{a.name}}
+        </mat-option>
+        }
+      </mat-autocomplete>
     </mat-form-field>
     
-    <mat-form-field class="app-fxFlex">
+    <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.destination' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.destination" name="destination" (change)="checkDestinationDb()"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'destination' }"></ng-container>
     </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3">
 
-      <mat-label>{{ 'field.destination_db' | translate}}</mat-label>
-            <mat-select [(ngModel)]="destination_db" (selectionChange)="setDestinationDb($event)">
-            <mat-option [value]="norecipient">{{nodestination.name}}</mat-option>
-            @for(a of destinations_db; track a.id; let idx = $index){
-                <mat-option [value]="a">{{a.name}}</mat-option>
-            }
-            </mat-select>
-            @if(destinations_db.length === 0) {
-                <mat-icon matSuffix (click)="checkPlaces(true)" [title]="'action.check_authors' | translate" color="primary" class="material-icons-outlined app-ml-2 app-mr-2">where_to_vote</mat-icon>
-            }
+    <mat-form-field class="app-fxFlex app-ml-3">
+      <mat-label>{{ 'field.destination_db' | translate }}</mat-label>
+      <input matInput [(ngModel)]="destination_db.name"
+        name="destination_db" id="destination_db"
+        [matAutocomplete]="autodestination"
+        (focus)="checkPlacesDestination($event, false)"
+        (keyup)="checkPlacesDestination($event, true)">
+      <mat-autocomplete #autodestination="matAutocomplete" [displayWith]="displayFn">
+        @for(a of destinations_db; track idx; let idx = $index){
+        <mat-option [value]="a">
+          {{a.name}}
+        </mat-option>
+        }
+      </mat-autocomplete>
     </mat-form-field>
-    <button mat-flat-button (click)="checkPlaces(true)" [title]="'action.check_authors' | translate">
-      <mat-icon color="primary" class="material-icons-outlined app-ml-2 app-mr-2">where_to_vote</mat-icon>
-    </button>
+
   </div>
 
   <div class="app-fxLayout app-row app-center-v app-mb-4">

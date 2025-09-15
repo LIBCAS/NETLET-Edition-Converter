@@ -71,9 +71,11 @@ Managed external dictionaries
     <field name="geoname_id" type="int" indexed="true" stored="true" />
     <field name="division" type="string" indexed="true" stored="true"  />
     <field name="coords" type="location_rpt" indexed="true" stored="true"  />
+    <field name="name_sort" type="icu_sort_cs" indexed="true" stored="true" multiValued="false" />
     
   
   <copyField source="name" dest="name_lower"/>
+  <copyField source="name" dest="name_sort"/>
 	
 
     <!-- uncomment the following to ignore any fields that don't already match an existing 
@@ -484,6 +486,17 @@ Managed external dictionaries
       <filter class="solr.CzechStemFilterFactory"/>
     </analyzer>
   </fieldType>
+
+  <fieldType name="icu_sort_cs" class="solr.ICUCollationField"  locale="cs" strength="tertiary">
+        <!--
+      <analyzer>
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.TrimFilterFactory" />
+        <filter class="solr.ICUCollationKeyFilterFactory" locale="cs" strength="primary"/>
+      </analyzer>
+        -->
+    </fieldType>
 
   <fieldType name="location" class="solr.LatLonPointSpatialField" docValues="true"/>
   <fieldType name="location_rpt"   class="solr.SpatialRecursivePrefixTreeFieldType"
