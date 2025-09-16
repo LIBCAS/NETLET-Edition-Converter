@@ -9,7 +9,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       return true;
     } else {
       const params: any = Object.assign({}, route.queryParams);
-      params.url = state.url.split('?')[0];
+      params.url = decodeURIComponent(state.url.split('?')[0]);
       router.navigate(['/login'], {queryParams: params});
       return false;
     }

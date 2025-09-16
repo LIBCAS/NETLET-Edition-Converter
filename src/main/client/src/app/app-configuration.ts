@@ -51,15 +51,7 @@ import { AuthService } from './auth.service';
                     //return this.http.get('api/data/documents').pipe(tap((res: any) => {
                     this.state.tenants = res.tenants;
                     this.state.user = res.user;
-                    this.state.user = {
-                        id: 1,
-                        tenant: 'brezina',
-                        name: 'alb',
-                        email: 'alb',
-                        email_verified_at: null,
-                        role: 'alb'
-                    };
-
+                    
                     this.state.gptModels = res.gptModels;
                 }));
             }),

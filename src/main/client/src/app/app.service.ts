@@ -145,9 +145,9 @@ export class AppService {
     
   }
 
-  checkPlaces(origin: string, destination: string, tenant: string, extended: boolean): Observable<any> {
+  checkPlaces(name: string, tenant: string, extended: boolean): Observable<any> {
     const params: HttpParams = new HttpParams()
-    .set('origin', origin).set('destination', destination).set('tenant', tenant).set('extended', extended);
+    .set('name', name).set('tenant', tenant).set('extended', extended);
     return this.get(`/data/check_places`, params);
     
   }

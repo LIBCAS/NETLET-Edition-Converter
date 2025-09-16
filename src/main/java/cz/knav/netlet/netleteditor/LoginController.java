@@ -69,7 +69,6 @@ public class LoginController {
             HttpSession session = request.getSession();
             session.setAttribute("user", j);
             ret = j.getJSONObject("data").getJSONObject("user");
-            System.out.println(ret);
         } catch (URISyntaxException | IOException | InterruptedException ex) {
             ret.put("error", ex.toString());
             LOGGER.log(Level.SEVERE, null, ex);

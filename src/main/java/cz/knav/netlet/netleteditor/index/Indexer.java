@@ -397,9 +397,16 @@ public class Indexer {
             idoc.setField("tenant", data.optString("tenant"));
             idoc.setField("filename", filename);
             idoc.setField("file_id", hashString(filename));
-            idoc.setField("hiko", data.getJSONObject("hiko").toString());
-            idoc.setField("ai", data.getJSONArray("ai").toString());
-            idoc.setField("selection", data.getJSONArray("selection").toString());
+            if (data.has("hiko")) {
+                idoc.setField("hiko", data.optJSONObject("hiko").toString());
+            }
+            if (data.has("ai")) {
+                idoc.setField("ai", data.optJSONArray("ai").toString());
+            }
+            if (data.has("selection")) {
+                idoc.setField("selection", data.optJSONArray("selection").toString());
+            }
+            
             idoc.setField("startPage", data.optInt("startPage", 0));
             if (data.has("page_number")) {
                 idoc.setField("page_number", data.getInt("page_number"));

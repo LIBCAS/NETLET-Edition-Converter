@@ -66,7 +66,6 @@ export class LetterFieldsComponent {
       return;
     }
     this._letter = value;
-    console.log(this._letter)
     if (!isNaN(Date.parse(this._letter.date))) {
       this.datum.setValue(new Date(this._letter.date));
     } else {
@@ -85,11 +84,15 @@ export class LetterFieldsComponent {
     if (this._letter.hiko.origins?.length > 0) {
       this.origins_db = this._letter.hiko.origins;
       this.origin_db = this._letter.hiko.origins[0];
+    } else {
+      this._letter.hiko.origins = [];
     }
     
     if (this._letter.hiko.destinations?.length > 0) {
       this.destinations_db = this._letter.hiko.destinations;
       this.destination_db = this._letter.hiko.destinations[0];
+    } else {
+      this._letter.hiko.destinations = [];
     }
 
   }
@@ -219,10 +222,10 @@ export class LetterFieldsComponent {
     });
   }
 
-  checkPlaces(extended: boolean) {
-    this.service.checkPlaces(this._letter.origin, this._letter.destination, this.state.user.tenant, extended).subscribe((resp: any) => {
-      this.origins_db = resp.origin;
-      this.destinations_db = resp.destination;
+  checkPlaces(e:any, extended: boolean, list: { id: number, marked: string, name?: string }[]) {
+    const val = e.target ? e.target.value : e;
+    this.service.checkPlaces(val, this.state.user.tenant, extended).subscribe((resp: any) => {
+      list = resp.places;
     });
   }
 
@@ -230,17 +233,18 @@ export class LetterFieldsComponent {
     return o ? o.name : '';
   }
 
-  checkPlacesOrigin(e: any, extended: boolean) {
-    const val = e.target ? e.target.value : e;
-    this.service.checkPlaces(val, null, this.state.user.tenant, true).subscribe((resp: any) => {
-      this.origins_db = resp.origin;
-      this.destinations_db = resp.destination;
-    });
-  }
+  // checkPlacesOrigin(e: any, extended: boolean) {
+  //   console.log(e)
+  //   const val = e.target ? e.target.value : e;
+  //   this.service.checkPlaces(val, null, this.state.user.tenant, true).subscribe((resp: any) => {
+  //     this.origins_db = resp.origin;
+  //     this.destinations_db = resp.destination;
+  //   });
+  // }
 
   checkPlacesDestination(e: any, extended: boolean) {
     const val = e.target ? e.target.value : e;
-    this.service.checkPlaces(null, val, this.state.user.tenant, true).subscribe((resp: any) => {
+    this.service.checkPlaces(val, this.state.user.tenant, true).subscribe((resp: any) => {
       this.origins_db = resp.origin;
       this.destinations_db = resp.destination;
     });
@@ -384,7 +388,7 @@ export class LetterFieldsComponent {
       } else {
         this.setAnalysis(resp);
         this.checkAuthors(false);
-        this.checkPlaces(false);
+        //this.checkPlaces(false);
       }
     });
   }

@@ -303,10 +303,10 @@ export class AnalyzeDialogComponent {
   
 
   checkPlaces(extended: boolean) {
-    this.service.checkPlaces(this._letter.origin, this._letter.destination, this.state.user.tenant, extended).subscribe((resp: any) => {
-      this.origins_db = resp.origin;
-      this.destinations_db = resp.destination;
-    });
+    // this.service.checkPlaces(this._letter.origin, this._letter.destination, this.state.user.tenant, extended).subscribe((resp: any) => {
+    //   this.origins_db = resp.origin;
+    //   this.destinations_db = resp.destination;
+    // });
   }
 
   isValid() {

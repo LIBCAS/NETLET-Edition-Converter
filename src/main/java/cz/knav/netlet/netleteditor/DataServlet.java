@@ -196,7 +196,6 @@ public class DataServlet extends HttpServlet {
                 if (user != null) {
                     utenant = user.optString("tenant");
                 }
-                utenant = "brezina";
                 ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
                 ret.put("totals", Indexer.getLettersTotals().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("filename")); 
 
@@ -604,12 +603,10 @@ public class DataServlet extends HttpServlet {
                 JSONObject ret = new JSONObject();
                 ret.put("req_origin", request.getParameter("origin"));
                 ret.put("req_destination", request.getParameter("destination"));
-                ret.put("origin", Indexer.checkPlaces(request.getParameter("origin"),
-                        request.getParameter("tenant"),
+                ret.put("places", Indexer.checkPlaces(request.getParameter("name"),
+                        request.getParameter("tenant"), 
                         Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
-                ret.put("destination", Indexer.checkPlaces(request.getParameter("destination"),
-                        request.getParameter("tenant"),
-                        Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
+                
                 return ret;
             }
         },
