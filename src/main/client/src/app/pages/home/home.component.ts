@@ -58,14 +58,13 @@ export class HomeComponent {
     });
     dialogRef.afterClosed().subscribe(result => {
       // console.log(result);
-      if (result) {
         this.getDocuments();
-      }
       
     })
   }
 
   getDocuments() {
+    this.state.files = [];
     this.service.getDocuments().subscribe((res: any) => {
       this.state.tenants = Object.keys(res.tenants);
       this.state.files = res.dirs;

@@ -87,9 +87,9 @@ export class NewFileDialogComponent {
 
   fileUploaded(response: any) {
     console.log(response, response['error'])
-    if(response.error && response.error === 'file_exists') {
-      alert('File with this name already exists');
-      this.uploader.cancelAll();
+    if(response.error) {
+      alert(response.error);
+      this.progressMsg = 'Error uploading ';
     } else {
       this.progressMsg = response.msg;
     }

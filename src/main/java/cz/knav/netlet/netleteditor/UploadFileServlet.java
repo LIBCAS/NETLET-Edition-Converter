@@ -61,7 +61,9 @@ public class UploadFileServlet extends HttpServlet {
 
     private JSONObject doUpload(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         JSONObject ret = new JSONObject();
-        for (Part part : request.getParts()) {
+        //for (Part part : request.getParts()) {
+        Part part = request.getPart("file");
+            LOGGER.log(Level.INFO, "Part name -> {0}", part.getName());
             // System.out.println(part.getSubmittedFileName());
             String subbmittedFilename = part.getSubmittedFileName();
             // String subbmittedFilename = request.getParameter("name");
@@ -74,7 +76,10 @@ public class UploadFileServlet extends HttpServlet {
                 uploadDir.mkdir();
             }
             File uploadedFile = new File(fileName);
-            if (uploadedFile.exists() && Boolean.parseBoolean(request.getParameter("overwrite"))) {
+            if (uploadedFile.exists()) {
+                if (!Boolean.parseBoolean(request.getParameter("overwrite"))) {
+                    return ret.put("error", "file_exists").put("msg", "file_exists");
+                }
                 try {
                     boolean deleted = uploadedFile.delete();
                     if (!deleted) {
@@ -84,15 +89,13 @@ public class UploadFileServlet extends HttpServlet {
                     LOGGER.log(Level.SEVERE, null, ioex);
                     return ret.put("error", "Can't delete file");
                 }
-            } else {
-                return ret.put("error", "file_exists").put("msg", "file_exists");
-            }
+            } 
             part.write(fileName);
             // ret.put("msg", "process started");
             File f2 = new File(fileName);
             if (f2.exists()) {
                 new Thread(() -> PDFThumbsGenerator.processFile(subbmittedFilename)).start();
-                ret.put("msg", "process started");
+                ret.put("msg", "File uploaded correctly. Images a OCR process started. ");
             } else {
                 ret.put("error", "not_exists");
             }
@@ -110,7 +113,7 @@ public class UploadFileServlet extends HttpServlet {
                 FileUtils.writeStringToFile(f, fileSettings.toString(), "UTF-8");
             }
 
-        }
+        
         return ret;
     }
 
