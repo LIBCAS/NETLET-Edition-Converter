@@ -12,6 +12,7 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 
 /**
@@ -61,20 +62,19 @@ public class UploadFileServlet extends HttpServlet {
     private JSONObject doUpload(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         JSONObject ret = new JSONObject();
         for (Part part : request.getParts()) {
-            // fileName = getFileName(part);
+            // System.out.println(part.getSubmittedFileName());
             String subbmittedFilename = part.getSubmittedFileName();
+            // String subbmittedFilename = request.getParameter("name");
 
             String pdfDir = Storage.pdfDir(subbmittedFilename);
-
             File uploadDir = new File(pdfDir);
+            String fileName = pdfDir + File.separator + subbmittedFilename;
+
             if (!uploadDir.exists()) {
                 uploadDir.mkdir();
             }
-
-            String fileName = pdfDir + File.separator + subbmittedFilename;
-
             File uploadedFile = new File(fileName);
-            if (uploadedFile.exists()) {
+            if (uploadedFile.exists() && Boolean.parseBoolean(request.getParameter("overwrite"))) {
                 try {
                     boolean deleted = uploadedFile.delete();
                     if (!deleted) {
@@ -84,15 +84,32 @@ public class UploadFileServlet extends HttpServlet {
                     LOGGER.log(Level.SEVERE, null, ioex);
                     return ret.put("error", "Can't delete file");
                 }
+            } else {
+                return ret.put("error", "file_exists").put("msg", "file_exists");
             }
             part.write(fileName);
-//            File f2 = new File(fileName);
-//            if (f2.exists()) {
-//                new Thread(() -> PDFThumbsGenerator.processFile(subbmittedFilename)).start();
-//                ret.put("msg", "process started");
-//            } else {
-//                ret.put("msg", "not exists");
-//            }
+            // ret.put("msg", "process started");
+            File f2 = new File(fileName);
+            if (f2.exists()) {
+                new Thread(() -> PDFThumbsGenerator.processFile(subbmittedFilename)).start();
+                ret.put("msg", "process started");
+            } else {
+                ret.put("error", "not_exists");
+            }
+
+            if (subbmittedFilename != null) {
+                JSONObject fileSettings = new JSONObject();
+                fileSettings.put("name", request.getParameter("name"));
+                fileSettings.put("columns", request.getParameter("columns"));
+                fileSettings.put("def_author", request.getParameter("def_author"));
+                fileSettings.put("def_recipient", request.getParameter("def_recipient"));
+                fileSettings.put("tenant", request.getParameter("tenant"));
+                
+                File f = Storage.configFile(subbmittedFilename);
+                fileSettings.put("prompt", Options.getInstance().getString("defaultPrompt").replace("###NAME###", "z knihy \"" + fileSettings.optString("name", "") + "\""));
+                FileUtils.writeStringToFile(f, fileSettings.toString(), "UTF-8");
+            }
+
         }
         return ret;
     }

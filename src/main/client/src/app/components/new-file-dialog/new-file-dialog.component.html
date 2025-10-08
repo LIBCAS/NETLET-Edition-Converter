@@ -51,7 +51,8 @@
 </div>
 
 <div mat-dialog-actions>
-  <button [disabled]="!selectedFile" mat-flat-button color="primary" (click)="uploadFile()">{{
+  <button [disabled]="!selectedFile" mat-flat-button color="primary" (click)="checkUpload()">{{
     'action.upload' | translate }}</button>
   <button mat-flat-button [mat-dialog-close]="false">{{ 'action.close' | translate }}</button>
+  <mat-checkbox [(ngModel)]="overwrite" >{{ 'overwrite' | translate}}</mat-checkbox>
 </div>

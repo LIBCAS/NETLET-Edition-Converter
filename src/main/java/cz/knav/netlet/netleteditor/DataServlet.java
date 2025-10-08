@@ -197,7 +197,7 @@ public class DataServlet extends HttpServlet {
                     utenant = user.optString("tenant");
                 }
                 ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
-                ret.put("totals", Indexer.getLettersTotals().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("filename")); 
+                ret.put("totals", Indexer.getLettersTotals().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("filename"));
 
                 JSONArray fs = PDFThumbsGenerator.getDocuments().getJSONArray(("dirs"));
                 for (int i = 0; i < fs.length(); i++) {
@@ -604,9 +604,9 @@ public class DataServlet extends HttpServlet {
                 ret.put("req_origin", request.getParameter("origin"));
                 ret.put("req_destination", request.getParameter("destination"));
                 ret.put("places", Indexer.checkPlaces(request.getParameter("name"),
-                        request.getParameter("tenant"), 
+                        request.getParameter("tenant"),
                         Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
-                
+
                 return ret;
             }
         },
@@ -685,7 +685,7 @@ public class DataServlet extends HttpServlet {
                         HikoIndexer hi = new HikoIndexer();
                         ret = hi.saveLetter(js, request.getParameter("tenant"), token);
                     } else {
-                        ret.put("error",  "not logged");
+                        ret.put("error", "not logged");
                     }
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
@@ -754,6 +754,20 @@ public class DataServlet extends HttpServlet {
                 return ret;
             }
 
+        },
+        CHECK_FILE_EXISTS {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                String name = request.getParameter("name");
+
+                String pdfDir = Storage.pdfDir(name);
+                String fileName = pdfDir + File.separator + name;
+
+                File uploadedFile = new File(fileName);
+                ret.put("exists", uploadedFile.exists());
+                return ret;
+            }
         };
 
         abstract JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception;

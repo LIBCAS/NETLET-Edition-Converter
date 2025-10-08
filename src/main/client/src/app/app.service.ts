@@ -114,6 +114,11 @@ export class AppService {
     return this.post(url, data);
   }
 
+  checkFileExists(filename: string, ) {
+    const url = `/data/check_file_exists?name=${filename}`;
+    return this.get(url);
+  }
+
   getLetters(filename: string): Observable<any> {
     const params: HttpParams = new HttpParams()
     .set('filename', filename);

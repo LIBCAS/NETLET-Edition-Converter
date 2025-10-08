@@ -12,6 +12,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FileUploadModule, FileUploader, FileUploaderOptions } from 'ng2-file-upload';
 import { AppState } from 'src/app/app-state';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCheckbox } from "@angular/material/checkbox";
+import { AppService } from 'src/app/app.service';
 
 @Component({
   selector: 'app-new-file-dialog',
@@ -21,7 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
   imports: [FileUploadModule,
     CommonModule, TranslateModule, FormsModule, MatAutocompleteModule,
     MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule,
-    MatDividerModule, MatProgressBarModule, MatDialogModule]
+    MatDividerModule, MatProgressBarModule, MatDialogModule, MatCheckbox]
 })
 export class NewFileDialogComponent {
 
@@ -34,9 +36,12 @@ export class NewFileDialogComponent {
   selectedFile: string;
   progressMsg: string;
 
+  overwrite: boolean;
+
   constructor(
     private dialogRef: MatDialogRef<NewFileDialogComponent>,
-    public state: AppState
+    public state: AppState,
+    private service: AppService
   ) { }
 
 
@@ -48,26 +53,46 @@ export class NewFileDialogComponent {
     }
   }
 
+  checkUpload() {
+    if (this.overwrite) {
+      this.uploadFile();
+      return;
+    }
+    this.service.checkFileExists(this.selectedFile).subscribe((resp: any) => {
+      if (resp.exists) {
+        alert('File already exists. Check option to overwrite');
+      } else {
+        this.uploadFile()
+      }
+    })
+  }
+
   uploadFile() {
     const opts: FileUploaderOptions = {
       url: 'api/upload',
       additionalParameter: {
-        name: this.name,
+        name: this.name ? this.name : this.selectedFile,
         columns: this.columns,
         def_author: this.def_author,
         def_recipient: this.def_recipient,
-        tenant: this.state.user.tenant
+        tenant: this.state.user.tenant,
+        overwrite: this.overwrite
       }
     };
     this.progressMsg = 'uploading...'
     this.uploader.setOptions(opts);
-    this.uploader.onSuccessItem = (item: any, response: any, status: any, headers: any) => this.fileUploaded();
+    this.uploader.onSuccessItem = (item: any, response: any, status: any, headers: any) => this.fileUploaded(JSON.parse(response));
     this.uploader.uploadAll();
   }
 
-  fileUploaded() {
-    this.progressMsg = 'file uploaded';
-    // this.getFiles();
+  fileUploaded(response: any) {
+    console.log(response, response['error'])
+    if(response.error && response.error === 'file_exists') {
+      alert('File with this name already exists');
+      this.uploader.cancelAll();
+    } else {
+      this.progressMsg = response.msg;
+    }
   }
 
 }
