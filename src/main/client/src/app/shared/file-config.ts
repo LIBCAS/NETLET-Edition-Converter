@@ -11,9 +11,9 @@ export class FileTemplate {
   name: string;
   // def_author: string; 
   author: string;
-  author_db: { id: number; marked: string };
+  author_db: { id: number; marked: string } = {id: -1, marked: null};
   recipient: string;
-  recipient_db: { id: number; marked: string };
+  recipient_db: { id: number; marked: string } ={id: -1, marked: null};
   copies_repository: string;
   copies_archive: string;
   copies_collection: string;

@@ -22,7 +22,7 @@ import { Letter } from 'src/app/shared/letter';
 @Component({
   selector: 'app-template-dialog',
   standalone: true,
-  imports: [FormsModule, AngularSplitModule, NgIf, NgFor, RouterModule, TranslateModule, 
+  imports: [FormsModule, AngularSplitModule, NgIf, RouterModule, TranslateModule, 
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule,
     MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule],
   templateUrl: './template-dialog.component.html',
@@ -52,7 +52,17 @@ export class TemplateDialogComponent {
     } else {
       this.selectedTemplate = this.state.fileConfig.templates[0];
     }
+    this.checkDb();
     
+  }
+
+  checkDb() {
+    if(!this.selectedTemplate.author_db) {
+      this.selectedTemplate.author_db = {id: -1, marked: null};
+    }
+    if(!this.selectedTemplate.recipient_db) {
+      this.selectedTemplate.recipient_db = {id: -1, marked: null};
+    }
   }
 
 

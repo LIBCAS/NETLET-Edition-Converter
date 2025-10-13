@@ -6,7 +6,7 @@
     <div class="app-fxLayout app-row app-center-v app-mb-4">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'templates' | translate }}</mat-label>
-        <mat-select [(ngModel)]="selectedTemplate">
+        <mat-select [(ngModel)]="selectedTemplate" (selectionChange)="checkDb()">
           @for(t of state.fileConfig.templates; track idx; let idx = $index){
           <mat-option [value]="t">{{ t.name }}</mat-option>
           }
@@ -28,7 +28,7 @@
           #notes_private></textarea>
       </mat-form-field>
     </div>
-    <div class="app-fxLayout app-row app-center-v app-mb-4" *ngIf="selectedTemplate.author_db">
+    <div class="app-fxLayout app-row app-center-v app-mb-4" >
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'def_author' | translate }}</mat-label>
         <input matInput name="def_author" [(ngModel)]="selectedTemplate.author_db.marked" [matAutocomplete]="auto"
