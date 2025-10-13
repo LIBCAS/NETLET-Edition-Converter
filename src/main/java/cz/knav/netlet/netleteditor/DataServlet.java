@@ -678,9 +678,8 @@ public class DataServlet extends HttpServlet {
                 try {
 
                     JSONObject user = LoginController.getUser(request);
-                    String token = "";
+                    String token = LoginController.getUserToken(request);
                     if (user != null) {
-                        token = user.optString("token");
                         String js = IOUtils.toString(request.getInputStream(), "UTF-8");
                         HikoIndexer hi = new HikoIndexer();
                         ret = hi.saveLetter(js, request.getParameter("tenant"), token);

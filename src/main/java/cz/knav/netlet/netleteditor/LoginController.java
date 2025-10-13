@@ -29,12 +29,12 @@ public class LoginController {
         }
     }
     
-    public static JSONObject getUserToken(HttpServletRequest request) {
+    public static String getUserToken(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (session == null || session.getAttribute("user") == null) {
+        if (session == null || session.getAttribute("token") == null) {
             return null;
         } else {
-            return (JSONObject)session.getAttribute("token");
+            return (String)session.getAttribute("token");
         }
     }
     
@@ -64,10 +64,12 @@ public class LoginController {
 
             HttpResponse<String> response = httpclient.send(hrequest, HttpResponse.BodyHandlers.ofString());
             JSONObject j = new JSONObject(response.body());
-            j.put("tenant", request.getParameter("tenant"));
             
+            j.put("tenant", request.getParameter("tenant"));
             HttpSession session = request.getSession();
             session.setAttribute("user", j);
+            System.out.println(j.getJSONObject("data").getString("token"));
+            session.setAttribute("token", j.getJSONObject("data").getString("token"));
             ret = j.getJSONObject("data").getJSONObject("user");
         } catch (URISyntaxException | IOException | InterruptedException ex) {
             ret.put("error", ex.toString());

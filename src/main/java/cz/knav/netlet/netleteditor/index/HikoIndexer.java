@@ -40,26 +40,28 @@ public class HikoIndexer {
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t)
                 + "/letter";
-        String id = new JSONObject(data).optString("id", null);
-        LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1}", new Object[]{tenant, url});
+
+        String id = new JSONObject(data).optString("id", "");
         try (HttpClient httpclient = HttpClient
                 .newBuilder()
                 .build()) {
             HttpRequest request;
-            if (id != null) {
+            if (!id.isBlank()) {
                 url += "/" + id;
+                LOGGER.log(Level.INFO, "Save letter tenant {0} -> {1}", new Object[]{tenant, url});
                 request = HttpRequest.newBuilder()
                         .uri(new URI(url))
-                        .header("Authorization", token)
+                        .header("Authorization", "Bearer " + token)
                         .header("Accept", "application/json")
                         .header("Content-Type", "application/json")
                         .PUT(HttpRequest.BodyPublishers.ofString(data))
                         .build();
             } else {
                 url += "s";
+                LOGGER.log(Level.INFO, "Save letter tenant {0} -> {1}", new Object[]{tenant, url});
                 request = HttpRequest.newBuilder()
                         .uri(new URI(url))
-                        .header("Authorization", token)
+                        .header("Authorization", "Bearer " + token)
                         .header("Accept", "application/json")
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(data))
@@ -253,7 +255,7 @@ public class HikoIndexer {
             LOGGER.log(Level.SEVERE, "Error in tenant {0} -> {1}", new Object[]{tenant, ex.toString()});
         }
     }
-    
+
     public JSONObject indexLocations() throws URISyntaxException, IOException, InterruptedException {
         Date start = new Date();
         JSONObject ret = new JSONObject();
@@ -278,7 +280,7 @@ public class HikoIndexer {
 
     private void indexTenantLocations(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
-        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) { 
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
