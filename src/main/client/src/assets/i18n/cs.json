@@ -22,6 +22,8 @@
   "book_name": "Název knihy",
   "def_author": "Výchozí autor", 
   "def_recipient": "Výchozí příjemce", 
+  "def_origin": "Výchozí místo odeslání", 
+  "def_destination": "Výchozí místo určení", 
   "Columns": "Počet sloupců",
   "Acronyms": "Akronyma",
   "chatgpt_info": {

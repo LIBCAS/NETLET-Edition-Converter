@@ -22,6 +22,8 @@
   "book_name": "Book Title",
   "def_author": "Default Author",
   "def_recipient": "Default Recipient",
+  "def_origin": "Default origin",
+  "def_destination": "Default destination",
   "Columns": "Number of columns",
   "Acronyms": "Acronyms",
   "chatgpt_info": {

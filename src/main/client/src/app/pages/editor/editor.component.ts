@@ -177,12 +177,22 @@ export class EditorComponent {
       this.letter.hiko.authors.push({ marked: t.author_db?.marked, id: t.author_db?.id });
     }
     if (this.letter.hiko.recipients) {
-      this.letter.hiko.recipients.push({ marked: t.recipient_db?.marked, id: t.recipient_db?.id });
+      this.letter.hiko.recipients.push({ marked: t.recipient_db?.marked, id: t.recipient_db?.id, salutation: t.salutation });
     }
     const copy = new LetterCopy();
-    copy.repository = t.copies_repository;
-    copy.archive = t.copies_archive;
-    copy.collection = t.copies_collection;
+
+    copy.preservation = t.preservation;
+    copy.type = t.type;
+    copy.copy = t.copy;
+    copy.manifestation_notes = t.manifestation_notes;
+    copy.l_number = t.l_number;
+    copy.repository = t.repository;
+    copy.archive = t.archive;
+    copy.collection = t.collection;
+    copy.ms_manifestation = t.ms_manifestation;
+    copy.signature = t.signature;
+    copy.location_note = t.location_note;
+
     this.letter.hiko.copies.push(copy);
     this.letter.hiko.content = '';
     this.view = 'fields';
@@ -752,8 +762,8 @@ export class EditorComponent {
     if (this.letter.letter_number) {
       this.letter.hiko.copies[0].l_number = this.letter.letter_number;
     }
-console.log(this.letter.hiko);
-    return;
+    // console.log(this.letter.hiko);
+    // return;
     this.service.exportToHiko(this.letter.hiko, this.state.user.tenant).subscribe((res: any) => {
       if (res.errors) {
         this.service.showSnackBar(res.message, '', true);

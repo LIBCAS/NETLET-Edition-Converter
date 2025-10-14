@@ -24,7 +24,7 @@
     <div class="app-mb-4">
       <mat-form-field class="app-w-100" appearance="outline">
         <mat-label>{{'field.notes_private' | translate}}</mat-label>
-        <textarea rows="5" matInput [(ngModel)]="selectedTemplate.notes_private" name="notes_private"
+        <textarea rows="3" matInput [(ngModel)]="selectedTemplate.notes_private" name="notes_private"
           #notes_private></textarea>
       </mat-form-field>
     </div>
@@ -54,8 +54,141 @@
           }
         </mat-autocomplete>
       </mat-form-field>
+      
+      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{'field.salutation' | translate}}</mat-label>
+        <input matInput type="text" name="salutation" [(ngModel)]="selectedTemplate.salutation">
+      </mat-form-field>
+
     </div>
-    <div class="app-fxLayout app-row app-center-v app-mb-2">
+
+    <div class="app-fxLayout app-row app-center-v app-mb-4" >
+      <mat-form-field class="app-fxFlex" appearance="outline">
+        <mat-label>{{ 'def_origin' | translate }}</mat-label>
+
+        <input matInput [(ngModel)]="selectedTemplate.origin_db.marked" name="origin_db" id="origin_db"
+        [matAutocomplete]="autoOrigin" (focus)="checkPlaces('', false, origins_db)"
+        (keyup)="checkPlaces($event, true, origins_db)">
+        <mat-autocomplete #autoOrigin="matAutocomplete">
+          @for(a of origins_db(); track idx; let idx = $index){
+          <mat-option [value]="a.name">
+            {{a.name}}
+          </mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{ 'def_destination' | translate }}</mat-label>
+        <input matInput name="def_destination" [(ngModel)]="selectedTemplate.destination_db.marked" [matAutocomplete]="autoDest"
+          (keyup)="checkPlaces($event, true, destinations_db)">
+        <mat-autocomplete #autoDest="matAutocomplete">
+          @for(a of destinations_db(); track idx; let idx = $index){
+          <mat-option [value]="a.name">
+            {{a.name}}
+          </mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+      
+
+    </div>
+
+
+    
+    <fieldset>
+    <legend>{{ 'field.copies' | translate }}</legend>
+      <div class="app-fxLayout app-row app-center-v app-mb-4">
+        <mat-form-field class="app-fxFlex" appearance="outline">
+          <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
+          <input matInput [(ngModel)]="selectedTemplate.repository" [name]="'copies_repository'"
+            [matAutocomplete]="autoRepos" (focus)="getLocations(selectedTemplate.repository, 'repository')"
+            (change)="getLocations(selectedTemplate.repository, 'repository')"
+            (keyup)="getLocations(selectedTemplate.repository, 'repository')"><span matSuffix></span>
+          <ng-container matSuffix
+            *ngTemplateOutlet="icons; context:{ field: 'copies_repository' }"></ng-container>
+          <mat-autocomplete #autoRepos="matAutocomplete">
+            @for(a of repositories; track idx; let idx = $index){
+            <mat-option [value]="a.name">
+              {{a.name}}
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+          <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
+          <input matInput [(ngModel)]="selectedTemplate.archive" name="copies_archive" [matAutocomplete]="autoArchives"
+            (change)="getLocations(selectedTemplate.archive, 'archive')" (keyup)="getLocations(selectedTemplate.archive, 'archive')"><span
+            matSuffix></span>
+          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_archive' }"></ng-container>
+          <mat-autocomplete #autoArchives="matAutocomplete">
+            @for(a of archives; track idx; let idx = $index){
+            <mat-option [value]="a.name">
+              {{a.name}}
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+          <mat-label>{{ 'field.copies_collection' | translate}}</mat-label>
+          <input matInput [(ngModel)]="selectedTemplate.collection" name="copies_collection" [matAutocomplete]="autoCollections"
+            (change)="getLocations(selectedTemplate.collection, 'collection')"
+            (keyup)="getLocations(selectedTemplate.collection, 'collection')"><span matSuffix></span>
+          <ng-container matSuffix
+            *ngTemplateOutlet="icons; context:{ field: 'copies_collection' }"></ng-container>
+          <mat-autocomplete #autoCollections="matAutocomplete">
+            @for( a of collections; track idx; let idx = $index){
+            <mat-option [value]="a.name">
+              {{a.name}}
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+          <mat-label>{{ 'field.copies_signature' | translate}}</mat-label>
+          <input matInput [(ngModel)]="selectedTemplate.signature" name="copies_signature"><span matSuffix></span>
+          <ng-container matSuffix
+            *ngTemplateOutlet="icons; context:{ field: 'copies_signature' }"></ng-container>
+        </mat-form-field>
+      </div>
+
+      <div class="app-fxLayout app-row app-center-v app-mb-4">
+        <mat-form-field class="app-fxFlex" appearance="outline">
+          <mat-label>{{ 'field.type' | translate}}</mat-label>
+          <mat-select [(ngModel)]="selectedTemplate.type" name="copies_type">
+            @for(a of config.copyValues.type; track $index){
+            <mat-option [value]="a">{{ 'copyValues.type.' + a | translate}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+          <mat-label>{{ 'field.preservation' | translate}}</mat-label>
+
+          <mat-select [(ngModel)]="selectedTemplate.preservation" name="copies_preservation">
+            @for(a of config.copyValues.preservation; track $index){
+            <mat-option [value]="a">{{ 'copyValues.preservation.' + a | translate}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+          <mat-label>{{ 'field.copy' | translate}}</mat-label>
+          <!-- <input matInput [(ngModel)]="copy.copy" name="copies_copy"><span matSuffix></span>
+          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_copy' }"></ng-container> -->
+
+          <mat-select [(ngModel)]="selectedTemplate.copy" name="copies_copy">
+            @for(a of config.copyValues.copy; track $index){
+            <mat-option [value]="a">{{ 'copyValues.copy.' + a | translate}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </fieldset>
+
+
+    <!-- <div class="app-fxLayout app-row app-center-v app-mb-2">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
         <input matInput [(ngModel)]="selectedTemplate.copies_repository" name="copies_repository"
@@ -98,7 +231,7 @@
           }
         </mat-autocomplete>
       </mat-form-field>
-    </div>
+    </div> -->
 
 
   </div>

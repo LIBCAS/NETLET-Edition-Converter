@@ -102,8 +102,8 @@ export class LetterFieldsComponent {
     authors_db = signal<{ id: number, marked: string, name?: string }[]>([]);
     author_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
     noauthor = {marked:'', id:-1, name: ''};
-    recipients_db = signal<{ id: number, marked: string, name?: string }[]>([]);
-    recipient_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    recipients_db = signal<{ id: number, marked: string, name?: string, salutation?: string }[]>([]);
+    recipient_db: { id: number, marked: string, name?: string, salutation?: string } = {marked:'', id:-1};
     norecipient = {marked:'', id:-1, name: ''};
     
   
@@ -185,12 +185,14 @@ export class LetterFieldsComponent {
   checkRecipientDb() {
     if (this._letter.hiko.recipients?.length > 0) {
       this._letter.hiko.recipients[0].marked = this._letter.recipient;
+      this._letter.hiko.recipients[0].salutation = this._letter.salutation;
     }
   }
 
   setRecipientDb(e: any) {
     this._letter.hiko.recipients = [this.recipient_db];
     this._letter.hiko.recipients[0].marked = this._letter.recipient;
+    this._letter.hiko.recipients[0].salutation = this._letter.salutation;
   }
 
   checkOriginDb() {
@@ -626,9 +628,20 @@ export class LetterFieldsComponent {
 
   addCopy() {
     const copy = new LetterCopy();
-    copy.repository = this._letter.template.copies_repository;
-    copy.archive = this._letter.template.copies_archive;
-    copy.collection = this._letter.template.copies_collection;
+    
+
+          copy.preservation = this._letter.template.preservation;
+          copy.type = this._letter.template.type;
+          copy.copy = this._letter.template.copy;
+          copy.manifestation_notes = this._letter.template.manifestation_notes;
+          copy.l_number = this._letter.template.l_number;
+          copy.repository = this._letter.template.repository;
+          copy.archive = this._letter.template.archive;
+          copy.collection = this._letter.template.collection;
+          copy.ms_manifestation = this._letter.template.ms_manifestation;
+          copy.signature = this._letter.template.signature;
+          copy.location_note = this._letter.template.location_note;
+
     this._letter.hiko.copies.push(copy);
   }
 

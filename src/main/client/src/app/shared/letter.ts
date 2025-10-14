@@ -8,7 +8,7 @@ export class LetterCopy {
     preservation: string;
     copy: string;
     manifestation_notes: string;
-    l_number: null;
+    l_number: string;
     repository: string;
     archive: string;
     collection: string;

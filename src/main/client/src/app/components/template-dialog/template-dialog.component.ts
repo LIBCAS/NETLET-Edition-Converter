@@ -1,5 +1,5 @@
 import { NgIf, NgFor } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AngularSplitModule } from 'angular-split';
+import { AppConfiguration } from 'src/app/app-configuration';
 import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { FileTemplate, FileConfig } from 'src/app/shared/file-config';
@@ -22,25 +23,29 @@ import { Letter } from 'src/app/shared/letter';
 @Component({
   selector: 'app-template-dialog',
   standalone: true,
-  imports: [FormsModule, AngularSplitModule, NgIf, RouterModule, TranslateModule, 
+  imports: [FormsModule, AngularSplitModule, NgIf, RouterModule, TranslateModule,
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule,
     MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule],
   templateUrl: './template-dialog.component.html',
   styleUrl: './template-dialog.component.scss'
 })
 export class TemplateDialogComponent {
-  authors_db: {id: string, tenant: string, name: string}[] = [];
+  authors_db: { id: string, tenant: string, name: string }[] = [];
   selectedTemplate: FileTemplate;
   new_template: string;
-  
 
-  locations_db: {id: string, tenant: string, name: string, type: string}[] = [];
-  repositories: {id: string, tenant: string, name: string}[] = [];
-  archives: {id: string, tenant: string, name: string}[] = [];
-  collections: {id: string, tenant: string, name: string}[] = [];
+  origins_db = signal<{ id: number, marked: string, name?: string }[]>([]);
+  destinations_db = signal<{ id: number, marked: string, name?: string }[]>([]);
+
+
+  locations_db: { id: string, tenant: string, name: string, type: string }[] = [];
+  repositories: { id: string, tenant: string, name: string }[] = [];
+  archives: { id: string, tenant: string, name: string }[] = [];
+  collections: { id: string, tenant: string, name: string }[] = [];
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: {template: FileTemplate},
+    @Inject(MAT_DIALOG_DATA) public data: { template: FileTemplate },
+        public config: AppConfiguration,
     public state: AppState,
     private service: AppService
   ) { }
@@ -53,36 +58,49 @@ export class TemplateDialogComponent {
       this.selectedTemplate = this.state.fileConfig.templates[0];
     }
     this.checkDb();
-    
+
   }
 
   checkDb() {
-    if(!this.selectedTemplate.author_db) {
-      this.selectedTemplate.author_db = {id: -1, marked: null};
+    if (!this.selectedTemplate.author_db) {
+      this.selectedTemplate.author_db = { id: -1, marked: null };
     }
-    if(!this.selectedTemplate.recipient_db) {
-      this.selectedTemplate.recipient_db = {id: -1, marked: null};
+    if (!this.selectedTemplate.recipient_db) {
+      this.selectedTemplate.recipient_db = { id: -1, marked: null, salutation: null };
+    }
+    if (!this.selectedTemplate.origin_db) {
+      this.selectedTemplate.origin_db = { id: -1, marked: null };
+    }
+    if (!this.selectedTemplate.destination_db) {
+      this.selectedTemplate.destination_db = { id: -1, marked: null };
     }
   }
 
 
-getAuthors(e: string) {
-  this.service.getAuthors(e, this.state.user.tenant ? this.state.user.tenant : '').subscribe((resp: any) => {
-    this.authors_db = resp.authors;
-    if (!this.selectedTemplate.author_db) {
-      this.selectedTemplate.author_db = JSON.parse(JSON.stringify(this.authors_db[0]));
-    }
+  getAuthors(e: string) {
+    this.service.getAuthors(e, this.state.user.tenant ? this.state.user.tenant : '').subscribe((resp: any) => {
+      this.authors_db = resp.authors;
+      if (!this.selectedTemplate.author_db) {
+        this.selectedTemplate.author_db = JSON.parse(JSON.stringify(this.authors_db[0]));
+      }
 
-    if (!this.selectedTemplate.recipient_db) {
-      this.selectedTemplate.recipient_db = JSON.parse(JSON.stringify(this.authors_db[0]));
-    }
+      if (!this.selectedTemplate.recipient_db) {
+        this.selectedTemplate.recipient_db = JSON.parse(JSON.stringify(this.authors_db[0]));
+      }
 
-    
-  });
-}
+
+    });
+  }
+
+  checkPlaces(e: any, extended: boolean, list: any) {
+    const val = e.target ? e.target.value : e;
+    this.service.checkPlaces(val, this.state.user.tenant, extended).subscribe((resp: any) => {
+      list.set(resp.places);
+    });
+  }
 
   save() {
-    this.service.saveFile(this.state.selectedFile.filename, this.state.fileConfig).subscribe(res => {});
+    this.service.saveFile(this.state.selectedFile.filename, this.state.fileConfig).subscribe(res => { });
   }
 
   addTemplate() {
@@ -104,10 +122,10 @@ getAuthors(e: string) {
   getLocations(e: string, type: string) {
     this.service.getLocations(e, this.state.user.tenant ? this.state.user.tenant : '', type).subscribe((resp: any) => {
       this.locations_db = resp.locations;
-      switch(type) {
+      switch (type) {
         case 'repository': this.repositories = this.locations_db.filter(l => l.type === 'repository'); break;
-        case 'archive':this.archives = this.locations_db.filter(l => l.type === 'archive'); break;
-        case 'collection':this.collections = this.locations_db.filter(l => l.type === 'collection'); break;
+        case 'archive': this.archives = this.locations_db.filter(l => l.type === 'archive'); break;
+        case 'collection': this.collections = this.locations_db.filter(l => l.type === 'collection'); break;
       }
     });
   }
