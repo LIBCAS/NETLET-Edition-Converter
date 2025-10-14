@@ -90,7 +90,6 @@
           }
         </mat-autocomplete>
       </mat-form-field>
-      
 
     </div>
 
@@ -175,8 +174,6 @@
         </mat-form-field>
         <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
           <mat-label>{{ 'field.copy' | translate}}</mat-label>
-          <!-- <input matInput [(ngModel)]="copy.copy" name="copies_copy"><span matSuffix></span>
-          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_copy' }"></ng-container> -->
 
           <mat-select [(ngModel)]="selectedTemplate.copy" name="copies_copy">
             @for(a of config.copyValues.copy; track $index){
@@ -186,53 +183,7 @@
         </mat-form-field>
       </div>
     </fieldset>
-
-
-    <!-- <div class="app-fxLayout app-row app-center-v app-mb-2">
-      <mat-form-field class="app-fxFlex" appearance="outline">
-        <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
-        <input matInput [(ngModel)]="selectedTemplate.copies_repository" name="copies_repository"
-          [matAutocomplete]="autoRepos" (focus)="getLocations(selectedTemplate.copies_repository, 'repository')"
-          (change)="getLocations(selectedTemplate.copies_repository, 'repository')"
-          (keyup)="getLocations(selectedTemplate.copies_repository, 'repository')">
-        <mat-autocomplete #autoRepos="matAutocomplete">
-          @for(a of repositories; track idx; let idx = $index){
-          <mat-option [value]="a.name">
-            {{a.name}}
-          </mat-option>
-          }
-        </mat-autocomplete>
-      </mat-form-field>
-
-      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-        <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
-        <input matInput [(ngModel)]="selectedTemplate.copies_archive" name="copies_archive"
-          [matAutocomplete]="autoArchives" (change)="getLocations(selectedTemplate.copies_archive, 'archive')"
-          (keyup)="getLocations(selectedTemplate.copies_archive, 'archive')">
-        <mat-autocomplete #autoArchives="matAutocomplete">
-          @for(a of archives; track idx; let idx = $index){
-          <mat-option [value]="a.name">
-            {{a.name}}
-          </mat-option>
-          }
-        </mat-autocomplete>
-      </mat-form-field>
-
-      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-        <mat-label>{{ 'field.copies_collection' | translate}}</mat-label>
-        <input matInput [(ngModel)]="selectedTemplate.copies_collection" name="copies_collection"
-          [matAutocomplete]="autoCollections" (change)="getLocations(selectedTemplate.copies_collection, 'collection')"
-          (keyup)="getLocations(selectedTemplate.copies_collection, 'collection')">
-        <mat-autocomplete #autoCollections="matAutocomplete">
-          @for(a of collections; track idx; let idx = $index){
-          <mat-option [value]="a.name">
-            {{a.name}}
-          </mat-option>
-          }
-        </mat-autocomplete>
-      </mat-form-field>
-    </div> -->
-
+    
 
   </div>
 </div>

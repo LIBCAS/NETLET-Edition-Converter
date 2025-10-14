@@ -68,7 +68,6 @@ public class LoginController {
             j.put("tenant", request.getParameter("tenant"));
             HttpSession session = request.getSession();
             session.setAttribute("user", j);
-            System.out.println(j.getJSONObject("data").getString("token"));
             session.setAttribute("token", j.getJSONObject("data").getString("token"));
             ret = j.getJSONObject("data").getJSONObject("user");
         } catch (URISyntaxException | IOException | InterruptedException ex) {

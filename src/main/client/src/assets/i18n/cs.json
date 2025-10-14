@@ -41,6 +41,7 @@
   "id_not_exists": "Id neexistuje v HIKO",
   "loginPage": "Přihlášení",
   "field": {
+    "hiko_id": "Id v HIKO", 
     "author": "Autor", 
     "author_db": "Autor v HIKO db", 
     "recipient": "Příjemce", 

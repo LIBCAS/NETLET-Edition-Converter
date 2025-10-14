@@ -80,7 +80,7 @@
 
       <mat-label>{{ 'field.author_db' | translate}}</mat-label>
     <input matInput [(ngModel)]="_letter.hiko.authors[0]" name="author_db" id="author_db"
-        [matAutocomplete]="autoAuthor" (focus)="checkAuthors($event, false, authors_db)"
+        [matAutocomplete]="autoAuthor" (focus)="checkAuthors($event, true, authors_db)"
         (keyup)="checkAuthors($event, true, authors_db)">
       <mat-autocomplete #autoAuthor="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setAuthorDb($event)">
         @for(a of authors_db(); track idx; let idx = $index){

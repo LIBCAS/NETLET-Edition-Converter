@@ -41,6 +41,7 @@
   "id_not_exists": "Id doesn't exists in HIKO",
   "loginPage": "Login",
   "field": {
+    "hiko_id": "Id HIKO", 
     "author": "Author",
     "author_db": "Author in HIKO db", 
     "recipient": "Recipient",
