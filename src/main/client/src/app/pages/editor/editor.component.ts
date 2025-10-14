@@ -752,8 +752,8 @@ export class EditorComponent {
     if (this.letter.letter_number) {
       this.letter.hiko.copies[0].l_number = this.letter.letter_number;
     }
-
-    //return;
+console.log(this.letter.hiko);
+    return;
     this.service.exportToHiko(this.letter.hiko, this.state.user.tenant).subscribe((res: any) => {
       if (res.errors) {
         this.service.showSnackBar(res.message, '', true);

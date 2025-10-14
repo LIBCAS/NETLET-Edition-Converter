@@ -1,5 +1,5 @@
 import { NgIf, NgTemplateOutlet, NgFor, DatePipe } from '@angular/common';
-import { Component, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output, Signal, signal, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -73,23 +73,23 @@ export class LetterFieldsComponent {
     }
     
     if (this._letter.hiko.authors) {
-      this.authors_db = this._letter.hiko.authors;
+      this.authors_db.set(this._letter.hiko.authors);
       this.author_db = this._letter.hiko.authors[0];
     }
     if (this._letter.hiko.recipients) {
-      this.recipients_db = this._letter.hiko.recipients;
+      this.recipients_db.set(this._letter.hiko.recipients);
       this.recipient_db = this._letter.hiko.recipients[0];
     }
     
     if (this._letter.hiko.origins?.length > 0) {
-      this.origins_db = this._letter.hiko.origins;
+      this.origins_db.set(this._letter.hiko.origins);
       this.origin_db = this._letter.hiko.origins[0];
     } else {
       this._letter.hiko.origins = [];
     }
     
     if (this._letter.hiko.destinations?.length > 0) {
-      this.destinations_db = this._letter.hiko.destinations;
+      this.destinations_db.set(this._letter.hiko.destinations);
       this.destination_db = this._letter.hiko.destinations[0];
     } else {
       this._letter.hiko.destinations = [];
@@ -99,18 +99,18 @@ export class LetterFieldsComponent {
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
   @Output() onShouldRefresh = new EventEmitter<string>();
   
-    authors_db: { id: number, marked: string, name?: string }[] = [];
+    authors_db = signal<{ id: number, marked: string, name?: string }[]>([]);
     author_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
     noauthor = {marked:'', id:-1, name: ''};
-    recipients_db: { id: number, marked: string, name?: string }[] = [];
+    recipients_db = signal<{ id: number, marked: string, name?: string }[]>([]);
     recipient_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
     norecipient = {marked:'', id:-1, name: ''};
     
   
-    origins_db: { id: number, marked: string, name?: string }[] = [];
+    origins_db = signal<{ id: number, marked: string, name?: string }[]>([]);
     origin_db: { id: number, marked: string, name?: string } = {marked:'', id:-1, name: ''};
     noorigin = {marked:'', id:-1, name: ''};
-    destinations_db: { id: number, marked: string, name?: string }[] = [];
+    destinations_db = signal<{ id: number, marked: string, name?: string }[]>([]);
     destination_db: { id: number, marked: string, name?: string } = {marked:'', id:-1, name: ''};
     nodestination = {marked:'', id:-1, name: ''};
 
@@ -215,17 +215,17 @@ export class LetterFieldsComponent {
     this._letter.hiko.destinations[0].marked = this._letter.destination;
   }
 
-  checkAuthors(extended: boolean) {
-    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.user.tenant, extended).subscribe((resp: any) => {
-      this.authors_db = resp.author;
-      this.recipients_db = resp.recipient;
+  checkAuthors(e:any, extended: boolean, list: any) {
+    const val = e.target ? e.target.value : e;
+    this.service.checkAuthors(val, this.state.user.tenant, extended).subscribe((resp: any) => {
+      list.set(resp.authors);
     });
   }
 
-  checkPlaces(e:any, extended: boolean, list: { id: number, marked: string, name?: string }[]) {
+  checkPlaces(e:any, extended: boolean, list: any) {
     const val = e.target ? e.target.value : e;
     this.service.checkPlaces(val, this.state.user.tenant, extended).subscribe((resp: any) => {
-      list = resp.places;
+      list.set(resp.places);
     });
   }
 
@@ -373,7 +373,8 @@ export class LetterFieldsComponent {
         // this.letter.abstract_cs = orig;
       } else {
         this.setAnalysis(resp);
-        this.checkAuthors(false);
+        this.checkAuthors(this._letter.author, false, this.authors_db);
+        this.checkAuthors(this._letter.recipient, false, this.recipients_db);
       }
     });
   }
@@ -387,7 +388,8 @@ export class LetterFieldsComponent {
         // this.letter.abstract_cs = orig;
       } else {
         this.setAnalysis(resp);
-        this.checkAuthors(false);
+        this.checkAuthors(this._letter.author, false, this.authors_db);
+        this.checkAuthors(this._letter.recipient, false, this.recipients_db);
         //this.checkPlaces(false);
       }
     });

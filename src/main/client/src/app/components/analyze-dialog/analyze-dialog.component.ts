@@ -251,7 +251,12 @@ export class AnalyzeDialogComponent {
       } else {
         this.setAnalysis(JSON.parse(resp.choices[0].message.content));
         this.usage = resp.usage;
-        this.checkAuthors(false);
+
+        
+        this.checkAuthors(this._letter.author, false, this.authors_db);
+        this.checkAuthors(this._letter.recipient, false, this.recipients_db);
+
+
         this.checkPlaces(false);
       }
     });
@@ -277,7 +282,10 @@ export class AnalyzeDialogComponent {
       } else {
         this.setAnalysis(JSON.parse(resp.choices[0].message.content));
         this.usage = resp.usage;
-        this.checkAuthors(false);
+        // this.checkAuthors(false);
+        
+        this.checkAuthors(this._letter.author, false, this.authors_db);
+        this.checkAuthors(this._letter.recipient, false, this.recipients_db);
       }
     });
   }
@@ -286,19 +294,26 @@ export class AnalyzeDialogComponent {
 
   }
 
-  checkAuthors(extended: boolean) {
-
-    this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.user.tenant, extended).subscribe((resp: any) => {
-      this.authors_db = resp.author;
-      this.recipients_db = resp.recipient;
-      if (this.authors_db.length > 0) {
-        this.author_db = this.authors_db[0];
-      }
-      if (this.recipients_db.length > 0) {
-        this.recipient_db = this.recipients_db[0];
-      }
+  checkAuthors(e:any, extended: boolean, list: { id: number, marked: string, name?: string }[]) {
+    const val = e.target ? e.target.value : e;
+    this.service.checkAuthors(val, this.state.user.tenant, extended).subscribe((resp: any) => {
+      list = resp.authorv;
     });
   }
+
+  // checkAuthors(extended: boolean) {
+
+  //   this.service.checkAuthors(this._letter.author, this._letter.recipient, this.state.user.tenant, extended).subscribe((resp: any) => {
+  //     this.authors_db = resp.author;
+  //     this.recipients_db = resp.recipient;
+  //     if (this.authors_db.length > 0) {
+  //       this.author_db = this.authors_db[0];
+  //     }
+  //     if (this.recipients_db.length > 0) {
+  //       this.recipient_db = this.recipients_db[0];
+  //     }
+  //   });
+  // }
 
   
 

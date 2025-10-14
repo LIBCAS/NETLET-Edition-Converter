@@ -442,6 +442,7 @@ public class Indexer {
             }
             query.set("tie", "0.1");
             if (extended) {
+                query.setQuery(name+"*");
                 query.set("mm", "90%");
                 query.setRows(20);
             } else {

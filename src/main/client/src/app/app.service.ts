@@ -143,9 +143,9 @@ export class AppService {
     return this.get(url);
   }
 
-  checkAuthors(author: string, recipient: string, tenant: string, extended: boolean): Observable<any> {
+  checkAuthors(name: string, tenant: string, extended: boolean): Observable<any> {
     const params: HttpParams = new HttpParams()
-    .set('author', author).set('recipient', recipient).set('tenant', tenant).set('extended', extended);
+    .set('name', name).set('tenant', tenant).set('extended', extended);
     return this.get(`/data/check_authors`, params);
     
   }
