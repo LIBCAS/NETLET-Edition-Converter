@@ -178,7 +178,7 @@ export class LetterFieldsComponent {
   }
 
   setAuthorDb(e: any) {
-    this._letter.hiko.authors = [this.author_db];
+    //this._letter.hiko.authors = [this.author_db];
     this._letter.hiko.authors[0].marked = this._letter.author;
   }
 
@@ -190,7 +190,7 @@ export class LetterFieldsComponent {
   }
 
   setRecipientDb(e: any) {
-    this._letter.hiko.recipients = [this.recipient_db];
+    //this._letter.hiko.recipients = [this.recipient_db];
     this._letter.hiko.recipients[0].marked = this._letter.recipient;
     this._letter.hiko.recipients[0].salutation = this._letter.salutation;
   }

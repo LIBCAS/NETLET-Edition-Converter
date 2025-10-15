@@ -3,7 +3,7 @@ import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveF
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AppService } from 'src/app/app.service';
 import { AltoBlock, AltoLine, AltoString } from 'src/app/shared/alto';
-import { CopyHIKO, Entity, Letter, LetterCopy, PlaceMeta } from 'src/app/shared/letter';
+import { CopyHIKO, Entity, Letter, LetterCopy, LetterHIKO, PlaceMeta } from 'src/app/shared/letter';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -479,6 +479,18 @@ export class EditorComponent {
         if (!this.letter.template) {
           this.letter.template = this.state.fileConfig.templates[0];
         }
+        
+        if (!this.letter.hiko) {
+          this.letter.hiko = new LetterHIKO();
+        }
+        
+        if (!this.letter.hiko.authors) {
+          this.letter.hiko.authors = [];
+        }
+        
+        if (!this.letter.hiko.recipients) {
+          this.letter.hiko.recipients = [];
+        }
 
         if (!this.letter.hiko.copies) {
           this.letter.hiko.copies = [];
@@ -499,7 +511,6 @@ export class EditorComponent {
       this.view = 'fields';
     });
   }
-
 
   selectResult(doc: any, keepSelection: boolean, idx: number) {
     if (this.ignored[doc.id]) {
@@ -643,24 +654,25 @@ export class EditorComponent {
 
         const authors = res.identities.filter((i: any) => i.pivot.role === "author").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
         if (authors.length > 0) {
-          letter.author = authors[0].marked ? authors[0].marked : authors[0].name;
+          letter.author = authors[0].marked;
         }
 
-        const recipients = res.identities.filter((i: any) => i.pivot.role === "recipient").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+        const recipients = res.identities.filter((i: any) => i.pivot.role === "recipient").map((ident: any) => { return { id: ident.id, name: ident.name, salutation: ident.pivot.salutation, marked: ident.pivot.marked } });
         if (recipients.length > 0) {
-          letter.recipient = recipients[0].marked ? recipients[0].marked : recipients[0].name;
+          letter.recipient = recipients[0].marked;
+          letter.salutation = recipients[0].salutation;
         }
 
         const mentioned = res.identities.filter((i: any) => i.pivot.role === "mentioned").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
 
-        const origins = res.identities.filter((i: any) => i.pivot.role === "origin").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+        const origins = res.places.filter((i: any) => i.pivot.role === "origin").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
         if (origins.length > 0) {
-          letter.origin = origins[0].marked ? origins[0].marked : origins[0].name;
+          letter.origin = origins[0].marked;
         }
 
-        const destinations = res.identities.filter((i: any) => i.pivot.role === "destination").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+        const destinations = res.places.filter((i: any) => i.pivot.role === "destination").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
         if (destinations.length > 0) {
-          letter.destination = destinations[0].marked ? destinations[0].marked : destinations[0].name;
+          letter.destination = destinations[0].marked;
         }
 
         letter.hiko = {
@@ -750,14 +762,28 @@ export class EditorComponent {
   }
 
   exportToHIKO() {
-    if (this.letter.hiko.date) {
-      const d: Date = new Date(this.letter.hiko.date);
-      this.letter.hiko.date_computed = this.letter.hiko.date;
+
+    if (this.letter.date) {
+      const d: Date = new Date(this.letter.date);
+      this.letter.hiko.date_computed = this.letter.date;
       this.letter.hiko.date_year = d.getFullYear();
       this.letter.hiko.date_month = d.getMonth() + 1;
       this.letter.hiko.date_day = d.getUTCDate();
     }
+
     this.letter.hiko.content_stripped = this.letter.hiko.content;
+    
+    this.letter.hiko.authors[0].marked = this.letter.author;
+
+    this.letter.hiko.recipients[0].marked = this.letter.recipient;
+    this.letter.hiko.recipients[0].salutation = this.letter.salutation;
+
+    if (this.letter.hiko.origins.length > 0) {
+      this.letter.hiko.origins[0].marked = this.letter.origin;
+    }
+    if (this.letter.hiko.destinations.length > 0) {
+    this.letter.hiko.destinations[0].marked = this.letter.destination;
+    }
 
     if (this.letter.letter_number) {
       this.letter.hiko.copies[0].l_number = this.letter.letter_number;
