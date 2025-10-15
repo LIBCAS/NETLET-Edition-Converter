@@ -61,7 +61,7 @@
               [matTooltip]="'action.import_from_hiko' | translate"><mat-icon>file_open</mat-icon></button>
             <button class="app-hiko" [disabled]="!letter" mat-icon-button (click)="exportToHIKO()"
               [matTooltip]="'action.export_to_hiko' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
-            <button class="app-hiko" [disabled]="!letter || !letter.hiko_id" mat-icon-button (click)="viewLetterInHIKO()"
+            <button class="app-hiko" [disabled]="!letter?.hiko_id" mat-icon-button (click)="viewLetterInHIKO()"
               [matTooltip]="'action.view_in_hiko' | translate"><mat-icon>open_in_new_off</mat-icon></button>
             <!-- <button mat-icon-button (click)="regenerateAlto()" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button> -->
           </div>

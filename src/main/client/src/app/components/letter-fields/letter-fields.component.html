@@ -69,9 +69,10 @@
     </mat-form-field>
   </div>
 
-  <div class="app-fxLayout app-row app-center-v app-mb-4">
+  <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
+    <legend>{{ 'fieldset.author' | translate }}</legend>
     <mat-form-field class="app-fxFlex">
-      <mat-label>{{ 'field.author' | translate}}</mat-label>
+      <mat-label>{{ 'field.author_marked' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.author" name="author" (change)="checkAuthorDb()" /><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'author' }"></ng-container>
     </mat-form-field>
@@ -79,7 +80,7 @@
     <mat-form-field class="app-fxFlex app-ml-3">
 
       <mat-label>{{ 'field.author_db' | translate}}</mat-label>
-    <input matInput [(ngModel)]="_letter.hiko.authors[0]" name="author_db" id="author_db"
+      <input matInput [(ngModel)]="_letter.hiko.authors[0]" name="author_db" id="author_db"
         [matAutocomplete]="autoAuthor" (focus)="checkAuthors($event, true, authors_db)"
         (keyup)="checkAuthors($event, true, authors_db)">
       <mat-autocomplete #autoAuthor="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setAuthorDb($event)">
@@ -91,11 +92,14 @@
       </mat-autocomplete>
     </mat-form-field>
 
+  </fieldset>
 
-    <mat-icon (click)="switchAuthors()" class="app-ml-2 app-mr-2">sync_alt</mat-icon>
+  <!-- <mat-icon (click)="switchAuthors()" class="app-ml-2 app-mr-2">sync_alt</mat-icon> -->
 
+  <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
+    <legend>{{ 'fieldset.recipient' | translate }}</legend>
     <mat-form-field class="app-fxFlex">
-      <mat-label>{{ 'field.recipient' | translate}}</mat-label>
+      <mat-label>{{ 'field.recipient_marked' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.recipient" name="recipient" (change)="checkRecipientDb()"><span
         matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'recipient' }"></ng-container>
@@ -103,10 +107,11 @@
 
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.hiko.recipients[0]" name="recipient_db" id="recipient_db"
+      <input matInput [(ngModel)]="_letter.hiko.recipients[0]" name="recipient_db" id="recipient_db"
         [matAutocomplete]="autoRecipient" (focus)="checkAuthors($event, true, recipients_db)"
         (keyup)="checkAuthors($event, true, recipients_db)">
-      <mat-autocomplete #autoRecipient="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setRecipientDb($event)">
+      <mat-autocomplete #autoRecipient="matAutocomplete" [displayWith]="displayFn"
+        (optionSelected)="setRecipientDb($event)">
         @for(a of recipients_db(); track idx; let idx = $index){
         <mat-option [value]="a">
           {{a.name}}
@@ -114,12 +119,19 @@
         }
       </mat-autocomplete>
     </mat-form-field>
-  </div>
+    <mat-form-field class="app-fxFlex app-ml-3">
+      <mat-label>{{ 'field.salutation' | translate}}</mat-label>
+      <input matInput [(ngModel)]="_letter.salutation" name="salutation"><span matSuffix></span>
+      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
+    </mat-form-field>
+
+  </fieldset>
 
 
-  <div class="app-fxLayout app-row app-center-v app-mb-4">
+  <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
+    <legend>{{ 'fieldset.origin' | translate }}</legend>
     <mat-form-field class="app-fxFlex">
-      <mat-label>{{ 'field.origin' | translate}}</mat-label>
+      <mat-label>{{ 'field.origin_marked' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.origin" name="origin" (change)="checkOriginDb()" /><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'origin' }"></ng-container>
     </mat-form-field>
@@ -137,9 +149,12 @@
         }
       </mat-autocomplete>
     </mat-form-field>
+  </fieldset>
 
+  <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
+    <legend>{{ 'fieldset.destination' | translate }}</legend>
     <mat-form-field class="app-fxFlex app-ml-3">
-      <mat-label>{{ 'field.destination' | translate}}</mat-label>
+      <mat-label>{{ 'field.destination_marked' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.destination" name="destination" (change)="checkDestinationDb()"><span
         matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'destination' }"></ng-container>
@@ -158,15 +173,12 @@
         }
       </mat-autocomplete>
     </mat-form-field>
+  </fieldset>
 
-  </div>
-
-  <div class="app-fxLayout app-row app-center-v app-mb-4">
+  <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
+    <legend>{{ 'fieldset.date' | translate }}</legend>
     <mat-form-field class="app-fxFlex app-calendar">
       <mat-label>{{ 'field.date' | translate}}</mat-label>
-      <!-- <input matInput [matDatepicker]="picker" [formControl]="datum" >
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker> -->
       <input matInput [matDatepicker]="dp2" [placeholder]="'field.date' | translate" [formControl]="datum"
         (dateChange)="setDatum()">
       <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
@@ -179,69 +191,58 @@
       <input matInput [(ngModel)]="_letter.hiko.date_marked" id="date_marked" name="date_marked"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'date_marked' }"></ng-container>
     </mat-form-field>
-    
+
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.languages' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.hiko.languages" name="languages">
     </mat-form-field>
-  </div>
+  </fieldset>
 
-  <div class="app-fxLayout app-row app-center-v app-mb-4">
-    <mat-form-field class="app-fxFlex">
-      <mat-label>{{ 'field.salutation' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.salutation" name="salutation"><span matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
-    </mat-form-field>
+  <!-- <div class="app-fxLayout app-row app-center-v app-mb-4">
+    
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.signature' | translate}}</mat-label>
       <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
       <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
     </mat-form-field>
-  </div>
-
-  <div class="app-mb-4">
-    <mat-form-field class="app-w-100">
-      <mat-label>{{ 'field.incipit' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.hiko.incipit" name="incipit"><span matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'incipit' }"></ng-container>
-    </mat-form-field>
-  </div>
-
-  <div class="app-mb-4">
-    <mat-form-field class="app-w-100">
-      <mat-label>{{ 'field.explicit' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.hiko.explicit" name="explicit"><span matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'explicit' }"></ng-container>
-    </mat-form-field>
-  </div>
-
-  <div class="app-mb-4">
-    <mat-form-field class="app-w-100">
-      <mat-label>{{ 'field.abstract_cs' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.cs" name="abstract_cs" #abstract_cs></textarea>
-    </mat-form-field>
-  </div>
-
-  <div class="app-mb-4">
-    <mat-form-field class="app-w-100">
-      <mat-label>{{ 'field.abstract_en' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.en" name="abstract_en" #abstract_en></textarea>
-    </mat-form-field>
-  </div>
-
-  <div class="app-mb-4">
-    <mat-form-field class="app-w-100">
-      <mat-label>{{ 'field.notes_private' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.hiko.notes_private" name="notes_private"
-        #notes_private></textarea>
-    </mat-form-field>
-  </div>
+  </div> -->
 
 
+  <fieldset class="app-center-v app-mb-4">
+    <legend>{{ 'fieldset.content' | translate }}</legend>
+    <div class="app-mb-4">
+      <mat-form-field class="app-w-100">
+        <mat-label>{{ 'field.incipit' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.hiko.incipit" name="incipit"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'incipit' }"></ng-container>
+      </mat-form-field>
+    </div>
 
+    <div class="app-mb-4">
+      <mat-form-field class="app-w-100">
+        <mat-label>{{ 'field.explicit' | translate}}</mat-label>
+        <input matInput [(ngModel)]="_letter.hiko.explicit" name="explicit"><span matSuffix></span>
+        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'explicit' }"></ng-container>
+      </mat-form-field>
+    </div>
+
+    <div class="app-mb-4">
+      <mat-form-field class="app-w-100">
+        <mat-label>{{ 'field.abstract_cs' | translate}}</mat-label>
+        <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.cs" name="abstract_cs" #abstract_cs></textarea>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field class="app-w-100">
+        <mat-label>{{ 'field.abstract_en' | translate}}</mat-label>
+        <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.en" name="abstract_en" #abstract_en></textarea>
+      </mat-form-field>
+    </div>
+  </fieldset>
 
   <fieldset class="app-mb-4">
-    <legend>{{ 'field.copies' | translate }}</legend>
+    <legend>{{ 'fieldset.copies' | translate }}</legend>
     @for(copy of _letter.hiko.copies; track idx; let idx = $index){
     <fieldset>
       <legend> #{{ idx + 1 }}. </legend>
@@ -346,6 +347,16 @@
       <mat-icon>queue</mat-icon>{{ 'action.add_copy' | translate }}
     </button>
   </fieldset>
+
+  
+
+  <div class="app-mb-4">
+    <mat-form-field class="app-w-100">
+      <mat-label>{{ 'field.notes_private' | translate}}</mat-label>
+      <textarea rows="5" matInput [(ngModel)]="_letter.hiko.notes_private" name="notes_private"
+        #notes_private></textarea>
+    </mat-form-field>
+  </div>
 
   <mat-tab-group>
     <mat-tab label="HIKO">

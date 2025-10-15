@@ -416,6 +416,8 @@ public class Indexer {
             idoc.setField("recipient", data.optString("recipient"));
             idoc.setField("origin", data.optString("origin"));
             idoc.setField("destination", data.optString("destination"));
+            idoc.setField("salutation", data.optString("salutation"));
+            idoc.setField("signature", data.optString("signature"));
             idoc.setField("date", data.optString("date"));  
             solr.add("letters", idoc);
             solr.commit("letters");

@@ -74,6 +74,8 @@ Managed external dictionaries
     <field name="recipient" type="string" indexed="true" stored="true"  />
     <field name="origin" type="string" indexed="true" stored="true"  />
     <field name="destination" type="string" indexed="true" stored="true"   />
+    <field name="salutation" type="string" indexed="true" stored="true"   />
+    <field name="signature" type="string" indexed="true" stored="true"   />
     <field name="date" type="pdate" indexed="true" stored="true" />
 	
 
