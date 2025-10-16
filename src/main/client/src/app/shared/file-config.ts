@@ -10,17 +10,17 @@ export interface SearchParams { filename: string, page: number, selection: AltoS
 export class FileTemplate {
   name: string;
   // def_author: string; 
-  author: string;
-  author_db: { id: number; marked: string } = {id: -1, marked: null};
-  recipient: string;
-  recipient_db: { id: number; marked: string, salutation?: string } ={id: -1, marked: null, salutation: null};
+  author_marked: string;
+  author_db: { id: number; marked?: string, name?: string } = {id: -1, marked: null, name: null};
+  recipient_marked: string;
+  recipient_db: { id: number; marked?: string, name?: string, salutation?: string } ={id: -1, marked: null, name: null, salutation: null};
 
 
-  origin: string;
-  origin_db: { id: number; marked: string } = {id: -1, marked: null};
+  origin_marked: string;
+  origin_db: { id: number; marked?: string; name?: string } = {id: -1, name: null};
 
-  destination: string;
-  destination_db: { id: number; marked: string } = {id: -1, marked: null};
+  destination_marked: string;
+  destination_db: { id: number; marked?: string; name?: string } = {id: -1, name: null};
 
   languages: string;
   
@@ -51,16 +51,16 @@ export class FileTemplate {
     t.name = 'Šablona z dopisu ' + (letter.id);
     t.notes_private = letter.hiko.notes_private;
     if (letter.hiko.authors) {
-      t.author = letter.hiko.authors[0].marked;
+      t.author_marked = letter.hiko.authors[0].marked;
       t.author_db = letter.hiko.authors[0];
     }
     if (letter.hiko.recipients) {
-      t.recipient = letter.hiko.recipients[0].marked;
+      t.recipient_marked = letter.hiko.recipients[0].marked;
       t.recipient_db = letter.hiko.recipients[0];
     }
 
     if (letter.hiko.origins) {
-      t.origin = letter.hiko.origins[0].marked;
+      t.origin_marked = letter.hiko.origins[0].marked;
       t.origin_db = letter.hiko.origins[0];
     }
 

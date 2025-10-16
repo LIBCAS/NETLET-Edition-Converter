@@ -173,12 +173,21 @@ export class EditorComponent {
       this.letter.template = t;
     }
     this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-    if (this.letter.hiko.authors) {
-      this.letter.hiko.authors.push({ marked: t.author_db?.marked, id: t.author_db?.id });
-    }
-    if (this.letter.hiko.recipients) {
-      this.letter.hiko.recipients.push({ marked: t.recipient_db?.marked, id: t.recipient_db?.id, salutation: t.salutation });
-    }
+    
+    this.letter.hiko.authors.push({ name: t.author_db?.name, marked: t.author_db?.marked, id: t.author_db?.id });
+    
+    this.letter.author = t.author_marked;
+
+    
+    this.letter.hiko.recipients.push({ name: t.recipient_db?.name, marked: t.recipient_db?.marked, id: t.recipient_db?.id, salutation: t.salutation });
+    this.letter.recipient = t.recipient_marked;
+
+      this.letter.hiko.origins.push({ name: t.origin_db?.name, marked: t.origin_db?.marked, id: t.origin_db?.id });
+    this.letter.origin = t.origin_marked;
+
+      this.letter.hiko.destinations.push({ name: t.destination_db?.name, marked: t.destination_db?.marked, id: t.destination_db?.id });
+    this.letter.destination = t.destination_marked;
+
     const copy = new LetterCopy();
 
     copy.preservation = t.preservation;

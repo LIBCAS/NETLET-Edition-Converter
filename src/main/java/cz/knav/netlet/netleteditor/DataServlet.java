@@ -739,6 +739,21 @@ public class DataServlet extends HttpServlet {
                 return json;
             }
         },
+        INDEX_KEYWORDS {
+            @Override
+            JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
+
+                JSONObject json = new JSONObject();
+                try {
+                    HikoIndexer hi = new HikoIndexer();
+                    json.put("locations", hi.indexGlobalKeywordCategories());
+                } catch (IOException | InterruptedException | URISyntaxException | JSONException ex) { 
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    json.put("error", ex.toString());
+                }
+                return json;
+            }
+        },
         TR {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {

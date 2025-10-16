@@ -99,19 +99,19 @@ export class LetterFieldsComponent {
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
   @Output() onShouldRefresh = new EventEmitter<string>();
   
-    authors_db = signal<{ id: number, marked: string, name?: string }[]>([]);
-    author_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    authors_db = signal<{ id: number, marked?: string, name?: string }[]>([]);
+    author_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1};
     noauthor = {marked:'', id:-1, name: ''};
-    recipients_db = signal<{ id: number, marked: string, name?: string, salutation?: string }[]>([]);
-    recipient_db: { id: number, marked: string, name?: string, salutation?: string } = {marked:'', id:-1};
+    recipients_db = signal<{ id: number, marked?: string, name?: string, salutation?: string }[]>([]);
+    recipient_db: { id: number, marked?: string, name?: string, salutation?: string } = {marked:'', id:-1};
     norecipient = {marked:'', id:-1, name: ''};
     
   
-    origins_db = signal<{ id: number, marked: string, name?: string }[]>([]);
-    origin_db: { id: number, marked: string, name?: string } = {marked:'', id:-1, name: ''};
+    origins_db = signal<{ id: number, marked?: string, name?: string }[]>([]);
+    origin_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1, name: ''};
     noorigin = {marked:'', id:-1, name: ''};
-    destinations_db = signal<{ id: number, marked: string, name?: string }[]>([]);
-    destination_db: { id: number, marked: string, name?: string } = {marked:'', id:-1, name: ''};
+    destinations_db = signal<{ id: number, marked?: string, name?: string }[]>([]);
+    destination_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1, name: ''};
     nodestination = {marked:'', id:-1, name: ''};
 
   entities: Entity[] = [];

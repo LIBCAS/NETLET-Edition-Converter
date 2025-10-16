@@ -30,7 +30,15 @@ import { Letter } from 'src/app/shared/letter';
   styleUrl: './template-dialog.component.scss'
 })
 export class TemplateDialogComponent {
-  authors_db: { id: string, tenant: string, name: string }[] = [];
+
+  authors_db = signal<{ id: number, marked: string, name?: string }[]>([]);
+  
+  
+  recipients_db = signal<{ id: number, marked: string, name?: string, salutation?: string }[]>([]);
+  recipient_db: { id: number, marked: string, name?: string, salutation?: string } = {marked:'', id:-1};
+  
+
+
   selectedTemplate: FileTemplate;
   new_template: string;
 
@@ -51,7 +59,7 @@ export class TemplateDialogComponent {
   ) { }
 
   ngOnInit() {
-    this.getAuthors('');
+    // this.checkAuthors('', true);
     if (this.data.template) {
       this.selectedTemplate = this.data.template;
     } else {
@@ -63,33 +71,39 @@ export class TemplateDialogComponent {
 
   checkDb() {
     if (!this.selectedTemplate.author_db) {
-      this.selectedTemplate.author_db = { id: -1, marked: null };
+      this.selectedTemplate.author_db = { id: -1, name: null };
     }
     if (!this.selectedTemplate.recipient_db) {
-      this.selectedTemplate.recipient_db = { id: -1, marked: null, salutation: null };
+      this.selectedTemplate.recipient_db = { id: -1, name: null, salutation: null };
     }
     if (!this.selectedTemplate.origin_db) {
-      this.selectedTemplate.origin_db = { id: -1, marked: null };
+      this.selectedTemplate.origin_db = { id: -1, name: null };
     }
     if (!this.selectedTemplate.destination_db) {
-      this.selectedTemplate.destination_db = { id: -1, marked: null };
+      this.selectedTemplate.destination_db = { id: -1, name: null };
     }
   }
 
+  
 
-  getAuthors(e: string) {
-    this.service.getAuthors(e, this.state.user.tenant ? this.state.user.tenant : '').subscribe((resp: any) => {
-      this.authors_db = resp.authors;
-      if (!this.selectedTemplate.author_db) {
-        this.selectedTemplate.author_db = JSON.parse(JSON.stringify(this.authors_db[0]));
-      }
+  displayFn(o: any) {
+    return o ? o.name : '';
+  }
 
-      if (!this.selectedTemplate.recipient_db) {
-        this.selectedTemplate.recipient_db = JSON.parse(JSON.stringify(this.authors_db[0]));
-      }
-
-
+  checkAuthors(e:any, extended: boolean, list: any) {
+    const val = e.target ? e.target.value : e;
+    this.service.checkAuthors(val, this.state.user.tenant, extended).subscribe((resp: any) => {
+      list.set(resp.authors);
     });
+  }
+
+  setAuthorDb() {
+    this.selectedTemplate.author_db.marked = this.selectedTemplate.author_marked;
+  }
+
+  setRecipientDb() {
+    this.selectedTemplate.recipient_db.marked = this.selectedTemplate.recipient_marked;
+    this.selectedTemplate.recipient_db.salutation = this.selectedTemplate.salutation;
   }
 
   checkPlaces(e: any, extended: boolean, list: any) {
@@ -99,7 +113,20 @@ export class TemplateDialogComponent {
     });
   }
 
+  setOriginDb() {
+    this.selectedTemplate.origin_db.marked = this.selectedTemplate.origin_marked;
+  }
+
+  
+  setDestinationDb() {
+    this.selectedTemplate.destination_db.marked = this.selectedTemplate.destination_marked;
+  }
+
   save() {
+    this.setAuthorDb();
+    this.setRecipientDb();
+    this.setOriginDb();
+    this.setDestinationDb();
     this.service.saveFile(this.state.selectedFile.filename, this.state.fileConfig).subscribe(res => { });
   }
 

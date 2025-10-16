@@ -55,20 +55,20 @@ export class AnalyzeDialogComponent {
   nametag: string;
   nametags: { pos: number[], text: string, type: string, selected: boolean }[];
 
-  authors_db: { id: number, marked: string, name?: string }[] = [];
-  author_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+  authors_db: { id: number, marked?: string, name?: string }[] = [];
+  author_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1};
   noauthor = {marked:'', id:-1};
-  recipients_db: { id: number, marked: string, name?: string }[] = [];
-  recipient_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+  recipients_db: { id: number, marked?: string, name?: string }[] = [];
+  recipient_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1};
   norecipient = {marked:'', id:-1};
   
     
   
-    origins_db: { id: number, marked: string, name?: string }[] = [];
-    origin_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    origins_db: { id: number, marked?: string, name?: string }[] = [];
+    origin_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1};
     noorigin = {marked:'', id:-1, name: ''};
-    destinations_db: { id: number, marked: string, name?: string }[] = [];
-    destination_db: { id: number, marked: string, name?: string } = {marked:'', id:-1};
+    destinations_db: { id: number, marked?: string, name?: string }[] = [];
+    destination_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1};
     nodestination = {marked:'', id:-1, name: ''};
 
   constructor(
@@ -294,7 +294,7 @@ export class AnalyzeDialogComponent {
 
   }
 
-  checkAuthors(e:any, extended: boolean, list: { id: number, marked: string, name?: string }[]) {
+  checkAuthors(e:any, extended: boolean, list: { id: number, marked?: string, name?: string }[]) {
     const val = e.target ? e.target.value : e;
     this.service.checkAuthors(val, this.state.user.tenant, extended).subscribe((resp: any) => {
       list = resp.authorv;

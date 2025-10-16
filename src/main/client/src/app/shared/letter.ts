@@ -232,12 +232,12 @@ export class LetterHIKO {
     date_note: string;
     date_approximate: boolean;
 
-    authors: { id: number; marked: string; name?: string }[] = [];
+    authors: { id: number; marked?: string; name?: string }[] = [];
     author_uncertain: boolean;
     author_inferred: boolean;
     author_note: string;
 
-    recipients: { id: number; marked: string; salutation?: string; name?: string }[] = [];
+    recipients: { id: number; marked?: string; salutation?: string; name?: string }[] = [];
     recipient_uncertain: boolean;
     recipient_inferred: boolean;
     recipient_note: string;
@@ -245,12 +245,12 @@ export class LetterHIKO {
     mentioned: string[];
     people_mentioned_note: string;
 
-    origins: { id: number; marked: string; name?: string }[];
+    origins: { id: number; marked?: string; name?: string }[] = [];
     origin_inferred: boolean;
     origin_uncertain: boolean;
     origin_note: string;
 
-    destinations: { id: number; marked: string; name?: string }[];
+    destinations: { id: number; marked?: string; name?: string }[] = [];
     destination_inferred: boolean;
     destination_uncertain: boolean;
     destination_note: string;
