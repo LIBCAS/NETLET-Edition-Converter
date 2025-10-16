@@ -623,7 +623,10 @@ export class LetterFieldsComponent {
   }
 
   setDatum() {
-    this._letter.date = this.datum.value;
+    //console.log(this.datum.value.format("YYYY-MM-DD"))
+    this._letter.date = this.datum.value.format("YYYY-MM-DD");
+    this._letter.hiko.date = this.datum.value.format("YYYY-MM-DD");
+    // console.log(this._letter.date)
   }
 
   addCopy() {
