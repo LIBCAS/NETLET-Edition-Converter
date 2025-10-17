@@ -15,6 +15,7 @@ import { AppConfiguration } from './app/app-configuration';
 import { AppState } from './app/app-state';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from './app/auth.service';
+import { UIService } from './app/ui.service';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/', '.json?v=' + Date.now());
@@ -31,7 +32,7 @@ bootstrapApplication(AppComponent, {
                 deps: [HttpClient]
             }
         })),
-        AppState, AuthService, AppConfiguration, AppService,
+        AppState, AuthService, AppConfiguration, AppService, UIService,
         { provide: APP_INITIALIZER, useFactory: (config: AppConfiguration) => () => config.load(), deps: [AppConfiguration], multi: true },
         TranslateService,
         provideHttpClient(), 

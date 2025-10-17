@@ -47,7 +47,8 @@
     "origin": "Místo odeslání", 
     "destination": "Místo určení", 
     "copies": "Repozitáře a verze",
-    "content": "Popis obsahu"
+    "content": "Popis obsahu",
+    "keywords": "Klíčová slova"
   },
   "field": {
     "hiko_id": "Id v HIKO", 
@@ -99,7 +100,8 @@
     "places_meta_type": "Typ",
     "notes_private": "Poznámka pro zpracovatele",
     "email": "E-mail",
-    "password": "Heslo"
+    "password": "Heslo",
+    "new_keyword": "Nové klíčové slovo"
   },
   "tags" : {
     "a":"Numbers in addresses",

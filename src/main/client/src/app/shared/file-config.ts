@@ -22,12 +22,9 @@ export class FileTemplate {
   destination_marked: string;
   destination_db: { id: number; marked?: string; name?: string } = {id: -1, name: null};
 
+  keywords: { id: number; name: string }[] = [];
+
   languages: string;
-  
-  
-  // copies_repository: string;
-  // copies_archive: string;
-  // copies_collection: string;
 
   
     preservation: string;

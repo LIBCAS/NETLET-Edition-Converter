@@ -1,7 +1,6 @@
 package cz.knav.netlet.netleteditor.index;
 
 import cz.knav.netlet.netleteditor.Options;
-import static cz.knav.netlet.netleteditor.index.HikoKeywordsIndexer.LOGGER;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -330,15 +329,15 @@ public class HikoIndexer {
         }
     }
 
-    public JSONObject indexGlobalKeywordCategories() throws URISyntaxException, IOException, InterruptedException {
+    public JSONObject indexGlobalKeywords() throws URISyntaxException, IOException, InterruptedException {
         Date start = new Date();
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO global keywords");
         try (SolrClient client = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) {
             JSONArray tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").names();
-            indexGlobalKeywordCategories(client, ret, tenants.getString(0));
+            indexGlobalKeywords(client, ret, tenants.getString(0));
 
-            client.commit("dictionaries");
+            client.commit("keywords");
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
             ret.put("error", ex);
@@ -350,14 +349,14 @@ public class HikoIndexer {
 
     }
 
-    private void indexGlobalKeywordCategories(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
+    private void indexGlobalKeywords(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t)
-                + "/global-keyword-categories?per_page=100";
+                + "/global-keywords?per_page=100";
         int tindexed = 0;
         LOGGER.log(Level.INFO, "Indexing keywords tenant {0} -> {1}", new Object[]{tenant, url});
         try (HttpClient httpclient = HttpClient
@@ -384,19 +383,16 @@ public class HikoIndexer {
                     doc.addField("table", t);
                     doc.addField("table_id", rs.getInt("id"));
                     doc.addField("tenant", tenant);
+                    doc.addField("type", rs.optString("type"));
 
-                    doc.addField("dict", "hiko");
                     JSONObject name = rs.getJSONObject("name");
-                    doc.addField("key_cze", name.getString("cs"));
-                    doc.addField("key_tagger_cze", name.getString("cs"));
-                    doc.addField("key_eng", name.getString("en"));
-                    doc.addField("key_tagger_eng", name.getString("en"));
+                    doc.addField("name", name.getString("cs"));
+                    doc.addField("name_en", name.getString("en"));
 
-                    doc.addField("type", "keywords");
-                    client.add("dictionaries", doc);
+                    client.add("keywords", doc);
                     ret.put(tenant, tindexed++);
                     if (tindexed % 500 == 0) {
-                        client.commit("dictionaries");
+                        client.commit("keywords");
                         LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, tindexed});
                     }
 

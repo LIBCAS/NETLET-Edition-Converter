@@ -17,7 +17,7 @@ a {
 }
 
 hr {
-  @extend .app-mt-4, .app-mb-4; 
+  @extend .app-mt-4, .app-mb-4;
   border-top: 1px solid var(--mat-divider-color);
   border-bottom: 0;
 }
@@ -132,7 +132,7 @@ fieldset {
 
   &:hover {
     opacity: .5;
-  } 
+  }
 }
 
 .app-ignore {
@@ -153,7 +153,7 @@ fieldset {
 
 // bars
 .app-topbar {
-  min-height: var( --app-topbar-height);
+  min-height: var(--app-topbar-height);
   border-bottom: 1px solid var(--app-topbar-border-color);
   border-top: 1px solid;
   border-color: rgba(var(--app-color-lightnes-rgb), .3);
@@ -238,24 +238,25 @@ fieldset {
   .app-ml-3 {
     margin-left: 3px;
   }
-} 
+}
 
 .mat-icon-close {
   position: relative;
   float: right;
-  left:-22px;
+  left: -22px;
   cursor: pointer;
-    @include setIcon(18);
+  @include setIcon(18);
 }
 
 .app-keyword {
   margin-left: 5px;
 }
-.app-result{
+
+.app-result {
   margin-bottom: 5px;
 }
 
-.app-has-hiko{
+.app-has-hiko {
   border-left: 2px solid var(--app-hiko-color);
 }
 
@@ -264,9 +265,19 @@ fieldset {
 }
 
 .mat-mdc-snack-bar-container {
-    &.app-snack-error {
-      --mdc-snackbar-container-color: var(--app-color-warning);
-      --mat-mdc-snack-bar-button-color: #fff;
-      --mdc-snackbar-supporting-text-color: #fff;
-    }
+  &.app-snack-error {
+    --mdc-snackbar-container-color: var(--app-color-warning);
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
   }
+
+  &.app-snackbar-success {
+    --mdc-snackbar-container-color: var(--app-color-success);
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+
+  .mat-mdc-snack-bar-action {
+    color: #fff !important;
+  }
+}

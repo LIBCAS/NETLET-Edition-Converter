@@ -29,8 +29,6 @@ export class NewFileDialogComponent {
 
   name: string;
   columns: number;
-  def_author: string;
-  def_recipient: string;
 
   public uploader: FileUploader = new FileUploader({ url: 'api/upload' });
   selectedFile: string;
@@ -73,8 +71,6 @@ export class NewFileDialogComponent {
       additionalParameter: {
         name: this.name ? this.name : this.selectedFile,
         columns: this.columns,
-        def_author: this.def_author,
-        def_recipient: this.def_recipient,
         tenant: this.state.user.tenant,
         overwrite: this.overwrite
       }

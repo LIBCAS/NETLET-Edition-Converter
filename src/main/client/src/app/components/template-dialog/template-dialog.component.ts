@@ -18,14 +18,15 @@ import { AppConfiguration } from 'src/app/app-configuration';
 import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { FileTemplate, FileConfig } from 'src/app/shared/file-config';
-import { Letter } from 'src/app/shared/letter';
+import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
 
 @Component({
   selector: 'app-template-dialog',
   standalone: true,
   imports: [FormsModule, AngularSplitModule, NgIf, RouterModule, TranslateModule,
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule,
-    MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule],
+    MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule,
+  MatChipsModule],
   templateUrl: './template-dialog.component.html',
   styleUrl: './template-dialog.component.scss'
 })
@@ -44,6 +45,10 @@ export class TemplateDialogComponent {
 
   origins_db = signal<{ id: number, marked: string, name?: string }[]>([]);
   destinations_db = signal<{ id: number, marked: string, name?: string }[]>([]);
+
+  keyword : { id: number, name: string };
+  keywords = signal<{ id: number, name: string }[]>([]);
+  keywords_db = signal<{ id: number, name: string }[]>([]);
 
 
   locations_db: { id: string, tenant: string, name: string, type: string }[] = [];
@@ -82,6 +87,11 @@ export class TemplateDialogComponent {
     if (!this.selectedTemplate.destination_db) {
       this.selectedTemplate.destination_db = { id: -1, name: null };
     }
+    if (!this.selectedTemplate.keywords) {
+      this.selectedTemplate.keywords = [];
+    }
+
+    this.keywords.set(this.selectedTemplate.keywords);
   }
 
   
@@ -113,13 +123,46 @@ export class TemplateDialogComponent {
     });
   }
 
+  
+
+  checkKeywords(e: any, extended: boolean) {
+    const val = e.target ? e.target.value : e;
+    this.service.getKeywords(val, this.state.user.tenant, extended).subscribe((resp: any) => {
+      this.keywords_db.set(resp.keywords);
+    });
+  }
+
+  removeKeyword(id: number) {
+    this.keywords.update(keywords => {
+      const index = keywords.findIndex(k => k.id === id);
+      if (index < 0) {
+        return keywords;
+      }
+
+      keywords.splice(index, 1);
+      return [...keywords];
+    });
+  }
+
+  addKeyword(e: any): void {
+    if (this.keyword) {
+      this.keywords.update(keywords => [...keywords, {id: this.keyword.id, name: this.keyword.name}]);
+    }
+
+    this.keyword = null;
+  }
+
+
   setOriginDb() {
     this.selectedTemplate.origin_db.marked = this.selectedTemplate.origin_marked;
   }
-
   
   setDestinationDb() {
     this.selectedTemplate.destination_db.marked = this.selectedTemplate.destination_marked;
+  }
+  
+  setKeywords() {
+    this.selectedTemplate.keywords = this.keywords();
   }
 
   save() {
@@ -127,6 +170,7 @@ export class TemplateDialogComponent {
     this.setRecipientDb();
     this.setOriginDb();
     this.setDestinationDb();
+    this.setKeywords();
     this.service.saveFile(this.state.selectedFile.filename, this.state.fileConfig).subscribe(res => { });
   }
 

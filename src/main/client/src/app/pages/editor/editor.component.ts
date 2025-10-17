@@ -26,6 +26,7 @@ import { FileSettingsDialogComponent } from 'src/app/components/file-settings-di
 import { MatMenuModule } from '@angular/material/menu';
 import { TemplateDialogComponent } from 'src/app/components/template-dialog/template-dialog.component';
 import { AppConfiguration } from 'src/app/app-configuration';
+import { UIService } from 'src/app/ui.service';
 
 
 @Component({
@@ -77,6 +78,7 @@ export class EditorComponent {
     public state: AppState,
     public config: AppConfiguration,
     private service: AppService,
+    private ui: UIService,
     private readonly formBuilder: FormBuilder,
     public dialog: MatDialog) { }
 
@@ -631,6 +633,7 @@ export class EditorComponent {
 
 
     this.service.saveLetter(this.state.selectedFile.filename, this.letter).subscribe((res: any) => {
+      this.ui.showInfoSnackBar('Letter saved success');
       this.refreshLetters('');
     });
   }
@@ -801,10 +804,12 @@ export class EditorComponent {
     // return;
     this.service.exportToHiko(this.letter.hiko, this.state.user.tenant).subscribe((res: any) => {
       if (res.errors) {
-        this.service.showSnackBar(res.message, '', true);
+        // this.service.showSnackBar(res.message, '', true);
+        this.ui.showErrorDialogFromString(res.message);
       } else if (res.id) {
         this.letter.hiko_id = res.id;
         this.letter.hiko.id = res.id;
+        this.ui.showInfoSnackBar('Export success');
         this.saveLetter();
       }
     });

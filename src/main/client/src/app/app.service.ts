@@ -157,6 +157,13 @@ export class AppService {
     
   }
 
+  getKeywords(prefix: string, tenant: string, extended: boolean): Observable<any> {
+    const params: HttpParams = new HttpParams()
+    .set('prefix', prefix).set('tenant', tenant).set('extended', extended);
+    return this.get(`/data/get_keywords`, params);
+    
+  }
+
   getAuthors(prefix: string, tenant: string): Observable<any> {
     const params: HttpParams = new HttpParams()
     .set('prefix', prefix).set('tenant', tenant);

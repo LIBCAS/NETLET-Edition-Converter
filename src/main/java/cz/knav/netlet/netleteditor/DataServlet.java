@@ -585,6 +585,14 @@ public class DataServlet extends HttpServlet {
                 return ret;
             }
         },
+        GET_KEYWORDS {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                ret.put("keywords", Indexer.getKeywords(request.getParameter("prefix"), request.getParameter("tenant")).getJSONObject("response").getJSONArray("docs"));
+                return ret;
+            }
+        },
         GET_LOCATIONS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -746,7 +754,7 @@ public class DataServlet extends HttpServlet {
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
-                    json.put("locations", hi.indexGlobalKeywordCategories());
+                    json.put("locations", hi.indexGlobalKeywords());
                 } catch (IOException | InterruptedException | URISyntaxException | JSONException ex) { 
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());

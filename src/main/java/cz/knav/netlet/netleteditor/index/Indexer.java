@@ -502,6 +502,37 @@ public class Indexer {
         return ret;
     }
     
+    public static JSONObject getKeywords(String prefix, String tenant) {
+        JSONObject ret = new JSONObject();
+        try {
+
+            Http2SolrClient solr = (Http2SolrClient) getClient();
+            SolrQuery query = new SolrQuery("name:" + prefix + "*")
+                    .setFields("id,name")
+                    .setSort(SolrQuery.SortClause.asc("name_sort"))
+                    .setRows(10);
+//            if (!tenant.isBlank()) {
+//                query.addFilterQuery("tenant:"+tenant);
+//            }
+//            
+            query.set("wt", "json");
+            String jsonResponse;
+            QueryRequest qreq = new QueryRequest(query);
+            // qreq.setPath();
+            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
+            dontMessWithSolr.setWriterType("json");
+            solr.setParser(dontMessWithSolr);
+            NamedList<Object> qresp = solr.request(qreq, "keywords");
+            jsonResponse = (String) qresp.get("response");
+            ret = new JSONObject(jsonResponse);
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        return ret;
+    }
+    
     public static JSONObject getLocations(String prefix, String tenant, String type) {
         JSONObject ret = new JSONObject();
         try {

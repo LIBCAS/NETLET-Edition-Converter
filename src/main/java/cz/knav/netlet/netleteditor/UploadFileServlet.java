@@ -106,8 +106,6 @@ public class UploadFileServlet extends HttpServlet {
                 JSONObject fileSettings = new JSONObject();
                 fileSettings.put("name", request.getParameter("name"));
                 fileSettings.put("columns", request.getParameter("columns"));
-                fileSettings.put("def_author", request.getParameter("def_author"));
-                fileSettings.put("def_recipient", request.getParameter("def_recipient"));
                 fileSettings.put("tenant", request.getParameter("tenant"));
                 
                 File f = Storage.configFile(subbmittedFilename);
