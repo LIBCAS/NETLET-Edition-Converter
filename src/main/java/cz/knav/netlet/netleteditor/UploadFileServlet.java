@@ -20,7 +20,9 @@ import org.json.JSONObject;
  * @author alber
  */
 @WebServlet(name = "UploadFileServlet", urlPatterns = {"/upload"})
-@MultipartConfig(location = "/tmp", fileSizeThreshold = 1024 * 1024)
+@MultipartConfig(location = "/tmp", fileSizeThreshold = 1024 * 1024,
+maxFileSize = 1024 * 1024 * 10, // 10MB
+    maxRequestSize = 1024 * 1024 * 50)   // 50MB)
 public class UploadFileServlet extends HttpServlet {
 
     public static final Logger LOGGER = Logger.getLogger(UploadFileServlet.class.getName());
