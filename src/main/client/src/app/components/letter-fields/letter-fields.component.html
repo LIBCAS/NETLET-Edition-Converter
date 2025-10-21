@@ -163,8 +163,8 @@
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.destination_db' | translate }}</mat-label>
       <input matInput [(ngModel)]="_letter.hiko.destinations[0]" name="destination_db" id="destination_db"
-        [matAutocomplete]="autodestination" (focus)="checkPlacesDestination(_letter.destination, false)"
-        (keyup)="checkPlacesDestination($event, true)">
+        [matAutocomplete]="autodestination" (focus)="checkPlaces(_letter.destination, false, destinations_db)"
+        (keyup)="checkPlaces($event, true, destinations_db)">
       <mat-autocomplete #autodestination="matAutocomplete" [displayWith]="displayFn">
         @for(a of destinations_db(); track idx; let idx = $index){
         <mat-option [value]="a">

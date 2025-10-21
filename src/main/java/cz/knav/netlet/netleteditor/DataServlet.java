@@ -383,8 +383,19 @@ public class DataServlet extends HttpServlet {
 
                 JSONObject json = new JSONObject();
                 try {
-                    HikoKeywordsIndexer hi = new HikoKeywordsIndexer();
-                    json.put("keywords", hi.full());
+                    // HikoKeywordsIndexer hi = new HikoKeywordsIndexer(); 
+                    //json.put("keywords", hi.full());
+
+                    HikoIndexer hi = new HikoIndexer();
+                    JSONObject ret = new JSONObject();
+                    JSONObject user = LoginController.getUser(req);
+                    ret.put("user", user);
+                    String utenant = "";
+                    if (user != null) {
+                        utenant = user.optString("tenant");
+                    }
+                    json.put("sync", hi.indexTenant(utenant));
+
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
@@ -724,7 +735,7 @@ public class DataServlet extends HttpServlet {
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
-                    json.put("identities", hi.indexPlaces());
+                    json.put("places", hi.indexPlaces());
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
@@ -754,8 +765,8 @@ public class DataServlet extends HttpServlet {
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
-                    json.put("locations", hi.indexGlobalKeywords());
-                } catch (IOException | InterruptedException | URISyntaxException | JSONException ex) { 
+                    json.put("keywords", hi.indexGlobalKeywords());
+                } catch (IOException | InterruptedException | URISyntaxException | JSONException ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
                 }

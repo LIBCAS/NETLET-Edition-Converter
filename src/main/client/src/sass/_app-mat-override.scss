@@ -1,5 +1,11 @@
 // --- MATERIAL OVERRIDE ---
 
+// :root {
+//   @include mat.progress-spinner-overrides((
+//     // active-indicator-color: orange,
+//   ));
+// }
+
 // paginator
 .mat-mdc-paginator {
   .mat-mdc-form-field-infix {
@@ -110,4 +116,6 @@
     padding: 0;
   }
 }
+
+
 

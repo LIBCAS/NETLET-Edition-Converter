@@ -160,7 +160,8 @@
     "originalSize": "Original size",
     "add_place_meta": "Add place",
     "login": "Login",
-    "logout": "Logout"
+    "logout": "Logout",
+    "synchronize": "Synchronize db"
   },
   "desc": {
     "fileName": "File name",

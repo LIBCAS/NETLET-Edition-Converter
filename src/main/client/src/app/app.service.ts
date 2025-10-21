@@ -237,4 +237,10 @@ export class AppService {
     return this.post(url, {});
   }
 
+  
+  synchronize() {
+    const params: HttpParams = new HttpParams();
+    return this.http.get('api/data/index_hiko')
+  }
+
 }

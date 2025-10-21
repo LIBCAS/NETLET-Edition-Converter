@@ -375,8 +375,8 @@ export class LetterFieldsComponent {
         // this.letter.abstract_cs = orig;
       } else {
         this.setAnalysis(resp);
-        this.checkAuthors(this._letter.author, false, this.authors_db);
-        this.checkAuthors(this._letter.recipient, false, this.recipients_db);
+        // this.checkAuthors(this._letter.author, false, this.authors_db);
+        // this.checkAuthors(this._letter.recipient, false, this.recipients_db);
       }
     });
   }

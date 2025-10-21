@@ -9,6 +9,11 @@
    <a mat-button >{{ state.user.name }} ({{ state.user.tenant }})</a>
    <a mat-button (click)="logout()" >{{ 'action.logout' | translate }}</a>
    <button mat-button (click)="openSettings()">{{ 'action.querySettings' | translate }}</button>
+   <button mat-icon-button (click)="synchronize()" [title]="'action.synchronize' | translate"><mat-icon>sync_arrow_down</mat-icon></button>
+   <button mat-button>
+      <mat-spinner diameter="20" class="app-spinner" ></mat-spinner>
+  </button>
+
    }
    <button mat-button [matMenuTriggerFor]="menu">{{ translator.currentLang | translate}}</button>
     <mat-menu #menu="matMenu">

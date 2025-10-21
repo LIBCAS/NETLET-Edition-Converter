@@ -160,7 +160,8 @@
     "originalSize": "Originální velikost",
     "add_place_meta": "Přidat místo odeslání a určení",
     "login": "Přihlásit",
-    "logout": "Odhlásit"
+    "logout": "Odhlásit",
+    "synchronize": "Aktualizovat z databaze"
   },
   "desc": {
     "fileName": "Jméno souboru",
