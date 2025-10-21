@@ -27,6 +27,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { TemplateDialogComponent } from 'src/app/components/template-dialog/template-dialog.component';
 import { AppConfiguration } from 'src/app/app-configuration';
 import { UIService } from 'src/app/ui.service';
+import { HikoImportDialogComponent } from 'src/app/components/hiko-import-dialog/hiko-import-dialog.component';
 
 
 @Component({
@@ -175,20 +176,30 @@ export class EditorComponent {
       this.letter.template = t;
     }
     this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-    
+
     this.letter.hiko.authors.push({ name: t.author_db?.name, marked: t.author_db?.marked, id: t.author_db?.id });
-    
+
     this.letter.author = t.author_marked;
 
-    
     this.letter.hiko.recipients.push({ name: t.recipient_db?.name, marked: t.recipient_db?.marked, id: t.recipient_db?.id, salutation: t.salutation });
     this.letter.recipient = t.recipient_marked;
 
-      this.letter.hiko.origins.push({ name: t.origin_db?.name, marked: t.origin_db?.marked, id: t.origin_db?.id });
+    this.letter.hiko.origins.push({ name: t.origin_db?.name, marked: t.origin_db?.marked, id: t.origin_db?.id });
     this.letter.origin = t.origin_marked;
 
-      this.letter.hiko.destinations.push({ name: t.destination_db?.name, marked: t.destination_db?.marked, id: t.destination_db?.id });
+    this.letter.hiko.destinations.push({ name: t.destination_db?.name, marked: t.destination_db?.marked, id: t.destination_db?.id });
     this.letter.destination = t.destination_marked;
+
+    t.keywords.forEach(k => {
+      this.letter.hiko.global_keywords.push(k.id + '');
+    });
+
+    t.mentioned.forEach(m => {
+      this.letter.hiko.mentioned.push(m.id + '');
+    });
+
+    this.letter.hiko.people_mentioned_note = t.people_mentioned_note;
+
 
     const copy = new LetterCopy();
 
@@ -490,15 +501,15 @@ export class EditorComponent {
         if (!this.letter.template) {
           this.letter.template = this.state.fileConfig.templates[0];
         }
-        
+
         if (!this.letter.hiko) {
           this.letter.hiko = new LetterHIKO();
         }
-        
+
         if (!this.letter.hiko.authors) {
           this.letter.hiko.authors = [];
         }
-        
+
         if (!this.letter.hiko.recipients) {
           this.letter.hiko.recipients = [];
         }
@@ -611,27 +622,6 @@ export class EditorComponent {
       this.letter.endPage = this.state.currentPage;
     }
 
-    // if (this.letter.hiko.authors.length > 0) {
-    //   this.letter.hiko.authors[0].marked = this.letter.author;
-    // }
-
-    // if (this.letter.hiko.authors.length > 0) {
-    //   this.letter.hiko.authors[0].marked = this.letter.author;
-    // }
-
-    // if (this.letter.hiko.authors.length > 0) {
-    //   this.letter.hiko.authors[0].marked = this.letter.author;
-    // }
-
-    // if (this.letter.hiko.authors.length > 0) {
-    //   this.letter.hiko.authors[0].marked = this.letter.author;
-    // }
-
-    // this.letter.hiko.recipients = [{id: this.recipient_db.id, marked: this._letter.recipient, name: this.recipient_db.name}];
-    // this.letter.hiko.origins = [{id: this.origin_db.id, marked: this._letter.origin, name: this.origin_db.name}];
-    // this.letter.hiko.destinations = [{id: this.destination_db.id, marked: this._letter.destination, name: this.destination_db.name}];
-
-
     this.service.saveLetter(this.state.selectedFile.filename, this.letter).subscribe((res: any) => {
       this.ui.showInfoSnackBar('Letter saved success');
       this.refreshLetters('');
@@ -649,7 +639,159 @@ export class EditorComponent {
   }
 
   importFromHIKO() {
-    const id = window.prompt('Id to import. Tenant: ' + this.state.user.tenant);
+
+    const dialogRef = this.dialog.open(HikoImportDialogComponent, {
+      width: '800px'
+    });
+
+    dialogRef.afterClosed().subscribe((result: { new_letter: boolean, onlyEmpty: boolean, id: string }) => {
+      if (result) {
+        console.log(result)
+      }
+    });
+
+  }
+
+  mergeHIKOField(res: any, letter: Letter, onlyEmpty: boolean, field: string, sfield?: string) {
+    const source = sfield ? sfield : field;
+    if (!onlyEmpty || !letter[field]) {
+      letter.hiko[field] = res[source];
+    }
+  }
+
+  mergeFromHIKO(res: any, letter: Letter, onlyEmpty: boolean) {
+
+    letter.hiko_id = res.id;
+
+    if (!onlyEmpty || !letter.date) {
+      letter.date = res.date_computed;
+    }
+
+
+    const authors = res.identities.filter((i: any) => i.pivot.role === "author").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+    if (authors.length > 0) {
+      letter.author = authors[0].marked;
+    }
+
+    const recipients = res.identities.filter((i: any) => i.pivot.role === "recipient").map((ident: any) => { return { id: ident.id, name: ident.name, salutation: ident.pivot.salutation, marked: ident.pivot.marked } });
+    if (recipients.length > 0) {
+      letter.recipient = recipients[0].marked;
+      letter.salutation = recipients[0].salutation;
+    }
+
+    const mentioned = res.identities.filter((i: any) => i.pivot.role === "mentioned").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+
+    const origins = res.places.filter((i: any) => i.pivot.role === "origin").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+    if (origins.length > 0) {
+      letter.origin = origins[0].marked;
+    }
+
+    const destinations = res.places.filter((i: any) => i.pivot.role === "destination").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+    if (destinations.length > 0) {
+      letter.destination = destinations[0].marked;
+    }
+    const fields = ['id',
+      'uuid',
+      'created_at',
+      'updated_at',
+      'date_computed', 'date_year', 'date_month', 'date_day', 'date_is_range', 'date_marked', 'range_day', 'range_month',
+      'range_year', 'date_inferred', 'date_uncertain', 'date_note', 'date_approximate',
+      'author_uncertain', 'author_inferred', 'author_note', 'recipient_uncertain', 'recipient_inferred', 'recipient_note', 'people_mentioned_note',
+
+      'origin_inferred', 'origin_uncertain', 'origin_note',
+      'destination_inferred', 'destination_uncertain', 'destination_note',
+
+      'languages', 'local_keywords', 'global_keywords', 'keywords',
+
+      'incipit', 'explicit', 'notes_private', 'notes_public', 'related_resources', 'copies', 'copyright',
+
+
+      'status', 'approval', 'action', 'abstract', 'content', 'content_stripped'];
+
+    fields.forEach(f => {
+      this.mergeHIKOField(res, letter, onlyEmpty, f);
+    });
+
+    this.mergeHIKOField(res, letter, onlyEmpty, 'date', 'date_computed');
+
+    letter.hiko.authors = authors;
+    letter.hiko.recipients = recipients;
+    letter.hiko.mentioned = mentioned;
+    letter.hiko.origins = origins;
+    letter.hiko.destinations = destinations;
+
+    // letter.hiko = {
+    //   id: res.id,
+    //   uuid: res.uuid,
+    //   created_at: res.created_at,
+    //   updated_at: res.updated_at,
+
+
+    //   date: res.date_computed,
+    //   date_computed: res.date_computed,
+    //   date_year: res.date_year,
+    //   date_month: res.date_month,
+    //   date_day: res.date_day,
+    //   date_is_range: res.date_is_range,
+    //   date_marked: res.date_marked,
+    //   range_day: res.range_day,
+    //   range_month: res.range_month,
+    //   range_year: res.range_year,
+    //   date_inferred: res.date_inferred,
+    //   date_uncertain: res.date_uncertain,
+    //   date_note: res.date_note,
+    //   date_approximate: res.date_approximate,
+    //   authors: authors,
+    //   author_uncertain: res.author_uncertain,
+    //   author_inferred: res.author_inferred,
+    //   author_note: res.author_note,
+
+    //   recipients: recipients,
+    //   recipient_uncertain: res.recipient_uncertain,
+    //   recipient_inferred: res.recipient_inferred,
+    //   recipient_note: res.recipient_note,
+
+    //   mentioned: mentioned,
+    //   people_mentioned_note: res.people_mentioned_note,
+
+    //   origins: origins,
+    //   origin_inferred: res.origin_inferred,
+    //   origin_uncertain: res.origin_uncertain,
+    //   origin_note: res.origin_note,
+
+    //   destinations: destinations,
+    //   destination_inferred: res.destination_inferred,
+    //   destination_uncertain: res.destination_uncertain,
+    //   destination_note: res.destination_note,
+
+    //   languages: res.languages,
+
+    //   local_keywords: res.local_keywords,
+    //   global_keywords: res.global_keywords,
+    //   keywords: res.keywords,
+
+    //   incipit: res.incipit,
+    //   explicit: res.explicit,
+    //   notes_private: res.notes_private,
+    //   notes_public: res.notes_public,
+    //   related_resources: res.related_resources,
+    //   copies: res.copies,
+    //   copyright: res.copyright,
+
+
+    //   status: res.status,
+    //   approval: res.approval,
+    //   action: res.action,
+
+    //   abstract: res.abstract,
+
+    //   content: res.content_stripped,
+    //   content_stripped: res.content_stripped
+    // };
+  }
+
+  doImportFromHIKO(add: boolean, overwrite: boolean, id: string) {
+    // const id = window.prompt('Id to import. Tenant: ' + this.state.user.tenant);
     if (id) {
       this.service.importFromHiko(id, this.state.user.tenant).subscribe((res: any) => {
         //console.log(res)
@@ -657,117 +799,24 @@ export class EditorComponent {
           this.service.showSnackBarError(this.translateService.instant(res.error));
           return;
         }
-        const letter = new Letter();
-        // this.letter.template = t;
-        letter.hiko_id = res.id;
 
-        letter.date = res.date_computed;
+        if (add) {
 
+          const letter = new Letter();
+          this.mergeFromHIKO(res, letter, true);
 
-        const authors = res.identities.filter((i: any) => i.pivot.role === "author").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
-        if (authors.length > 0) {
-          letter.author = authors[0].marked;
+          letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
+          letter.tenant = this.state.user.tenant;
+          letter.ai = [];
+          letter.selection = [];
+          letter.template = this.state.fileConfig.templates[0];
+
+          this.letter = letter;
+          this.letters.push(letter);
+        } else {
+          this.mergeFromHIKO(res, this.letter, overwrite);
         }
-
-        const recipients = res.identities.filter((i: any) => i.pivot.role === "recipient").map((ident: any) => { return { id: ident.id, name: ident.name, salutation: ident.pivot.salutation, marked: ident.pivot.marked } });
-        if (recipients.length > 0) {
-          letter.recipient = recipients[0].marked;
-          letter.salutation = recipients[0].salutation;
-        }
-
-        const mentioned = res.identities.filter((i: any) => i.pivot.role === "mentioned").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
-
-        const origins = res.places.filter((i: any) => i.pivot.role === "origin").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
-        if (origins.length > 0) {
-          letter.origin = origins[0].marked;
-        }
-
-        const destinations = res.places.filter((i: any) => i.pivot.role === "destination").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
-        if (destinations.length > 0) {
-          letter.destination = destinations[0].marked;
-        }
-
-        letter.hiko = {
-          id: res.id,
-          uuid: res.uuid,
-          created_at: res.created_at,
-          updated_at: res.updated_at,
-
-
-          date: res.date_computed,
-          date_computed: res.date_computed,
-          date_year: res.date_year,
-          date_month: res.date_month,
-          date_day: res.date_day,
-          date_is_range: res.date_is_range,
-          date_marked: res.date_marked,
-          range_day: res.range_day,
-          range_month: res.range_month,
-          range_year: res.range_year,
-          date_inferred: res.date_inferred,
-          date_uncertain: res.date_uncertain,
-          date_note: res.date_note,
-          date_approximate: res.date_approximate,
-          authors: authors,
-          author_uncertain: res.author_uncertain,
-          author_inferred: res.author_inferred,
-          author_note: res.author_note,
-
-          recipients: recipients,
-          recipient_uncertain: res.recipient_uncertain,
-          recipient_inferred: res.recipient_inferred,
-          recipient_note: res.recipient_note,
-
-          mentioned: mentioned,
-          people_mentioned_note: res.people_mentioned_note,
-
-          origins: origins,
-          origin_inferred: res.origin_inferred,
-          origin_uncertain: res.origin_uncertain,
-          origin_note: res.origin_note,
-
-          destinations: destinations,
-          destination_inferred: res.destination_inferred,
-          destination_uncertain: res.destination_uncertain,
-          destination_note: res.destination_note,
-
-          languages: res.languages,
-
-          local_keywords: res.local_keywords,
-          global_keywords: res.global_keywords,
-          keywords: res.keywords,
-
-          incipit: res.incipit,
-          explicit: res.explicit,
-          notes_private: res.notes_private,
-          notes_public: res.notes_public,
-          related_resources: res.related_resources,
-          copies: res.copies,
-          copyright: res.copyright,
-
-
-          status: res.status,
-          approval: res.approval,
-          action: res.action,
-
-          abstract: res.abstract,
-
-          content: res.content_stripped,
-          content_stripped: res.content_stripped
-        };
-
-        letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
-        letter.tenant = this.state.user.tenant;
-        letter.ai = [];
-        letter.selection = [];
-
-
-        letter.template = this.state.fileConfig.templates[0];
-
         this.view = 'fields';
-        this.letter = letter;
-        this.letters.push(letter);
-        // this.openLetter(letter.id);
       });
     }
 
@@ -784,7 +833,7 @@ export class EditorComponent {
     }
 
     this.letter.hiko.content_stripped = this.letter.hiko.content;
-    
+
     this.letter.hiko.authors[0].marked = this.letter.author;
 
     this.letter.hiko.recipients[0].marked = this.letter.recipient;
@@ -794,7 +843,7 @@ export class EditorComponent {
       this.letter.hiko.origins[0].marked = this.letter.origin;
     }
     if (this.letter.hiko.destinations.length > 0) {
-    this.letter.hiko.destinations[0].marked = this.letter.destination;
+      this.letter.hiko.destinations[0].marked = this.letter.destination;
     }
 
     if (this.letter.letter_number) {

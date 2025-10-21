@@ -212,6 +212,7 @@ export class MediaHIKO {
 }
 
 export class LetterHIKO {
+    [key: string]: any;
     id: number;
     uuid: string;
     created_at: Date;
@@ -242,7 +243,7 @@ export class LetterHIKO {
     recipient_inferred: boolean;
     recipient_note: string;
 
-    mentioned: string[];
+    mentioned: string[] = [];
     people_mentioned_note: string;
 
     origins: { id: number; marked?: string; name?: string }[] = [];

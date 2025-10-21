@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>{{ 'action.import_from_hiko' | translate }}</h1>
+<div mat-dialog-content class="app-letter">
+        <mat-form-field appearance="outline" class="app-fxFlex app-ml-3">
+            <mat-label>{{ 'field.hiko_id' | translate}}</mat-label>
+            <input matInput [(ngModel)]="id" name="id" id="id" />
+        </mat-form-field>
+        <mat-button-toggle-group name="type" [(ngModel)]="type" class="app-fxFlex app-ml-3">
+            <mat-button-toggle value="new_letter">{{ 'new_letter' | translate }}</mat-button-toggle>
+            <mat-button-toggle value="merge_letter">{{ 'merge_letter' | translate }}</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <mat-slide-toggle [disabled]="type === 'new_letter'" [(ngModel)]="onlyEmpty" class="app-fxFlex app-ml-3">{{ 'onlyEmpty' | translate }}</mat-slide-toggle>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-flat-button color="primary" [disabled]="!id" (click)="import()">{{ 'action.import_from_hiko' | translate }}</button>
+    <button mat-button color="primary" [mat-dialog-close]="null">{{ 'Close' | translate }}</button>
+</div>

@@ -5,7 +5,7 @@
     <div class="app-fxLayout app-row app-center-v app-mb-4">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'templates' | translate }}</mat-label>
-        <mat-select [(ngModel)]="selectedTemplate" (selectionChange)="checkDb()">
+        <mat-select [(ngModel)]="selectedTemplate" (selectionChange)="setFromTemplate()">
           @for(t of state.fileConfig.templates; track idx; let idx = $index){
           <mat-option [value]="t">{{ t.name }}</mat-option>
           }
@@ -44,7 +44,7 @@
         <input matInput [(ngModel)]="selectedTemplate.author_db" name="author_db" id="author_db"
           [matAutocomplete]="autoAuthor" (focus)="checkAuthors($event, true, authors_db)"
           (keyup)="checkAuthors($event, true, authors_db)">
-        <mat-autocomplete #autoAuthor="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setAuthorDb()">
+        <mat-autocomplete #autoAuthor="matAutocomplete" [displayWith]="displayFn" >
           @for(a of authors_db(); track idx; let idx = $index){
           <mat-option [value]="a">
             {{a.name}}
@@ -68,8 +68,7 @@
         <input matInput [(ngModel)]="selectedTemplate.recipient_db" name="recipient_db" id="recipient_db"
           [matAutocomplete]="autoRecipient" (focus)="checkAuthors($event, true, recipients_db)"
           (keyup)="checkAuthors($event, true, recipients_db)">
-        <mat-autocomplete #autoRecipient="matAutocomplete" [displayWith]="displayFn"
-          (optionSelected)="setRecipientDb()">
+        <mat-autocomplete #autoRecipient="matAutocomplete" [displayWith]="displayFn">
           @for(a of recipients_db(); track idx; let idx = $index){
           <mat-option [value]="a">
             {{a.name}}
@@ -107,7 +106,6 @@
       </mat-form-field>
     </fieldset>
 
-
     <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
       <legend>{{ 'fieldset.destination' | translate }}</legend>
       <mat-form-field class="app-fxFlex" appearance="outline">
@@ -129,6 +127,42 @@
           }
         </mat-autocomplete>
       </mat-form-field>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ 'fieldset.mentioned' | translate }}</legend>
+
+      <mat-chip-set>
+          @for (mentioned of mentionedIds(); track mentioned) {
+          <mat-chip (removed)="removeChip(mentioned.id, mentionedIds)">
+            {{mentioned.name}}
+            <button matChipRemove [attr.aria-label]="'remove mentioned'">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+          }
+        </mat-chip-set>
+
+      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{ 'field.new_mentioned' | translate }}</mat-label>
+        <input matInput [(ngModel)]="mentioned" name="mentioned_db" id="mentioned_db"
+          [matAutocomplete]="autoMentioned" (focus)="checkAuthors($event, false, mentioned_db)"
+          (keyup)="checkAuthors($event, true, mentioned_db)">
+        <mat-autocomplete #autoMentioned="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addMentioned($event)">
+          @for(a of mentioned_db(); track idx; let idx = $index){
+          <mat-option [value]="a">
+            {{a.name}}
+          </mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+      
+      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{ 'field.people_mentioned_note' | translate}}</mat-label>
+        <input matInput [(ngModel)]="selectedTemplate.people_mentioned_note" name="people_mentioned_note"
+          id="people_mentioned_note" />
+      </mat-form-field>
+      
     </fieldset>
 
     <fieldset>
@@ -217,7 +251,7 @@
       <legend>{{ 'fieldset.keywords' | translate }}</legend>
         <mat-chip-set>
           @for (keyword of keywords(); track keyword) {
-          <mat-chip (removed)="removeKeyword(keyword.id)">
+          <mat-chip (removed)="removeChip(keyword.id, keywords)">
             {{keyword.name}}
             <button matChipRemove [attr.aria-label]="'remove keyword'">
               <mat-icon>cancel</mat-icon>

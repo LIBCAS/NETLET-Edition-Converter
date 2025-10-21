@@ -23,6 +23,8 @@ export class FileTemplate {
   destination_db: { id: number; marked?: string; name?: string } = {id: -1, name: null};
 
   keywords: { id: number; name: string }[] = [];
+  mentioned: { id: number; name: string }[] = [];
+  people_mentioned_note: string;
 
   languages: string;
 

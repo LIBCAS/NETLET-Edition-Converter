@@ -37,8 +37,6 @@ export class TemplateDialogComponent {
   
   recipients_db = signal<{ id: number, marked: string, name?: string, salutation?: string }[]>([]);
   recipient_db: { id: number, marked: string, name?: string, salutation?: string } = {marked:'', id:-1};
-  
-
 
   selectedTemplate: FileTemplate;
   new_template: string;
@@ -50,6 +48,10 @@ export class TemplateDialogComponent {
   keywords = signal<{ id: number, name: string }[]>([]);
   keywords_db = signal<{ id: number, name: string }[]>([]);
 
+  mentioned : { id: number, name: string };
+  mentionedIds = signal<{ id: number, name: string }[]>([]);
+  mentioned_db = signal<{ id: number, name: string }[]>([]);
+
 
   locations_db: { id: string, tenant: string, name: string, type: string }[] = [];
   repositories: { id: string, tenant: string, name: string }[] = [];
@@ -58,7 +60,7 @@ export class TemplateDialogComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { template: FileTemplate },
-        public config: AppConfiguration,
+    public config: AppConfiguration,
     public state: AppState,
     private service: AppService
   ) { }
@@ -70,11 +72,11 @@ export class TemplateDialogComponent {
     } else {
       this.selectedTemplate = this.state.fileConfig.templates[0];
     }
-    this.checkDb();
+    this.setFromTemplate();
 
   }
 
-  checkDb() {
+  setFromTemplate() {
     if (!this.selectedTemplate.author_db) {
       this.selectedTemplate.author_db = { id: -1, name: null };
     }
@@ -92,6 +94,7 @@ export class TemplateDialogComponent {
     }
 
     this.keywords.set(this.selectedTemplate.keywords);
+    this.mentionedIds.set(this.selectedTemplate.mentioned);
   }
 
   
@@ -107,13 +110,11 @@ export class TemplateDialogComponent {
     });
   }
 
-  setAuthorDb() {
+  setIdentitiesDb() {
     this.selectedTemplate.author_db.marked = this.selectedTemplate.author_marked;
-  }
-
-  setRecipientDb() {
     this.selectedTemplate.recipient_db.marked = this.selectedTemplate.recipient_marked;
     this.selectedTemplate.recipient_db.salutation = this.selectedTemplate.salutation;
+    this.selectedTemplate.mentioned = this.mentionedIds();
   }
 
   checkPlaces(e: any, extended: boolean, list: any) {
@@ -123,7 +124,6 @@ export class TemplateDialogComponent {
     });
   }
 
-  
 
   checkKeywords(e: any, extended: boolean) {
     const val = e.target ? e.target.value : e;
@@ -132,15 +132,15 @@ export class TemplateDialogComponent {
     });
   }
 
-  removeKeyword(id: number) {
-    this.keywords.update(keywords => {
-      const index = keywords.findIndex(k => k.id === id);
+  removeChip(id: number, list: any) {
+    list.update((c: { id: number, name: string }[]) => {
+      const index = c.findIndex(k => k.id === id);
       if (index < 0) {
-        return keywords;
+        return c;
       }
 
-      keywords.splice(index, 1);
-      return [...keywords];
+      c.splice(index, 1);
+      return [...c];
     });
   }
 
@@ -150,6 +150,14 @@ export class TemplateDialogComponent {
     }
 
     this.keyword = null;
+  }
+
+  addMentioned(e: any): void {
+    if (this.mentioned) {
+      this.mentionedIds.update(c => [...c, {id: this.mentioned.id, name: this.mentioned.name}]);
+    }
+
+    this.mentioned = null;
   }
 
 
@@ -166,8 +174,7 @@ export class TemplateDialogComponent {
   }
 
   save() {
-    this.setAuthorDb();
-    this.setRecipientDb();
+    this.setIdentitiesDb();
     this.setOriginDb();
     this.setDestinationDb();
     this.setKeywords();
