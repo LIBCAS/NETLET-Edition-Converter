@@ -256,7 +256,7 @@ export class LetterHIKO {
     destination_uncertain: boolean;
     destination_note: string;
 
-    languages: string[];
+    languages: string;
 
     // Jen string? Nesparovat s keywords v db?
     local_keywords: string[];
@@ -272,7 +272,7 @@ export class LetterHIKO {
     copyright: string;
 
 
-    status: string; // mui byt draft?
+    status: string = 'draft'; // mui byt draft?
     approval: string;
     action: string; // musi byt edit? ne create?
 

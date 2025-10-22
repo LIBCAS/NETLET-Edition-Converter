@@ -35,6 +35,20 @@ import { AuthService } from './auth.service';
         return this.config.copyValues;
     }
 
+    public get languages() {
+        return this.config.languages;
+    }
+
+    // public get languagesList() {
+    //     const list: string[] = [];
+    //     const keys = Object.keys(this.config.languages);
+    //     keys.forEach(k => {
+    //         list.push(this.config.languages[k].name);
+    //     })
+    //     console.log(list)
+    //     return list;
+    // }
+
     constructor(
         private http: HttpClient,
         public state: AppState) { }

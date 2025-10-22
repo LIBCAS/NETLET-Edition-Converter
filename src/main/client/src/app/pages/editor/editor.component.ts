@@ -194,11 +194,18 @@ export class EditorComponent {
       this.letter.hiko.global_keywords.push(k.id + '');
     });
 
-    t.mentioned.forEach(m => {
-      this.letter.hiko.mentioned.push(m.id + '');
-    });
+    if (t.mentioned) {
+      t.mentioned.forEach(m => {
+        this.letter.hiko.mentioned.push(m.id + '');
+      });
+    }
 
     this.letter.hiko.people_mentioned_note = t.people_mentioned_note;
+    this.letter.hiko.copyright = t.copyright;
+
+    if (t.languages) {
+      this.letter.hiko.languages = t.languages.join(';');
+    }
 
 
     const copy = new LetterCopy();
@@ -703,10 +710,8 @@ export class EditorComponent {
 
       'languages', 'local_keywords', 'global_keywords', 'keywords',
 
-      'incipit', 'explicit', 'notes_private', 'notes_public', 'related_resources', 'copies', 'copyright',
-
-
-      'status', 'approval', 'action', 'abstract', 'content', 'content_stripped'];
+      'incipit', 'explicit', 'notes_private', 'notes_public', 'related_resources', 'copies',
+      'copyright', 'status', 'approval', 'action', 'abstract', 'content', 'content_stripped'];
 
     fields.forEach(f => {
       this.mergeHIKOField(res, letter, onlyEmpty, f);

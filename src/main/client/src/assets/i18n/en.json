@@ -52,7 +52,8 @@
     "copies": "Repository and versions",
     "content": "Content description",
     "keywords": "Keywords",
-    "mentioned": "Mentioned people"
+    "mentioned": "Mentioned people",
+    "languages": "Languages"
   },
   "field": {
     "hiko_id": "Id HIKO", 
@@ -107,6 +108,7 @@
     "password": "Password",
     "new_keyword": "New keyword",
     "new_mentioned": "New mentioned person",
+    "new_language": "New language",
     "people_mentioned_note": "Mentioned people note"
   },
   "action": {

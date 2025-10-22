@@ -163,6 +163,13 @@
           id="people_mentioned_note" />
       </mat-form-field>
       
+      
+      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+        <mat-label>{{ 'field.copyright' | translate}}</mat-label>
+        <input matInput [(ngModel)]="selectedTemplate.copyright" name="copyright"
+          id="copyright" />
+      </mat-form-field>
+
     </fieldset>
 
     <fieldset>
@@ -245,6 +252,33 @@
           </mat-select>
         </mat-form-field>
       </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>{{ 'fieldset.languages' | translate }}</legend>
+        <mat-chip-set>
+          @for (language of languages(); track keyword) {
+          <mat-chip (removed)="removeLang(language)">
+            {{language}}
+            <button matChipRemove [attr.aria-label]="'remove language'">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+          }
+        </mat-chip-set>
+        
+        <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+          <mat-label>{{ 'field.new_language' | translate }}</mat-label>
+          <input matInput [(ngModel)]="language" name="languages" id="languages"
+            [matAutocomplete]="autoLanguages" (focus)="checkLanguages($event)" (keyup)="checkLanguages($event)">
+          <mat-autocomplete #autoLanguages="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addLanguage($event)" >
+            @for(a of languages_db(); track idx; let idx = $index){
+            <mat-option [value]="a">
+              {{a}}
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
     </fieldset>
 
     <fieldset>

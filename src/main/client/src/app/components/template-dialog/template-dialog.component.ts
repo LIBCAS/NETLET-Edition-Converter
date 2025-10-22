@@ -52,6 +52,10 @@ export class TemplateDialogComponent {
   mentionedIds = signal<{ id: number, name: string }[]>([]);
   mentioned_db = signal<{ id: number, name: string }[]>([]);
 
+  language : string;
+  languages = signal<string[]>([]);
+  languages_db = signal<string[]>([]);
+
 
   locations_db: { id: string, tenant: string, name: string, type: string }[] = [];
   repositories: { id: string, tenant: string, name: string }[] = [];
@@ -110,13 +114,6 @@ export class TemplateDialogComponent {
     });
   }
 
-  setIdentitiesDb() {
-    this.selectedTemplate.author_db.marked = this.selectedTemplate.author_marked;
-    this.selectedTemplate.recipient_db.marked = this.selectedTemplate.recipient_marked;
-    this.selectedTemplate.recipient_db.salutation = this.selectedTemplate.salutation;
-    this.selectedTemplate.mentioned = this.mentionedIds();
-  }
-
   checkPlaces(e: any, extended: boolean, list: any) {
     const val = e.target ? e.target.value : e;
     this.service.checkPlaces(val, this.state.user.tenant, extended).subscribe((resp: any) => {
@@ -144,6 +141,33 @@ export class TemplateDialogComponent {
     });
   }
 
+  removeLang(name: string) {
+    this.languages.update((c: string[]) => {
+      const index = c.findIndex(k => k === name);
+      if (index < 0) {
+        return c;
+      }
+
+      c.splice(index, 1);
+      return [...c];
+    });
+  }
+
+  checkLanguages(e: any) {
+    const val = e.target ? e.target.value : e;
+    const keys = this.config.languages.filter(n => n.toLowerCase().indexOf(val.toLowerCase()) > -1);
+    this.languages_db.set(keys);
+  }
+
+
+  addLanguage(e: any): void {
+    if (this.language) {
+      this.languages.update(ls => [...ls, this.language]);
+    }
+
+    this.language = null;
+  }
+
   addKeyword(e: any): void {
     if (this.keyword) {
       this.keywords.update(keywords => [...keywords, {id: this.keyword.id, name: this.keyword.name}]);
@@ -161,23 +185,22 @@ export class TemplateDialogComponent {
   }
 
 
-  setOriginDb() {
+  setLists() {
+    this.selectedTemplate.author_db.marked = this.selectedTemplate.author_marked;
+    this.selectedTemplate.recipient_db.marked = this.selectedTemplate.recipient_marked;
+    this.selectedTemplate.recipient_db.salutation = this.selectedTemplate.salutation;
+    this.selectedTemplate.mentioned = this.mentionedIds();
+    
     this.selectedTemplate.origin_db.marked = this.selectedTemplate.origin_marked;
-  }
-  
-  setDestinationDb() {
+    
     this.selectedTemplate.destination_db.marked = this.selectedTemplate.destination_marked;
-  }
-  
-  setKeywords() {
+    
     this.selectedTemplate.keywords = this.keywords();
+    this.selectedTemplate.languages = this.languages();
   }
 
   save() {
-    this.setIdentitiesDb();
-    this.setOriginDb();
-    this.setDestinationDb();
-    this.setKeywords();
+    this.setLists();
     this.service.saveFile(this.state.selectedFile.filename, this.state.fileConfig).subscribe(res => { });
   }
 

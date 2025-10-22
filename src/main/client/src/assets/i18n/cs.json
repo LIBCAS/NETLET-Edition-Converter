@@ -52,7 +52,8 @@
     "copies": "Repozitáře a verze",
     "content": "Popis obsahu",
     "keywords": "Klíčová slova",
-    "mentioned": "Zmíněné osoby"
+    "mentioned": "Zmíněné osoby",
+    "languages": "Jazyky"
   },
   "field": {
     "hiko_id": "Id v HIKO", 
@@ -107,6 +108,7 @@
     "password": "Heslo",
     "new_keyword": "Nové klíčové slovo",
     "new_mentioned": "Nová zmíněná osoba",
+    "new_language": "Nový jazyk",
     "people_mentioned_note": "Poznámka ke zmíněným osobám"
   },
   "action": {

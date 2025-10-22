@@ -26,7 +26,7 @@ export class FileTemplate {
   mentioned: { id: number; name: string }[] = [];
   people_mentioned_note: string;
 
-  languages: string;
+  languages: string[];
 
   
     preservation: string;
@@ -44,6 +44,8 @@ export class FileTemplate {
 
   notes_private: string;
   salutation: string;
+
+  copyright: string;
 
   public static newTemplateFromLetter(letter: Letter): FileTemplate {
     const t: FileTemplate = new FileTemplate();
