@@ -93,7 +93,7 @@ export class UIService {
 
     const data = {
       type: 'error',
-      title: String(this.translator.instant('desc.error')),
+      title: String(this.translator.instant('Error')),
       message
     };
     return this.showErrorDialog(data);
@@ -102,7 +102,7 @@ export class UIService {
   showErrorDialogFromString(message: String) {
     const data = {
       type: 'error',
-      title: String(this.translator.instant('desc.error')),
+      title: String(this.translator.instant('Error')),
       message: [message]
     };
     this.showErrorDialog(data);

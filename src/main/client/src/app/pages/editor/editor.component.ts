@@ -839,16 +839,31 @@ export class EditorComponent {
 
     this.letter.hiko.content_stripped = this.letter.hiko.content;
 
-    this.letter.hiko.authors[0].marked = this.letter.author;
-
-    this.letter.hiko.recipients[0].marked = this.letter.recipient;
-    this.letter.hiko.recipients[0].salutation = this.letter.salutation;
-
-    if (this.letter.hiko.origins.length > 0) {
-      this.letter.hiko.origins[0].marked = this.letter.origin;
+    if (this.letter.hiko.authors.length > 0 && this.letter.hiko.authors[0].id > -1) {
+      this.letter.hiko.authors[0].marked = this.letter.author;
+    } else {
+      this.letter.hiko.authors = [];
     }
-    if (this.letter.hiko.destinations.length > 0) {
+
+    if (this.letter.hiko.recipients.length > 0 && this.letter.hiko.recipients[0].id > -1) {
+      this.letter.hiko.recipients[0].marked = this.letter.recipient;
+      this.letter.hiko.recipients[0].salutation = this.letter.salutation;
+    } else {
+      this.letter.hiko.recipients = [];
+    }
+
+
+
+    if (this.letter.hiko.origins.length > 0 && this.letter.hiko.origins[0].id > -1) {
+      this.letter.hiko.origins[0].marked = this.letter.origin;
+    } else {
+      this.letter.hiko.origins = [];
+    }
+
+    if (this.letter.hiko.destinations.length > 0 && this.letter.hiko.destinations[0].id > -1) {
       this.letter.hiko.destinations[0].marked = this.letter.destination;
+    } else {
+      this.letter.hiko.destinations = [];
     }
 
     if (this.letter.letter_number) {
