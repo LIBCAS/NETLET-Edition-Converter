@@ -1,21 +1,33 @@
 <mat-toolbar color="primary" class="app-fxLayout-row">
   <div class="app-fxFlex">
     <a [routerLink]="['/']" class="app-fxFlex app-fxLayout app-row app-center-v">
-      <img src="https://netlet.lib.cas.cz/wp-content/uploads/2023/08/netlet-logo-white.svg" title="Netlet" class="app-logo" /><span class="app-logo-desc">Edition-Converter</span>
+      <img src="https://netlet.lib.cas.cz/wp-content/uploads/2023/08/netlet-logo-white.svg" title="Netlet"
+        class="app-logo" /><span class="app-logo-desc">Edition-Converter</span>
     </a>
   </div>
   <div class="app-fxLayout app-row app-center-v">
     @if (state.user) {
-   <a mat-button >{{ state.user.name }} ({{ state.user.tenant }})</a>
-   <a mat-button (click)="logout()" >{{ 'action.logout' | translate }}</a>
-   <button mat-button (click)="openSettings()">{{ 'action.querySettings' | translate }}</button>
-   <button mat-icon-button (click)="synchronize()" [title]="'action.synchronize' | translate"><mat-icon>sync_arrow_down</mat-icon></button>
-   <button mat-button>
-      <mat-spinner diameter="20" class="app-spinner" ></mat-spinner>
-  </button>
+    <a mat-button>{{ state.user.name }} ({{ state.user.tenant }})</a>
+    <a mat-button (click)="logout()">{{ 'action.logout' | translate }}</a>
+    <button mat-button (click)="openSettings()">{{ 'action.querySettings' | translate }}</button>
+    @if(synchronizing()) {
+    <button mat-button>
+      <mat-spinner diameter="20" class="app-spinner"></mat-spinner>
+    </button>
+    } @else {
+    <button mat-icon-button [matMenuTriggerFor]="syncMenu"
+      [title]="'action.synchronize' | translate"><mat-icon>sync_arrow_down</mat-icon></button>
+    <mat-menu #syncMenu="matMenu">
+      <button mat-menu-item (click)="synchronize('all')">{{ 'action.sync_all' | translate }}</button>
+      <button mat-menu-item (click)="synchronize('identities')">{{ 'action.sync_identities' | translate }}</button>
+      <button mat-menu-item (click)="synchronize('keywords')">{{ 'action.sync_keywords' | translate }}</button>
+      <button mat-menu-item (click)="synchronize('locations')">{{ 'action.sync_locations' | translate }}</button>
+      <button mat-menu-item (click)="synchronize('places')">{{ 'action.sync_places' | translate }}</button>
+    </mat-menu>
+    }
 
-   }
-   <button mat-button [matMenuTriggerFor]="menu">{{ translator.currentLang | translate}}</button>
+    }
+    <button mat-button [matMenuTriggerFor]="menu">{{ translator.currentLang | translate}}</button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onLanguageChanged('cs')">Český</button>
       <button mat-menu-item (click)="onLanguageChanged('en')">English</button>

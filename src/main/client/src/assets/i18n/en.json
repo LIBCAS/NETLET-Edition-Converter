@@ -161,7 +161,12 @@
     "add_place_meta": "Add place",
     "login": "Login",
     "logout": "Logout",
-    "synchronize": "Synchronize db"
+    "synchronize": "Synchronize db",
+    "sync_all": "Synchronize all",
+    "sync_identities": "Identities",
+    "sync_keywords": "Keywords",
+    "sync_locations": "Locations",
+    "sync_places": "Places"
   },
   "desc": {
     "fileName": "File name",

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +24,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
+
+  synchronizing = signal<boolean>(false);
 
   constructor(
     public dialog: MatDialog,
@@ -53,13 +55,14 @@ export class NavbarComponent {
     });
   }
 
-  synchronize() {
-    this.service.synchronize().subscribe((res: any) => {
-      if (res.errors) {
-        // this.service.showSnackBar(res.message, '', true);
-        this.ui.showErrorSnackBar(res.message);
-      } else if (res.id) {
-        this.ui.showInfoSnackBar('Export success');
+  synchronize(type: string) {
+    this.synchronizing.set(true);
+    this.service.synchronize(type).subscribe((res: any) => {
+    this.synchronizing.set(false);
+      if (res.error) {
+        this.ui.showErrorSnackBar(res.error);
+      } else {
+        this.ui.showInfoSnackBar('Sync success');
       }
     })
   }

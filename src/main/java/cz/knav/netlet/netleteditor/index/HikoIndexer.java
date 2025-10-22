@@ -101,39 +101,49 @@ public class HikoIndexer {
 
     }
 
-    public JSONObject indexTenant(String tenant) throws URISyntaxException, IOException, InterruptedException {
-        LOGGER.log(Level.INFO, "Indexing tenant {0}", new Object[]{tenant});
+    public JSONObject indexTenant(String tenant, String type) throws URISyntaxException, IOException, InterruptedException {
+        LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1}", new Object[]{tenant, type});
         Date start = new Date();
         JSONObject ret = new JSONObject();
-        LOGGER.log(Level.INFO, "Indexing HIKO identities");
         try (SolrClient client = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) {
-            JSONObject identities = new JSONObject();
-            indexTenantIdentities(client, identities, tenant);
-            ret.put("identities", identities);
-            client.commit("identities");
-            
-            JSONObject keywords = new JSONObject();
-            indexGlobalKeywords(client, keywords, tenant);
-            ret.put("keywords", keywords);
-            client.commit("keywords");
-            
-            JSONObject locations = new JSONObject();
-            indexTenantLocations(client, locations, tenant);
-            ret.put("locations", locations);
-            client.commit("locations");
-            
-            JSONObject places = new JSONObject();
-            indexTenantPlaces(client, places, tenant);
-            ret.put("places", places);
-            client.commit("places");
-            
+
+            if ("all".equals(type) || "identities".equals(type)) {
+                JSONObject identities = new JSONObject();
+                indexTenantIdentities(client, identities, tenant);
+                ret.put("identities", identities);
+                client.commit("identities");
+            }
+
+            if ("all".equals(type) || "keywords".equals(type)) {
+                JSONObject keywords = new JSONObject();
+                indexGlobalKeywords(client, keywords, tenant);
+                ret.put("keywords", keywords);
+                client.commit("keywords");
+            }
+
+            if ("all".equals(type) || "locations".equals(type)) {
+
+                JSONObject locations = new JSONObject();
+                indexTenantLocations(client, locations, tenant);
+                ret.put("locations", locations);
+                client.commit("locations");
+            }
+
+            if ("all".equals(type) || "places".equals(type)) {
+
+                JSONObject places = new JSONObject();
+                indexTenantPlaces(client, places, tenant);
+                ret.put("places", places);
+                client.commit("places");
+            }
+
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
             ret.put("error", ex);
         }
         Date end = new Date();
         ret.put("ellapsed time", DurationFormatUtils.formatDuration(end.getTime() - start.getTime(), "HH:mm:ss.S"));
-        LOGGER.log(Level.INFO, "Indexing HIKO identities FINISHED");
+        LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1} FINISHED", new Object[]{tenant, type});
         return ret;
 
     }

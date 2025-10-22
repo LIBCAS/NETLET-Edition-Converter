@@ -238,9 +238,9 @@ export class AppService {
   }
 
   
-  synchronize() {
-    const params: HttpParams = new HttpParams();
-    return this.http.get('api/data/index_hiko')
+  synchronize(type: string) {
+    const url = `/data/index_hiko?type=${type}`;
+    return this.get(url);
   }
 
 }
