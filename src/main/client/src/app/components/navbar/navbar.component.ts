@@ -62,7 +62,7 @@ export class NavbarComponent {
       if (res.error) {
         this.ui.showErrorSnackBar(res.error);
       } else {
-        this.ui.showInfoSnackBar('Sync success');
+        this.ui.showInfoSnackBar(`Sync ${type} success`);
       }
     })
   }

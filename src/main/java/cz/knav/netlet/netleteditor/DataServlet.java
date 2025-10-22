@@ -395,7 +395,7 @@ public class DataServlet extends HttpServlet {
                         utenant = user.optString("tenant");
                     }
                     json.put("sync", hi.indexTenant(utenant, req.getParameter("type")));  
-                    json.put("msg", "sycn succes");
+                    json.put("msg", "sync succes");
 
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
