@@ -35,7 +35,7 @@ export class HikoImportDialogComponent {
 
 
   import(){
-    this.dialogRef.close({new_letter: this.type === 'new_letter' ? true : false, onlyEmpty: this.onlyEmpty, id: this.id})
+    this.dialogRef.close({new_letter: this.type === 'new_letter' ? true : false, overwrite: !this.onlyEmpty, id: this.id})
   }
 
 

@@ -630,7 +630,7 @@ export class EditorComponent {
     }
 
     this.service.saveLetter(this.state.selectedFile.filename, this.letter).subscribe((res: any) => {
-      this.ui.showInfoSnackBar('Letter saved success');
+      this.ui.showInfoSnackBar('Letter saved successfully');
       this.refreshLetters('');
     });
   }
@@ -651,26 +651,26 @@ export class EditorComponent {
       width: '800px'
     });
 
-    dialogRef.afterClosed().subscribe((result: { new_letter: boolean, onlyEmpty: boolean, id: string }) => {
+    dialogRef.afterClosed().subscribe((result: { new_letter: boolean, overwrite: boolean, id: string }) => {
       if (result) {
-        console.log(result)
+        this.doImportFromHIKO(result.new_letter, result.overwrite, result.id)
       }
     });
 
   }
 
-  mergeHIKOField(res: any, letter: Letter, onlyEmpty: boolean, field: string, sfield?: string) {
+  mergeHIKOField(res: any, letter: Letter, overwrite: boolean, field: string, sfield?: string) {
     const source = sfield ? sfield : field;
-    if (!onlyEmpty || !letter[field]) {
+    if (overwrite || !letter[field]) {
       letter.hiko[field] = res[source];
     }
   }
 
-  mergeFromHIKO(res: any, letter: Letter, onlyEmpty: boolean) {
+  mergeFromHIKO(res: any, letter: Letter, overwrite: boolean) {
 
     letter.hiko_id = res.id;
 
-    if (!onlyEmpty || !letter.date) {
+    if (overwrite || !letter.date) {
       letter.date = res.date_computed;
     }
 
@@ -714,10 +714,10 @@ export class EditorComponent {
       'copyright', 'status', 'approval', 'action', 'abstract', 'content', 'content_stripped'];
 
     fields.forEach(f => {
-      this.mergeHIKOField(res, letter, onlyEmpty, f);
+      this.mergeHIKOField(res, letter, overwrite, f);
     });
 
-    this.mergeHIKOField(res, letter, onlyEmpty, 'date', 'date_computed');
+    this.mergeHIKOField(res, letter, overwrite, 'date', 'date_computed');
 
     letter.hiko.authors = authors;
     letter.hiko.recipients = recipients;
@@ -795,7 +795,7 @@ export class EditorComponent {
     // };
   }
 
-  doImportFromHIKO(add: boolean, overwrite: boolean, id: string) {
+  doImportFromHIKO(new_letter: boolean, overwrite: boolean, id: string) {
     // const id = window.prompt('Id to import. Tenant: ' + this.state.user.tenant);
     if (id) {
       this.service.importFromHiko(id, this.state.user.tenant).subscribe((res: any) => {
@@ -805,7 +805,7 @@ export class EditorComponent {
           return;
         }
 
-        if (add) {
+        if (new_letter) {
 
           const letter = new Letter();
           this.mergeFromHIKO(res, letter, true);
@@ -878,7 +878,7 @@ export class EditorComponent {
       } else if (res.id) {
         this.letter.hiko_id = res.id;
         this.letter.hiko.id = res.id;
-        this.ui.showInfoSnackBar('Export success');
+        this.ui.showInfoSnackBar('Letter exported successfully');
         this.saveLetter();
       }
     });
