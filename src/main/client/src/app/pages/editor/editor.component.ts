@@ -688,12 +688,12 @@ export class EditorComponent {
 
     const mentioned = res.identities.filter((i: any) => i.pivot.role === "mentioned").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
 
-    const origins = res.places.filter((i: any) => i.pivot.role === "origin").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+    const origins = res.places.filter((i: any) => i.pivot.role === "origin").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked } });
     if (origins.length > 0) {
       letter.origin = origins[0].marked;
     }
 
-    const destinations = res.places.filter((i: any) => i.pivot.role === "destination").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
+    const destinations = res.places.filter((i: any) => i.pivot.role === "destination").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked } });
     if (destinations.length > 0) {
       letter.destination = destinations[0].marked;
     }
@@ -824,7 +824,7 @@ export class EditorComponent {
         this.view = 'fields';
       });
     }
-
+    console.log(this.letter.hiko)
   }
 
   exportToHIKO() {
@@ -856,6 +856,8 @@ export class EditorComponent {
 
     if (this.letter.hiko.origins.length > 0 && this.letter.hiko.origins[0].id > -1) {
       this.letter.hiko.origins[0].marked = this.letter.origin;
+      this.letter.hiko.origins = this.letter.hiko.origins.map(o => {return {id: o.id, marked: o.marked}});
+      console.log(this.letter.hiko.origins)
     } else {
       this.letter.hiko.origins = [];
     }

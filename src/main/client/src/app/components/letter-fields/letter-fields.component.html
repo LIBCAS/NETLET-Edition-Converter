@@ -37,13 +37,14 @@
   </div>
 
   <div class="app-mb-4">
-    <mat-form-field class="app-w-100">
+      <div [innerHTML]="_letter.hiko.content"></div>
+    <!-- <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.full_text' | translate}}</mat-label>
       <textarea rows="5" matInput [(ngModel)]="_letter.hiko.content" name="content"></textarea>
       <div class="app-pt-4 app-mb-n2 app-text-right">
         <ng-container *ngTemplateOutlet="icons; context:{ field: 'content' }"></ng-container>
       </div>
-    </mat-form-field>
+    </mat-form-field> -->
   </div>
 
   <div class="app-fxLayout app-row app-center-v app-mb-4">
