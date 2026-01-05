@@ -300,6 +300,7 @@ export class Letter  {
 
     // hiko fields
     hiko_id: number;
+    exported_to_hiko: boolean;
 
     startPage: number;
     endPage: number;

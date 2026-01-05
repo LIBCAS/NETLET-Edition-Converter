@@ -68,9 +68,21 @@
         </div>
         <div *ngIf="view == 'letters'" class="app-fxFlex app-p-4 app-oa-y">
           <mat-list>
-            <div mat-subheader>{{ 'Letters' | translate }}: ({{letters?.length}})</div>
+          <div class="app-fxLayout app-row app-fill">
+            <div class="app-fxFlex" mat-subheader>{{ 'Letters' | translate }}: ({{letters?.length}})</div>
+            <div >
+              <mat-form-field class="app-fxFlex" appearance="outline">
+                <mat-label>{{ 'sorts.legend' | translate }}</mat-label>
+                <mat-select [(ngModel)]="sortField" (selectionChange)="sortBy()">
+                  @for(s of sorts(); track idx; let idx = $index){
+                  <mat-option [value]="s">{{ 'sorts.' + s | translate }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
             @for(l of letters; track idx; let idx = $index){
-            <mat-list-item [class.app-selected]="l.id === currentLetterId" [class.app-has-hiko]="l.hiko_id" (click)="selectResult(l, false, idx)"
+            <mat-list-item [class.app-selected]="l.id === currentLetterId" [class.app-exported-to-hiko]="l.exported_to_hiko" [class.app-has-hiko]="l.hiko_id" (click)="selectResult(l, false, idx)"
               class="app-result app-pt-4 app-pb-4">
               
               <div matListItemTitle [class.app-ignore]="ignored[l.id]">
@@ -85,7 +97,7 @@
             }
           </mat-list>
         </div>
-        <div *ngIf="view === 'fields'" class="app-fxFlex app-p-4 app-oa-y"  [class.app-has-hiko]="letter.hiko_id">
+        <div *ngIf="view === 'fields'" class="app-fxFlex app-p-4 app-oa-y"  [class.app-has-hiko]="letter.hiko_id" [class.app-exported-to-hiko]="letter.exported_to_hiko" >
           <app-letter-fields [letter]="letter" (onSetField)="setField($event)"
             (onShouldRefresh)="refreshLetters($event)"></app-letter-fields>
         </div>

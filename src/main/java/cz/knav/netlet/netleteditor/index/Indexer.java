@@ -19,6 +19,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.io.FileUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.beans.DocumentObjectBinder;
 import org.apache.solr.client.solrj.impl.Http2SolrClient;
@@ -230,7 +231,7 @@ public class Indexer {
 
     }
 
-    public static JSONObject getLetters(String filename) {
+    public static JSONObject getLetters(String filename, String sort) {
         JSONObject ret = new JSONObject();
         try {
             Http2SolrClient solr = (Http2SolrClient) getClient();
@@ -240,6 +241,10 @@ public class Indexer {
                     .addSort("startPage", SolrQuery.ORDER.asc)
                     .addSort("page_number", SolrQuery.ORDER.asc)
                     .setRows(1000);
+            
+            if (sort != null) {
+                query.setSort(new SortClause(sort.split(" ")[0], sort.split(" ")[1]));
+            }
             query.set("wt", "json");
             String jsonResponse;
 
@@ -399,7 +404,10 @@ public class Indexer {
             idoc.setField("file_id", hashString(filename));
             if (data.has("hiko")) {
                 idoc.setField("hiko", data.optJSONObject("hiko").toString());
+                idoc.setField("hiko_created_at", data.getJSONObject("hiko").optString("created_at"));
+                idoc.setField("hiko_updated_at", data.getJSONObject("hiko").optString("updated_at"));
             }
+            idoc.setField("exported_to_hiko", data.optBoolean("exported_to_hiko"));
             if (data.has("ai")) {
                 idoc.setField("ai", data.optJSONArray("ai").toString());
             }

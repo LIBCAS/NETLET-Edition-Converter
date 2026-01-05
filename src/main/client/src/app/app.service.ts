@@ -119,9 +119,10 @@ export class AppService {
     return this.get(url);
   }
 
-  getLetters(filename: string): Observable<any> {
+  getLetters(filename: string, sort: string): Observable<any> {
     const params: HttpParams = new HttpParams()
-    .set('filename', filename);
+    .set('filename', filename)
+    .set('sort', sort);
     return this.get(`/data/get_letters`, params);
     
   }

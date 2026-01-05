@@ -77,6 +77,9 @@ Managed external dictionaries
     <field name="salutation" type="string" indexed="true" stored="true"   />
     <field name="signature" type="string" indexed="true" stored="true"   />
     <field name="date" type="pdate" indexed="true" stored="true" />
+    <field name="hiko_created_at" type="pdate" indexed="true" stored="true" />
+    <field name="hiko_updated_at" type="pdate" indexed="true" stored="true" />
+    <field name="exported_to_hiko" type="boolean" indexed="true" stored="true" />
 	
 
     <!-- uncomment the following to ignore any fields that don't already match an existing 

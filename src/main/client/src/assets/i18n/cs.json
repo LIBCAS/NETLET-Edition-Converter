@@ -44,6 +44,15 @@
   "new_letter": "Vytvořit nový dopis",
   "merge_letter": "Sloučit dopis",
   "onlyEmpty": "Jen prázdná pole",
+  "sorts": {
+    "legend": "Řazení dopisů",
+    "date asc": "Datum dopisu asc", 
+    "date desc": "Datum dopisu desc", 
+    "hiko_created_at asc": "Datum v db asc", 
+    "hiko_created_at desc": "Datum v db desc", 
+    "startPage asc": "Strana asc", 
+    "startPage desc": "Strana desc"
+  },
   "fieldset": {
     "author": "Autor", 
     "authors": "Autoři", 

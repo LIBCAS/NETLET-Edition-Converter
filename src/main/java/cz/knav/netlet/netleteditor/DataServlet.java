@@ -323,7 +323,8 @@ public class DataServlet extends HttpServlet {
                 JSONObject ret = new JSONObject();
                 try {
                     String id = request.getParameter("filename");
-                    ret = Indexer.getLetters(id);
+                    String sort = request.getParameter("sort");
+                    ret = Indexer.getLetters(id, sort);
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     ret.put("error", ex);

@@ -260,6 +260,20 @@ fieldset {
   border-left: 2px solid var(--app-hiko-color);
 }
 
+.app-exported-to-hiko::before {
+  
+  background: none;
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 1px;
+  right: 1px;
+  bottom: 0px;
+  pointer-events: none;
+  border-left: 2px solid var(--app-exported-to-hiko-color);
+}
+
 .app-field-error {
   background-color: rgb(255, 179, 80);
 }

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, signal, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AppService } from 'src/app/app.service';
@@ -28,6 +28,7 @@ import { TemplateDialogComponent } from 'src/app/components/template-dialog/temp
 import { AppConfiguration } from 'src/app/app-configuration';
 import { UIService } from 'src/app/ui.service';
 import { HikoImportDialogComponent } from 'src/app/components/hiko-import-dialog/hiko-import-dialog.component';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @Component({
@@ -39,7 +40,7 @@ import { HikoImportDialogComponent } from 'src/app/components/hiko-import-dialog
     { provide: MAT_DATE_LOCALE, useValue: 'cs' },
   ],
   imports: [CommonModule, FormsModule, AngularSplitModule, NgIf, ViewerComponent,
-    MatToolbarModule, RouterModule, TranslateModule, DatePipe, MatMenuModule,
+    MatToolbarModule, RouterModule, TranslateModule, DatePipe, MatMenuModule, MatSelectModule,
     MatTabsModule, MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatListModule,
     MatInputModule, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
 })
@@ -71,6 +72,9 @@ export class EditorComponent {
   ignored: { [id: string]: boolean } = {};
 
   view: string;
+
+  sorts = signal<string[]>(['date asc', 'date desc', 'hiko_created_at asc', 'hiko_created_at desc', 'startPage asc', 'startPage desc']);
+  sortField: string = 'startPage asc';
 
   constructor(
     private router: Router,
@@ -469,8 +473,12 @@ export class EditorComponent {
     });
   }
 
+  sortBy() {
+    this.getLetters();
+  }
+
   getLetters() {
-    this.service.getLetters(this.state.selectedFile.filename).subscribe((resp: any) => {
+    this.service.getLetters(this.state.selectedFile.filename, this.sortField).subscribe((resp: any) => {
       this.letters = resp.response.docs;
 
       if (this.currentLetterId) {
@@ -894,7 +902,7 @@ export class EditorComponent {
         this.ui.showErrorDialogFromString(res.message);
       } else if (res.id) {
         this.letter.hiko_id = res.id;
-        this.letter.hiko.id = res.id;
+        this.letter.exported_to_hiko = true;
         this.ui.showInfoSnackBar('Letter exported successfully');
         this.saveLetter();
       }
