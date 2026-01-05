@@ -184,10 +184,10 @@ export class EditorComponent {
     this.letter.hiko.recipients.push({ name: t.recipient_db?.name, marked: t.recipient_db?.marked, id: t.recipient_db?.id, salutation: t.salutation });
     this.letter.recipient = t.recipient_marked;
 
-    this.letter.hiko.origins.push({ name: t.origin_db?.name, marked: t.origin_db?.marked, id: t.origin_db?.id });
+    this.letter.origins.push({ name: t.origin_db?.name, marked: t.origin_db?.marked, id: t.origin_db?.id });
     this.letter.origin = t.origin_marked;
 
-    this.letter.hiko.destinations.push({ name: t.destination_db?.name, marked: t.destination_db?.marked, id: t.destination_db?.id });
+    this.letter.destinations.push({ name: t.destination_db?.name, marked: t.destination_db?.marked, id: t.destination_db?.id });
     this.letter.destination = t.destination_marked;
 
     t.keywords.forEach(k => {
@@ -688,15 +688,24 @@ export class EditorComponent {
 
     const mentioned = res.identities.filter((i: any) => i.pivot.role === "mentioned").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
 
-    const origins = res.places.filter((i: any) => i.pivot.role === "origin").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked } });
+    const origins = res.places.filter((i: any) => i.pivot.role === "origin").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked, tenant: this.state.user.tenant } });
     if (origins.length > 0) {
       letter.origin = origins[0].marked;
     }
+    const global_origins = res.global_places.filter((i: any) => i.pivot.role === "origin").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked, tenant: 'global' } });
+    if (global_origins.length > 0) {
+      letter.origin = global_origins[0].marked;
+    }
 
-    const destinations = res.places.filter((i: any) => i.pivot.role === "destination").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked } });
+    const destinations = res.places.filter((i: any) => i.pivot.role === "destination").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked, tenant: this.state.user.tenant } });
     if (destinations.length > 0) {
       letter.destination = destinations[0].marked;
     }
+    const global_destinations = res.global_places.filter((i: any) => i.pivot.role === "destination").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked, tenant: 'global'} });
+    if (global_destinations.length > 0) {
+      letter.destination = global_destinations[0].marked;
+    }
+
     const fields = ['id',
       'uuid',
       'created_at',
@@ -722,8 +731,8 @@ export class EditorComponent {
     letter.hiko.authors = authors;
     letter.hiko.recipients = recipients;
     letter.hiko.mentioned = mentioned;
-    letter.hiko.origins = origins;
-    letter.hiko.destinations = destinations;
+    letter.origins = [...origins, ...global_origins];
+    letter.destinations = [...destinations, ...global_destinations];
 
     // letter.hiko = {
     //   id: res.id,
@@ -854,18 +863,24 @@ export class EditorComponent {
 
 
 
-    if (this.letter.hiko.origins.length > 0 && this.letter.hiko.origins[0].id > -1) {
-      this.letter.hiko.origins[0].marked = this.letter.origin;
-      this.letter.hiko.origins = this.letter.hiko.origins.map(o => {return {id: o.id, marked: o.marked}});
-      console.log(this.letter.hiko.origins)
+    if (this.letter.origins.length > 0 && this.letter.origins[0].id > -1) {
+      this.letter.origins[0].marked = this.letter.origin;
+      this.letter.hiko.local_origins = this.letter.origins.filter(o => o.tenant !== 'global').map(o => {return {id: o.id, marked: o.marked}});
+      this.letter.hiko.global_origins = this.letter.origins.filter(o => o.tenant === 'global').map(o => {return {id: o.id, marked: o.marked}});
+      
     } else {
-      this.letter.hiko.origins = [];
+      this.letter.hiko.local_origins = [];
+      this.letter.hiko.global_origins = [];
     }
 
-    if (this.letter.hiko.destinations.length > 0 && this.letter.hiko.destinations[0].id > -1) {
-      this.letter.hiko.destinations[0].marked = this.letter.destination;
+    if (this.letter.destinations.length > 0 && this.letter.destinations[0].id > -1) {
+      this.letter.destinations[0].marked = this.letter.destination;
+      this.letter.hiko.local_destinations = this.letter.destinations.filter(o => o.tenant !== 'global').map(o => {return {id: o.id, marked: o.marked}});
+      this.letter.hiko.global_destinations = this.letter.destinations.filter(o => o.tenant === 'global').map(o => {return {id: o.id, marked: o.marked}});
+      
     } else {
-      this.letter.hiko.destinations = [];
+      this.letter.hiko.local_destinations = [];
+      this.letter.hiko.global_destinations = [];
     }
 
     if (this.letter.letter_number) {

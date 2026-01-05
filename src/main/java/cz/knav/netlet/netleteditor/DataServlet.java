@@ -736,6 +736,7 @@ public class DataServlet extends HttpServlet {
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
+                    json.put("global", hi.indexGlobalPlaces()); 
                     json.put("places", hi.indexPlaces());
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);

@@ -246,12 +246,14 @@ export class LetterHIKO {
     mentioned: string[] = [];
     people_mentioned_note: string;
 
-    origins: { id: number; marked?: string; name?: string }[] = [];
+    local_origins: { id: number; marked?: string; name?: string }[] = [];
+    global_origins: { id: number; marked?: string; name?: string }[] = [];
     origin_inferred: boolean;
     origin_uncertain: boolean;
     origin_note: string;
 
-    destinations: { id: number; marked?: string; name?: string }[] = [];
+    local_destinations: { id: number; marked?: string; name?: string }[] = [];
+    global_destinations: { id: number; marked?: string; name?: string }[] = [];
     destination_inferred: boolean;
     destination_uncertain: boolean;
     destination_note: string;
@@ -311,7 +313,10 @@ export class Letter  {
     author: string;
     recipient: string;
     origin: string;
+    origins: { id: number; marked?: string; name?: string, tenant?: string }[] = [];
+
     destination: string;
+    destinations: { id: number; marked?: string; name?: string, tenant?: string }[] = [];
     salutation: string;
     signature: string;
     sign_off: string;
@@ -322,7 +327,7 @@ export class Letter  {
     ai: {
         date: Date;
         analysis: any;
-    }[]
+    }[];
 
     selection: { page: number, selection?: DOMRect[], blocks?: AltoBlock[], text?: string }[];
     hiko: LetterHIKO = new LetterHIKO();

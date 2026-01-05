@@ -257,7 +257,7 @@
     <fieldset>
       <legend>{{ 'fieldset.languages' | translate }}</legend>
         <mat-chip-set>
-          @for (language of languages(); track keyword) {
+          @for (language of languages(); track language) {
           <mat-chip (removed)="removeLang(language)">
             {{language}}
             <button matChipRemove [attr.aria-label]="'remove language'">

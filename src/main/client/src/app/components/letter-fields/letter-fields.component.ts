@@ -30,6 +30,7 @@ import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS, MAT_MOMENT_DATE_FOR
 import { MultiDateFormat } from 'src/app/shared/multi-date-format';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatChipsModule } from '@angular/material/chips';
 
 
 @Component({
@@ -51,7 +52,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   imports: [FormsModule, ReactiveFormsModule, NgIf, RouterModule, TranslateModule, DatePipe,
     MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatAutocompleteModule, MatCardModule,
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatListModule, MatTooltipModule, 
-    MatMenuModule, MatProgressBarModule,
+    MatMenuModule, MatProgressBarModule, MatChipsModule,
     MatInputModule, NgTemplateOutlet, MatIconModule, MatDialogModule, MatCheckboxModule]
 })
 export class LetterFieldsComponent {
@@ -59,6 +60,10 @@ export class LetterFieldsComponent {
   loading = false;
   showSelection = false;
   imgUrl = '';
+
+  language : string;
+  languages = signal<string[]>([]);
+  languages_db = signal<string[]>([]);
 
   _letter: Letter;
   @Input() set letter(value: Letter) {
@@ -81,18 +86,18 @@ export class LetterFieldsComponent {
       this.recipient_db = this._letter.hiko.recipients[0];
     }
     
-    if (this._letter.hiko.origins?.length > 0) {
-      this.origins_db.set(this._letter.hiko.origins);
-      this.origin_db = this._letter.hiko.origins[0];
+    if (this._letter.origins?.length > 0) {
+      this.origins_db.set(this._letter.origins);
+      this.origin_db = this._letter.origins[0];
     } else {
-      this._letter.hiko.origins = [];
+      this._letter.origins = [];
     }
     
-    if (this._letter.hiko.destinations?.length > 0) {
-      this.destinations_db.set(this._letter.hiko.destinations);
-      this.destination_db = this._letter.hiko.destinations[0];
+    if (this._letter.destinations?.length > 0) {
+      this.destinations_db.set(this._letter.destinations);
+      this.destination_db = this._letter.destinations[0];
     } else {
-      this._letter.hiko.destinations = [];
+      this._letter.destinations = [];
     }
 
   }
@@ -107,8 +112,8 @@ export class LetterFieldsComponent {
     norecipient = {marked:'', id:-1, name: ''};
     
   
-    origins_db = signal<{ id: number, marked?: string, name?: string }[]>([]);
-    origin_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1, name: ''};
+    origins_db = signal<{ id: number, marked?: string, name?: string, tenant?: string }[]>([]);
+    origin_db: { id: number, marked?: string, name?: string, tenant?: string } = {marked:'', id:-1, name: ''};
     noorigin = {marked:'', id:-1, name: ''};
     destinations_db = signal<{ id: number, marked?: string, name?: string }[]>([]);
     destination_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1, name: ''};
@@ -142,6 +147,8 @@ export class LetterFieldsComponent {
     // this.datum.valueChanges.subscribe(v => {
     //   console.log(this.datum.value)
     // })
+
+    this.languages.set(this._letter.hiko.languages.split(';'));
   }
 
   findTags() {
@@ -177,9 +184,9 @@ export class LetterFieldsComponent {
     }
   }
 
-  setAuthorDb(e: any) {
-    //this._letter.hiko.authors = [this.author_db];
-    this._letter.hiko.authors[0].marked = this._letter.author;
+  setAuthorDb(e: any, idx: number) {
+    this._letter.hiko.authors[idx].name=e.option.value.name;
+    this._letter.hiko.authors[idx].id=e.option.value.id;
   }
 
   checkRecipientDb() {
@@ -189,32 +196,32 @@ export class LetterFieldsComponent {
     }
   }
 
-  setRecipientDb(e: any) {
+  setRecipientDb(e: any, idx: number) {
     //this._letter.hiko.recipients = [this.recipient_db];
-    this._letter.hiko.recipients[0].marked = this._letter.recipient;
-    this._letter.hiko.recipients[0].salutation = this._letter.salutation;
+    this._letter.hiko.recipients[idx].name = e.option.value.name;
+    this._letter.hiko.recipients[idx].id = e.option.value.id;
   }
 
   checkOriginDb() {
-    if (this._letter.hiko.origins?.length > 0) {
-      this._letter.hiko.origins[0].marked = this._letter.origin;
+    if (this._letter.origins?.length > 0) {
+      this._letter.origins[0].marked = this._letter.origin;
     }
   }
 
   setOriginDb(e: any) {
-    this._letter.hiko.origins = [this.origin_db];
-    this._letter.hiko.origins[0].marked = this._letter.origin;
+    this._letter.origins = [this.origin_db];
+    this._letter.origins[0].marked = this._letter.origin;
   }
 
   checkDestinationDb() {
-    if (this._letter.hiko.destinations?.length > 0) {
-      this._letter.hiko.destinations[0].marked = this._letter.destination;
+    if (this._letter.destinations?.length > 0) {
+      this._letter.destinations[0].marked = this._letter.destination;
     }
   }
 
   setDestinationDb(e: any) {
-    this._letter.hiko.destinations = [this.destination_db];
-    this._letter.hiko.destinations[0].marked = this._letter.destination;
+    this._letter.destinations = [this.destination_db];
+    this._letter.destinations[0].marked = this._letter.destination;
   }
 
   checkAuthors(e:any, extended: boolean, list: any) {
@@ -629,6 +636,23 @@ export class LetterFieldsComponent {
     // console.log(this._letter.date)
   }
 
+  addAuthor() {
+    this._letter.hiko.authors.push({ id: -1, marked: '', name: '' });
+    console.log(this._letter.hiko.authors)
+  }
+
+  removeAuthor(idx: number) {
+    this._letter.hiko.authors.splice(idx, 1);
+  }
+
+  addRecipient() {
+    this._letter.hiko.recipients.push({ id: -1, marked: '', name: '' });
+  }
+
+  removeRecipient(idx: number) {
+    this._letter.hiko.recipients.splice(idx, 1);
+  }
+
   addCopy() {
     const copy = new LetterCopy();
     
@@ -654,6 +678,37 @@ export class LetterFieldsComponent {
 
   isDate(date: string) {
     return !isNaN(Date.parse(date));
+  }
+
+  
+
+  removeLang(name: string) {
+    this.languages.update((c: string[]) => {
+      const index = c.findIndex(k => k === name);
+      if (index < 0) {
+        return c;
+      }
+
+      c.splice(index, 1);
+      return [...c];
+    });
+    this._letter.hiko.languages = this.languages().join(';');
+  }
+
+  checkLanguages(e: any) {
+    const val = e.target ? e.target.value : e;
+    const keys = this.config.languages.filter(n => n.toLowerCase().indexOf(val.toLowerCase()) > -1);
+    this.languages_db.set(keys);
+  }
+
+
+  addLanguage(e: any): void {
+    if (this.language && !this.languages().includes(this.language)) {
+      this.languages.update(ls => [...ls, this.language]);
+    }
+
+    this.language = null;
+    this._letter.hiko.languages = this.languages().join(';');
   }
 
 }

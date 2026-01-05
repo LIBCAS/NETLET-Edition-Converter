@@ -60,9 +60,9 @@ export class FileTemplate {
       t.recipient_db = letter.hiko.recipients[0];
     }
 
-    if (letter.hiko.origins) {
-      t.origin_marked = letter.hiko.origins[0].marked;
-      t.origin_db = letter.hiko.origins[0];
+    if (letter.origins) {
+      t.origin_marked = letter.origins[0].marked;
+      t.origin_db = letter.origins[0];
     }
 
     if (letter.hiko.copies) {

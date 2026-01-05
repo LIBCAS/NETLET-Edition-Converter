@@ -219,13 +219,13 @@ export class AnalyzeDialogComponent {
       this.recipient_db = this.data.letter.hiko.recipients[0];
     }
     
-    if (this._letter.hiko.origins) {
-      this.origins_db = this._letter.hiko.origins;
-      this.origin_db = this._letter.hiko.origins[0];
+    if (this._letter.origins) {
+      this.origins_db = this._letter.origins;
+      this.origin_db = this._letter.origins[0];
     }
-    if (this._letter.hiko.destinations) {
-      this.destinations_db = this._letter.hiko.destinations;
-      this.destination_db = this._letter.hiko.destinations[0];
+    if (this._letter.destinations) {
+      this.destinations_db = this._letter.destinations;
+      this.destination_db = this._letter.destinations[0];
     }
   }
 
@@ -335,8 +335,8 @@ export class AnalyzeDialogComponent {
         this.data.letter[k] = this._letterAnalyzed[k];
         this.data.letter.hiko.authors = [{id: this.author_db.id, marked: this._letter.author, name: this.author_db.name}];
         this.data.letter.hiko.recipients = [{id: this.recipient_db.id, marked: this._letter.recipient, name: this.recipient_db.name}];
-        this.data.letter.hiko.origins = [{id: this.origin_db.id, marked: this._letter.origin, name: this.origin_db.name}];
-        this.data.letter.hiko.destinations = [{id: this.destination_db.id, marked: this._letter.destination, name: this.destination_db.name}];
+        this.data.letter.origins = [{id: this.origin_db.id, marked: this._letter.origin, name: this.origin_db.name}];
+        this.data.letter.destinations = [{id: this.destination_db.id, marked: this._letter.destination, name: this.destination_db.name}];
       }
     });
 

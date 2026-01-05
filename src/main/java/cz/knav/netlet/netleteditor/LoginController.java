@@ -48,6 +48,7 @@ public class LoginController {
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t)
                 + "/login";
+        System.out.println(url);
         try (HttpClient httpclient = HttpClient
                 .newBuilder()
                 .build()) {
@@ -56,7 +57,7 @@ public class LoginController {
 //                    .put("email", request.getParameter("email"))
 //                    .put("password", request.getParameter("password")).toString();
             HttpRequest hrequest = HttpRequest.newBuilder()
-                        .uri(new URI(url))
+                        .uri(new URI(url))  
                         .header("Accept", "application/json")
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(d))

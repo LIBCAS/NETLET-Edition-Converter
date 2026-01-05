@@ -301,6 +301,97 @@ public class HikoIndexer {
             LOGGER.log(Level.SEVERE, "Error in tenant {0} -> {1}", new Object[]{tenant, ex.toString()});
         }
     }
+    
+    
+
+    public JSONObject indexGlobalPlaces() throws URISyntaxException, IOException, InterruptedException {
+        Date start = new Date();
+        JSONObject ret = new JSONObject();
+        LOGGER.log(Level.INFO, "Indexing HIKO global PLACES");
+        try (SolrClient client = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) {
+            JSONArray tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").names();
+            indexGlobalPlaces(client, ret, tenants.getString(0));
+
+            client.commit("places");
+        } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        Date end = new Date();
+        ret.put("ellapsed time", DurationFormatUtils.formatDuration(end.getTime() - start.getTime(), "HH:mm:ss.S"));
+        LOGGER.log(Level.INFO, "Indexing HIKO PLACES FINISHED");
+        return ret;
+
+    }
+
+    private void indexGlobalPlaces(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
+        String t = tenant;
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+        }
+        String url = Options.getInstance().getJSONObject("hiko").getString("api")
+                .replace("{tenant}", t)
+                + "/global-places?per_page=100";
+        int tindexed = 0;
+        LOGGER.log(Level.INFO, "Indexing global places {0} -> {1}", new Object[]{tenant, url});
+        try (HttpClient httpclient = HttpClient
+                .newBuilder()
+                .build()) {
+            while (url != null) {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(url))
+                        .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build(); 
+                HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
+                JSONObject resp = new JSONObject(response.body());
+                JSONArray docs = resp.getJSONArray("data");
+                for (int i = 0; i < docs.length(); i++) {
+                    JSONObject rs = docs.getJSONObject(i);
+
+                    SolrInputDocument doc = new SolrInputDocument();
+
+                    String id = "global_" + rs.getInt("id");
+
+                    doc.addField("id", id);
+                    doc.addField("table", t);
+                    doc.addField("table_id", rs.getInt("id"));
+                    doc.addField("tenant", "global");
+                    doc.addField("name", rs.getString("name"));
+                    doc.addField("country", rs.optString("country"));
+                    doc.addField("note", rs.optString("note"));
+                    doc.addField("latitude", rs.optFloat("latitude"));
+                    doc.addField("longitude", rs.optFloat("longitude"));
+                    doc.addField("geoname_id", rs.optInt("geoname_id"));
+                    doc.addField("division", rs.optString("division"));
+                    if (!Float.isNaN(rs.optFloat("latitude"))) {
+                        doc.addField("coords", rs.optFloat("latitude") + "," + rs.optFloat("longitude"));
+                    }
+
+                    JSONArray an = rs.optJSONArray("alternative_names");
+                    if (an != null) {
+                        for (int j = 0; j < an.length(); j++) {
+                            doc.addField("alternative_names", an.getString(j));
+                        }
+                    }
+
+                    client.add("places", doc);
+                    ret.put("global_"+tenant, tindexed++);
+                    if (tindexed % 500 == 0) {
+                        client.commit("places");
+                        LOGGER.log(Level.INFO, "Global {0} -> {1} docs", new Object[]{tenant, tindexed});
+                    }
+
+                }
+                url = resp.optString("next_page_url", null);
+                Thread.sleep(1000);
+            }
+        } catch (Exception ex) {
+            ret.put("global_"+tenant, ex.toString());
+            LOGGER.log(Level.SEVERE, "Error in tenant {0} -> {1}", new Object[]{tenant, ex.toString()});
+        }
+    }
 
     public JSONObject indexLocations() throws URISyntaxException, IOException, InterruptedException {
         Date start = new Date();
@@ -378,7 +469,7 @@ public class HikoIndexer {
 
     public JSONObject indexGlobalKeywords() throws URISyntaxException, IOException, InterruptedException {
         Date start = new Date();
-        JSONObject ret = new JSONObject();
+        JSONObject ret = new JSONObject(); 
         LOGGER.log(Level.INFO, "Indexing HIKO global keywords");
         try (SolrClient client = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) {
             JSONArray tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").names();

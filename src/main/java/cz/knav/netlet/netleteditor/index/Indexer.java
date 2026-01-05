@@ -573,12 +573,12 @@ public class Indexer {
 
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery()
-                    .setFields("id:table_id,name")
+                    .setFields("id:table_id,name,tenant")
                     .setSort("name_sort",SolrQuery.ORDER.asc );
             query.set("qf", "name_lower^5 name^2 alternative_names");
             if (!tenant.isBlank()) {
                 // query.set("bq", "tenant:"+tenant+"^10");
-                query.addFilterQuery("tenant:"+tenant);
+                query.addFilterQuery("tenant:global OR tenant:"+tenant);
             }
             query.set("tie", "0.1");
             if (extended) {
