@@ -268,7 +268,7 @@
             @for(entity of entities; track entity.id; let idx = $index){
                 <div >
                     <mat-checkbox [id]="entity.id" [name]="entity.id" type="checkbox" [(ngModel)]="entity.selected">{{
-                        entity.key_cze }} ({{ entity.tenant }} - {{entity.type}})</mat-checkbox>
+                        entity.name }} ({{ entity.tenant }})</mat-checkbox>
                 </div>
             }
             </div>

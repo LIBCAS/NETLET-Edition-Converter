@@ -18,7 +18,7 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.apache.solr.client.solrj.impl.NoOpResponseParser;
 import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
 import org.apache.solr.client.solrj.request.QueryRequest;
@@ -36,11 +36,11 @@ import org.json.JSONObject;
 public class SolrTaggerAnalyzer {
 
   static final Logger LOGGER = Logger.getLogger(SolrTaggerAnalyzer.class.getName());
-  public static String COLLECTION = "dictionaries";
+  public static String COLLECTION = "keywords";
 
-  public static JSONObject getTagsJSON(String text, String field) {
+  public static JSONObject getTagsJSON(String text, String field, String tenant) {
     JSONObject ret = new JSONObject();
-    try (SolrClient solr = new HttpSolrClient.Builder(Options.getInstance().getString("solr")).build()) { 
+    try (SolrClient solr = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) { 
       SolrQuery query = new SolrQuery();
       query.setRequestHandler("/tag");
       query.set("overlaps", "NO_SUB")
@@ -51,7 +51,7 @@ public class SolrTaggerAnalyzer {
               .set("skipAltTokens", true)
               .set("fl", "*,score")
               .set("tagsLimit", "5000");
-
+      query.addFilterQuery("tenant:global OR tenant:"+tenant);
       ContentStreamUpdateRequest req = new ContentStreamUpdateRequest("");
       req.addContentStream(new ContentStreamBase.StringStream(text));
       req.setMethod(SolrRequest.METHOD.POST);
@@ -74,7 +74,7 @@ public class SolrTaggerAnalyzer {
 
   public static JSONObject getTags(String text) {
     JSONObject ret = new JSONObject();
-    try (SolrClient solr = new HttpSolrClient.Builder(Options.getInstance().getString("solr.host", "http://localhost:8983/solr/")).build()) {
+    try (SolrClient solr = new Http2SolrClient.Builder(Options.getInstance().getString("solr.host", "http://localhost:8983/solr/")).build()) {
 
       List<String> supportedLangs = new ArrayList<>();
       supportedLangs.add("eng");

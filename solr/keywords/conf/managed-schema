@@ -66,6 +66,9 @@ Managed external dictionaries
     <field name="name_lower" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
     <field name="name_sort" type="icu_sort_cs" indexed="true" stored="true" multiValued="false" />
     <field name="type" type="string" indexed="true" stored="true"  />
+
+    <field name="key_tagger_cs" type="tag_cs" indexed="true" stored="true" multiValued="true" />
+    <field name="key_tagger_en" type="tag_en_K" indexed="true" stored="true" multiValued="true" />
   
   <copyField source="name" dest="name_lower"/>
   <copyField source="name" dest="name_sort"/>
@@ -483,6 +486,77 @@ Managed external dictionaries
   
     <fieldType name="icu_sort_cs" class="solr.ICUCollationField"  locale="cs" strength="tertiary">
   </fieldType>
+
+  
+	
+	<fieldType name="tag_cs" class="solr.TextField" postingsFormat="FST50" omitNorms="true" omitTermFreqAndPositions="true">
+      <analyzer type="index">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_cz.txt"  />
+        <filter class="solr.HunspellStemFilterFactory" dictionary="hunspell/cs_CZ.dic" affix="hunspell/cs_CZ.aff" ignoreCase="true" />
+        <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.ConcatenateGraphFilterFactory" preservePositionIncrements="false" />
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_cz.txt"  />
+        <filter class="solr.HunspellStemFilterFactory" dictionary="hunspell/cs_CZ.dic" affix="hunspell/cs_CZ.aff" ignoreCase="true" />
+        <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+    </fieldType>
+	
+	<fieldType name="tag_en" class="solr.TextField" postingsFormat="FST50" omitNorms="true" omitTermFreqAndPositions="true">
+      <analyzer type="index">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+		<filter class="solr.ASCIIFoldingFilterFactory" />
+        <filter class="solr.EnglishPossessiveFilterFactory"  />
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.PorterStemFilterFactory"/>
+        <filter class="solr.ConcatenateGraphFilterFactory" preservePositionIncrements="false" />
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+		<filter class="solr.ASCIIFoldingFilterFactory" />
+        <filter class="solr.EnglishPossessiveFilterFactory"  />
+        <filter class="solr.LowerCaseFilterFactory"/>
+		<!--
+		<filter class="solr.EnglishMinimalStemFilterFactory"/>
+		-->
+		<!--
+		<filter class="solr.KStemFilterFactory"/>
+	     -->
+        <filter class="solr.PorterStemFilterFactory"/>
+      </analyzer>
+    </fieldType>
+
+    
+	
+	<fieldType name="tag_en_K" class="solr.TextField" postingsFormat="FST50" omitNorms="true" omitTermFreqAndPositions="true">
+      <analyzer type="index">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+		<filter class="solr.ASCIIFoldingFilterFactory" />
+        <filter class="solr.EnglishPossessiveFilterFactory"  />
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.KStemFilterFactory"/>
+        <filter class="solr.ConcatenateGraphFilterFactory" preservePositionIncrements="false" />
+      </analyzer>
+      <analyzer type="query">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+		<filter class="solr.ASCIIFoldingFilterFactory" />
+        <filter class="solr.EnglishPossessiveFilterFactory"  />
+        <filter class="solr.LowerCaseFilterFactory"/>
+		<!--
+		<filter class="solr.EnglishMinimalStemFilterFactory"/>
+		-->
+		<!--
+        <filter class="solr.PorterStemFilterFactory"/>
+	     -->
+		<filter class="solr.KStemFilterFactory"/>
+      </analyzer>
+    </fieldType>
+    
     <!-- Similarity is the scoring routine for each document vs. a query.
        A custom Similarity or SimilarityFactory may be specified here, but 
        the default is fine for most applications.  

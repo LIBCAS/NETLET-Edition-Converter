@@ -431,7 +431,26 @@ public class DataServlet extends HttpServlet {
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
-                        json = SolrTaggerAnalyzer.getTagsJSON(text, "key_tagger_cze");
+                        json = SolrTaggerAnalyzer.getTagsJSON(text, "key_tagger_cs", request.getParameter("tenant"));
+                        json.put("nametag", NameTag.recognize(text));
+                    }
+
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    json.put("error", ex.toString());
+                }
+                return json;
+            }
+        },
+        FIND_KEYWORDS {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+                JSONObject json = new JSONObject();
+                try {
+                    if (request.getMethod().equals("POST")) {
+                        String text = IOUtils.toString(request.getInputStream(), "UTF-8");
+                        json = SolrTaggerAnalyzer.getTagsJSON(text, "key_tagger_cs", request.getParameter("tenant"));
                         json.put("nametag", NameTag.recognize(text));
                     }
 
@@ -768,7 +787,8 @@ public class DataServlet extends HttpServlet {
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
-                    json.put("keywords", hi.indexGlobalKeywords());
+                    json.put("global-keywords", hi.indexGlobalKeywords());
+                    json.put("keywords", hi.indexKeywords());
                 } catch (IOException | InterruptedException | URISyntaxException | JSONException ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());

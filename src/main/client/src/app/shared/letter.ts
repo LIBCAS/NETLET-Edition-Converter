@@ -49,8 +49,11 @@ export class PlaceMeta {
 }
 
 export interface Entity {
-    id: string, key_cze: string, key_eng: string, dict: string,
-    table: string, table_id: string, type: string, tenant: string,
+    id: string, 
+    table_id: string, 
+    name: string, 
+    name_en: string, 
+    tenant: string,
     selected: boolean
 };
 

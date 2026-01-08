@@ -34,10 +34,13 @@
       <button mat-menu-item (click)="showAnalysis(t)">{{ t.date | date : 'dd.MM.yyyy HH:mm:ss' }}</button>
       }
     </mat-menu>
+    <button mat-flat-button color="primary" (click)="findTags()" class="app-mr-2">
+      <mat-icon class="material-icons-outlined">tag</mat-icon>{{ 'action.find_keywords' | translate }}
+    </button>
   </div>
 
   <div class="app-mb-4">
-      <div [innerHTML]="_letter.hiko.content"></div>
+      <div style="max-height: 200px; overflow: scroll;" [innerHTML]="_letter.hiko.content"></div>
     <!-- <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.full_text' | translate}}</mat-label>
       <textarea rows="5" matInput [(ngModel)]="_letter.hiko.content" name="content"></textarea>
@@ -419,13 +422,25 @@
     </mat-form-field>
   </div>
 
-  <mat-tab-group>
+  
+
+  
+  <fieldset class="app-center-v app-mb-4">
+    <legend>{{ 'fieldset.keywords' | translate }}</legend>
+    <div class="app-mb-4">
+      @for(entity of _letter.entities; track entity.id; let idx = $index){
+            <mat-checkbox [id]="entity.id" [name]="entity.id" type="checkbox" [(ngModel)]="entity.selected">{{
+              entity.name }} ({{ entity.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
+          }
+    </div>
+  </fieldset>
+  <!-- <mat-tab-group>
     <mat-tab label="HIKO">
       <div class="app-pt-4 app-pb-4 app-pr-4">
         @for(entity of _letter.entities; track entity.id; let idx = $index){
         <div>
           <mat-checkbox [id]="entity.id" [name]="entity.id" type="checkbox" [(ngModel)]="entity.selected">{{
-            entity.key_cze }} ({{ entity.tenant }} - {{entity.type}})</mat-checkbox>
+            entity.name }} ({{ entity.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
         </div>
         }
       </div>
@@ -440,7 +455,7 @@
         }
       </div>
     </mat-tab>
-  </mat-tab-group>
+  </mat-tab-group> -->
 </div>
 
 <ng-template #icons let-field="field">

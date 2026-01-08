@@ -69,6 +69,7 @@ Managed external dictionaries
     <field name="hiko" type="string_big" indexed="false" stored="true"/>
     <field name="ai" type="string_big" indexed="false" stored="true"/>
     <field name="selection" type="string_big" indexed="false" stored="true"/>
+    <field name="entities" type="string_big" indexed="false" stored="true"/>
     <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW" />
     <field name="author" type="string" indexed="true" stored="true" />
     <field name="recipient" type="string" indexed="true" stored="true"  />

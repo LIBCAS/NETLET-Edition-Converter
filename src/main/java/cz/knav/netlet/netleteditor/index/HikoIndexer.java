@@ -301,8 +301,6 @@ public class HikoIndexer {
             LOGGER.log(Level.SEVERE, "Error in tenant {0} -> {1}", new Object[]{tenant, ex.toString()});
         }
     }
-    
-    
 
     public JSONObject indexGlobalPlaces() throws URISyntaxException, IOException, InterruptedException {
         Date start = new Date();
@@ -343,7 +341,7 @@ public class HikoIndexer {
                         .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
                         .header("Accept", "application/json")
                         .GET()
-                        .build(); 
+                        .build();
                 HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
                 JSONObject resp = new JSONObject(response.body());
                 JSONArray docs = resp.getJSONArray("data");
@@ -377,7 +375,7 @@ public class HikoIndexer {
                     }
 
                     client.add("places", doc);
-                    ret.put("global_"+tenant, tindexed++);
+                    ret.put("global_" + tenant, tindexed++);
                     if (tindexed % 500 == 0) {
                         client.commit("places");
                         LOGGER.log(Level.INFO, "Global {0} -> {1} docs", new Object[]{tenant, tindexed});
@@ -388,7 +386,7 @@ public class HikoIndexer {
                 Thread.sleep(1000);
             }
         } catch (Exception ex) {
-            ret.put("global_"+tenant, ex.toString());
+            ret.put("global_" + tenant, ex.toString());
             LOGGER.log(Level.SEVERE, "Error in tenant {0} -> {1}", new Object[]{tenant, ex.toString()});
         }
     }
@@ -469,13 +467,11 @@ public class HikoIndexer {
 
     public JSONObject indexGlobalKeywords() throws URISyntaxException, IOException, InterruptedException {
         Date start = new Date();
-        JSONObject ret = new JSONObject(); 
+        JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO global keywords");
         try (SolrClient client = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) {
             JSONArray tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").names();
             indexGlobalKeywords(client, ret, tenants.getString(0));
-
-            client.commit("keywords");
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
             ret.put("error", ex);
@@ -510,36 +506,95 @@ public class HikoIndexer {
                 HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
                 JSONObject resp = new JSONObject(response.body());
                 JSONArray docs = resp.getJSONArray("data");
-                for (int i = 0; i < docs.length(); i++) {
-                    JSONObject rs = docs.getJSONObject(i);
-
-                    SolrInputDocument doc = new SolrInputDocument();
-
-                    String id = tenant + "_" + rs.getInt("id");
-
-                    doc.addField("id", id);
-                    doc.addField("table", t);
-                    doc.addField("table_id", rs.getInt("id"));
-                    doc.addField("tenant", tenant);
-                    doc.addField("type", rs.optString("type"));
-
-                    JSONObject name = rs.getJSONObject("name");
-                    doc.addField("name", name.getString("cs"));
-                    doc.addField("name_en", name.getString("en"));
-
-                    client.add("keywords", doc);
-                    ret.put(tenant, tindexed++);
-                    if (tindexed % 500 == 0) {
-                        client.commit("keywords");
-                        LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, tindexed});
-                    }
-
-                }
+                processKeywords(client, ret, "global", docs, t);
                 url = resp.optString("next_page_url", null);
                 Thread.sleep(1000);
             }
-            client.commit("locations");
+            client.commit("keywords");
             LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, tindexed});
         }
+    }
+
+    public JSONObject indexKeywords() throws URISyntaxException, IOException, InterruptedException {
+        Date start = new Date();
+        JSONObject ret = new JSONObject();
+        LOGGER.log(Level.INFO, "Indexing HIKO keywords");
+        try (SolrClient client = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) {
+            Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
+            for (String tenant : tenants) {
+                indexTenantKeywords(client, ret, tenant);
+            }
+
+            client.commit("keywords");
+        } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+            ret.put("error", ex);
+        }
+        Date end = new Date();
+        ret.put("ellapsed time", DurationFormatUtils.formatDuration(end.getTime() - start.getTime(), "HH:mm:ss.S"));
+        LOGGER.log(Level.INFO, "Indexing HIKO keywords FINISHED");
+        return ret;
+
+    }
+
+    private void indexTenantKeywords(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
+        String t = tenant;
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+        }
+        String url = Options.getInstance().getJSONObject("hiko").getString("api")
+                .replace("{tenant}", t)
+                + "/keywords?per_page=100";
+        int tindexed = 0;
+        LOGGER.log(Level.INFO, "Indexing keywords tenant {0} -> {1}", new Object[]{tenant, url});
+        try (HttpClient httpclient = HttpClient
+                .newBuilder()
+                .build()) {
+            while (url != null) {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(url))
+                        .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+                HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
+                JSONObject resp = new JSONObject(response.body());
+                JSONArray docs = resp.getJSONArray("data");
+                processKeywords(client, ret, tenant, docs, t);
+                url = resp.optString("next_page_url", null);
+                Thread.sleep(1000);
+            }
+            client.commit("keywords");
+            LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, tindexed});
+        }
+    }
+
+    private void processKeywords(SolrClient client, JSONObject ret, String tenant, JSONArray docs, String table) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
+
+        for (int i = 0; i < docs.length(); i++) {
+            JSONObject rs = docs.getJSONObject(i);
+
+            SolrInputDocument doc = new SolrInputDocument();
+
+            String id = tenant + "_" + rs.getInt("id");
+
+            doc.addField("id", id);
+            doc.addField("table", table);
+            doc.addField("table_id", rs.getInt("id"));
+            doc.addField("tenant", tenant);
+            doc.addField("type", rs.optString("type"));
+
+            JSONObject name = rs.getJSONObject("name");
+            doc.addField("name", name.getString("cs"));
+            doc.addField("name_en", name.getString("en"));
+
+            doc.addField("key_tagger_cs", name.getString("cs"));
+            doc.addField("key_tagger_en", name.getString("en"));
+
+            client.add("keywords", doc);
+
+        }
+        client.commit("keywords");
+        LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, docs.length()});
     }
 }

@@ -298,6 +298,9 @@ export class LetterFieldsComponent {
 
   showAnalysis(a: any) {
     this._letter.letter_number = a.analysis.letter_number;
+    if (this._letter.letter_number && this._letter.hiko.copies[0] && !this._letter.hiko.copies[0].l_number) {
+      this._letter.hiko.copies[0].l_number = this._letter.letter_number;
+    }
     this._letter.letter_title = a.analysis.letter_title;
     this._letter.page_number = a.analysis.page_number;
     this._letter.end_page_number = a.analysis.end_page_number;
