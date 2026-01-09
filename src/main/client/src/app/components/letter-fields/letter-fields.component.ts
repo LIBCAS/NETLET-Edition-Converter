@@ -641,7 +641,6 @@ export class LetterFieldsComponent {
 
   addAuthor() {
     this._letter.hiko.authors.push({ id: -1, marked: '', name: '' });
-    console.log(this._letter.hiko.authors)
   }
 
   removeAuthor(idx: number) {
@@ -657,20 +656,21 @@ export class LetterFieldsComponent {
   }
 
   addCopy() {
+    const copyTemplate = this._letter.template.copies[0];
     const copy = new LetterCopy();
     
 
-          copy.preservation = this._letter.template.preservation;
-          copy.type = this._letter.template.type;
-          copy.copy = this._letter.template.copy;
-          copy.manifestation_notes = this._letter.template.manifestation_notes;
-          copy.l_number = this._letter.template.l_number;
-          copy.repository = this._letter.template.repository;
-          copy.archive = this._letter.template.archive;
-          copy.collection = this._letter.template.collection;
-          copy.ms_manifestation = this._letter.template.ms_manifestation;
-          copy.signature = this._letter.template.signature;
-          copy.location_note = this._letter.template.location_note;
+          copy.preservation = copyTemplate.preservation;
+          copy.type = copyTemplate.type;
+          copy.copy = copyTemplate.copy;
+          copy.manifestation_notes = copyTemplate.manifestation_notes;
+          copy.l_number = copyTemplate.l_number;
+          copy.repository = copyTemplate.repository;
+          copy.archive = copyTemplate.archive;
+          copy.collection = copyTemplate.collection;
+          copy.ms_manifestation = copyTemplate.ms_manifestation;
+          copy.signature = copyTemplate.signature;
+          copy.location_note = copyTemplate.location_note;
 
     this._letter.hiko.copies.push(copy);
   }

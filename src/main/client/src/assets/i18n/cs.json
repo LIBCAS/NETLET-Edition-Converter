@@ -65,7 +65,8 @@
     "content": "Popis obsahu",
     "keywords": "Klíčová slova",
     "mentioned": "Zmíněné osoby",
-    "languages": "Jazyky"
+    "languages": "Jazyky",
+    "related_resources": "Související zdroje"
   },
   "field": {
     "hiko_id": "Id v HIKO", 
@@ -110,6 +111,7 @@
     "copies_archive": "Archiv",
     "copies_collection": "Sbírka",
     "copies_signature": "Signatura",
+    "manifestation_notes": "Poznámka k manifestaci",
     "template": "Šablona",
     "locations": "Repozitáře",
     "places_meta": "Místa odeslání a určení",
@@ -121,7 +123,11 @@
     "new_keyword": "Nové klíčové slovo",
     "new_mentioned": "Nová zmíněná osoba",
     "new_language": "Nový jazyk",
-    "people_mentioned_note": "Poznámka ke zmíněným osobám"
+    "people_mentioned_note": "Poznámka ke zmíněným osobám",
+    "copyright": "Copyright",
+    "related_resource": "Související zdroj",
+    "related_resource_title": "Jméno",
+    "related_resource_link": "URL"
   },
   "action": {
     "refresh": "Obnovit",
@@ -172,6 +178,8 @@
     "remove_recipient": "Odstranit příjemce",
     "add_copy": "Přidat repozitáře a verze",
     "remove_copy": "Odstranit repozitáře a verze",
+    "add_related_resource": "Přidat související zdroj",
+    "remove_related_resource": "Odstranit související zdroj",
     "querySettings": "Nastavení dotazu",
     "addNewFile": "Přidat nový soubor",
     "zoomIn": "Zvětšit",

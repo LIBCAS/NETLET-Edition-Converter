@@ -181,12 +181,8 @@ export class EditorComponent {
     }
     this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
 
-    this.letter.hiko.authors.push({ name: t.author_db?.name, marked: t.author_db?.marked, id: t.author_db?.id });
-
-    this.letter.author = t.author_marked;
-
-    this.letter.hiko.recipients.push({ name: t.recipient_db?.name, marked: t.recipient_db?.marked, id: t.recipient_db?.id, salutation: t.salutation });
-    this.letter.recipient = t.recipient_marked;
+    this.letter.hiko.authors = [...t.authors]; 
+    this.letter.hiko.recipients = [...t.recipients];
 
     this.letter.origins.push({ name: t.origin_db?.name, marked: t.origin_db?.marked, id: t.origin_db?.id });
     this.letter.origin = t.origin_marked;
@@ -212,21 +208,21 @@ export class EditorComponent {
     }
 
 
-    const copy = new LetterCopy();
+    // const copy = new LetterCopy();
 
-    copy.preservation = t.preservation;
-    copy.type = t.type;
-    copy.copy = t.copy;
-    copy.manifestation_notes = t.manifestation_notes;
-    copy.l_number = t.l_number;
-    copy.repository = t.repository;
-    copy.archive = t.archive;
-    copy.collection = t.collection;
-    copy.ms_manifestation = t.ms_manifestation;
-    copy.signature = t.signature;
-    copy.location_note = t.location_note;
+    // copy.preservation = t.preservation;
+    // copy.type = t.type;
+    // copy.copy = t.copy;
+    // copy.manifestation_notes = t.manifestation_notes;
+    // copy.l_number = t.l_number;
+    // copy.repository = t.repository;
+    // copy.archive = t.archive;
+    // copy.collection = t.collection;
+    // copy.ms_manifestation = t.ms_manifestation;
+    // copy.signature = t.signature;
+    // copy.location_note = t.location_note;
 
-    this.letter.hiko.copies.push(copy);
+    this.letter.hiko.copies = [...t.copies];
     this.letter.hiko.content = '';
     this.view = 'fields';
   }

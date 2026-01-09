@@ -1,5 +1,5 @@
 import { AltoBlock, AltoLine, AltoString } from "./alto";
-import { AutorDb, Letter, PlaceMeta } from "./letter";
+import { AutorDb, CopyHIKO, Letter, PlaceMeta } from "./letter";
 
 export interface Sort { label: string; field: string; dir: string; entity?: string[] };
 
@@ -10,10 +10,14 @@ export interface SearchParams { filename: string, page: number, selection: AltoS
 export class FileTemplate {
   name: string;
   // def_author: string; 
-  author_marked: string;
-  author_db: { id: number; marked?: string, name?: string } = {id: -1, marked: null, name: null};
-  recipient_marked: string;
-  recipient_db: { id: number; marked?: string, name?: string, salutation?: string } ={id: -1, marked: null, name: null, salutation: null};
+
+  authors: { id: number; marked?: string; name?: string }[] = [];
+  recipients: { id: number; marked?: string; salutation?: string; name?: string }[] = [];
+
+  // author_marked: string;
+  // author_db: { id: number; marked?: string, name?: string } = {id: -1, marked: null, name: null};
+  // recipient_marked: string;
+  // recipient_db: { id: number; marked?: string, name?: string, salutation?: string } ={id: -1, marked: null, name: null, salutation: null};
 
 
   origin_marked: string;
@@ -26,20 +30,21 @@ export class FileTemplate {
   mentioned: { id: number; name: string }[] = [];
   people_mentioned_note: string;
 
-  languages: string[];
+  languages: string[] = [];
 
+  copies: CopyHIKO[] = [];
   
-    preservation: string;
-    type: string;
-    copy: string;
-    manifestation_notes: string;
-    l_number: string;
-    repository: string;
-    archive: string;
-    collection: string;
-    ms_manifestation: string;
-    signature: string;
-    location_note: string;
+    // preservation: string;
+    // type: string;
+    // copy: string;
+    // manifestation_notes: string;
+    // l_number: string;
+    // repository: string;
+    // archive: string;
+    // collection: string;
+    // ms_manifestation: string;
+    // signature: string;
+    // location_note: string;
 
 
   notes_private: string;
@@ -47,17 +52,17 @@ export class FileTemplate {
 
   copyright: string;
 
+  related_resources: { title: string; link: string }[] = [];
+
   public static newTemplateFromLetter(letter: Letter): FileTemplate {
     const t: FileTemplate = new FileTemplate();
     t.name = 'Šablona z dopisu ' + (letter.id);
     t.notes_private = letter.hiko.notes_private;
     if (letter.hiko.authors) {
-      t.author_marked = letter.hiko.authors[0].marked;
-      t.author_db = letter.hiko.authors[0];
+      t.authors = [...letter.hiko.authors];
     }
     if (letter.hiko.recipients) {
-      t.recipient_marked = letter.hiko.recipients[0].marked;
-      t.recipient_db = letter.hiko.recipients[0];
+      t.recipients = [...letter.hiko.recipients];
     }
 
     if (letter.origins) {
@@ -66,21 +71,11 @@ export class FileTemplate {
     }
 
     if (letter.hiko.copies) {
+        t.copies =  [...letter.hiko.copies];
+    }
 
-
-          t.preservation = letter.hiko.copies[0].preservation;
-          t.type = letter.hiko.copies[0].type;
-          t.copy = letter.hiko.copies[0].copy;
-          t.manifestation_notes = letter.hiko.copies[0].manifestation_notes;
-          t.l_number = letter.hiko.copies[0].l_number;
-          t.repository = letter.hiko.copies[0].repository;
-          t.archive = letter.hiko.copies[0].archive;
-          t.collection = letter.hiko.copies[0].collection;
-          t.ms_manifestation = letter.hiko.copies[0].ms_manifestation;
-          t.signature = letter.hiko.copies[0].signature;
-          t.location_note = letter.hiko.copies[0].location_note;
-
-
+    if (letter.hiko.related_resources) {
+        t.related_resources =  [...letter.hiko.related_resources];
     }
     return t;
   }

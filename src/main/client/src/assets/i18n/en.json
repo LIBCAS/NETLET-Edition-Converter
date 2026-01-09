@@ -56,7 +56,8 @@
     "content": "Content description",
     "keywords": "Keywords",
     "mentioned": "Mentioned people",
-    "languages": "Languages"
+    "languages": "Languages",
+    "related_resources": "Related resources"
   },
   "field": {
     "hiko_id": "Id HIKO", 
@@ -101,6 +102,7 @@
     "copies_archive": "Archive",
     "copies_collection": "Collection",
     "copies_signature": "Signature",
+    "manifestation_notes": "Manifestation notes",
     "template": "Template",
     "locations": "Repositories",
     "places_meta": "Places",
@@ -112,7 +114,11 @@
     "new_keyword": "New keyword",
     "new_mentioned": "New mentioned person",
     "new_language": "New language",
-    "people_mentioned_note": "Mentioned people note"
+    "people_mentioned_note": "Mentioned people note",
+    "copyright": "Copyright",
+    "related_resource": "Related resource",
+    "related_resource_title": "Title",
+    "related_resource_link": "Link"
   },
   "action": {
     "refresh": "Refresh",
@@ -163,6 +169,8 @@
     "remove_recipient": "Remove recipient",
     "add_copy": "Add repository",
     "remove_copy": "Remove repository",
+    "add_related_resource": "Add related resource",
+    "remove_related_resource": "Remove related resource",
     "querySettings": "Query settings",
     "addNewFile": "Add a new file",
     "zoomIn": "Zoom in",

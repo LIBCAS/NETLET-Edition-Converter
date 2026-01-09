@@ -18,7 +18,8 @@ import { AppConfiguration } from 'src/app/app-configuration';
 import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { FileTemplate, FileConfig } from 'src/app/shared/file-config';
-import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { CopyHIKO } from 'src/app/shared/letter';
 
 @Component({
   selector: 'app-template-dialog',
@@ -26,17 +27,17 @@ import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
   imports: [FormsModule, AngularSplitModule, NgIf, RouterModule, TranslateModule,
     MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule,
     MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule,
-  MatChipsModule],
+    MatChipsModule],
   templateUrl: './template-dialog.component.html',
   styleUrl: './template-dialog.component.scss'
 })
 export class TemplateDialogComponent {
 
   authors_db = signal<{ id: number, marked: string, name?: string }[]>([]);
-  
-  
+
+
   recipients_db = signal<{ id: number, marked: string, name?: string, salutation?: string }[]>([]);
-  recipient_db: { id: number, marked: string, name?: string, salutation?: string } = {marked:'', id:-1};
+  recipient_db: { id: number, marked: string, name?: string, salutation?: string } = { marked: '', id: -1 };
 
   selectedTemplate: FileTemplate;
   new_template: string;
@@ -44,15 +45,15 @@ export class TemplateDialogComponent {
   origins_db = signal<{ id: number, marked: string, name?: string }[]>([]);
   destinations_db = signal<{ id: number, marked: string, name?: string }[]>([]);
 
-  keyword : { id: number, name: string };
+  keyword: { id: number, name: string };
   keywords = signal<{ id: number, name: string }[]>([]);
   keywords_db = signal<{ id: number, name: string }[]>([]);
 
-  mentioned : { id: number, name: string };
+  mentioned: { id: number, name: string };
   mentionedIds = signal<{ id: number, name: string }[]>([]);
   mentioned_db = signal<{ id: number, name: string }[]>([]);
 
-  language : string;
+  language: string;
   languages = signal<string[]>([]);
   languages_db = signal<string[]>([]);
 
@@ -81,11 +82,11 @@ export class TemplateDialogComponent {
   }
 
   setFromTemplate() {
-    if (!this.selectedTemplate.author_db) {
-      this.selectedTemplate.author_db = { id: -1, name: null };
+    if (!this.selectedTemplate.authors) {
+      this.selectedTemplate.authors = [];
     }
-    if (!this.selectedTemplate.recipient_db) {
-      this.selectedTemplate.recipient_db = { id: -1, name: null, salutation: null };
+    if (!this.selectedTemplate.recipients) {
+      this.selectedTemplate.recipients = [];
     }
     if (!this.selectedTemplate.origin_db) {
       this.selectedTemplate.origin_db = { id: -1, name: null };
@@ -96,18 +97,25 @@ export class TemplateDialogComponent {
     if (!this.selectedTemplate.keywords) {
       this.selectedTemplate.keywords = [];
     }
+    if (!this.selectedTemplate.copies) {
+      this.selectedTemplate.copies = [];
+    }
+
+    if (!this.selectedTemplate.related_resources) {
+      this.selectedTemplate.related_resources = [];
+    }
 
     this.keywords.set(this.selectedTemplate.keywords);
     this.mentionedIds.set(this.selectedTemplate.mentioned);
   }
 
-  
+
 
   displayFn(o: any) {
     return o ? o.name : '';
   }
 
-  checkAuthors(e:any, extended: boolean, list: any) {
+  checkAuthors(e: any, extended: boolean, list: any) {
     const val = e.target ? e.target.value : e;
     this.service.checkAuthors(val, this.state.user.tenant, extended).subscribe((resp: any) => {
       list.set(resp.authors);
@@ -170,7 +178,7 @@ export class TemplateDialogComponent {
 
   addKeyword(e: any): void {
     if (this.keyword) {
-      this.keywords.update(keywords => [...keywords, {id: this.keyword.id, name: this.keyword.name}]);
+      this.keywords.update(keywords => [...keywords, { id: this.keyword.id, name: this.keyword.name }]);
     }
 
     this.keyword = null;
@@ -178,7 +186,7 @@ export class TemplateDialogComponent {
 
   addMentioned(e: any): void {
     if (this.mentioned) {
-      this.mentionedIds.update(c => [...c, {id: this.mentioned.id, name: this.mentioned.name}]);
+      this.mentionedIds.update(c => [...c, { id: this.mentioned.id, name: this.mentioned.name }]);
     }
 
     this.mentioned = null;
@@ -186,15 +194,12 @@ export class TemplateDialogComponent {
 
 
   setLists() {
-    this.selectedTemplate.author_db.marked = this.selectedTemplate.author_marked;
-    this.selectedTemplate.recipient_db.marked = this.selectedTemplate.recipient_marked;
-    this.selectedTemplate.recipient_db.salutation = this.selectedTemplate.salutation;
     this.selectedTemplate.mentioned = this.mentionedIds();
-    
+
     this.selectedTemplate.origin_db.marked = this.selectedTemplate.origin_marked;
-    
+
     this.selectedTemplate.destination_db.marked = this.selectedTemplate.destination_marked;
-    
+
     this.selectedTemplate.keywords = this.keywords();
     this.selectedTemplate.languages = this.languages();
   }
@@ -229,5 +234,49 @@ export class TemplateDialogComponent {
         case 'collection': this.collections = this.locations_db.filter(l => l.type === 'collection'); break;
       }
     });
+  }
+
+  setAuthorDb(e: any, idx: number) {
+    this.selectedTemplate.authors[idx].name=e.option.value.name;
+    this.selectedTemplate.authors[idx].id=e.option.value.id;
+  }
+
+  setRecipientDb(e: any, idx: number) {
+    //this._letter.hiko.recipients = [this.recipient_db];
+    this.selectedTemplate.recipients[idx].name = e.option.value.name;
+    this.selectedTemplate.recipients[idx].id = e.option.value.id;
+  }
+
+  addAuthor() {
+    this.selectedTemplate.authors.push({ id: -1, marked: '', name: '' });
+  }
+
+  removeAuthor(idx: number) {
+    this.selectedTemplate.authors.splice(idx, 1);
+  }
+
+  addRecipient() {
+    this.selectedTemplate.recipients.push({ id: -1, marked: '', name: '' });
+  }
+
+  removeRecipient(idx: number) {
+    this.selectedTemplate.recipients.splice(idx, 1);
+  }
+
+  addCopy() {
+    const copy = new CopyHIKO();
+    this.selectedTemplate.copies.push(copy);
+  }
+
+  removeCopy(idx: number) {
+    this.selectedTemplate.copies.splice(idx, 1);
+  }
+
+  addRelatedResource() {
+    this.selectedTemplate.related_resources.push({ title: '', link: '' });
+  }
+
+  removeRelatedResource(idx: number) {
+    this.selectedTemplate.related_resources.splice(idx, 1);
   }
 }

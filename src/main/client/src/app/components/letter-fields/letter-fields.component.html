@@ -371,6 +371,13 @@
 
       <div class="app-fxLayout app-row app-center-v app-mb-4">
         <mat-form-field class="app-fxFlex">
+          <mat-label>{{ 'field.manifestation_notes' | translate}}</mat-label>
+          <textarea rows="2" matInput [(ngModel)]="copy.manifestation_notes" name="manifestation_notes"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="app-fxLayout app-row app-center-v app-mb-4">
+        <mat-form-field class="app-fxFlex">
           <mat-label>{{ 'field.type' | translate}}</mat-label>
           <!-- <input matInput [(ngModel)]="copy.type" name="copies_type"><span matSuffix></span>
           <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_type_' + idx }"></ng-container> -->
