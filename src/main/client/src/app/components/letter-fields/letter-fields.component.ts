@@ -11,7 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from 'src/app/app.service';
-import { Entity, Letter, LetterCopy, NameTag, PlaceMeta } from 'src/app/shared/letter';
+import { Keyword, Letter, LetterCopy, NameTag, PlaceMeta } from 'src/app/shared/letter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslationDialogComponent } from '../translation-dialog/translation-dialog.component';
 import { AnalyzeDialogComponent } from '../analyze-dialog/analyze-dialog.component';
@@ -57,13 +57,17 @@ import { MatChipsModule } from '@angular/material/chips';
 })
 export class LetterFieldsComponent {
 
-  loading = false;
   showSelection = false;
   imgUrl = '';
 
   language : string;
   languages = signal<string[]>([]);
   languages_db = signal<string[]>([]);
+
+  keyword: Keyword;
+  keywords = signal<Keyword[]>([]);
+  keywords_db = signal<Keyword[]>([]);
+  loadingKeywords = signal(false);
 
   _letter: Letter;
   @Input() set letter(value: Letter) {
@@ -100,6 +104,12 @@ export class LetterFieldsComponent {
       this._letter.destinations = [];
     }
 
+    if (this._letter.user_keywords) {
+      this.keywords.set([...this._letter.user_keywords]);
+    } else {
+      this.keywords.set([]);
+    }
+
   }
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
   @Output() onShouldRefresh = new EventEmitter<string>();
@@ -119,7 +129,7 @@ export class LetterFieldsComponent {
     destination_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1, name: ''};
     nodestination = {marked:'', id:-1, name: ''};
 
-  entities: Entity[] = [];
+  // entities: Keyword[] = [];
   nametag: string;
   nametags: NameTag[];
 
@@ -148,17 +158,22 @@ export class LetterFieldsComponent {
     //   console.log(this.datum.value)
     // })
 
-    this.languages.set(this._letter.hiko.languages.split(';'));
+    if (this._letter.hiko.languages) {
+      this.languages.set(this._letter.hiko.languages.split(';'));
+    }
+    
   }
 
   findTags() {
+    this.loadingKeywords.set(true);
     this.service.findTags(this._letter.hiko.content, this.state.user.tenant).subscribe((resp: any) => {
-      this.entities = resp.response.docs;
+      // this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
       // console.log(this.nametags)
-      this._letter.entities = this.entities;
+      this._letter.detected_keywords = resp.response.docs;
       this._letter.nametags = this.nametags;
+      this.loadingKeywords.set(false);
     });
   }
 
@@ -178,9 +193,9 @@ export class LetterFieldsComponent {
     });
   }
 
-  checkAuthorDb() {
+  checkAuthorDb(s: string) {
     if (this._letter.hiko.authors?.length > 0) {
-      this._letter.hiko.authors[0].marked = this._letter.author;
+      this._letter.hiko.authors[0].marked = s;
     }
   }
 
@@ -189,9 +204,9 @@ export class LetterFieldsComponent {
     this._letter.hiko.authors[idx].id=e.option.value.id;
   }
 
-  checkRecipientDb() {
+  checkRecipientDb(s: string) {
     if (this._letter.hiko.recipients?.length > 0) {
-      this._letter.hiko.recipients[0].marked = this._letter.recipient;
+      this._letter.hiko.recipients[0].marked = s;
       this._letter.hiko.recipients[0].salutation = this._letter.salutation;
     }
   }
@@ -304,29 +319,11 @@ export class LetterFieldsComponent {
     this._letter.letter_title = a.analysis.letter_title;
     this._letter.page_number = a.analysis.page_number;
     this._letter.end_page_number = a.analysis.end_page_number;
-    this._letter.author = a.analysis.sender;
-    if (!this._letter.author || this._letter.author === 'neuvedeno') {
-      if (this._letter.recipient) {
-        if (this._letter.recipient.toLowerCase() === this._letter.author.toLowerCase()) {
-          this._letter.author = this._letter.recipient;
-        } else if (this._letter.recipient.toLowerCase() === this._letter.recipient.toLowerCase()) {
-          this._letter.author = this._letter.author;
-        }
-      } else {
-        this._letter.author = this._letter.author;
-      }
-    }
+    this._letter.hiko.authors[0].marked = a.analysis.sender;
 
-    this._letter.recipient = a.analysis.recipient;
-    if (!this._letter.recipient || this._letter.recipient === 'neuvedeno') {
-      if (this._letter.author.toLowerCase() === this._letter.recipient.toLowerCase()) {
-        this._letter.recipient = this._letter.author;
-      } else if (this._letter.author.toLowerCase() === this._letter.author.toLowerCase()) {
-        this._letter.recipient = this._letter.recipient;
-      } else {
-        this._letter.recipient = this._letter.recipient;
-      }
-    }
+    this._letter.hiko.recipients[0].marked = a.analysis.recipient;
+    this._letter.salutation = a.analysis.salutation;
+    this._letter.hiko.recipients[0].salutation = a.analysis.salutation;
 
     this._letter.origin = a.analysis.location || a.analysis.place;
     this._letter.destination = a.analysis.destination;
@@ -335,7 +332,6 @@ export class LetterFieldsComponent {
 
 
 
-    this._letter.salutation = a.analysis.salutation;
     this._letter.sign_off = a.analysis.sign_off;
     this._letter.signature = a.analysis.signature;
 
@@ -355,7 +351,7 @@ export class LetterFieldsComponent {
 
   analyzeByModel(gptModel: string) {
 
-    this.loading = true;
+    this.state.loading.set(true);
     this.findTags();
     if (gptModel === 'gpt-3.5-turbo') {
       this.annotate(gptModel);
@@ -376,9 +372,11 @@ export class LetterFieldsComponent {
       selection: this._letter.selection
     };
 
-    this.loading = true;
+    
+    this.state.loading.set(true);
     this.service.analyzeImages(d).subscribe((resp: any) => {
-      this.loading = false;
+      
+      this.state.loading.set(false);
       if (resp.error) {
         console.log(resp);
         this.service.showSnackBarError(resp.error, 'action.close');
@@ -393,15 +391,15 @@ export class LetterFieldsComponent {
 
   annotate(gptModel: string) {
     this.service.annotate({text: this._letter.hiko.content, prompt: this.getPrompt(), gptModel: gptModel}).subscribe((resp: any) => {
-      this.loading = false;
+      this.state.loading.set(false);
       if (resp.error) {
         console.log(resp);
         this.service.showSnackBarError(resp.error, 'action.close');
         // this.letter.abstract_cs = orig;
       } else {
         this.setAnalysis(resp);
-        this.checkAuthors(this._letter.author, false, this.authors_db);
-        this.checkAuthors(this._letter.recipient, false, this.recipients_db);
+        this.checkAuthors(this._letter.hiko.authors[0].marked, false, this.authors_db);
+        this.checkAuthors(this._letter.hiko.recipients[0].marked, false, this.recipients_db);
         //this.checkPlaces(false);
       }
     });
@@ -410,6 +408,8 @@ export class LetterFieldsComponent {
   setAnalysis(resp: any) {
         
     const analysis = JSON.parse(resp.choices[0].message.content);
+    
+        console.log(analysis);
     if (!this._letter.ai) {
       this._letter.ai = [];
     }
@@ -683,7 +683,35 @@ export class LetterFieldsComponent {
     return !isNaN(Date.parse(date));
   }
 
-  
+  checkKeywords(e: any, extended: boolean) {
+    const val = e.target ? e.target.value : e;
+    this.service.getKeywords(val, this.state.user.tenant, extended).subscribe((resp: any) => {
+      this.keywords_db.set(resp.keywords);
+    });
+  }
+
+  addKeyword(e: any): void {
+    if (this.keyword) {
+      this.keywords.update(keywords => [...keywords, this.keyword]);
+    }
+
+    this.keyword = null;
+    
+    this._letter.user_keywords = [...this.keywords()]
+  }
+
+  removeKeyword(id: string) {
+    this.keywords.update(c => {
+      const index = c.findIndex(k => k.id === id);
+      if (index < 0) {
+        return c;
+      }
+
+      c.splice(index, 1);
+      return [...c];
+    });
+    this._letter.user_keywords = [...this.keywords()]
+  }
 
   removeLang(name: string) {
     this.languages.update((c: string[]) => {

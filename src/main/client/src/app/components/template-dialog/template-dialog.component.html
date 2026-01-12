@@ -356,8 +356,8 @@
       <legend>{{ 'fieldset.keywords' | translate }}</legend>
       <mat-chip-set>
         @for (keyword of keywords(); track keyword) {
-        <mat-chip (removed)="removeChip(keyword.id, keywords)">
-          {{keyword.name}}
+        <mat-chip (removed)="removeKeyword(keyword.id)">
+          {{keyword.name}}  ({{ keyword.tenant === 'global' ? 'global' : 'local' }})
           <button matChipRemove [attr.aria-label]="'remove keyword'">
             <mat-icon>cancel</mat-icon>
           </button>
@@ -373,7 +373,7 @@
           (optionSelected)="addKeyword($event)">
           @for(a of keywords_db(); track idx; let idx = $index){
           <mat-option [value]="a">
-            {{a.name}}
+            {{a.name}}  ({{ a.tenant === 'global' ? 'global' : 'local' }})
           </mat-option>
           }
         </mat-autocomplete>

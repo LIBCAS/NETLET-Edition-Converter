@@ -98,14 +98,14 @@
         </mat-form-field>
     </div>
     <div class="app-fxLayout app-row app-center-v app-mb-4 app-icons">
-        <mat-form-field class="app-fxFlex">
+        <!-- <mat-form-field class="app-fxFlex">
             <mat-label>{{ 'field.author' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.author" name="author" />
             <mat-icon matSuffix (click)="toggleKeep('author')" [matTooltip]="'action.keep_value' | translate" class="app-suffix"  [class.material-icons-outlined]="!keepFields['author']">push_pin</mat-icon>
             @if(author_db.id === -1 && _letter.author) {
                 <mat-icon matSuffix (click)="createIndentity(_letter.author)" [title]="'action.create_identity' | translate" class="app-suffix">person_add_alt</mat-icon>
             }
-        </mat-form-field>
+        </mat-form-field> -->
 
         <mat-form-field class="app-fxFlex app-ml-3" [class.app-field-error]="author_db.id === -1">
             <mat-label>{{ 'field.author_db' | translate}}</mat-label>
@@ -120,14 +120,14 @@
             } -->
         </mat-form-field>
 
-        <mat-form-field class="app-fxFlex app-ml-3">
+        <!-- <mat-form-field class="app-fxFlex app-ml-3">
             <mat-label>{{ 'field.recipient' | translate}}</mat-label>
             <input matInput [(ngModel)]="_letter.recipient" name="recipient">
             <mat-icon matSuffix (click)="toggleKeep('recipient')" [matTooltip]="'action.keep_value' | translate" class="app-suffix" [class.material-icons-outlined]="!keepFields['recipient']">push_pin</mat-icon>
             @if(recipient_db.id === -1 && _letter.recipient) {
                 <mat-icon matSuffix (click)="createIndentity(_letter.recipient)" [title]="'action.create_identity' | translate" class="app-suffix">person_add_alt</mat-icon>
             }
-        </mat-form-field>
+        </mat-form-field> -->
         <mat-form-field class="app-fxFlex app-ml-3" [class.app-field-error]="recipient_db.id === -1">
             <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
             <mat-select [(ngModel)]="recipient_db">

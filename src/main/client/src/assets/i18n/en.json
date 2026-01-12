@@ -55,6 +55,8 @@
     "copies": "Repository and versions",
     "content": "Content description",
     "keywords": "Keywords",
+    "detected_keywords": "Detected keywords",
+    "user_keywords": "User keywords",
     "mentioned": "Mentioned people",
     "languages": "Languages",
     "related_resources": "Related resources"

@@ -66,6 +66,11 @@
             <!-- <button mat-icon-button (click)="regenerateAlto()" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button> -->
           </div>
         </div>
+@if (state.loading()) {
+<div class="app-fxLayout app-row ">
+  <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+</div>
+}
         <div *ngIf="view == 'letters'" class="app-fxFlex app-p-4 app-oa-y">
           <mat-list>
           <div class="app-fxLayout app-row app-fill">

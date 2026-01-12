@@ -64,6 +64,8 @@
     "copies": "Repozitáře a verze",
     "content": "Popis obsahu",
     "keywords": "Klíčová slova",
+    "detected_keywords": "Detekováná klíčová slova",
+    "user_keywords": "Uživatelská klíčová slova",
     "mentioned": "Zmíněné osoby",
     "languages": "Jazyky",
     "related_resources": "Související zdroje"
@@ -161,7 +163,7 @@
     "upload": "Nahrát",
     "close": "Zavřít",
     "analyze": "Analyzovat",
-    "find_keywords": "Hledat Klíčová slova",
+    "find_keywords": "Najít klíčová slova",
     "useAnalysis": "Použít analýzu",
     "showCurrent": "Zobrazit aktualní",
     "analyze_images": "Analyzovat z obrázků",

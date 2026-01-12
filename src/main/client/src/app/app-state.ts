@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { AltoBlock, AltoLine, AltoString } from "./shared/alto";
 import { FileConfig, AltoSelection } from "./shared/file-config";
 import { User } from "./shared/user";
@@ -7,6 +7,8 @@ import { User } from "./shared/user";
   providedIn: 'root'
 }) export class AppState {
 
+  
+    loading = signal(false);
     public user: User;
   alto: any;
   tenants: string[] = [];

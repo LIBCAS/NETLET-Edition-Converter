@@ -19,7 +19,7 @@ import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { FileTemplate, FileConfig } from 'src/app/shared/file-config';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { CopyHIKO } from 'src/app/shared/letter';
+import { CopyHIKO, Keyword } from 'src/app/shared/letter';
 
 @Component({
   selector: 'app-template-dialog',
@@ -45,9 +45,9 @@ export class TemplateDialogComponent {
   origins_db = signal<{ id: number, marked: string, name?: string }[]>([]);
   destinations_db = signal<{ id: number, marked: string, name?: string }[]>([]);
 
-  keyword: { id: number, name: string };
-  keywords = signal<{ id: number, name: string }[]>([]);
-  keywords_db = signal<{ id: number, name: string }[]>([]);
+  keyword: Keyword;
+  keywords = signal<Keyword[]>([]);
+  keywords_db = signal<Keyword[]>([]);
 
   mentioned: { id: number, name: string };
   mentionedIds = signal<{ id: number, name: string }[]>([]);
@@ -149,6 +149,18 @@ export class TemplateDialogComponent {
     });
   }
 
+  removeKeyword(id: string) {
+    this.keywords.update(c => {
+      const index = c.findIndex(k => k.id === id);
+      if (index < 0) {
+        return c;
+      }
+
+      c.splice(index, 1);
+      return [...c];
+    });
+  }
+
   removeLang(name: string) {
     this.languages.update((c: string[]) => {
       const index = c.findIndex(k => k === name);
@@ -178,7 +190,7 @@ export class TemplateDialogComponent {
 
   addKeyword(e: any): void {
     if (this.keyword) {
-      this.keywords.update(keywords => [...keywords, { id: this.keyword.id, name: this.keyword.name }]);
+      this.keywords.update(keywords => [...keywords, this.keyword]);
     }
 
     this.keyword = null;

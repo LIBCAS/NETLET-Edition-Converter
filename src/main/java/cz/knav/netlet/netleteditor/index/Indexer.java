@@ -349,7 +349,7 @@ public class Indexer {
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery("*")
                     .addFilterQuery("id:\"" + id + "\"")
-                    .setFields("*,hiko:[json],ai:[json],selection:[json],entities:[json]")
+                    .setFields("*,hiko:[json],ai:[json],selection:[json],detected_keywords:[json],user_keywords:[json]")
                     .setRows(1);
             query.set("wt", "json");
             String jsonResponse;
@@ -414,8 +414,11 @@ public class Indexer {
             if (data.has("selection")) {
                 idoc.setField("selection", data.optJSONArray("selection").toString());
             }
-            if (data.has("entities")) {
-                idoc.setField("entities", data.optJSONArray("entities").toString());
+            if (data.has("detected_keywords")) {
+                idoc.setField("detected_keywords", data.optJSONArray("detected_keywords").toString());
+            }
+            if (data.has("user_keywords")) {
+                idoc.setField("user_keywords", data.optJSONArray("user_keywords").toString());
             }
             
             idoc.setField("startPage", data.optInt("startPage", 0));
@@ -519,13 +522,13 @@ public class Indexer {
 
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery("name:" + prefix + "*")
-                    .setFields("id,name")
+                    .setFields("id,table_id,name,name_en,tenant")
                     .setSort(SolrQuery.SortClause.asc("name_sort"))
                     .setRows(10);
 //            if (!tenant.isBlank()) {
 //                query.addFilterQuery("tenant:"+tenant);
 //            }
-//            
+            query.addFilterQuery("tenant:global OR tenant:"+tenant);
             query.set("wt", "json");
             String jsonResponse;
             QueryRequest qreq = new QueryRequest(query);

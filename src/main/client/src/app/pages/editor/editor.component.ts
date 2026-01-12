@@ -3,7 +3,7 @@ import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveF
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AppService } from 'src/app/app.service';
 import { AltoBlock, AltoLine, AltoString } from 'src/app/shared/alto';
-import { CopyHIKO, Entity, Letter, LetterCopy, LetterHIKO, PlaceMeta } from 'src/app/shared/letter';
+import { CopyHIKO, Keyword, Letter, LetterCopy, LetterHIKO, PlaceMeta } from 'src/app/shared/letter';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,6 +29,7 @@ import { AppConfiguration } from 'src/app/app-configuration';
 import { UIService } from 'src/app/ui.service';
 import { HikoImportDialogComponent } from 'src/app/components/hiko-import-dialog/hiko-import-dialog.component';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 @Component({
@@ -41,7 +42,7 @@ import { MatSelectModule } from '@angular/material/select';
   ],
   imports: [CommonModule, FormsModule, AngularSplitModule, NgIf, ViewerComponent,
     MatToolbarModule, RouterModule, TranslateModule, DatePipe, MatMenuModule, MatSelectModule,
-    MatTabsModule, MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatListModule,
+    MatTabsModule, MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatListModule, MatProgressBarModule,
     MatInputModule, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
 })
 export class EditorComponent {
@@ -64,7 +65,7 @@ export class EditorComponent {
 
   letterForm: FormGroup;
 
-  entities: Entity[] = [];
+  // entities: Entity[] = [];
   nametag: string;
   nametags: { pos: number[], text: string, type: string, selected: boolean }[];
 
@@ -191,7 +192,7 @@ export class EditorComponent {
     this.letter.destination = t.destination_marked;
 
     t.keywords.forEach(k => {
-      this.letter.hiko.global_keywords.push(k.id + '');
+      this.letter.user_keywords.push(k);
     });
 
     if (t.mentioned) {
@@ -683,15 +684,15 @@ export class EditorComponent {
 
 
     const authors = res.identities.filter((i: any) => i.pivot.role === "author").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
-    if (authors.length > 0) {
-      letter.author = authors[0].marked;
-    }
+    // if (authors.length > 0) {
+    //   letter.author = authors[0].marked;
+    // }
 
     const recipients = res.identities.filter((i: any) => i.pivot.role === "recipient").map((ident: any) => { return { id: ident.id, name: ident.name, salutation: ident.pivot.salutation, marked: ident.pivot.marked } });
-    if (recipients.length > 0) {
-      letter.recipient = recipients[0].marked;
-      letter.salutation = recipients[0].salutation;
-    }
+    // if (recipients.length > 0) {
+    //   letter.recipient = recipients[0].marked;
+    //   letter.salutation = recipients[0].salutation;
+    // }
 
     const mentioned = res.identities.filter((i: any) => i.pivot.role === "mentioned").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
 
@@ -856,14 +857,14 @@ export class EditorComponent {
     this.letter.hiko.content_stripped = this.letter.hiko.content;
 
     if (this.letter.hiko.authors.length > 0 && this.letter.hiko.authors[0].id > -1) {
-      this.letter.hiko.authors[0].marked = this.letter.author;
+      //this.letter.hiko.authors[0].marked = this.letter.author;
     } else {
       this.letter.hiko.authors = [];
     }
 
     if (this.letter.hiko.recipients.length > 0 && this.letter.hiko.recipients[0].id > -1) {
-      this.letter.hiko.recipients[0].marked = this.letter.recipient;
-      this.letter.hiko.recipients[0].salutation = this.letter.salutation;
+      //this.letter.hiko.recipients[0].marked = this.letter.recipient;
+      //this.letter.hiko.recipients[0].salutation = this.letter.salutation;
     } else {
       this.letter.hiko.recipients = [];
     }
@@ -895,8 +896,14 @@ export class EditorComponent {
     }
 
 
-      this.letter.hiko.local_keywords = this.letter.entities.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id });
-      this.letter.hiko.global_keywords = this.letter.entities.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id  });
+      this.letter.hiko.local_keywords = [
+        ...this.letter.detected_keywords.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }),
+        ...this.letter.user_keywords.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id })
+      ];
+      this.letter.hiko.global_keywords = [
+        ...this.letter.detected_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id  }),
+        ...this.letter.user_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id  })
+        ];
 
     // console.log(this.letter.hiko);
     // return;

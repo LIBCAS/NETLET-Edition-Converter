@@ -1,8 +1,4 @@
-@if (loading) {
-<div class="app-fxLayout app-row ">
-  <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
-</div>
-}
+
 <div *ngIf="_letter" class="app-letter app-icons">
   <div *ngIf="_letter.selection?.length > 0" class="app-fxLayout app-row app-center-v app-mb-4">
     @for(sel of _letter.selection; track idx; let idx = $index){
@@ -34,13 +30,10 @@
       <button mat-menu-item (click)="showAnalysis(t)">{{ t.date | date : 'dd.MM.yyyy HH:mm:ss' }}</button>
       }
     </mat-menu>
-    <button mat-flat-button color="primary" (click)="findTags()" class="app-mr-2">
-      <mat-icon class="material-icons-outlined">tag</mat-icon>{{ 'action.find_keywords' | translate }}
-    </button>
   </div>
 
   <div class="app-mb-4">
-      <div style="max-height: 200px; overflow: scroll;" [innerHTML]="_letter.hiko.content"></div>
+    <div style="max-height: 200px; overflow: scroll;" [innerHTML]="_letter.hiko.content"></div>
     <!-- <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.full_text' | translate}}</mat-label>
       <textarea rows="5" matInput [(ngModel)]="_letter.hiko.content" name="content"></textarea>
@@ -74,7 +67,7 @@
   </div>
 
 
-    <fieldset class="app-mb-4">
+  <fieldset class="app-mb-4">
     <legend>{{ 'fieldset.authors' | translate }}</legend>
     @for(author of _letter.hiko.authors; track idx; let idx = $index){
     <fieldset>
@@ -85,7 +78,7 @@
       <div class="app-fxLayout app-row app-center-v app-mb-4">
         <mat-form-field class="app-fxFlex">
           <mat-label>{{ 'field.author_marked' | translate}}</mat-label>
-          <input matInput [(ngModel)]="author.marked" name="author" (change)="checkAuthorDb()" /><span matSuffix></span>
+          <input matInput [(ngModel)]="author.marked" name="author" (change)="checkAuthorDb(author.marked)" /><span matSuffix></span>
           <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'author' }"></ng-container>
         </mat-form-field>
 
@@ -94,28 +87,29 @@
           <input matInput [value]="author.name" name="author_db" [id]="'author_db_' + idx"
             [matAutocomplete]="autoAuthor" (focus)="checkAuthors($event, true, authors_db)"
             (keyup)="checkAuthors($event, true, authors_db)">
-          <mat-autocomplete #autoAuthor="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setAuthorDb($event, idx)">
+          <mat-autocomplete #autoAuthor="matAutocomplete" [displayWith]="displayFn"
+            (optionSelected)="setAuthorDb($event, idx)">
             @for(a of authors_db(); track a.id; let idx = $index){
             <mat-option [value]="a">
               {{a.name}}
             </mat-option>
             }
-          </mat-autocomplete> 
+          </mat-autocomplete>
         </mat-form-field>
       </div>
     </fieldset>
     }
-    
+
     <button mat-flat-button color="primary" (click)="addAuthor()" [matTooltip]="'action.add_author' | translate"
       class="app-mt-4 app-mb-2">
       <mat-icon>queue</mat-icon>{{ 'action.add_author' | translate }}
     </button>
   </fieldset>
-  
+
 
   <!-- <mat-icon (click)="switchAuthors()" class="app-ml-2 app-mr-2">sync_alt</mat-icon> -->
 
-    <fieldset class="app-mb-4">
+  <fieldset class="app-mb-4">
     <legend>{{ 'fieldset.recipients' | translate }}</legend>
     @for(recipient of _letter.hiko.recipients; track idx; let idx = $index){
     <fieldset>
@@ -124,36 +118,36 @@
         [matTooltip]="'action.remove_recipient' | translate"><mat-icon>delete_forever</mat-icon></button>
 
       <div class="app-fxLayout app-row app-center-v app-mb-4">
-    <mat-form-field class="app-fxFlex">
-      <mat-label>{{ 'field.recipient_marked' | translate}}</mat-label>
-      <input matInput [(ngModel)]="recipient.marked" name="recipient" (change)="checkRecipientDb()"><span
-        matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'recipient' }"></ng-container>
-    </mat-form-field>
+        <mat-form-field class="app-fxFlex">
+          <mat-label>{{ 'field.recipient_marked' | translate}}</mat-label>
+          <input matInput [(ngModel)]="recipient.marked" name="recipient" (change)="checkRecipientDb(recipient.marked)"><span
+            matSuffix></span>
+          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'recipient' }"></ng-container>
+        </mat-form-field>
 
-    <mat-form-field class="app-fxFlex app-ml-3">
-      <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
-      <input matInput [value]="recipient.name" name="recipient_db" [id]="'recipient_db_' + idx"
-        [matAutocomplete]="autoRecipient" (focus)="checkAuthors($event, true, recipients_db)"
-        (keyup)="checkAuthors($event, true, recipients_db)">
-      <mat-autocomplete #autoRecipient="matAutocomplete" [displayWith]="displayFn"
-        (optionSelected)="setRecipientDb($event, idx)">
-        @for(a of recipients_db(); track a.id; let idx = $index){
-        <mat-option [value]="a">
-          {{a.name}}
-        </mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-    <mat-form-field class="app-fxFlex app-ml-3">
-      <mat-label>{{ 'field.salutation' | translate}}</mat-label>
-      <input matInput [(ngModel)]="recipient.salutation" name="salutation"><span matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
-    </mat-form-field>
+        <mat-form-field class="app-fxFlex app-ml-3">
+          <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
+          <input matInput [value]="recipient.name" name="recipient_db" [id]="'recipient_db_' + idx"
+            [matAutocomplete]="autoRecipient" (focus)="checkAuthors($event, true, recipients_db)"
+            (keyup)="checkAuthors($event, true, recipients_db)">
+          <mat-autocomplete #autoRecipient="matAutocomplete" [displayWith]="displayFn"
+            (optionSelected)="setRecipientDb($event, idx)">
+            @for(a of recipients_db(); track a.id; let idx = $index){
+            <mat-option [value]="a">
+              {{a.name}}
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field class="app-fxFlex app-ml-3">
+          <mat-label>{{ 'field.salutation' | translate}}</mat-label>
+          <input matInput [(ngModel)]="recipient.salutation" name="salutation"><span matSuffix></span>
+          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
+        </mat-form-field>
       </div>
     </fieldset>
     }
-    
+
     <button mat-flat-button color="primary" (click)="addRecipient()" [matTooltip]="'action.add_recipient' | translate"
       class="app-mt-4 app-mb-2">
       <mat-icon>queue</mat-icon>{{ 'action.add_recipient' | translate }}
@@ -171,9 +165,8 @@
 
     <mat-form-field class="app-fxFlex app-ml-3">
       <mat-label>{{ 'field.origin_db' | translate }}</mat-label>
-      <input matInput [(ngModel)]="_letter.origins[0]" name="origin_db" id="origin_db"
-        [matAutocomplete]="autoOrigin" (focus)="checkPlaces(_letter.origin, false, origins_db)"
-        (keyup)="checkPlaces($event, true, origins_db)">
+      <input matInput [(ngModel)]="_letter.origins[0]" name="origin_db" id="origin_db" [matAutocomplete]="autoOrigin"
+        (focus)="checkPlaces(_letter.origin, false, origins_db)" (keyup)="checkPlaces($event, true, origins_db)">
       <mat-autocomplete #autoOrigin="matAutocomplete" [displayWith]="displayFn">
         @for(a of origins_db(); track idx; let idx = $index){
         <mat-option [value]="a">
@@ -229,28 +222,29 @@
 
   <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
     <legend>{{ 'fieldset.languages' | translate }}</legend>
-        <mat-chip-set class="app-fxFlex">
-          @for (language of languages(); track language) {
-          <mat-chip (removed)="removeLang(language)">
-            {{language}}
-            <button matChipRemove [attr.aria-label]="'remove language'">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip>
-          }
-        </mat-chip-set>
-        <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-          <mat-label>{{ 'field.new_language' | translate }}</mat-label>
-          <input matInput [(ngModel)]="language" name="languages" id="languages"
-            [matAutocomplete]="autoLanguages" (focus)="checkLanguages($event)" (keyup)="checkLanguages($event)">
-          <mat-autocomplete #autoLanguages="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addLanguage($event)" >
-            @for(a of languages_db(); track idx; let idx = $index){
-            <mat-option [value]="a">
-              {{a}}
-            </mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
+    <mat-chip-set class="app-fxFlex">
+      @for (language of languages(); track language) {
+      <mat-chip (removed)="removeLang(language)">
+        {{language}}
+        <button matChipRemove [attr.aria-label]="'remove language'">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip>
+      }
+    </mat-chip-set>
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+      <mat-label>{{ 'field.new_language' | translate }}</mat-label>
+      <input matInput [(ngModel)]="language" name="languages" id="languages" [matAutocomplete]="autoLanguages"
+        (focus)="checkLanguages($event)" (keyup)="checkLanguages($event)">
+      <mat-autocomplete #autoLanguages="matAutocomplete" [displayWith]="displayFn"
+        (optionSelected)="addLanguage($event)">
+        @for(a of languages_db(); track idx; let idx = $index){
+        <mat-option [value]="a">
+          {{a}}
+        </mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
 
 
     <!-- <legend>{{ 'field.languages' | translate }}</legend>
@@ -419,7 +413,7 @@
     </button>
   </fieldset>
 
-  
+
 
   <div class="app-mb-4">
     <mat-form-field class="app-w-100">
@@ -429,17 +423,53 @@
     </mat-form-field>
   </div>
 
-  
 
-  
+
+
   <fieldset class="app-center-v app-mb-4">
     <legend>{{ 'fieldset.keywords' | translate }}</legend>
-    <div class="app-mb-4">
-      @for(entity of _letter.entities; track entity.id; let idx = $index){
-            <mat-checkbox [id]="entity.id" [name]="entity.id" type="checkbox" [(ngModel)]="entity.selected">{{
-              entity.name }} ({{ entity.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
-          }
+    @if (loadingKeywords()) {
+    <div class="app-fxLayout app-row ">
+      <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
     </div>
+    }
+    <div class="app-mb-4">
+    <button mat-flat-button color="primary" (click)="findTags()" class="app-mr-2">
+      <mat-icon class="material-icons-outlined">tag</mat-icon>{{ 'action.find_keywords' | translate }}
+    </button>
+    </div>
+    <div>{{ 'fieldset.detected_keywords' | translate }}</div>
+    <div class="app-mb-4">
+      @for(k of _letter.detected_keywords; track k.id; let idx = $index){
+      <mat-checkbox [id]="k.id" [name]="k.id" type="checkbox" [(ngModel)]="k.selected">{{
+        k.name }} ({{ k.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
+      }
+    </div>
+    
+    <div>{{ 'fieldset.user_keywords' | translate }}</div>
+    <mat-chip-set>
+      @for (keyword of keywords(); track keyword) {
+      <mat-chip (removed)="removeKeyword(keyword.id)">
+        {{keyword.name}} ({{ keyword.tenant === 'global' ? 'global' : 'local' }})
+        <button matChipRemove [attr.aria-label]="'remove keyword'">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip>
+      }
+    </mat-chip-set>
+
+    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+      <mat-label>{{ 'field.new_keyword' | translate }}</mat-label>
+      <input matInput [(ngModel)]="keyword" name="keywords" id="keywords" [matAutocomplete]="autoKeywords"
+        (focus)="checkKeywords($event, false)" (keyup)="checkKeywords($event, true)">
+      <mat-autocomplete #autoKeywords="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addKeyword($event)">
+        @for(a of keywords_db(); track idx; let idx = $index){
+        <mat-option [value]="a">
+          {{a.name}} ({{ a.tenant === 'global' ? 'global' : 'local' }})
+        </mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
   </fieldset>
   <!-- <mat-tab-group>
     <mat-tab label="HIKO">

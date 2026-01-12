@@ -48,7 +48,7 @@ export class PlaceMeta {
     marked: string
 }
 
-export interface Entity {
+export interface Keyword {
     id: string, 
     table_id: string, 
     name: string, 
@@ -93,7 +93,7 @@ export class LetterOld {
 
 
     full_text: string;
-    entities: Entity[];
+    // entities: Entity[];
     nametags: NameTag[];
 
     created_at: Date;
@@ -314,8 +314,8 @@ export class Letter  {
 
     // As detected by AI
     date: string;
-    author: string;
-    recipient: string;
+    //author: string;
+    //recipient: string;
     origin: string;
     origins: { id: number; marked?: string; name?: string, tenant?: string }[] = [];
 
@@ -325,7 +325,8 @@ export class Letter  {
     signature: string;
     sign_off: string;
 
-    entities: Entity[];
+    detected_keywords: Keyword[] = [];
+    user_keywords: Keyword[] = [];
     nametags: NameTag[];
 
     ai: {
