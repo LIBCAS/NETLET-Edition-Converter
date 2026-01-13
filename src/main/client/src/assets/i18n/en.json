@@ -57,6 +57,8 @@
     "keywords": "Keywords",
     "detected_keywords": "Detected keywords",
     "user_keywords": "User keywords",
+    "detected_mentioned": "Detected people",
+    "user_mentioned": "User mentioned people",
     "mentioned": "Mentioned people",
     "languages": "Languages",
     "related_resources": "Related resources"
@@ -155,6 +157,7 @@
     "close": "Close",
     "analyze": "Analyze",
     "find_keywords": "Find keywords",
+    "find_mentioned": "Find mentioned people",
     "useAnalysis": "Use analysis",
     "showCurrent": "Show current",
     "analyze_images": "Analyze using images",

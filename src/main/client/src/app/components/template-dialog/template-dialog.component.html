@@ -53,7 +53,7 @@
           <mat-autocomplete #autoAuthor="matAutocomplete" [displayWith]="displayFn" (optionSelected)="setAuthorDb($event, idx)">
             @for(a of authors_db(); track a.id; let idx = $index){
             <mat-option [value]="a">
-              {{a.name}}
+              {{a.name}} ({{ a.birth_year }} - {{ a.death_year }})
             </mat-option>
             }
           </mat-autocomplete> 
@@ -93,7 +93,7 @@
         (optionSelected)="setRecipientDb($event, idx)">
         @for(a of recipients_db(); track a.id; let idx = $index){
         <mat-option [value]="a">
-          {{a.name}}
+          {{a.name}} ({{ a.birth_year }} - {{ a.death_year }})
         </mat-option>
         }
       </mat-autocomplete>
@@ -179,7 +179,7 @@
           (optionSelected)="addMentioned($event)">
           @for(a of mentioned_db(); track idx; let idx = $index){
           <mat-option [value]="a">
-            {{a.name}}
+            {{a.name}} ({{ a.birth_year }} - {{ a.death_year }})
           </mat-option>
           }
         </mat-autocomplete>

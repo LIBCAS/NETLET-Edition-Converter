@@ -66,6 +66,8 @@
     "keywords": "Klíčová slova",
     "detected_keywords": "Detekováná klíčová slova",
     "user_keywords": "Uživatelská klíčová slova",
+    "detected_mentioned": "Detekováné zmíněné osoby",
+    "user_mentioned": "Uživatelské zmíněné osoby",
     "mentioned": "Zmíněné osoby",
     "languages": "Jazyky",
     "related_resources": "Související zdroje"
@@ -164,6 +166,7 @@
     "close": "Zavřít",
     "analyze": "Analyzovat",
     "find_keywords": "Najít klíčová slova",
+    "find_mentioned": "Najít zmíněné osoby",
     "useAnalysis": "Použít analýzu",
     "showCurrent": "Zobrazit aktualní",
     "analyze_images": "Analyzovat z obrázků",

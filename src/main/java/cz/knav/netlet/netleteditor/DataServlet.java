@@ -450,8 +450,25 @@ public class DataServlet extends HttpServlet {
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
-                        json = SolrTaggerAnalyzer.getTagsJSON(text, "key_tagger_cs", request.getParameter("tenant"));
-                        json.put("nametag", NameTag.recognize(text));
+                        json = SolrTaggerAnalyzer.findKeywords(text, "key_tagger_cs", request.getParameter("tenant"));
+                    }
+
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
+                    json.put("error", ex.toString());
+                }
+                return json;
+            }
+        },
+        FIND_IDENTITIES {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+                JSONObject json = new JSONObject();
+                try {
+                    if (request.getMethod().equals("POST")) {
+                        String text = IOUtils.toString(request.getInputStream(), "UTF-8");
+                        json = SolrTaggerAnalyzer.findIdentities(text, "key_tagger_cs", request.getParameter("tenant"));
                     }
 
                 } catch (Exception ex) {
@@ -625,6 +642,14 @@ public class DataServlet extends HttpServlet {
                 return ret;
             }
         },
+        GET_IDENTITIES {
+            @Override
+            JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
+                JSONObject ret = new JSONObject();
+                ret.put("identities", Indexer.getAuthors(request.getParameter("prefix"), request.getParameter("tenant")).getJSONObject("response").getJSONArray("docs"));
+                return ret;
+            }
+        },
         GET_LOCATIONS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -741,7 +766,7 @@ public class DataServlet extends HttpServlet {
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
-                    json.put("identities", hi.indexIdentities());
+                    json.put("identities", hi.indexIdentities(req.getParameter("tenant")));
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());

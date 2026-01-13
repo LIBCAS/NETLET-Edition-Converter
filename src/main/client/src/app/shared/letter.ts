@@ -57,6 +57,21 @@ export interface Keyword {
     selected: boolean
 };
 
+export interface Identity {
+    id: number, 
+    table_id?: string, 
+    name: string, 
+    name_en?: string, 
+    tenant: string,
+    nationality?: string,
+    gender?: string,
+    birth_year?: string,
+    death_year?: string,
+    salutation?: string,
+    marked?: string,
+    selected?: boolean
+};
+
 export interface NameTag { pos: number[], text: string, type: string, selected: boolean };
 
 export class LetterOld {
@@ -236,12 +251,12 @@ export class LetterHIKO {
     date_note: string;
     date_approximate: boolean;
 
-    authors: { id: number; marked?: string; name?: string }[] = [];
+    authors: Identity[] = [];
     author_uncertain: boolean;
     author_inferred: boolean;
     author_note: string;
 
-    recipients: { id: number; marked?: string; salutation?: string; name?: string }[] = [];
+    recipients: Identity[] = [];
     recipient_uncertain: boolean;
     recipient_inferred: boolean;
     recipient_note: string;
@@ -328,6 +343,10 @@ export class Letter  {
     detected_keywords: Keyword[] = [];
     user_keywords: Keyword[] = [];
     nametags: NameTag[];
+
+    
+    detected_mentioned: Identity[] = [];
+    user_mentioned: Identity[] = [];
 
     ai: {
         date: Date;

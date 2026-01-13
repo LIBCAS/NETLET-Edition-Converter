@@ -1,5 +1,5 @@
 import { AltoBlock, AltoLine, AltoString } from "./alto";
-import { AutorDb, CopyHIKO, Keyword, Letter, PlaceMeta } from "./letter";
+import { AutorDb, CopyHIKO, Identity, Keyword, Letter, PlaceMeta } from "./letter";
 
 export interface Sort { label: string; field: string; dir: string; entity?: string[] };
 
@@ -11,8 +11,8 @@ export class FileTemplate {
   name: string;
   // def_author: string; 
 
-  authors: { id: number; marked?: string; name?: string }[] = [];
-  recipients: { id: number; marked?: string; salutation?: string; name?: string }[] = [];
+  authors: Identity[] = [];
+  recipients: Identity[] = [];
 
   // author_marked: string;
   // author_db: { id: number; marked?: string, name?: string } = {id: -1, marked: null, name: null};
@@ -27,7 +27,7 @@ export class FileTemplate {
   destination_db: { id: number; marked?: string; name?: string } = {id: -1, name: null};
 
   keywords: Keyword[] = [];
-  mentioned: { id: number; name: string }[] = [];
+  mentioned: Identity[] = [];
   people_mentioned_note: string;
 
   languages: string[] = [];

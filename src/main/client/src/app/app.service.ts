@@ -89,6 +89,14 @@ export class AppService {
     return this.post(`/data/find_tags?tenant=${tenant}`, text);
   }
 
+  findKeywords(text: any, tenant: string) {
+    return this.post(`/data/find_keywords?tenant=${tenant}`, text);
+  }
+
+  findIdentities(text: any, tenant: string) {
+    return this.post(`/data/find_identities?tenant=${tenant}`, text);
+  }
+
   detectLang(text: any) {
     return this.post(`/data/detect_lang`, text);
   }
@@ -162,6 +170,13 @@ export class AppService {
     const params: HttpParams = new HttpParams()
     .set('prefix', prefix).set('tenant', tenant).set('extended', extended);
     return this.get(`/data/get_keywords`, params);
+    
+  }
+
+  getIdentities(prefix: string, tenant: string, extended: boolean): Observable<any> {
+    const params: HttpParams = new HttpParams()
+    .set('prefix', prefix).set('tenant', tenant).set('extended', extended);
+    return this.get(`/data/get_identities`, params);
     
   }
 

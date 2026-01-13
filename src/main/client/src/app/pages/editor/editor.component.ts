@@ -198,6 +198,7 @@ export class EditorComponent {
     if (t.mentioned) {
       t.mentioned.forEach(m => {
         this.letter.hiko.mentioned.push(m.id + '');
+        this.letter.user_mentioned.push(m);
       });
     }
 
@@ -904,6 +905,11 @@ export class EditorComponent {
         ...this.letter.detected_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id  }),
         ...this.letter.user_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id  })
         ];
+
+      this.letter.hiko.mentioned = [
+        ...this.letter.detected_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }),
+        ...this.letter.user_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id })
+      ];
 
     // console.log(this.letter.hiko);
     // return;

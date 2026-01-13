@@ -79,14 +79,17 @@ public class HikoIndexer {
         return ret;
     }
 
-    public JSONObject indexIdentities() throws URISyntaxException, IOException, InterruptedException {
+    public JSONObject indexIdentities(String rtenant) throws URISyntaxException, IOException, InterruptedException {
         Date start = new Date();
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO identities");
         try (SolrClient client = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) {
             Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
             for (String tenant : tenants) {
-                indexTenantIdentities(client, ret, tenant);
+                if (rtenant == null || rtenant.equals(tenant)) {
+                    indexTenantIdentities(client, ret, tenant);
+                }
+                
             }
 
             client.commit("identities");
@@ -184,12 +187,28 @@ public class HikoIndexer {
                     doc.addField("name", rs.optString("name"));
                     doc.addField("surname", rs.optString("surname"));
                     doc.addField("forename", rs.optString("forename"));
+                    doc.addField("nationality", rs.optString("nationality"));
+                    doc.addField("gender", rs.optString("gender"));
+                    doc.addField("birth_year", rs.optString("birth_year"));
+                    doc.addField("death_year", rs.optString("death_year"));
+            
+                    doc.addField("key_tagger_cs", rs.optString("name"));
+                    if (rs.optString("surname").length() > 2) {
+                        doc.addField("key_tagger_cs", rs.optString("surname"));
+                    }
+                    if (rs.optString("forename").length() > 2) {
+                        doc.addField("key_tagger_cs", rs.optString("forename"));
+                    }
                     String an = rs.optString("alternative_names", null);
                     if (an != null) {
                         try {
                             JSONObject anjs = new JSONObject(an);
-                            for (String key : anjs.keySet()) {
-                                doc.addField("alternative_names", anjs.getString(key));
+                            for (String key : anjs.keySet()) { 
+                                String ans = anjs.getString(key);
+                                doc.addField("alternative_names", ans);
+                                if (ans.length() > 2) {
+                                  doc.addField("key_tagger_cs", ans);
+                                }
                             }
                         } catch (JSONException jsonex) {
                             LOGGER.log(Level.WARNING, "Invalid JSON for {0}", id);
@@ -197,6 +216,7 @@ public class HikoIndexer {
                     }
 
                     doc.addField("type", rs.getString("type"));
+
                     client.add("identities", doc);
                     ret.put(tenant, tindexed++);
                     if (tindexed % 500 == 0) {

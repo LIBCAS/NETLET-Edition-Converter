@@ -450,7 +450,7 @@ public class Indexer {
 
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery(name)
-                    .setFields("id:table_id,name");
+                    .setFields("*");
             query.set("qf", "name_lower^5 name^2 alternative_names");
             if (!tenant.isBlank()) {
                 // query.set("bq", "tenant:"+tenant+"^10");
@@ -491,12 +491,11 @@ public class Indexer {
 
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery("name_lower:" + prefix + "*")
-                    .setFields("id,tenant,name")
+                    .setFields("*")
                     .setSort(SolrQuery.SortClause.asc("name_sort"))
+                    .addFilterQuery("type:person")
                     .setRows(10);
-            if (!tenant.isBlank()) {
-                query.addFilterQuery("tenant:"+tenant);
-            }
+            query.addFilterQuery("tenant:global OR tenant:"+tenant);
             
             query.set("wt", "json");
             String jsonResponse;

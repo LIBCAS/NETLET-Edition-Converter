@@ -36,8 +36,70 @@ import org.json.JSONObject;
 public class SolrTaggerAnalyzer {
 
   static final Logger LOGGER = Logger.getLogger(SolrTaggerAnalyzer.class.getName());
-  public static String COLLECTION = "keywords";
+  
+  private static JSONObject processQuery(String text, SolrQuery query, String collection) {
+    JSONObject ret = new JSONObject();
+    try (SolrClient solr = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) { 
+      ContentStreamUpdateRequest req = new ContentStreamUpdateRequest("");
+      req.addContentStream(new ContentStreamBase.StringStream(text));
+      req.setMethod(SolrRequest.METHOD.POST);
+      NoOpResponseParser rawJsonResponseParser = new NoOpResponseParser();
+      rawJsonResponseParser.setWriterType("json");
+      req.setResponseParser(rawJsonResponseParser);
+      req.setPath("/tag");
+      req.setParams(query);
+      UpdateResponse rsp = req.process(solr, collection);
+      NamedList nlr = rsp.getResponse();
 
+      ret = new JSONObject((String) nlr.get("response"));
+      solr.close();
+    } catch (IOException | SolrServerException ex) {
+      LOGGER.log(Level.SEVERE, "Error processing query", ex);
+      ret.put("error", ex);
+    }
+    return ret;
+  }
+  
+  public static SolrQuery doQuery(String text, String field, String tenant) {
+      SolrQuery query = new SolrQuery();
+      query.setRequestHandler("/tag");
+      query.set("overlaps", "NO_SUB")
+              .set("wt", "json")
+              .set("indent", "on")
+              .set("field", field)
+              .set("matchText", true)
+              .set("skipAltTokens", true)
+              .set("fl", "*,score")
+              .set("tagsLimit", "5000");
+      query.addFilterQuery("tenant:global OR tenant:"+tenant);
+      return query;
+  }
+
+  public static JSONObject findKeywords(String text, String field, String tenant) {
+    JSONObject ret = new JSONObject();
+    try { 
+      SolrQuery query = doQuery(text, field, tenant);
+      ret = processQuery(text, query, "keywords");
+    } catch (Exception ex) {
+      LOGGER.log(Level.SEVERE, "Error getting keywords", ex);
+      ret.put("error", ex);
+    }
+    return ret;
+  }
+
+  public static JSONObject findIdentities(String text, String field, String tenant) {
+    JSONObject ret = new JSONObject();
+    try { 
+      SolrQuery query = doQuery(text, field, tenant);
+      query.addFilterQuery("type:person");
+      ret = processQuery(text, query, "identities");
+    } catch (Exception ex) {
+      LOGGER.log(Level.SEVERE, "Error getting keywords", ex);
+      ret.put("error", ex);
+    }
+    return ret;
+  }
+  
   public static JSONObject getTagsJSON(String text, String field, String tenant) {
     JSONObject ret = new JSONObject();
     try (SolrClient solr = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) { 
@@ -60,7 +122,7 @@ public class SolrTaggerAnalyzer {
       req.setResponseParser(rawJsonResponseParser);
       req.setPath("/tag");
       req.setParams(query);
-      UpdateResponse rsp = req.process(solr, COLLECTION);
+      UpdateResponse rsp = req.process(solr, "dictionaries");
       NamedList nlr = rsp.getResponse();
 
       ret = new JSONObject((String) nlr.get("response"));
@@ -96,7 +158,7 @@ public class SolrTaggerAnalyzer {
 
 
       QueryRequest queryRequest = new SolrTaggerRequest(query, text);
-      NamedList nlr = solr.request(queryRequest, COLLECTION);
+      NamedList nlr = solr.request(queryRequest, "dictionaries");
       // ret.put("body", processResponse(nlr, lang, candidates, false));
 
 

@@ -19,7 +19,7 @@ import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
 import { FileTemplate, FileConfig } from 'src/app/shared/file-config';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { CopyHIKO, Keyword } from 'src/app/shared/letter';
+import { CopyHIKO, Identity, Keyword } from 'src/app/shared/letter';
 
 @Component({
   selector: 'app-template-dialog',
@@ -33,11 +33,11 @@ import { CopyHIKO, Keyword } from 'src/app/shared/letter';
 })
 export class TemplateDialogComponent {
 
-  authors_db = signal<{ id: number, marked: string, name?: string }[]>([]);
+  authors_db = signal<Identity[]>([]);
 
 
-  recipients_db = signal<{ id: number, marked: string, name?: string, salutation?: string }[]>([]);
-  recipient_db: { id: number, marked: string, name?: string, salutation?: string } = { marked: '', id: -1 };
+  recipients_db = signal<Identity[]>([]);
+  recipient_db: Identity = null;
 
   selectedTemplate: FileTemplate;
   new_template: string;
@@ -49,9 +49,9 @@ export class TemplateDialogComponent {
   keywords = signal<Keyword[]>([]);
   keywords_db = signal<Keyword[]>([]);
 
-  mentioned: { id: number, name: string };
-  mentionedIds = signal<{ id: number, name: string }[]>([]);
-  mentioned_db = signal<{ id: number, name: string }[]>([]);
+  mentioned: Identity;
+  mentionedIds = signal<Identity[]>([]);
+  mentioned_db = signal<Identity[]>([]);
 
   language: string;
   languages = signal<string[]>([]);
@@ -138,8 +138,8 @@ export class TemplateDialogComponent {
   }
 
   removeChip(id: number, list: any) {
-    list.update((c: { id: number, name: string }[]) => {
-      const index = c.findIndex(k => k.id === id);
+    list.update((c: Keyword[]) => {
+      const index = c.findIndex(k => k.id === id+'');
       if (index < 0) {
         return c;
       }
@@ -198,7 +198,7 @@ export class TemplateDialogComponent {
 
   addMentioned(e: any): void {
     if (this.mentioned) {
-      this.mentionedIds.update(c => [...c, { id: this.mentioned.id, name: this.mentioned.name }]);
+      this.mentionedIds.update(c => [...c,  this.mentioned]);
     }
 
     this.mentioned = null;
@@ -260,7 +260,7 @@ export class TemplateDialogComponent {
   }
 
   addAuthor() {
-    this.selectedTemplate.authors.push({ id: -1, marked: '', name: '' });
+    this.selectedTemplate.authors.push({ id: -1, marked: '', name: '', tenant: this.state.user.tenant });
   }
 
   removeAuthor(idx: number) {
@@ -268,7 +268,7 @@ export class TemplateDialogComponent {
   }
 
   addRecipient() {
-    this.selectedTemplate.recipients.push({ id: -1, marked: '', name: '' });
+    this.selectedTemplate.recipients.push({ id: -1, marked: '', name: '', tenant: this.state.user.tenant });
   }
 
   removeRecipient(idx: number) {

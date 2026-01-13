@@ -11,7 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from 'src/app/app.service';
-import { Keyword, Letter, LetterCopy, NameTag, PlaceMeta } from 'src/app/shared/letter';
+import { Identity, Keyword, Letter, LetterCopy, NameTag, PlaceMeta } from 'src/app/shared/letter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslationDialogComponent } from '../translation-dialog/translation-dialog.component';
 import { AnalyzeDialogComponent } from '../analyze-dialog/analyze-dialog.component';
@@ -67,7 +67,10 @@ export class LetterFieldsComponent {
   keyword: Keyword;
   keywords = signal<Keyword[]>([]);
   keywords_db = signal<Keyword[]>([]);
-  loadingKeywords = signal(false);
+
+  mentioned1: Identity;
+  mentioned = signal<Identity[]>([]);
+  mentioned_db = signal<Identity[]>([]);
 
   _letter: Letter;
   @Input() set letter(value: Letter) {
@@ -83,11 +86,11 @@ export class LetterFieldsComponent {
     
     if (this._letter.hiko.authors) {
       this.authors_db.set(this._letter.hiko.authors);
-      this.author_db = this._letter.hiko.authors[0];
+      //this.author_db = this._letter.hiko.authors[0];
     }
     if (this._letter.hiko.recipients) {
       this.recipients_db.set(this._letter.hiko.recipients);
-      this.recipient_db = this._letter.hiko.recipients[0];
+      //this.recipient_db = this._letter.hiko.recipients[0];
     }
     
     if (this._letter.origins?.length > 0) {
@@ -110,15 +113,21 @@ export class LetterFieldsComponent {
       this.keywords.set([]);
     }
 
+    if (this._letter.user_mentioned) {
+      this.mentioned.set([...this._letter.user_mentioned]);
+    } else {
+      this.mentioned.set([]);
+    }
+
   }
   @Output() onSetField = new EventEmitter<{ field: string, textBox: string, append: boolean }>();
   @Output() onShouldRefresh = new EventEmitter<string>();
   
-    authors_db = signal<{ id: number, marked?: string, name?: string }[]>([]);
-    author_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1};
+    authors_db = signal<Identity[]>([]);
+    //author_db: Identity = {marked:'', id:-1};
     noauthor = {marked:'', id:-1, name: ''};
-    recipients_db = signal<{ id: number, marked?: string, name?: string, salutation?: string }[]>([]);
-    recipient_db: { id: number, marked?: string, name?: string, salutation?: string } = {marked:'', id:-1};
+    recipients_db = signal<Identity[]>([]);
+    //recipient_db: { id: number, marked?: string, name?: string, salutation?: string } = {marked:'', id:-1};
     norecipient = {marked:'', id:-1, name: ''};
     
   
@@ -165,7 +174,6 @@ export class LetterFieldsComponent {
   }
 
   findTags() {
-    this.loadingKeywords.set(true);
     this.service.findTags(this._letter.hiko.content, this.state.user.tenant).subscribe((resp: any) => {
       // this.entities = resp.response.docs;
       this.nametag = resp.nametag.result;
@@ -173,7 +181,22 @@ export class LetterFieldsComponent {
       // console.log(this.nametags)
       this._letter.detected_keywords = resp.response.docs;
       this._letter.nametags = this.nametags;
-      this.loadingKeywords.set(false);
+    });
+  }
+
+  findKeywords() {
+    this.state.loading.set(true);
+    this.service.findKeywords(this._letter.hiko.content, this.state.user.tenant).subscribe((resp: any) => {
+      this._letter.detected_keywords = resp.response.docs;
+      this.state.loading.set(false);
+    });
+  }
+
+  findIdentities() {
+    this.state.loading.set(true);
+    this.service.findIdentities(this._letter.hiko.content, this.state.user.tenant).subscribe((resp: any) => {
+      this._letter.detected_mentioned = resp.response.docs;
+      this.state.loading.set(false);
     });
   }
 
@@ -200,8 +223,11 @@ export class LetterFieldsComponent {
   }
 
   setAuthorDb(e: any, idx: number) {
-    this._letter.hiko.authors[idx].name=e.option.value.name;
-    this._letter.hiko.authors[idx].id=e.option.value.id;
+    const m = this._letter.hiko.authors[idx].marked;
+    // this._letter.hiko.authors[idx].name = e.option.value.name;
+    // this._letter.hiko.authors[idx].id = e.option.value.id;
+    this._letter.hiko.authors[idx] = e.option.value;
+      this._letter.hiko.authors[idx].marked = m;
   }
 
   checkRecipientDb(s: string) {
@@ -212,9 +238,9 @@ export class LetterFieldsComponent {
   }
 
   setRecipientDb(e: any, idx: number) {
-    //this._letter.hiko.recipients = [this.recipient_db];
-    this._letter.hiko.recipients[idx].name = e.option.value.name;
-    this._letter.hiko.recipients[idx].id = e.option.value.id;
+    const m = this._letter.hiko.recipients[idx].marked;
+    this._letter.hiko.recipients[idx] = e.option.value;
+    this._letter.hiko.recipients[idx].marked = m;
   }
 
   checkOriginDb() {
@@ -253,9 +279,15 @@ export class LetterFieldsComponent {
     });
   }
 
-  displayFn(o: any) {
-    return o ? o.name : '';
+  displayFn(a: any) {
+    if (a) {
+      return `${a.name} (${ a.birth_year } - ${ a.death_year }) (${ a.tenant === 'global' ? 'global' : 'local' })`
+    } else {
+      return ''
+    }
   }
+
+  // 
 
   // checkPlacesOrigin(e: any, extended: boolean) {
   //   console.log(e)
@@ -640,7 +672,7 @@ export class LetterFieldsComponent {
   }
 
   addAuthor() {
-    this._letter.hiko.authors.push({ id: -1, marked: '', name: '' });
+    this._letter.hiko.authors.push({ id: -1, marked: '', name: '', tenant: this.state.user.tenant });
   }
 
   removeAuthor(idx: number) {
@@ -648,7 +680,7 @@ export class LetterFieldsComponent {
   }
 
   addRecipient() {
-    this._letter.hiko.recipients.push({ id: -1, marked: '', name: '' });
+    this._letter.hiko.recipients.push({ id: -1, marked: '', name: '', tenant: this.state.user.tenant });
   }
 
   removeRecipient(idx: number) {
@@ -711,6 +743,36 @@ export class LetterFieldsComponent {
       return [...c];
     });
     this._letter.user_keywords = [...this.keywords()]
+  }
+
+  checkMentioned(e: any, extended: boolean) {
+    const val = e.target ? e.target.value : e;
+    this.service.getIdentities(val, this.state.user.tenant, extended).subscribe((resp: any) => {
+      this.mentioned_db.set(resp.identities);
+    });
+  }
+
+  addMentioned(e: any): void {
+    if (this.mentioned1) {
+      this.mentioned.update(identities => [...identities, this.mentioned1]);
+    }
+
+    this.mentioned1 = null;
+    
+    this._letter.user_mentioned = [...this.mentioned()]
+  }
+
+  removeMentioned(id: number) {
+    this.mentioned.update(c => {
+      const index = c.findIndex(k => k.id === id);
+      if (index < 0) {
+        return c;
+      }
+
+      c.splice(index, 1);
+      return [...c];
+    });
+    this._letter.user_mentioned = [...this.mentioned()]
   }
 
   removeLang(name: string) {
