@@ -280,7 +280,7 @@ export class LetterFieldsComponent {
   }
 
   displayFn(a: any) {
-    if (a) {
+    if (a?.name) {
       return `${a.name} (${ a.birth_year } - ${ a.death_year }) (${ a.tenant === 'global' ? 'global' : 'local' })`
     } else {
       return ''

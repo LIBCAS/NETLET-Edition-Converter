@@ -116,12 +116,12 @@
       <legend>{{ 'fieldset.origin' | translate }}</legend>
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'field.origin_marked' | translate}}</mat-label>
-        <input matInput [(ngModel)]="selectedTemplate.origin_marked" name="origin_marked" id="origin_marked" />
+        <input matInput [(ngModel)]="selectedTemplate.origin_marked" name="origin_marked" id="origin_markedTmpl" />
       </mat-form-field>
 
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'field.origin_db' | translate }}</mat-label>
-        <input matInput [(ngModel)]="selectedTemplate.origin_db" name="origin_db" id="origin_db"
+        <input matInput [(ngModel)]="selectedTemplate.origin_db" name="origin_db" id="origin_dbTmpl"
           [matAutocomplete]="autoOrigin" (focus)="checkPlaces($event, false, origins_db)"
           (keyup)="checkPlaces($event, true, origins_db)">
         <mat-autocomplete #autoOrigin="matAutocomplete" [displayWith]="displayFn">
@@ -139,12 +139,12 @@
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'field.destination_marked' | translate}}</mat-label>
         <input matInput [(ngModel)]="selectedTemplate.destination_marked" name="destination_marked"
-          id="destination_marked" />
+          id="destination_markedTmpl" />
       </mat-form-field>
 
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'field.destination_db' | translate }}</mat-label>
-        <input matInput [(ngModel)]="selectedTemplate.destination_db" name="destination_db" id="destination_db"
+        <input matInput [(ngModel)]="selectedTemplate.destination_db" name="destination_db" id="destination_dbTmpl"
           [matAutocomplete]="autoDestination" (focus)="checkPlaces($event, false, destinations_db)"
           (keyup)="checkPlaces($event, true, destinations_db)">
         <mat-autocomplete #autoDestination="matAutocomplete" [displayWith]="displayFn">
@@ -173,7 +173,7 @@
 
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'field.new_mentioned' | translate }}</mat-label>
-        <input matInput [(ngModel)]="mentioned" name="mentioned_db" id="mentioned_db" [matAutocomplete]="autoMentioned"
+        <input matInput [(ngModel)]="mentioned" name="mentioned_db" id="mentioned_dbTmpl" [matAutocomplete]="autoMentioned"
           (focus)="checkAuthors($event, false, mentioned_db)" (keyup)="checkAuthors($event, true, mentioned_db)">
         <mat-autocomplete #autoMentioned="matAutocomplete" [displayWith]="displayFn"
           (optionSelected)="addMentioned($event)">
@@ -188,7 +188,7 @@
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'field.people_mentioned_note' | translate}}</mat-label>
         <input matInput [(ngModel)]="selectedTemplate.people_mentioned_note" name="people_mentioned_note"
-          id="people_mentioned_note" />
+          id="people_mentioned_noteTmpl" />
       </mat-form-field>
     </fieldset>
 
@@ -339,7 +339,7 @@
 
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'field.new_language' | translate }}</mat-label>
-        <input matInput [(ngModel)]="language" name="languages" id="languages" [matAutocomplete]="autoLanguages"
+        <input matInput [(ngModel)]="language" name="languages" id="languagesTmpl" [matAutocomplete]="autoLanguages"
           (focus)="checkLanguages($event)" (keyup)="checkLanguages($event)">
         <mat-autocomplete #autoLanguages="matAutocomplete" [displayWith]="displayFn"
           (optionSelected)="addLanguage($event)">
@@ -367,7 +367,7 @@
 
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'field.new_keyword' | translate }}</mat-label>
-        <input matInput [(ngModel)]="keyword" name="keywords" id="keywords" [matAutocomplete]="autoKeywords"
+        <input matInput [(ngModel)]="keyword" name="keywords" id="keywordsTmpl" [matAutocomplete]="autoKeywords"
           (focus)="checkKeywords($event, false)" (keyup)="checkKeywords($event, true)">
         <mat-autocomplete #autoKeywords="matAutocomplete" [displayWith]="displayFn"
           (optionSelected)="addKeyword($event)">

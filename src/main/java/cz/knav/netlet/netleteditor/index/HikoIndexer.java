@@ -89,7 +89,7 @@ public class HikoIndexer {
                 if (rtenant == null || rtenant.equals(tenant)) {
                     indexTenantIdentities(client, ret, tenant);
                 }
-                
+
             }
 
             client.commit("identities");
@@ -191,7 +191,7 @@ public class HikoIndexer {
                     doc.addField("gender", rs.optString("gender"));
                     doc.addField("birth_year", rs.optString("birth_year"));
                     doc.addField("death_year", rs.optString("death_year"));
-            
+
                     doc.addField("key_tagger_cs", rs.optString("name"));
                     if (rs.optString("surname").length() > 2) {
                         doc.addField("key_tagger_cs", rs.optString("surname"));
@@ -199,19 +199,30 @@ public class HikoIndexer {
                     if (rs.optString("forename").length() > 2) {
                         doc.addField("key_tagger_cs", rs.optString("forename"));
                     }
-                    String an = rs.optString("alternative_names", null);
-                    if (an != null) {
-                        try {
-                            JSONObject anjs = new JSONObject(an);
-                            for (String key : anjs.keySet()) { 
-                                String ans = anjs.getString(key);
-                                doc.addField("alternative_names", ans);
-                                if (ans.length() > 2) {
-                                  doc.addField("key_tagger_cs", ans);
-                                }
+                    JSONArray anja = rs.optJSONArray("alternative_names");
+                    if (anja != null) {
+                        for (int k = 0; k < anja.length(); k++) {
+                            String ans = anja.getString(k);
+                            doc.addField("alternative_names", ans);
+                            if (ans.length() > 2) {
+                                doc.addField("key_tagger_cs", ans);
                             }
-                        } catch (JSONException jsonex) {
-                            LOGGER.log(Level.WARNING, "Invalid JSON for {0}", id);
+                        }
+                    } else { 
+                        String an = rs.optString("alternative_names", null);
+                        if (an != null) {
+                            try {
+                                JSONObject anjs = new JSONObject(an);
+                                for (String key : anjs.keySet()) {
+                                    String ans = anjs.getString(key);
+                                    doc.addField("alternative_names", ans);
+                                    if (ans.length() > 2) {
+                                        doc.addField("key_tagger_cs", ans); 
+                                    }
+                                }
+                            } catch (JSONException jsonex) {
+                                LOGGER.log(Level.WARNING, "Invalid JSON for {0}", id);
+                            }
                         }
                     }
 

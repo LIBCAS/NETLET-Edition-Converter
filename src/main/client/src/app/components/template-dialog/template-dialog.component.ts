@@ -232,9 +232,11 @@ export class TemplateDialogComponent {
   }
 
   deleteTemplate() {
-    const idx = this.state.fileConfig.templates.findIndex(t => t.name === this.selectedTemplate.name);
-    this.state.fileConfig.templates.splice(idx, 1);
-    this.selectedTemplate = this.state.fileConfig.templates[0];
+    if (confirm('Opravdu chcete smazat šablonu ' + this.selectedTemplate.name + '?')) {
+      const idx = this.state.fileConfig.templates.findIndex(t => t.name === this.selectedTemplate.name);
+      this.state.fileConfig.templates.splice(idx, 1);
+      this.selectedTemplate = this.state.fileConfig.templates[0];
+    }
   }
 
   getLocations(e: string, type: string) {
