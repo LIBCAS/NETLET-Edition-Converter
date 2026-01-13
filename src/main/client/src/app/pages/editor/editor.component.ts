@@ -182,8 +182,19 @@ export class EditorComponent {
     }
     this.letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
 
-    this.letter.hiko.authors = [...t.authors]; 
-    this.letter.hiko.recipients = [...t.recipients];
+    if (t.authors) {
+      this.letter.hiko.authors = [...t.authors];
+    }
+    if (this.letter.hiko.authors?.length === 0) {
+      this.letter.hiko.authors = [{ id: -1, marked: '', name: '', tenant: this.state.user.tenant }];
+    }
+
+    if (t.recipients) {
+      this.letter.hiko.recipients = [...t.recipients];
+    }
+    if (this.letter.hiko.recipients?.length === 0) {
+      this.letter.hiko.recipients = [{ id: -1, marked: '', name: '', tenant: this.state.user.tenant }];
+    }
 
     this.letter.origins.push({ name: t.origin_db?.name, marked: t.origin_db?.marked, id: t.origin_db?.id });
     this.letter.origin = t.origin_marked;
@@ -191,9 +202,11 @@ export class EditorComponent {
     this.letter.destinations.push({ name: t.destination_db?.name, marked: t.destination_db?.marked, id: t.destination_db?.id });
     this.letter.destination = t.destination_marked;
 
-    t.keywords.forEach(k => {
-      this.letter.user_keywords.push(k);
-    });
+    if (t.keywords) {
+      t.keywords.forEach(k => {
+        this.letter.user_keywords.push(k);
+      });
+    }
 
     if (t.mentioned) {
       t.mentioned.forEach(m => {
@@ -224,7 +237,10 @@ export class EditorComponent {
     // copy.signature = t.signature;
     // copy.location_note = t.location_note;
 
-    this.letter.hiko.copies = [...t.copies];
+    if (t.copies) {
+      this.letter.hiko.copies = [...t.copies];
+    }
+    
     this.letter.hiko.content = '';
     this.view = 'fields';
   }
@@ -897,19 +913,19 @@ export class EditorComponent {
     }
 
 
-      this.letter.hiko.local_keywords = [
-        ...this.letter.detected_keywords.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }),
-        ...this.letter.user_keywords.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id })
-      ];
-      this.letter.hiko.global_keywords = [
-        ...this.letter.detected_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id  }),
-        ...this.letter.user_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id  })
-        ];
+    this.letter.hiko.local_keywords = [
+      ...this.letter.detected_keywords.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }),
+      ...this.letter.user_keywords.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id })
+    ];
+    this.letter.hiko.global_keywords = [
+      ...this.letter.detected_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id }),
+      ...this.letter.user_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id })
+    ];
 
-      this.letter.hiko.mentioned = [
-        ...this.letter.detected_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }),
-        ...this.letter.user_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id })
-      ];
+    this.letter.hiko.mentioned = [
+      ...this.letter.detected_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }),
+      ...this.letter.user_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id })
+    ];
 
     // console.log(this.letter.hiko);
     // return;
