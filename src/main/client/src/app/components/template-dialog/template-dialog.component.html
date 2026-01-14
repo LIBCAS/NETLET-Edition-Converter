@@ -392,10 +392,10 @@
 </div>
 
 <div mat-dialog-actions>
-  <button mat-flat-button [disabled]="!selectedTemplate" color="primary" (click)="save()">{{ 'Save' | translate
+  <button mat-flat-button [disabled]="!selectedTemplate" color="primary" (click)="save()">{{ 'action.save' | translate
     }}</button>
   <button mat-flat-button color="primary" (click)="addTemplate()">{{ 'action.add_template' | translate }}</button>
   <button mat-flat-button color="primary" [disabled]="!selectedTemplate || state.fileConfig.templates.length === 1"
-    (click)="deleteTemplate()">{{ 'Delete' | translate }}</button>
-  <button mat-button color="primary" [mat-dialog-close]="null">{{ 'Close' | translate }}</button>
+    (click)="deleteTemplate()">{{ 'action.remove' | translate }}</button>
+  <button mat-button color="primary" [mat-dialog-close]="null">{{ 'action.close' | translate }}</button>
 </div>

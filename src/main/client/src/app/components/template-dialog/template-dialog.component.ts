@@ -20,6 +20,7 @@ import { AppService } from 'src/app/app.service';
 import { FileTemplate, FileConfig } from 'src/app/shared/file-config';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { CopyHIKO, Identity, Keyword } from 'src/app/shared/letter';
+import { UIService } from 'src/app/ui.service';
 
 @Component({
   selector: 'app-template-dialog',
@@ -67,7 +68,8 @@ export class TemplateDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: { template: FileTemplate },
     public config: AppConfiguration,
     public state: AppState,
-    private service: AppService
+    private service: AppService,
+    private ui: UIService
   ) { }
 
   ngOnInit() {
@@ -218,7 +220,9 @@ export class TemplateDialogComponent {
 
   save() {
     this.setLists();
-    this.service.saveFile(this.state.selectedFile.filename, this.state.fileConfig).subscribe(res => { });
+    this.service.saveFile(this.state.selectedFile.filename, this.state.fileConfig).subscribe(res => {
+      this.ui.showInfoDialog('Šablona byla uložena')
+     });
   }
 
   addTemplate() {
