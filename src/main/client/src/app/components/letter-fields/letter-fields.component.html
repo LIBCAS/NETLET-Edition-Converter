@@ -91,7 +91,7 @@
             (optionSelected)="setAuthorDb($event, idx)">
             @for(a of authors_db(); track a.id; let idx = $index){
             <mat-option [value]="a">
-              {{a.name}} ({{ a.birth_year }} - {{ a.death_year }}) ({{ a.tenant === 'global' ? 'global' : 'local' }})
+              {{a.name}} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }}) }({{ a.tenant === 'global' ? 'global' : 'local' }})
             </mat-option>
             }
           </mat-autocomplete>
@@ -134,7 +134,7 @@
             (optionSelected)="setRecipientDb($event, idx)">
             @for(a of recipients_db(); track a.id; let idx = $index){
             <mat-option [value]="a">
-              {{a.name}} ({{ a.birth_year }} - {{ a.death_year }}) ({{ a.tenant === 'global' ? 'global' : 'local' }})
+              {{a.name}} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }})} ({{ a.tenant === 'global' ? 'global' : 'local' }})
             </mat-option>
             }
           </mat-autocomplete>
@@ -476,8 +476,8 @@
     <div>{{ 'fieldset.detected_mentioned' | translate }}</div>
     <div class="app-mb-4">
       @for(a of _letter.detected_mentioned; track a.id; let idx = $index){
-      <mat-checkbox [id]="a.id+''" [name]="a.id+''" type="checkbox" [(ngModel)]="a.selected">{{
-        a.name }} ({{ a.birth_year }} - {{ a.death_year }}) ({{ a.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
+      <mat-checkbox  [id]="a.id+''" [name]="a.id+''" type="checkbox" [(ngModel)]="a.selected">{{
+        a.name }} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }})} ({{ a.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
       }
     </div>
     
@@ -485,7 +485,7 @@
     <mat-chip-set>
       @for (m of mentioned(); track keyword) {
       <mat-chip (removed)="removeMentioned(m.id)">
-        {{m.name}} ({{ m.birth_year }} - {{ m.death_year }}) ({{ m.tenant === 'global' ? 'global' : 'local' }})
+        {{m.name}} @if(m.birth_year){({{ m.birth_year }} - {{ m.death_year }})} ({{ m.tenant === 'global' ? 'global' : 'local' }})
         <button matChipRemove [attr.aria-label]="'remove mentioned'">
           <mat-icon>cancel</mat-icon>
         </button>
@@ -500,7 +500,7 @@
       <mat-autocomplete #autoIdentities="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addMentioned($event)">
         @for(a of mentioned_db(); track idx; let idx = $index){
         <mat-option [value]="a">
-          {{a.name}} ({{ a.birth_year }} - {{ a.death_year }}) ({{ a.tenant === 'global' ? 'global' : 'local' }})
+          {{a.name}} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }})} ({{ a.tenant === 'global' ? 'global' : 'local' }})
         </mat-option>
         }
       </mat-autocomplete>

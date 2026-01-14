@@ -196,9 +196,9 @@ public class HikoIndexer {
                     if (rs.optString("surname").length() > 2) {
                         doc.addField("key_tagger_cs", rs.optString("surname"));
                     }
-                    if (rs.optString("forename").length() > 2) {
-                        doc.addField("key_tagger_cs", rs.optString("forename"));
-                    }
+//                    if (rs.optString("forename").length() > 2) {
+//                        doc.addField("key_tagger_cs", rs.optString("forename"));
+//                    }
                     JSONArray anja = rs.optJSONArray("alternative_names");
                     if (anja != null) {
                         for (int k = 0; k < anja.length(); k++) {

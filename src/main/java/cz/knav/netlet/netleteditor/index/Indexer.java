@@ -349,7 +349,7 @@ public class Indexer {
             Http2SolrClient solr = (Http2SolrClient) getClient();
             SolrQuery query = new SolrQuery("*")
                     .addFilterQuery("id:\"" + id + "\"")
-                    .setFields("*,hiko:[json],ai:[json],selection:[json],detected_keywords:[json],user_keywords:[json]")
+                    .setFields("*,hiko:[json],ai:[json],selection:[json],detected_keywords:[json],user_keywords:[json],detected_mentioned:[json],user_mentioned:[json]")
                     .setRows(1);
             query.set("wt", "json");
             String jsonResponse;
@@ -419,6 +419,12 @@ public class Indexer {
             }
             if (data.has("user_keywords")) {
                 idoc.setField("user_keywords", data.optJSONArray("user_keywords").toString());
+            }
+            if (data.has("detected_mentioned")) {
+                idoc.setField("detected_mentioned", data.optJSONArray("detected_mentioned").toString());
+            }
+            if (data.has("user_mentioned")) {
+                idoc.setField("user_mentioned", data.optJSONArray("user_mentioned").toString());
             }
             
             idoc.setField("startPage", data.optInt("startPage", 0));

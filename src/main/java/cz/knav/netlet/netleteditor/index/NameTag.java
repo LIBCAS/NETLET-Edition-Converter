@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -58,7 +59,7 @@ public class NameTag {
             for (String line : lines) {
                 String[] parts = line.split("\t");
                 JSONObject l = new JSONObject()
-                        .put("pos", parts[0].split(","))
+                        .put("pos", new JSONArray(parts[0].split(",")))
                         .put("type", parts[1])
                         .put("text", parts[2]);
 

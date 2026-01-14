@@ -107,15 +107,25 @@ export class LetterFieldsComponent {
       this._letter.destinations = [];
     }
 
+    if (!this._letter.detected_keywords) {
+      this._letter.detected_keywords = [];
+    }
+
     if (this._letter.user_keywords) {
       this.keywords.set([...this._letter.user_keywords]);
     } else {
+      this._letter.user_keywords = [];
       this.keywords.set([]);
+    }
+
+    if (!this._letter.detected_mentioned) {
+      this._letter.detected_mentioned = [];
     }
 
     if (this._letter.user_mentioned) {
       this.mentioned.set([...this._letter.user_mentioned]);
     } else {
+      this._letter.user_mentioned = [];
       this.mentioned.set([]);
     }
 
@@ -195,6 +205,9 @@ export class LetterFieldsComponent {
   findIdentities() {
     this.state.loading.set(true);
     this.service.findIdentities(this._letter.hiko.content, this.state.user.tenant).subscribe((resp: any) => {
+      // const nametags = resp.nametag.tags;
+      // const solrTags = resp.tags.filter((tag: any) => {return tag.matchText});
+
       this._letter.detected_mentioned = resp.response.docs;
       this.state.loading.set(false);
     });
@@ -281,7 +294,8 @@ export class LetterFieldsComponent {
 
   displayFn(a: any) {
     if (a?.name) {
-      return `${a.name} (${ a.birth_year } - ${ a.death_year }) (${ a.tenant === 'global' ? 'global' : 'local' })`
+      const b = a.birth_year ? '(' + a.birth_year + ' - ' + a.death_year + ')' : ''
+      return `${a.name} ${ b } (${ a.tenant === 'global' ? 'global' : 'local' })`
     } else {
       return ''
     }
@@ -744,6 +758,8 @@ export class LetterFieldsComponent {
     });
     this._letter.user_keywords = [...this.keywords()]
   }
+
+  
 
   checkMentioned(e: any, extended: boolean) {
     const val = e.target ? e.target.value : e;

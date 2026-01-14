@@ -71,6 +71,8 @@ Managed external dictionaries
     <field name="selection" type="string_big" indexed="false" stored="true"/>
     <field name="detected_keywords" type="string_big" indexed="false" stored="true"/>
     <field name="user_keywords" type="string_big" indexed="false" stored="true"/>
+    <field name="detected_mentioned" type="string_big" indexed="false" stored="true"/>
+    <field name="user_mentioned" type="string_big" indexed="false" stored="true"/>
     <field name="entities" type="string_big" indexed="false" stored="true"/>
     <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW" />
     <field name="author" type="string" indexed="true" stored="true" />

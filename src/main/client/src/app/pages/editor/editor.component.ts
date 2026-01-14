@@ -922,10 +922,13 @@ export class EditorComponent {
       ...this.letter.user_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id })
     ];
 
+    console.log(this.letter.detected_mentioned)
+    console.log(this.letter.detected_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }))
     this.letter.hiko.mentioned = [
       ...this.letter.detected_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }),
       ...this.letter.user_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id })
     ];
+    console.log(this.letter.hiko.mentioned)
 
     // console.log(this.letter.hiko);
     // return;

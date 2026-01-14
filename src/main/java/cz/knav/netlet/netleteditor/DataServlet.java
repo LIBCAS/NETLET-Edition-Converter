@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
 
@@ -468,11 +469,35 @@ public class DataServlet extends HttpServlet {
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
-                        json = SolrTaggerAnalyzer.findIdentities(text, "key_tagger_cs", request.getParameter("tenant"));
+                        JSONArray nametags = NameTag.recognize(text).getJSONArray("tags");
+                        String filteredText = "";
+                        List<String> matchedPos = new ArrayList(); 
+                        for (int i = 0; i<nametags.length(); i++) {
+                            JSONObject tag = nametags.getJSONObject(i);
+                            JSONArray pos = tag.optJSONArray("pos");
+                            if (pos != null) {
+                                if (tag.getString("type").toLowerCase().startsWith("p")) {
+                                    boolean exists = false;
+                                    for (int j = 0; j < pos.length(); j++) {
+                                        if (matchedPos.contains(pos.getString(j))) {
+                                            exists = true;
+                                        } else {
+                                            matchedPos.add(pos.getString(j) + "");
+                                        }
+                                    }
+                                    if (!exists) { 
+                                        filteredText += tag.getString("text") + " \n";
+                                    }
+                                }
+                            } 
+                        }
+                        // json = SolrTaggerAnalyzer.findIdentities(text, "key_tagger_cs", request.getParameter("tenant"));
+                        json = SolrTaggerAnalyzer.findIdentities(filteredText, "key_tagger_cs", request.getParameter("tenant"));
+                        json.put("nametags", nametags);
                     }
 
                 } catch (Exception ex) {
-                    LOGGER.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, "error processing identities", ex);
                     json.put("error", ex.toString());
                 }
                 return json;
@@ -768,7 +793,7 @@ public class DataServlet extends HttpServlet {
                     HikoIndexer hi = new HikoIndexer();
                     json.put("identities", hi.indexIdentities(req.getParameter("tenant")));
                 } catch (Exception ex) {
-                    LOGGER.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, "Error indexing identities", ex);
                     json.put("error", ex.toString());
                 }
                 return json;
