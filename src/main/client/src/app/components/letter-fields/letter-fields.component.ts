@@ -189,7 +189,8 @@ export class LetterFieldsComponent {
       this.nametag = resp.nametag.result;
       this.nametags = resp.nametag.tags;
       // console.log(this.nametags)
-      this._letter.detected_keywords = resp.response.docs;
+      this._letter.detected_keywords = resp.keywords;
+      this._letter.detected_mentioned = resp.mentioned;
       this._letter.nametags = this.nametags;
     });
   }

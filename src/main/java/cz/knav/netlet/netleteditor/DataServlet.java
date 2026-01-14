@@ -432,8 +432,16 @@ public class DataServlet extends HttpServlet {
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
-                        json = SolrTaggerAnalyzer.getTagsJSON(text, "key_tagger_cs", request.getParameter("tenant"));
-                        json.put("nametag", NameTag.recognize(text));
+                        JSONObject nametag = NameTag.recognize(text);
+                        json.put("nametag", nametag);
+                        // json = SolrTaggerAnalyzer.getTagsJSON(text, "key_tagger_cs", request.getParameter("tenant"));
+                        json.put("keywords", 
+                                SolrTaggerAnalyzer.findKeywords(text, "key_tagger_cs", request.getParameter("tenant"))
+                                        .getJSONObject("response").getJSONArray("docs"));
+                        String filteredText = NameTag.persons(nametag);
+                        json.put("mentioned", 
+                                SolrTaggerAnalyzer.findIdentities(filteredText, "key_tagger_cs", request.getParameter("tenant"))
+                                        .getJSONObject("response").getJSONArray("docs"));
                     }
 
                 } catch (Exception ex) {
@@ -458,7 +466,7 @@ public class DataServlet extends HttpServlet {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
                 }
-                return json;
+                return json; 
             }
         },
         FIND_IDENTITIES {
@@ -469,31 +477,11 @@ public class DataServlet extends HttpServlet {
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
-                        JSONArray nametags = NameTag.recognize(text).getJSONArray("tags");
-                        String filteredText = "";
-                        List<String> matchedPos = new ArrayList(); 
-                        for (int i = 0; i<nametags.length(); i++) {
-                            JSONObject tag = nametags.getJSONObject(i);
-                            JSONArray pos = tag.optJSONArray("pos");
-                            if (pos != null) {
-                                if (tag.getString("type").toLowerCase().startsWith("p")) {
-                                    boolean exists = false;
-                                    for (int j = 0; j < pos.length(); j++) {
-                                        if (matchedPos.contains(pos.getString(j))) {
-                                            exists = true;
-                                        } else {
-                                            matchedPos.add(pos.getString(j) + "");
-                                        }
-                                    }
-                                    if (!exists) { 
-                                        filteredText += tag.getString("text") + " \n";
-                                    }
-                                }
-                            } 
-                        }
-                        // json = SolrTaggerAnalyzer.findIdentities(text, "key_tagger_cs", request.getParameter("tenant"));
+                        JSONObject nametag = NameTag.recognize(text);
+                        String filteredText = NameTag.persons(nametag);
                         json = SolrTaggerAnalyzer.findIdentities(filteredText, "key_tagger_cs", request.getParameter("tenant"));
-                        json.put("nametags", nametags);
+                        // json = SolrTaggerAnalyzer.findIdentities(text, "key_tagger_cs", request.getParameter("tenant"));
+                        //json.put("nametags", nametags);
                     }
 
                 } catch (Exception ex) {

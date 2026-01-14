@@ -74,4 +74,34 @@ public class NameTag {
         return ret;
 
     }
+
+    public static String persons(JSONObject json) {
+        
+        JSONArray nametags = json.getJSONArray("tags"); 
+        
+        String filteredText = "";
+                        List<String> matchedPos = new ArrayList(); 
+                        for (int i = 0; i<nametags.length(); i++) {
+                            JSONObject tag = nametags.getJSONObject(i);
+                            JSONArray pos = tag.optJSONArray("pos");
+                            if (pos != null) {
+                                if (tag.getString("type").toLowerCase().startsWith("p")) {
+                                    boolean exists = false;
+                                    for (int j = 0; j < pos.length(); j++) {
+                                        if (matchedPos.contains(pos.getString(j))) {
+                                            exists = true;
+                                        } else {
+                                            matchedPos.add(pos.getString(j) + "");
+                                        }
+                                    }
+                                    if (!exists) { 
+                                        filteredText += tag.getString("text") + " \n";
+                                    }
+                                }
+                            } 
+                        }
+                        
+        return filteredText;
+
+    }
 }
