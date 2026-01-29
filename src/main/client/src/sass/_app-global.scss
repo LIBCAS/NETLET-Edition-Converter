@@ -260,9 +260,9 @@ fieldset {
   border-left: 2px solid var(--app-hiko-color);
 }
 
-.app-exported-to-hiko::before {
+.app-exported-to-hiko::after {
   
-  background: none;
+  //background: none;
   content: "";
   display: block;
   position: absolute;

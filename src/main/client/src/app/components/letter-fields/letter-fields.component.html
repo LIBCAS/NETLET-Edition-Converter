@@ -170,7 +170,7 @@
       <mat-autocomplete #autoOrigin="matAutocomplete" [displayWith]="displayFn">
         @for(a of origins_db(); track idx; let idx = $index){
         <mat-option [value]="a">
-          {{a.name}} ({{ a.tenant === 'global' ? 'global' : 'local' }})
+          {{ a.display }}
         </mat-option>
         }
       </mat-autocomplete>
@@ -193,8 +193,7 @@
         (keyup)="checkPlaces($event, true, destinations_db)">
       <mat-autocomplete #autodestination="matAutocomplete" [displayWith]="displayFn">
         @for(a of destinations_db(); track idx; let idx = $index){
-        <mat-option [value]="a">
-          {{a.name}}
+        <mat-option [value]="a">{{ a.display }}
         </mat-option>
         }
       </mat-autocomplete>

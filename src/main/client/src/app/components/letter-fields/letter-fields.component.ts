@@ -141,11 +141,11 @@ export class LetterFieldsComponent {
     norecipient = {marked:'', id:-1, name: ''};
     
   
-    origins_db = signal<{ id: number, marked?: string, name?: string, tenant?: string }[]>([]);
-    origin_db: { id: number, marked?: string, name?: string, tenant?: string } = {marked:'', id:-1, name: ''};
+    origins_db = signal<{ id: number, marked?: string, name?: string, tenant?: string, display?: string }[]>([]);
+    origin_db: { id: number, marked?: string, name?: string, tenant?: string, display?: string } = {marked:'', id:-1, name: ''};
     noorigin = {marked:'', id:-1, name: ''};
-    destinations_db = signal<{ id: number, marked?: string, name?: string }[]>([]);
-    destination_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1, name: ''};
+    destinations_db = signal<{ id: number, marked?: string, name?: string, tenant?: string, display?: string }[]>([]);
+    destination_db: { id: number, marked?: string, name?: string, tenant?: string, display?: string } = {marked:'', id:-1, name: ''};
     nodestination = {marked:'', id:-1, name: ''};
 
   // entities: Keyword[] = [];
@@ -289,6 +289,14 @@ export class LetterFieldsComponent {
   checkPlaces(e:any, extended: boolean, list: any) {
     const val = e.target ? e.target.value : e;
     this.service.checkPlaces(val, this.state.user.tenant, extended).subscribe((resp: any) => {
+      const places: { id: number, marked?: string, name?: string, tenant?: string, display?: string }[] = resp.places;
+      places.forEach(place => {
+        place.display = `${place.name} (${ place.tenant === 'global' ? 'global' : 'local' })`;
+        if (!resp.hl[place.tenant + '_' + place.id]?.['name_lower']) {
+          let hit: string[] = resp.hl[place.tenant +'_' +place.id]['alternative_names'].join('')
+          place.display += ' [' + hit + ']';
+        }
+      });
       list.set(resp.places);
     });
   }
@@ -820,5 +828,6 @@ export class LetterFieldsComponent {
     this.language = null;
     this._letter.hiko.languages = this.languages().join(';');
   }
+
 
 }

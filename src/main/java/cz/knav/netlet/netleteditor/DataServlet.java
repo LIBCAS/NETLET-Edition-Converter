@@ -681,9 +681,11 @@ public class DataServlet extends HttpServlet {
                 JSONObject ret = new JSONObject();
                 ret.put("req_origin", request.getParameter("origin"));
                 ret.put("req_destination", request.getParameter("destination"));
-                ret.put("places", Indexer.checkPlaces(request.getParameter("name"),
+                JSONObject places = Indexer.checkPlaces(request.getParameter("name"),
                         request.getParameter("tenant"),
-                        Boolean.parseBoolean(request.getParameter("extended"))).getJSONObject("response").getJSONArray("docs"));
+                        Boolean.parseBoolean(request.getParameter("extended")));
+                ret.put("places", places.getJSONObject("response").getJSONArray("docs"));
+                ret.put("hl", places.getJSONObject("highlighting"));
 
                 return ret;
             }
