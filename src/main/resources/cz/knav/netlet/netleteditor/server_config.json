@@ -21,7 +21,7 @@
     "dbKeywordTables": ["keywords", "professions"],
     "nametagUrl": "http://lindat.mff.cuni.cz/services/nametag/api/",
     "translationUrl": "https://lindat.mff.cuni.cz/services/translation/api/v2/languages/",
-    "gptModels": ["gpt-3.5-turbo", "gpt-4o", "gpt-4.1"],
+    "gptModels": ["gpt-3.5-turbo", "gpt-4o", "gpt-4.1", "gemini"],
     "annotator": {
         "model": "gpt-3.5-turbo",
         "response_format": {
@@ -45,11 +45,15 @@
         }, 
         {
             "role": "system",
-            "content": "Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract_cs: string, abstract_en: string, sender: string, recipient: string, date_as_show_in_text: string, date: Date, location: string, destination: string, incipit: string, explicit: string, sign_off: string, signature: string, summary: text }"
+            "content": "Datum musi byt v ISO format. Salutation is at the letter begining. The JSON format definition is { salutation: string, letter_number: string, letter_title: string, page_number: number, end_page_number: number, abstract_cs: string, abstract_en: string, sender: string, recipient: string, date_as_show_in_text: string, date: Date, location: string, destination: string, incipit: string, explicit: string, sign_off: string, signature: string, summary: text, full_text: text }"
         }, 
         {
             "role": "user",
             "content": ""
+        }, 
+        {
+            "role": "system",
+            "content": "Vratit plny text dopisu ve html formatu jako full_text"
         }
     ],
     "openAIKey": "",
@@ -57,6 +61,83 @@
         "max_tokens": 7000
     },
     "defaultPrompt": "Jsi pomocník, který dostane korespondenci (dopis) ###NAME###. Napis abstrakt v češtině v {words/100} větách.",
+    
+    "gemini": {
+        "api_key": "",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=",
+        "text": [
+            "You are an librarian assistent. You receive some images which are a historical letter. Reply in Czech.",
+            "Oslovení je na začátku dopisu. Incipit a explicit musi byt v originalnim jazyku. Definice incipitu – první věta či větný celek textu dokumentu, bez úvodního pozdravu a oslovení, cca. 10 slov. Definice explicitu – poslední věta či větný celek textu dokumentu, pred rozloučením, bez závěrečného pozdravu a podpisu, cca. 10 slov",
+            "Datum musi byt v ISO format. Salutation is at the letter begining. Format full text in html including bold, italics and other text formatings as full_text."
+        ],
+        
+        "config": {
+            "responseMimeType": "application/json",
+            "responseSchema": {
+                "type": "object",
+                "properties": {
+                    "salutation": {
+                        "type": "string"
+                    },
+                    "letter_number": {
+                        "type": "string"
+                    },
+                    "letter_title": {
+                        "type": "string"
+                    },
+                    "page_number": {
+                        "type": "integer"
+                    },
+                    "end_page_number": {
+                        "type": "integer"
+                    },
+                    "abstract_cs": {
+                        "type": "string"
+                    },
+                    "abstract_en": {
+                        "type": "string"
+                    },
+                    "sender": {
+                        "type": "string"
+                    },
+                    "recipient": {
+                        "type": "string"
+                    },
+                    "date_as_show_in_text": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "destination": {
+                        "type": "string"
+                    },
+                    "incipit": {
+                        "type": "string"
+                    },
+                    "explicit": {
+                        "type": "string"
+                    },
+                    "sign_off": {
+                        "type": "string"
+                    },
+                    "signature": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "full_text": {
+                        "type": "string"
+                    }
+                },
+                "required": ["abstract_cs"]
+            }
+        }
+    },
     "file_config": {
         "name": "",
         "columns": 1,

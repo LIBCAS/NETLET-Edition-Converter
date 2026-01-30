@@ -385,8 +385,6 @@ export class LetterFieldsComponent {
 
     // v db
 
-
-
     this._letter.sign_off = a.analysis.sign_off;
     this._letter.signature = a.analysis.signature;
 
@@ -400,7 +398,7 @@ export class LetterFieldsComponent {
 
     this._letter.hiko.incipit = a.analysis.incipit;
     this._letter.hiko.explicit = a.analysis.explicit;
-    // this._letterAnalyzed.full_text = this.data.letter.full_text;
+    this._letter.hiko.content = a.analysis.full_text;
 
   }
 
@@ -437,9 +435,12 @@ export class LetterFieldsComponent {
         this.service.showSnackBarError(resp.error, 'action.close');
         // this.letter.abstract_cs = orig;
       } else {
-        this.setAnalysis(resp);
-        // this.checkAuthors(this._letter.author, false, this.authors_db);
-        // this.checkAuthors(this._letter.recipient, false, this.recipients_db);
+        if (gptModel.startsWith('gemini')) {
+          this.setAnalysisGemini(resp);
+        } else {
+          this.setAnalysisChatGPT(resp);
+        }
+        
       }
     });
   }
@@ -452,7 +453,7 @@ export class LetterFieldsComponent {
         this.service.showSnackBarError(resp.error, 'action.close');
         // this.letter.abstract_cs = orig;
       } else {
-        this.setAnalysis(resp);
+        this.setAnalysisChatGPT(resp);
         this.checkAuthors(this._letter.hiko.authors[0].marked, false, this.authors_db);
         this.checkAuthors(this._letter.hiko.recipients[0].marked, false, this.recipients_db);
         //this.checkPlaces(false);
@@ -460,11 +461,24 @@ export class LetterFieldsComponent {
     });
   }
 
-  setAnalysis(resp: any) {
-        
+  setAnalysisChatGPT(resp: any) {
+    
     const analysis = JSON.parse(resp.choices[0].message.content);
     
         console.log(analysis);
+    if (!this._letter.ai) {
+      this._letter.ai = [];
+    }
+    const a = {date: new Date(), analysis: analysis };
+    this._letter.ai.unshift(a);
+    this.showAnalysis(a);
+  }
+
+  setAnalysisGemini(resp: any) {
+    
+    const analysis = JSON.parse(resp.candidates[0].content.parts[0].text);
+    
+    console.log(analysis);
     if (!this._letter.ai) {
       this._letter.ai = [];
     }

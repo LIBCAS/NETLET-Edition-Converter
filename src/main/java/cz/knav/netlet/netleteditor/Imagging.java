@@ -62,4 +62,11 @@ public class Imagging {
         return "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(baos.toByteArray());
     }
 
+    public static String selectionToBase64Simple(String filename, JSONObject json) throws IOException {
+        BufferedImage bi = processOneSelection(filename, json);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bi, "png", baos);
+        return Base64.getEncoder().encodeToString(baos.toByteArray());
+    }
+
 }
