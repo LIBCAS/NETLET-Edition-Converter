@@ -1,5 +1,5 @@
 // --- GLOBAL ---
-
+@use 'app-mixins' as *;
 a {
   cursor: pointer;
   color: var(--app-color-primary);
@@ -17,7 +17,7 @@ a {
 }
 
 hr {
-  @extend .app-mt-4, .app-mb-4;
+  @extend .app-mt-4, .app-mb-4  !optional;
   border-top: 1px solid var(--mat-divider-color);
   border-bottom: 0;
 }
@@ -103,7 +103,7 @@ fieldset {
 
 // common
 .app-pipe {
-  @extend .app-ml-2, .app-mr-2;
+  @extend .app-ml-2, .app-mr-2 !optional;
   border-left: 1px solid var(--app-gray-4);
 
   &:not(.app-in-element) {
@@ -126,7 +126,7 @@ fieldset {
 }
 
 .app-suffix {
-  @extend .app-p-0;
+  @extend .app-p-0 !optional;
   cursor: pointer;
   margin-left: 2px;
 
@@ -170,7 +170,7 @@ fieldset {
       color: var(--app-color-lightnes-rgb);
 
       &.app-separator {
-        @extend .app-ml-1, .app-mr-1;
+        @extend .app-ml-1, .app-mr-1  !optional;
         @include setIcon(18, rgba(var(--app-color-lightnes-rgb), .5));
       }
     }
@@ -188,10 +188,10 @@ fieldset {
   color: var(--app-gray-9);
 
   .mat-mdc-icon-button {
-    @extend .app-clean-radius;
+    @extend .app-clean-radius !optional;
 
     .mat-mdc-button-persistent-ripple {
-      @extend .app-clean-radius;
+      @extend .app-clean-radius !optional;
     }
   }
 
@@ -214,7 +214,7 @@ fieldset {
   }
 
   .app-label {
-    @extend .app-ml-2;
+    @extend .app-ml-2  !optional;
     color: var(--mat-paginator-container-text-color);
     font-family: var(--mat-paginator-container-text-font);
     line-height: var(--mat-paginator-container-text-line-height);
@@ -224,7 +224,7 @@ fieldset {
   }
 
   input {
-    @extend .app-pl-4, .app-pr-4, .app-ml-2;
+    @extend .app-pl-4, .app-pr-4, .app-ml-2 !optional;
     border: 1px solid;
     border-color: var(--mat-form-field-outlined-outline-color);
     height: var(--app-paginator-form-field-height);

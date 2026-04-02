@@ -190,7 +190,7 @@
                             <outputDirectory>${project.basedir}/src/main/webapp</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/client/dist/client</directory>
+                                    <directory>src/main/client/dist/client/browser</directory>
                                     <includes>
                                         <include>*/**</include>
                                     </includes>

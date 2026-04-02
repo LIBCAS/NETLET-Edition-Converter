@@ -203,3 +203,23 @@ $tertiary-palette: map.merge(map.get($_palettes, tertiary), $_rest);
     on-surface-variant: _high-contrast-value(#000000, #ffffff, $theme-type),
   ))
  }
+
+ html {
+  // Must specify color-scheme for theme mixin to automatically work
+  color-scheme: light dark;
+
+  // Create one theme that works automatically for light and dark theme
+  @include mat.theme((
+    color: (
+      primary: $primary-palette,
+      tertiary: $tertiary-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+
+  // Use high contrast values when users prefer contrast
+  @media (prefers-contrast: more) {
+    @include high-contrast-overrides(color-scheme);
+  }
+}

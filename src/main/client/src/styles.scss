@@ -2,11 +2,11 @@
 @use '@angular/material' as mat;
 
 // @import 'sass/app-theme';
-@import 'sass/theme-colors';
-@import 'sass/app-variables';
-@import "sass/app-mixins";
-@import "sass/app-gaps";
-@import "sass/app-global";
-@import "sass/app-mat-override";
-@import 'sass/app-layout';
-@import 'sass/app-flex-layout';
+@use 'sass/theme-colors';
+@use 'sass/app-variables';
+@use "sass/app-mixins";
+@use "sass/app-gaps";
+@use "sass/app-global";
+@use "sass/app-mat-override";
+@use 'sass/app-layout';
+@use 'sass/app-flex-layout';

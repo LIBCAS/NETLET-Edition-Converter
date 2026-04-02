@@ -1,10 +1,18 @@
 // --- MATERIAL OVERRIDE ---
+@use 'app-mixins' as *;
+@use '@angular/material' as mat;
 
 // :root {
 //   @include mat.progress-spinner-overrides((
 //     // active-indicator-color: orange,
 //   ));
 // }
+
+
+  // toolbar
+  @include mat.toolbar-overrides((
+    container-background-color: var(--app-color-primary)
+  ));
 
 // paginator
 .mat-mdc-paginator {
