@@ -16,9 +16,9 @@
 
   .mat-mdc-icon-button {
     &.mat-mdc-button-base {
-      --mdc-icon-button-state-layer-size: 36px;
-      width: var(--mdc-icon-button-state-layer-size);
-      height: var(--mdc-icon-button-state-layer-size);
+      --mat-icon-button-state-layer-size: 36px;
+      width: var(--mat-icon-button-state-layer-size);
+      height: var(--mat-icon-button-state-layer-size);
       padding: 6px;
     }
   }
@@ -112,7 +112,7 @@
   }
 
   .mat-mdc-icon-button.mat-mdc-button-base {
-    --mdc-icon-button-state-layer-size: 36px;
+    --mat-icon-button-state-layer-size: 36px;
     padding: 0;
   }
 }

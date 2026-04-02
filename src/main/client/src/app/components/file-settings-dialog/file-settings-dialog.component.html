@@ -1,37 +1,35 @@
 <h1 mat-dialog-title>{{ 'file_settings' | translate }}</h1>
 <div mat-dialog-content class="app-letter">
-  <div *ngIf="fileConfig">
-    <div class="app-mb-4">
-      <mat-form-field class="app-w-100" appearance="outline">
-        <mat-label>Name</mat-label>
-        <input matInput type="text" name="name" [(ngModel)]="fileConfig.name">
-      </mat-form-field>
-    </div>
-
-    <div class="app-fxLayout app-row app-center-v app-mb-4">
-      <!-- <mat-form-field class="app-fxFlex" appearance="outline">
+  @if (fileConfig) {
+    <div>
+      <div class="app-mb-4">
+        <mat-form-field class="app-w-100" appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput type="text" name="name" [(ngModel)]="fileConfig.name">
+        </mat-form-field>
+      </div>
+      <div class="app-fxLayout app-row app-center-v app-mb-4">
+        <!-- <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>{{ 'tenant' | translate }}</mat-label>
         <mat-select [(ngModel)]="fileConfig.tenant">
-            @for(t of state.tenants; track idx; let idx = $index){
-          <mat-option [value]="t">{{ t }}</mat-option>
-            }
-      </mat-select>
+          @for(t of state.tenants; track idx; let idx = $index){
+            <mat-option [value]="t">{{ t }}</mat-option>
+          }
+        </mat-select>
       </mat-form-field> -->
       <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
         <mat-label>{{ 'Columns' | translate }}</mat-label>
         <input matInput type="number" name="columns" [(ngModel)]="fileConfig.columns">
       </mat-form-field>
-       
     </div>
-
     <div class="app-fxLayout app-row app-center-v app-mb-4">
       <mat-form-field class="app-fxFlex" appearance="outline">
         <mat-label>chatGPT model</mat-label>
         <mat-select [(ngModel)]="fileConfig.gptModel">
-            @for(t of state.gptModels; track idx; let idx = $index){
-          <mat-option [value]="t">{{ t }}</mat-option>
-            }
-      </mat-select>
+          @for(t of state.gptModels; track idx; let idx = $index){
+            <mat-option [value]="t">{{ t }}</mat-option>
+          }
+        </mat-select>
       </mat-form-field>
       <div class="app-fxFlex app-ml-3">
         <button mat-flat-button (click)="editTemplates()" [matTooltip]="'action.edit_templates' | translate">
@@ -39,14 +37,14 @@
         </button>
       </div>
     </div>
-
     <div class="app-mb-4">
-    <mat-form-field class="app-w-100">
-      <mat-label>{{ 'field.prompt' | translate}}</mat-label>
-      <textarea rows="3" matInput [(ngModel)]="fileConfig.prompt" name="prompt"></textarea>
-    </mat-form-field>
+      <mat-form-field class="app-w-100">
+        <mat-label>{{ 'field.prompt' | translate}}</mat-label>
+        <textarea rows="3" matInput [(ngModel)]="fileConfig.prompt" name="prompt"></textarea>
+      </mat-form-field>
     </div>
   </div>
+}
 </div>
 
 <div mat-dialog-actions>

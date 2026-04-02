@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,10 +20,7 @@ import { AppService } from 'src/app/app.service';
   templateUrl: './new-file-dialog.component.html',
   styleUrls: ['./new-file-dialog.component.scss'],
   standalone: true,
-  imports: [FileUploadModule,
-    CommonModule, TranslateModule, FormsModule, MatAutocompleteModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule,
-    MatDividerModule, MatProgressBarModule, MatDialogModule, MatCheckbox]
+  imports: [FileUploadModule, TranslateModule, FormsModule, MatAutocompleteModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatDividerModule, MatProgressBarModule, MatDialogModule, MatCheckbox]
 })
 export class NewFileDialogComponent {
 

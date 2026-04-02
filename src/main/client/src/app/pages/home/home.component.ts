@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AppService } from 'src/app/app.service';
 import { RouterLink } from '@angular/router';
-import { CommonModule, NgFor } from '@angular/common';
+
 import { FileUploadModule, FileUploader } from 'ng2-file-upload';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,10 +25,7 @@ import { MatTableModule } from '@angular/material/table';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   standalone: true,
-  imports: [RouterLink, FileUploadModule, MatTooltipModule,
-    CommonModule, TranslateModule, FormsModule, MatIconModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressSpinnerModule,
-    MatDividerModule, MatProgressBarModule, MatDialogModule, MatCardModule, MatTableModule]
+  imports: [RouterLink, FileUploadModule, MatTooltipModule, TranslateModule, FormsModule, MatIconModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressSpinnerModule, MatDividerModule, MatProgressBarModule, MatDialogModule, MatCardModule, MatTableModule]
 })
 export class HomeComponent {
   displayedColumns: string[] = ['filename', 'pages', 'letters', 'action'];

@@ -1,138 +1,148 @@
 @if(state.selectedFile) {
-<div class="app-fxLayout app-column app-fill">
-  <div class="app-topbar app-fxLayout app-row app-center-v app-pl-4 app-pr-4">
-    <div class="app-breadcrumbs app-fxFlex app-fxLayout app-row app-center-v">
-      <mat-icon class="app-mr-2" color="primary">home</mat-icon>
-      <a routerLink="/">Home</a>
-      <mat-icon class="app-separator">navigate_next</mat-icon>
-      {{ state.selectedFile.config?.name ? state.selectedFile.config.name : state.selectedFile.filename }}
+  <div class="app-fxLayout app-column app-fill">
+    <div class="app-topbar app-fxLayout app-row app-center-v app-pl-4 app-pr-4">
+      <div class="app-breadcrumbs app-fxFlex app-fxLayout app-row app-center-v">
+        <mat-icon class="app-mr-2" color="primary">home</mat-icon>
+        <a routerLink="/">Home</a>
+        <mat-icon class="app-separator">navigate_next</mat-icon>
+        {{ state.selectedFile.config?.name ? state.selectedFile.config.name : state.selectedFile.filename }}
+      </div>
+
+      <input #copyText type="text" id="copyText" style="visibility: hidden;" />
+      <button mat-icon-button (click)="openSettings()"><mat-icon>settings</mat-icon></button>
     </div>
 
-    <input #copyText type="text" id="copyText" style="visibility: hidden;" />
-    <button mat-icon-button (click)="openSettings()"><mat-icon>settings</mat-icon></button>
-  </div>
-
-  <as-split direction="horizontal" unit="percent" #splitArea (dragEnd)="splitChanged($event)">
-    <as-split-area [size]="40">
-      <app-viewer *ngIf="inited && state.selectedFile" [letter]="letter" [file]="state.selectedFile.filename"
-        [selectedAlto]="state.selectedAlto" [width]="viewerWidth" (selectionEvent)="setSelectedArea($event)"
-        (onSetField)="setField($event)" (onCopyToClipboard)="copyToClipBoard($event)"></app-viewer>
-    </as-split-area>
-    <as-split-area [size]="60">
-      <div class="app-fxLayout app-column app-fill" *ngIf="state.fileConfig">
-        <div class="app-controlbar app-fxLayout app-row app-center-v">
-          <div class="app-fxFlex">
-            <button mat-icon-button (click)="changeView('fields')" [class.app-active]="view == 'fields'"
-              [matTooltip]="'Fields' | translate"><mat-icon color="primary">text_fields</mat-icon></button>
-            <button mat-icon-button (click)="changeView('letters')" [class.app-active]="view == 'letters'"
-              [matTooltip]="'Letters' | translate"><mat-icon color="primary">mark_as_unread</mat-icon></button>
-            <!-- <button mat-icon-button (click)="changeView('search')" [class.app-active]="view == 'search'" [matTooltip]="'Search' | translate"><mat-icon color="primary">search</mat-icon></button> -->
-          </div>
-          <div>
-            <button mat-icon-button (click)="log()"
-              [matTooltip]="'action.log' | translate"><mat-icon>log</mat-icon></button>
-            <button mat-icon-button (click)="getLetters()"
-              [matTooltip]="'action.refresh' | translate"><mat-icon>refresh</mat-icon></button>
-            <ng-container *ngIf="state.fileConfig.templates.length === 1">
-              <button mat-icon-button (click)="newLetter(state.fileConfig.templates[0])"
-                [matTooltip]="'action.new_letter' | translate"><mat-icon>add_circle</mat-icon></button>
-            </ng-container>
-            <ng-container *ngIf="state.fileConfig.templates.length > 1">
-              <button mat-icon-button [matMenuTriggerFor]="menu"
-                [matTooltip]="'action.new_letter' | translate"><mat-icon>add_circle</mat-icon></button>
-              <mat-menu #menu="matMenu">
-                @for(t of state.fileConfig.templates; track $index){
-                <button mat-menu-item (click)="newLetter(t)">{{ t.name }}</button>
-                }
-              </mat-menu>
-            </ng-container>
-            <button [disabled]="!letter" mat-icon-button (click)="saveLetter()"
-              [matTooltip]="'action.save' | translate"><mat-icon>save</mat-icon></button>
-            <button mat-icon-button [disabled]="selectedResult === 0" (click)="prevLetter()"
-              [matTooltip]="'action.previous_letter' | translate"><mat-icon>navigate_before</mat-icon></button>
-            <button mat-icon-button [disabled]="selectedResult === letters.length - 1" (click)="nextLetter()"
-              [matTooltip]="'action.next_letter' | translate"><mat-icon>navigate_next</mat-icon></button>
-            <!-- <button mat-icon-button (click)="toggleIgnoreAndNext()" [matTooltip]="'ignore' | translate"><mat-icon>gpp_bad</mat-icon></button> -->
-            <button class="app-color-warning" [disabled]="!letter" mat-icon-button (click)="removeLetter()"
-              [matTooltip]="'action.remove' | translate"><mat-icon>delete_forever</mat-icon></button>
-            <button [disabled]="!letter" mat-icon-button (click)="templateFromLetter()"
-              [matTooltip]="'action.template_from_letter' | translate"><mat-icon>dynamic_feed</mat-icon></button>
-            <button class="app-hiko" mat-icon-button (click)="importFromHIKO()"
-              [matTooltip]="'action.import_from_hiko' | translate"><mat-icon>file_open</mat-icon></button>
-            <button class="app-hiko" [disabled]="!letter" mat-icon-button (click)="exportToHIKO()"
-              [matTooltip]="'action.export_to_hiko' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
-            <button class="app-hiko" [disabled]="!letter?.hiko_id" mat-icon-button (click)="viewLetterInHIKO()"
-              [matTooltip]="'action.view_in_hiko' | translate"><mat-icon>open_in_new_off</mat-icon></button>
-            <!-- <button mat-icon-button (click)="regenerateAlto()" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button> -->
-          </div>
-        </div>
-@if (state.loading()) {
-<div class="app-fxLayout app-row ">
-  <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
-</div>
-}
-        <div *ngIf="view == 'letters'" class="app-fxFlex app-p-4 app-oa-y">
-          <mat-list>
-          <div class="app-fxLayout app-row app-fill">
-            <div class="app-fxFlex" mat-subheader>{{ 'Letters' | translate }}: ({{letters?.length}})</div>
-            <div >
-              <mat-form-field class="app-fxFlex" appearance="outline">
-                <mat-label>{{ 'sorts.legend' | translate }}</mat-label>
-                <mat-select [(ngModel)]="sortField" (selectionChange)="sortBy()">
-                  @for(s of sorts(); track idx; let idx = $index){
-                  <mat-option [value]="s">{{ 'sorts.' + s | translate }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-            @for(l of letters; track idx; let idx = $index){
-            <mat-list-item [class.app-selected]="l.id === currentLetterId" [class.app-exported-to-hiko]="l.exported_to_hiko" [class.app-has-hiko]="l.hiko_id" (click)="selectResult(l, false, idx)"
-              class="app-result app-pt-4 app-pb-4">
-              
-              <div matListItemTitle [class.app-ignore]="ignored[l.id]">
-                @if (l.hiko_id) { <div class="app-hiko-id" >({{ l.hiko_id }})</div> }
-                {{'Page(s)' | translate}}: {{ l.page_number }} <ng-container *ngIf="l.end_page_number"> - {{
-                  l.end_page_number }}</ng-container>
-              </div>
-              <div matListItemLine>{{ l.date | date : 'dd.MM.yyyy' }}</div>
-              <div matListItemLine>{{l.hiko.incipit}}</div>
-              <div matListItemLine>{{l.hiko.content ? l.hiko.content.substring(0, 100) : ''}}...</div>
-            </mat-list-item>
-            }
-          </mat-list>
-        </div>
-        <div *ngIf="view === 'fields'" class="app-fxFlex app-p-4 app-oa-y"  [class.app-has-hiko]="letter.hiko_id" [class.app-exported-to-hiko]="letter.exported_to_hiko" >
-          <app-letter-fields [letter]="letter" (onSetField)="setField($event)"
-            (onShouldRefresh)="refreshLetters($event)"></app-letter-fields>
-        </div>
-        <div *ngIf="view === 'search'" class="app-fxFlex app-p-4 app-oa-y">
-          <div>
-            <button mat-flat-button color="primary" (click)="findSimilar()" class="app-mr-4">Similar</button>
-            <mat-checkbox id="onlyBox" type="checkbox" [(ngModel)]="onlyBox" class="app-mr-4">Only box</mat-checkbox>
-            <mat-checkbox id="twoCols" type="checkbox" [(ngModel)]="twoCols">Two columns</mat-checkbox>
-            <!-- <label for="onlyBox">Only box</label><input id="onlyBox" type="checkbox" [(ngModel)]="onlyBox" />
-            <label for="twoCols">Two columns</label><input id="twoCols" type="checkbox" [(ngModel)]="twoCols" /> -->
-          </div>
-          <mat-divider class="app-mt-4"></mat-divider>
-          <mat-list>
-            <div mat-subheader>Results: ({{results?.length}})</div>
-            @for(doc of results; track doc.id; let idx = $index){
-            <mat-list-item [class.app-selected]="selectedResult === idx">
-              <mat-icon matListItemIcon (click)="toggleIgnore(doc.id)"
-                class="app-cursor-pointer">delete_forever</mat-icon>
-              <div matListItemTitle (click)="selectResult(doc, false, idx)" [class.app-ignore]="ignored[doc.id]">page:
-                {{ doc.page }}</div>
-
-              @for(line of doc.lines; track $index){
-              <div matListItemLine>{{ state.getLineText(line) }}</div>
-              }
-            </mat-list-item>
-            }
-          </mat-list>
-        </div>
-      </div>
-    </as-split-area>
-  </as-split>
-</div>
-}
+    <as-split direction="horizontal" unit="percent" #splitArea (dragEnd)="splitChanged($event)">
+      <as-split-area [size]="40">
+        @if (inited && state.selectedFile) {
+          <app-viewer [letter]="letter" [file]="state.selectedFile.filename"
+            [selectedAlto]="state.selectedAlto" [width]="viewerWidth" (selectionEvent)="setSelectedArea($event)"
+          (onSetField)="setField($event)" (onCopyToClipboard)="copyToClipBoard($event)"></app-viewer>
+        }
+      </as-split-area>
+      <as-split-area [size]="60">
+        @if (state.fileConfig) {
+          <div class="app-fxLayout app-column app-fill">
+            <div class="app-controlbar app-fxLayout app-row app-center-v">
+              <div class="app-fxFlex">
+                <button mat-icon-button (click)="changeView('fields')" [class.app-active]="view == 'fields'"
+                  [matTooltip]="'Fields' | translate"><mat-icon color="primary">text_fields</mat-icon></button>
+                  <button mat-icon-button (click)="changeView('letters')" [class.app-active]="view == 'letters'"
+                    [matTooltip]="'Letters' | translate"><mat-icon color="primary">mark_as_unread</mat-icon></button>
+                    <!-- <button mat-icon-button (click)="changeView('search')" [class.app-active]="view == 'search'" [matTooltip]="'Search' | translate"><mat-icon color="primary">search</mat-icon></button> -->
+                  </div>
+                  <div>
+                    <button mat-icon-button (click)="log()"
+                      [matTooltip]="'action.log' | translate"><mat-icon>log</mat-icon></button>
+                      <button mat-icon-button (click)="getLetters()"
+                        [matTooltip]="'action.refresh' | translate"><mat-icon>refresh</mat-icon></button>
+                        @if (state.fileConfig.templates.length === 1) {
+                          <button mat-icon-button (click)="newLetter(state.fileConfig.templates[0])"
+                            [matTooltip]="'action.new_letter' | translate"><mat-icon>add_circle</mat-icon></button>
+                          }
+                          @if (state.fileConfig.templates.length > 1) {
+                            <button mat-icon-button [matMenuTriggerFor]="menu"
+                              [matTooltip]="'action.new_letter' | translate"><mat-icon>add_circle</mat-icon></button>
+                              <mat-menu #menu="matMenu">
+                                @for(t of state.fileConfig.templates; track $index){
+                                  <button mat-menu-item (click)="newLetter(t)">{{ t.name }}</button>
+                                }
+                              </mat-menu>
+                            }
+                            <button [disabled]="!letter" mat-icon-button (click)="saveLetter()"
+                              [matTooltip]="'action.save' | translate"><mat-icon>save</mat-icon></button>
+                              <button mat-icon-button [disabled]="selectedResult === 0" (click)="prevLetter()"
+                                [matTooltip]="'action.previous_letter' | translate"><mat-icon>navigate_before</mat-icon></button>
+                                <button mat-icon-button [disabled]="selectedResult === letters.length - 1" (click)="nextLetter()"
+                                  [matTooltip]="'action.next_letter' | translate"><mat-icon>navigate_next</mat-icon></button>
+                                  <!-- <button mat-icon-button (click)="toggleIgnoreAndNext()" [matTooltip]="'ignore' | translate"><mat-icon>gpp_bad</mat-icon></button> -->
+                                  <button class="app-color-warning" [disabled]="!letter" mat-icon-button (click)="removeLetter()"
+                                    [matTooltip]="'action.remove' | translate"><mat-icon>delete_forever</mat-icon></button>
+                                    <button [disabled]="!letter" mat-icon-button (click)="templateFromLetter()"
+                                      [matTooltip]="'action.template_from_letter' | translate"><mat-icon>dynamic_feed</mat-icon></button>
+                                      <button class="app-hiko" mat-icon-button (click)="importFromHIKO()"
+                                        [matTooltip]="'action.import_from_hiko' | translate"><mat-icon>file_open</mat-icon></button>
+                                        <button class="app-hiko" [disabled]="!letter" mat-icon-button (click)="exportToHIKO()"
+                                          [matTooltip]="'action.export_to_hiko' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
+                                          <button class="app-hiko" [disabled]="!letter?.hiko_id" mat-icon-button (click)="viewLetterInHIKO()"
+                                            [matTooltip]="'action.view_in_hiko' | translate"><mat-icon>open_in_new_off</mat-icon></button>
+                                            <!-- <button mat-icon-button (click)="regenerateAlto()" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button> -->
+                                          </div>
+                                        </div>
+                                        @if (state.loading()) {
+                                          <div class="app-fxLayout app-row ">
+                                            <mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+                                          </div>
+                                        }
+                                        @if (view == 'letters') {
+                                          <div class="app-fxFlex app-p-4 app-oa-y">
+                                            <mat-list>
+                                              <div class="app-fxLayout app-row app-fill">
+                                                <div class="app-fxFlex" mat-subheader>{{ 'Letters' | translate }}: ({{letters?.length}})</div>
+                                                <div >
+                                                  <mat-form-field class="app-fxFlex" appearance="outline">
+                                                    <mat-label>{{ 'sorts.legend' | translate }}</mat-label>
+                                                    <mat-select [(ngModel)]="sortField" (selectionChange)="sortBy()">
+                                                      @for(s of sorts(); track idx; let idx = $index){
+                                                        <mat-option [value]="s">{{ 'sorts.' + s | translate }}</mat-option>
+                                                      }
+                                                    </mat-select>
+                                                  </mat-form-field>
+                                                </div>
+                                              </div>
+                                              @for(l of letters; track idx; let idx = $index){
+                                                <mat-list-item [class.app-selected]="l.id === currentLetterId" [class.app-exported-to-hiko]="l.exported_to_hiko" [class.app-has-hiko]="l.hiko_id" (click)="selectResult(l, false, idx)"
+                                                  class="app-result app-pt-4 app-pb-4">
+                                                  <div matListItemTitle [class.app-ignore]="ignored[l.id]">
+                                                    @if (l.hiko_id) { <div class="app-hiko-id" >({{ l.hiko_id }})</div> }
+                                                    {{'Page(s)' | translate}}: {{ l.page_number }} @if (l.end_page_number) {
+                                                    - {{
+                                                    l.end_page_number }}
+                                                  }
+                                                </div>
+                                                <div matListItemLine>{{ l.date | date : 'dd.MM.yyyy' }}</div>
+                                                <div matListItemLine>{{l.hiko.incipit}}</div>
+                                                <div matListItemLine>{{l.hiko.content ? l.hiko.content.substring(0, 100) : ''}}...</div>
+                                              </mat-list-item>
+                                            }
+                                          </mat-list>
+                                        </div>
+                                      }
+                                      @if (view === 'fields') {
+                                        <div class="app-fxFlex app-p-4 app-oa-y"  [class.app-has-hiko]="letter.hiko_id" [class.app-exported-to-hiko]="letter.exported_to_hiko" >
+                                          <app-letter-fields [letter]="letter" (onSetField)="setField($event)"
+                                          (onShouldRefresh)="refreshLetters($event)"></app-letter-fields>
+                                        </div>
+                                      }
+                                      @if (view === 'search') {
+                                        <div class="app-fxFlex app-p-4 app-oa-y">
+                                          <div>
+                                            <button mat-flat-button color="primary" (click)="findSimilar()" class="app-mr-4">Similar</button>
+                                            <mat-checkbox id="onlyBox" type="checkbox" [(ngModel)]="onlyBox" class="app-mr-4">Only box</mat-checkbox>
+                                            <mat-checkbox id="twoCols" type="checkbox" [(ngModel)]="twoCols">Two columns</mat-checkbox>
+                                            <!-- <label for="onlyBox">Only box</label><input id="onlyBox" type="checkbox" [(ngModel)]="onlyBox" />
+                                            <label for="twoCols">Two columns</label><input id="twoCols" type="checkbox" [(ngModel)]="twoCols" /> -->
+                                          </div>
+                                          <mat-divider class="app-mt-4"></mat-divider>
+                                          <mat-list>
+                                            <div mat-subheader>Results: ({{results?.length}})</div>
+                                            @for(doc of results; track doc.id; let idx = $index){
+                                              <mat-list-item [class.app-selected]="selectedResult === idx">
+                                                <mat-icon matListItemIcon (click)="toggleIgnore(doc.id)"
+                                                class="app-cursor-pointer">delete_forever</mat-icon>
+                                                <div matListItemTitle (click)="selectResult(doc, false, idx)" [class.app-ignore]="ignored[doc.id]">page:
+                                                {{ doc.page }}</div>
+                                                @for(line of doc.lines; track $index){
+                                                  <div matListItemLine>{{ state.getLineText(line) }}</div>
+                                                }
+                                              </mat-list-item>
+                                            }
+                                          </mat-list>
+                                        </div>
+                                      }
+                                    </div>
+                                  }
+                                </as-split-area>
+                              </as-split>
+                            </div>
+                          }

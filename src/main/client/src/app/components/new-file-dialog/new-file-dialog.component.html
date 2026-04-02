@@ -11,40 +11,42 @@
   <div class="app-fxLayout app-row app-center-v app-mb-4">
 
     <!-- <mat-form-field class="app-fxFlex" appearance="outline">
-      <mat-label>Tenant</mat-label>
-      <mat-select [(ngModel)]="tenant">
-        @for(t of state.tenants; track idx; let idx = $index){
+    <mat-label>Tenant</mat-label>
+    <mat-select [(ngModel)]="tenant">
+      @for(t of state.tenants; track idx; let idx = $index){
         <mat-option [value]="t">{{ t }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field> -->
-  </div>
-  <div class="app-mb-4">
-    <mat-form-field class="app-w-100" appearance="outline">
-      <mat-label>{{ 'Columns' | translate }}</mat-label>
-      <input matInput type="number" name="columns" [(ngModel)]="columns">
-    </mat-form-field>
-  </div>
+      }
+    </mat-select>
+  </mat-form-field> -->
+</div>
+<div class="app-mb-4">
+  <mat-form-field class="app-w-100" appearance="outline">
+    <mat-label>{{ 'Columns' | translate }}</mat-label>
+    <input matInput type="number" name="columns" [(ngModel)]="columns">
+  </mat-form-field>
+</div>
 
-  <mat-divider class="app-mt-4"></mat-divider>
+<mat-divider class="app-mt-4"></mat-divider>
 
-  <input type="file" #fileUpload ng2FileSelect [uploader]="uploader" style="display:none;"
-    (change)="onFileSelected($event)" accept="application/pdf">
+<input type="file" #fileUpload ng2FileSelect [uploader]="uploader" style="display:none;"
+  (change)="onFileSelected($event)" accept="application/pdf">
   <div class="app-fxLayout app-row app-center-v">
     <mat-form-field appearance="outline" class="app-fxFlex app-form-field-center-v-fix">
       <input matInput type="text" name="selectedCover" [(ngModel)]="selectedFile">
       <button matPrefix mat-stroked-button color="primary" class="app-mr-2 app-ml-2" (click)="fileUpload.click()">{{
-        'action.choose_file' | translate }}</button>
+      'action.choose_file' | translate }}</button>
     </mat-form-field>
   </div>
-  <mat-progress-bar mode="indeterminate" [value]="uploader.progress" *ngIf="uploader.isUploading"></mat-progress-bar>
+  @if (uploader.isUploading) {
+    <mat-progress-bar mode="indeterminate" [value]="uploader.progress"></mat-progress-bar>
+  }
   <div>{{ progressMsg }}</div>
 
 </div>
 
 <div mat-dialog-actions>
   <button [disabled]="!selectedFile" mat-flat-button color="primary" (click)="checkUpload()">{{
-    'action.upload' | translate }}</button>
+  'action.upload' | translate }}</button>
   <button mat-flat-button [mat-dialog-close]="false">{{ 'action.close' | translate }}</button>
   <mat-checkbox [(ngModel)]="overwrite" >{{ 'overwrite' | translate}}</mat-checkbox>
 </div>

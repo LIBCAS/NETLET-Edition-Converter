@@ -1,4 +1,4 @@
-import { NgIf, NgFor } from '@angular/common';
+
 import { Component, Inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -25,10 +25,7 @@ import { UIService } from 'src/app/ui.service';
 @Component({
   selector: 'app-template-dialog',
   standalone: true,
-  imports: [FormsModule, AngularSplitModule, NgIf, RouterModule, TranslateModule,
-    MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule,
-    MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule,
-    MatChipsModule],
+  imports: [FormsModule, AngularSplitModule, RouterModule, TranslateModule, MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule, MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule, MatChipsModule],
   templateUrl: './template-dialog.component.html',
   styleUrl: './template-dialog.component.scss'
 })

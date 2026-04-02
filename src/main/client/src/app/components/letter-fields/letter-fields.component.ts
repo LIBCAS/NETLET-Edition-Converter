@@ -1,4 +1,4 @@
-import { NgIf, NgTemplateOutlet, NgFor, DatePipe } from '@angular/common';
+import { NgTemplateOutlet, DatePipe } from '@angular/common';
 import { Component, EventEmitter, Inject, Input, Output, Signal, signal, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -49,11 +49,10 @@ import { MatChipsModule } from '@angular/material/chips';
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } } 
   ],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgIf, RouterModule, TranslateModule, DatePipe,
-    MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatAutocompleteModule, MatCardModule,
-    MatTabsModule, MatButtonModule, MatFormFieldModule, MatListModule, MatTooltipModule, 
-    MatMenuModule, MatProgressBarModule, MatChipsModule,
-    MatInputModule, NgTemplateOutlet, MatIconModule, MatDialogModule, MatCheckboxModule]
+  imports: [FormsModule, ReactiveFormsModule, RouterModule, TranslateModule, DatePipe, 
+    MatDatepickerModule, MatNativeDateModule, MatSelectModule, MatAutocompleteModule, MatCardModule, 
+    MatTabsModule, MatButtonModule, MatFormFieldModule, MatListModule, MatTooltipModule,
+     MatMenuModule, MatProgressBarModule, MatChipsModule, MatInputModule, NgTemplateOutlet, MatIconModule, MatDialogModule, MatCheckboxModule]
 })
 export class LetterFieldsComponent {
 

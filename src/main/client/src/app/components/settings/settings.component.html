@@ -17,43 +17,44 @@
         <mat-label>{{ 'field.locations' | translate }}</mat-label>
         <input matInput name="locations" [formControl]="location_str"
           [value]="location_str.value.name ? location_str.value.name : ''" [matAutocomplete]="autoRepos1">
-        <mat-autocomplete #autoRepos1="matAutocomplete" (optionSelected)="selectLocation($event)">
+          <mat-autocomplete #autoRepos1="matAutocomplete" (optionSelected)="selectLocation($event)">
 
-          @for (option of filteredLocations | async; track option) {
-          <mat-option [value]="option">{{option.name}} ({{ 'field.copies_' + option.type | translate }})</mat-option>
+            @for (option of filteredLocations | async; track option) {
+              <mat-option [value]="option">{{option.name}} ({{ 'field.copies_' + option.type | translate }})</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        @if (location) {
+          <div class="app-fxLayout app-row app-center-v">
+            <div class="app-fxFlex-25 app-center-v">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'Acronyms' | translate }}</mat-label>
+                <input matInput type="text" name="new_acronym" [(ngModel)]="new_acronym" />
+                <button matSuffix mat-icon-button (click)="addAcronym()" [matTooltip]="'action.add_acronym' | translate">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+            @for(k of location.acronyms; track idx; let idx = $index; let last = $last){
+              <div class="app-keyword app-fxLayout app-center-v">
+                <span class="app-fxFlex app-center-v">{{ k }}</span>
+                <button mat-icon-button (click)="removeAcronym(idx)"
+                  [matTooltip]="'action.remove_acronym' | translate"><mat-icon>clear</mat-icon></button>
+                  @if (!last) {
+                    <span class="app-pipe app-in-element"></span>
+                  }
+                </div>
+              }
+            </div>
           }
-        </mat-autocomplete>
-      </mat-form-field>
 
-      <div class="app-fxLayout app-row app-center-v" *ngIf="location">
 
-        <div class="app-fxFlex-25 app-center-v">
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'Acronyms' | translate }}</mat-label>
-            <input matInput type="text" name="new_acronym" [(ngModel)]="new_acronym" />
-            <button matSuffix mat-icon-button (click)="addAcronym()" [matTooltip]="'action.add_acronym' | translate">
-              <mat-icon>add</mat-icon>
-            </button>
-          </mat-form-field>
-        </div>
-
-        @for(k of location.acronyms; track idx; let idx = $index; let last = $last){
-        <div class="app-keyword app-fxLayout app-center-v">
-          <span class="app-fxFlex app-center-v">{{ k }}</span>
-          <button mat-icon-button (click)="removeAcronym(idx)"
-            [matTooltip]="'action.remove_acronym' | translate"><mat-icon>clear</mat-icon></button>
-          <span class="app-pipe app-in-element" *ngIf="!last"></span>
-        </div>
-        }
-
+        </fieldset>
       </div>
+    </div>
 
-
-    </fieldset>
-  </div>
-</div>
-
-<div mat-dialog-actions>
-  <button mat-flat-button color="primary" (click)="save()" cdkFocusInitial>{{ 'Save' | translate }}</button>
-  <button mat-button [mat-dialog-close]="null">{{ 'Close' | translate }}</button>
-</div>
+    <div mat-dialog-actions>
+      <button mat-flat-button color="primary" (click)="save()" cdkFocusInitial>{{ 'Save' | translate }}</button>
+      <button mat-button [mat-dialog-close]="null">{{ 'Close' | translate }}</button>
+    </div>

@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ViewerComponent } from '../../components/viewer/viewer.component';
-import { NgIf, NgTemplateOutlet, NgFor, DatePipe, CommonModule } from '@angular/common';
+import { NgTemplateOutlet, DatePipe, CommonModule } from '@angular/common';
 import { AngularSplitModule, SplitComponent } from 'angular-split';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -40,10 +40,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'cs' },
   ],
-  imports: [CommonModule, FormsModule, AngularSplitModule, NgIf, ViewerComponent,
-    MatToolbarModule, RouterModule, TranslateModule, DatePipe, MatMenuModule, MatSelectModule,
-    MatTabsModule, MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatListModule, MatProgressBarModule,
-    MatInputModule, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
+  imports: [CommonModule, FormsModule, AngularSplitModule, ViewerComponent, MatToolbarModule, RouterModule, TranslateModule, DatePipe, MatMenuModule, MatSelectModule, MatTabsModule, MatButtonModule, ReactiveFormsModule, MatFormFieldModule, MatListModule, MatProgressBarModule, MatInputModule, MatIconModule, MatDialogModule, LetterFieldsComponent, MatTooltipModule, MatCheckboxModule]
 })
 export class EditorComponent {
 

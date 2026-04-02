@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,9 +24,7 @@ import { TemplateDialogComponent } from '../template-dialog/template-dialog.comp
   templateUrl: './file-settings-dialog.component.html',
   styleUrls: ['./file-settings-dialog.component.scss'],
   standalone: true,
-  imports: [FormsModule, AngularSplitModule, NgIf, RouterModule, TranslateModule, 
-    MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule,
-    MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule]
+  imports: [FormsModule, AngularSplitModule, RouterModule, TranslateModule, MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule, MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule]
 })
 export class FileSettingsDialogComponent {
   

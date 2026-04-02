@@ -1,40 +1,40 @@
 
-<div *ngIf="_letter" class="app-letter app-icons">
-  <div *ngIf="_letter.selection?.length > 0" class="app-fxLayout app-row app-center-v app-mb-4">
-    @for(sel of _letter.selection; track idx; let idx = $index){
-    <div (click)="gotoPage(sel.page)">
-      <mat-icon class="mat-icon-close" (click)="removeSelection(sel.page)"
-        [matTooltip]="'action.remove_selection' | translate">close</mat-icon>
-      <img style="height: 100px; border: 1px solid #aaa; margin-right: 2px;" [src]="getImgUrl(sel)" />
-    </div>
+@if (_letter) {
+  <div class="app-letter app-icons">
+    @if (_letter.selection?.length > 0) {
+      <div class="app-fxLayout app-row app-center-v app-mb-4">
+        @for(sel of _letter.selection; track idx; let idx = $index){
+          <div (click)="gotoPage(sel.page)">
+            <mat-icon class="mat-icon-close" (click)="removeSelection(sel.page)"
+            [matTooltip]="'action.remove_selection' | translate">close</mat-icon>
+            <img style="height: 100px; border: 1px solid #aaa; margin-right: 2px;" [src]="getImgUrl(sel)" />
+          </div>
+        }
+      </div>
     }
-  </div>
-
-  <div class="app-mb-4">
-    <button mat-flat-button color="primary" (click)="addSelection(true)" class="app-mr-2">
-      <mat-icon class="material-icons-outlined">note_add</mat-icon>{{ 'action.add_selection' | translate }}
-    </button>
-
-    <button mat-flat-button [matMenuTriggerFor]="menu">
-      <mat-icon class="material-icons-outlined">manage_search</mat-icon>{{ 'action.process' | translate}}
-    </button>
-    <mat-menu #menu="matMenu">
-      @for(t of state.gptModels; track idx; let idx = $index){
-      <button mat-menu-item (click)="analyzeByModel(t)">{{ t }}</button>
-      }
-    </mat-menu>
-    <button mat-flat-button [matMenuTriggerFor]="menuAnalysis">{{ 'action.useAnalysis' | translate}}</button>
-    <mat-menu #menuAnalysis="matMenu">
-      <button mat-menu-item (click)="showCurrent()">{{ 'action.showCurrent' | translate }}</button>
-      @for(t of _letter.ai; track idx; let idx = $index){
-      <button mat-menu-item (click)="showAnalysis(t)">{{ t.date | date : 'dd.MM.yyyy HH:mm:ss' }}</button>
-      }
-    </mat-menu>
-  </div>
-
-  <div class="app-mb-4">
-    <div style="max-height: 200px; overflow: scroll;" [innerHTML]="_letter.hiko.content"></div>
-    <!-- <mat-form-field class="app-w-100">
+    <div class="app-mb-4">
+      <button mat-flat-button color="primary" (click)="addSelection(true)" class="app-mr-2">
+        <mat-icon class="material-icons-outlined">note_add</mat-icon>{{ 'action.add_selection' | translate }}
+      </button>
+      <button mat-flat-button [matMenuTriggerFor]="menu">
+        <mat-icon class="material-icons-outlined">manage_search</mat-icon>{{ 'action.process' | translate}}
+      </button>
+      <mat-menu #menu="matMenu">
+        @for(t of state.gptModels; track idx; let idx = $index){
+          <button mat-menu-item (click)="analyzeByModel(t)">{{ t }}</button>
+        }
+      </mat-menu>
+      <button mat-flat-button [matMenuTriggerFor]="menuAnalysis">{{ 'action.useAnalysis' | translate}}</button>
+      <mat-menu #menuAnalysis="matMenu">
+        <button mat-menu-item (click)="showCurrent()">{{ 'action.showCurrent' | translate }}</button>
+        @for(t of _letter.ai; track idx; let idx = $index){
+          <button mat-menu-item (click)="showAnalysis(t)">{{ t.date | date : 'dd.MM.yyyy HH:mm:ss' }}</button>
+        }
+      </mat-menu>
+    </div>
+    <div class="app-mb-4">
+      <div style="max-height: 200px; overflow: scroll;" [innerHTML]="_letter.hiko.content"></div>
+      <!-- <mat-form-field class="app-w-100">
       <mat-label>{{ 'field.full_text' | translate}}</mat-label>
       <textarea rows="5" matInput [(ngModel)]="_letter.hiko.content" name="content"></textarea>
       <div class="app-pt-4 app-mb-n2 app-text-right">
@@ -42,7 +42,6 @@
       </div>
     </mat-form-field> -->
   </div>
-
   <div class="app-fxLayout app-row app-center-v app-mb-4">
     <mat-form-field class="app-fxFlex">
       <mat-label>{{ 'field.hiko_id' | translate}}</mat-label>
@@ -65,477 +64,434 @@
       <input matInput [(ngModel)]="_letter.end_page_number" name="end_page_number">
     </mat-form-field>
   </div>
-
-
   <fieldset class="app-mb-4">
     <legend>{{ 'fieldset.authors' | translate }}</legend>
     @for(author of _letter.hiko.authors; track idx; let idx = $index){
-    <fieldset>
-      <legend> #{{ idx + 1 }}. </legend>
-      <button *ngIf="idx > 0" mat-icon-button (click)="removeAuthor(idx)" style="float:right"
-        [matTooltip]="'action.remove_author' | translate"><mat-icon>delete_forever</mat-icon></button>
-
-      <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex">
-          <mat-label>{{ 'field.author_marked' | translate}}</mat-label>
-          <input matInput [(ngModel)]="author.marked" name="author" (change)="checkAuthorDb(author.marked)" /><span matSuffix></span>
-          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'author' }"></ng-container>
-        </mat-form-field>
-
-        <mat-form-field class="app-fxFlex app-ml-3">
-          <mat-label>{{ 'field.author_db' | translate}}</mat-label>
-          <input matInput [value]="displayFn(author)" name="author_db" [id]="'author_db_' + idx"
-            [matAutocomplete]="autoAuthor" (focus)="checkAuthors($event, true, authors_db)"
-            (keyup)="checkAuthors($event, true, authors_db)">
-          <mat-autocomplete #autoAuthor="matAutocomplete" [displayWith]="displayFn"
-            (optionSelected)="setAuthorDb($event, idx)">
-            @for(a of authors_db(); track a.id; let idx = $index){
-            <mat-option [value]="a">
-              {{a.name}} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }}) }({{ a.tenant === 'global' ? 'global' : 'local' }})
-            </mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-      </div>
-    </fieldset>
-    }
-
-    <button mat-flat-button color="primary" (click)="addAuthor()" [matTooltip]="'action.add_author' | translate"
-      class="app-mt-4 app-mb-2">
-      <mat-icon>queue</mat-icon>{{ 'action.add_author' | translate }}
-    </button>
-  </fieldset>
-
-
-  <!-- <mat-icon (click)="switchAuthors()" class="app-ml-2 app-mr-2">sync_alt</mat-icon> -->
-
-  <fieldset class="app-mb-4">
-    <legend>{{ 'fieldset.recipients' | translate }}</legend>
-    @for(recipient of _letter.hiko.recipients; track idx; let idx = $index){
-    <fieldset>
-      <legend> #{{ idx + 1 }}. </legend>
-      <button *ngIf="idx > 0" mat-icon-button (click)="removeRecipient(idx)" style="float:right"
-        [matTooltip]="'action.remove_recipient' | translate"><mat-icon>delete_forever</mat-icon></button>
-
-      <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex">
-          <mat-label>{{ 'field.recipient_marked' | translate}}</mat-label>
-          <input matInput [(ngModel)]="recipient.marked" name="recipient" (change)="checkRecipientDb(recipient.marked)"><span
+      <fieldset>
+        <legend> #{{ idx + 1 }}. </legend>
+        @if (idx > 0) {
+          <button mat-icon-button (click)="removeAuthor(idx)" style="float:right"
+            [matTooltip]="'action.remove_author' | translate"><mat-icon>delete_forever</mat-icon></button>
+          }
+          <div class="app-fxLayout app-row app-center-v app-mb-4">
+            <mat-form-field class="app-fxFlex">
+              <mat-label>{{ 'field.author_marked' | translate}}</mat-label>
+              <input matInput [(ngModel)]="author.marked" name="author" (change)="checkAuthorDb(author.marked)" /><span matSuffix></span>
+              <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'author' }"></ng-container>
+            </mat-form-field>
+            <mat-form-field class="app-fxFlex app-ml-3">
+              <mat-label>{{ 'field.author_db' | translate}}</mat-label>
+              <input matInput [value]="displayFn(author)" name="author_db" [id]="'author_db_' + idx"
+                [matAutocomplete]="autoAuthor" (focus)="checkAuthors($event, true, authors_db)"
+                (keyup)="checkAuthors($event, true, authors_db)">
+                <mat-autocomplete #autoAuthor="matAutocomplete" [displayWith]="displayFn"
+                  (optionSelected)="setAuthorDb($event, idx)">
+                  @for(a of authors_db(); track a.id; let idx = $index){
+                    <mat-option [value]="a">
+                      {{a.name}} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }}) }({{ a.tenant === 'global' ? 'global' : 'local' }})
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </fieldset>
+        }
+        <button mat-flat-button color="primary" (click)="addAuthor()" [matTooltip]="'action.add_author' | translate"
+          class="app-mt-4 app-mb-2">
+          <mat-icon>queue</mat-icon>{{ 'action.add_author' | translate }}
+        </button>
+      </fieldset>
+      <!-- <mat-icon (click)="switchAuthors()" class="app-ml-2 app-mr-2">sync_alt</mat-icon> -->
+      <fieldset class="app-mb-4">
+        <legend>{{ 'fieldset.recipients' | translate }}</legend>
+        @for(recipient of _letter.hiko.recipients; track idx; let idx = $index){
+          <fieldset>
+            <legend> #{{ idx + 1 }}. </legend>
+            @if (idx > 0) {
+              <button mat-icon-button (click)="removeRecipient(idx)" style="float:right"
+                [matTooltip]="'action.remove_recipient' | translate"><mat-icon>delete_forever</mat-icon></button>
+              }
+              <div class="app-fxLayout app-row app-center-v app-mb-4">
+                <mat-form-field class="app-fxFlex">
+                  <mat-label>{{ 'field.recipient_marked' | translate}}</mat-label>
+                  <input matInput [(ngModel)]="recipient.marked" name="recipient" (change)="checkRecipientDb(recipient.marked)"><span
+                matSuffix></span>
+                <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'recipient' }"></ng-container>
+              </mat-form-field>
+              <mat-form-field class="app-fxFlex app-ml-3">
+                <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
+                <input matInput [value]="displayFn(recipient)" name="recipient_db" [id]="'recipient_db_' + idx"
+                  [matAutocomplete]="autoRecipient" (focus)="checkAuthors($event, true, recipients_db)"
+                  (keyup)="checkAuthors($event, true, recipients_db)">
+                  <mat-autocomplete #autoRecipient="matAutocomplete" [displayWith]="displayFn"
+                    (optionSelected)="setRecipientDb($event, idx)">
+                    @for(a of recipients_db(); track a.id; let idx = $index){
+                      <mat-option [value]="a">
+                        {{a.name}} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }})} ({{ a.tenant === 'global' ? 'global' : 'local' }})
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                </mat-form-field>
+                <mat-form-field class="app-fxFlex app-ml-3">
+                  <mat-label>{{ 'field.salutation' | translate}}</mat-label>
+                  <input matInput [(ngModel)]="recipient.salutation" name="salutation"><span matSuffix></span>
+                  <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
+                </mat-form-field>
+              </div>
+            </fieldset>
+          }
+          <button mat-flat-button color="primary" (click)="addRecipient()" [matTooltip]="'action.add_recipient' | translate"
+            class="app-mt-4 app-mb-2">
+            <mat-icon>queue</mat-icon>{{ 'action.add_recipient' | translate }}
+          </button>
+        </fieldset>
+        <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
+          <legend>{{ 'fieldset.origin' | translate }}</legend>
+          <mat-form-field class="app-fxFlex">
+            <mat-label>{{ 'field.origin_marked' | translate}}</mat-label>
+            <input matInput [(ngModel)]="_letter.origin" name="origin" (change)="checkOriginDb()" /><span matSuffix></span>
+            <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'origin' }"></ng-container>
+          </mat-form-field>
+          <mat-form-field class="app-fxFlex app-ml-3">
+            <mat-label>{{ 'field.origin_db' | translate }}</mat-label>
+            <input matInput [(ngModel)]="_letter.origins[0]" name="origin_db" id="origin_db" [matAutocomplete]="autoOrigin"
+              (focus)="checkPlaces(_letter.origin, false, origins_db)" (keyup)="checkPlaces($event, true, origins_db)">
+              <mat-autocomplete #autoOrigin="matAutocomplete" [displayWith]="displayFn">
+                @for(a of origins_db(); track idx; let idx = $index){
+                  <mat-option [value]="a">
+                    {{ a.display }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </fieldset>
+          <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
+            <legend>{{ 'fieldset.destination' | translate }}</legend>
+            <mat-form-field class="app-fxFlex">
+              <mat-label>{{ 'field.destination_marked' | translate}}</mat-label>
+              <input matInput [(ngModel)]="_letter.destination" name="destination" (change)="checkDestinationDb()"><span
             matSuffix></span>
-          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'recipient' }"></ng-container>
-        </mat-form-field>
+            <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'destination' }"></ng-container>
+          </mat-form-field>
+          <mat-form-field class="app-fxFlex app-ml-3">
+            <mat-label>{{ 'field.destination_db' | translate }}</mat-label>
+            <input matInput [(ngModel)]="_letter.destinations[0]" name="destination_db" id="destination_db"
+              [matAutocomplete]="autodestination" (focus)="checkPlaces(_letter.destination, false, destinations_db)"
+              (keyup)="checkPlaces($event, true, destinations_db)">
+              <mat-autocomplete #autodestination="matAutocomplete" [displayWith]="displayFn">
+                @for(a of destinations_db(); track idx; let idx = $index){
+                  <mat-option [value]="a">{{ a.display }}
+                  </mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          </fieldset>
+          <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
+            <legend>{{ 'fieldset.date' | translate }}</legend>
+            <mat-form-field class="app-fxFlex app-calendar">
+              <mat-label>{{ 'field.date' | translate}}</mat-label>
+              <input matInput [matDatepicker]="dp2" [placeholder]="'field.date' | translate" [formControl]="datum"
+                (dateChange)="setDatum()">
+                <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+                <mat-datepicker #dp2 (monthSelected)="setMonthAndYear($event, dp2, datum)"
+                (yearSelected)="setMonthAndYear($event, dp2, datum)" startView="multi-year"></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field class="app-fxFlex app-ml-3">
+                <mat-label>{{ 'field.date_marked' | translate}}</mat-label>
+                <input matInput [(ngModel)]="_letter.hiko.date_marked" id="date_marked" name="date_marked"><span matSuffix></span>
+                <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'date_marked' }"></ng-container>
+              </mat-form-field>
+            </fieldset>
+            <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
+              <legend>{{ 'fieldset.languages' | translate }}</legend>
+              <mat-chip-set class="app-fxFlex">
+                @for (language of languages(); track language) {
+                  <mat-chip (removed)="removeLang(language)">
+                    {{language}}
+                    <button matChipRemove [attr.aria-label]="'remove language'">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip>
+                }
+              </mat-chip-set>
+              <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+                <mat-label>{{ 'field.new_language' | translate }}</mat-label>
+                <input matInput [(ngModel)]="language" name="languages" id="languages" [matAutocomplete]="autoLanguages"
+                  (focus)="checkLanguages($event)" (keyup)="checkLanguages($event)">
+                  <mat-autocomplete #autoLanguages="matAutocomplete" [displayWith]="displayFn"
+                    (optionSelected)="addLanguage($event)">
+                    @for(a of languages_db(); track idx; let idx = $index){
+                      <mat-option [value]="a">
+                        {{a}}
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                </mat-form-field>
+                <!-- <legend>{{ 'field.languages' | translate }}</legend>
+                @for(copy of _letter.hiko.copies; track idx; let idx = $index){
+                  <mat-form-field class="app-fxFlex app-ml-3">
+                    <mat-label>{{ 'field.languages' | translate}}</mat-label>
+                    <input matInput [(ngModel)]="_letter.hiko.languages" name="languages">
+                  </mat-form-field>
+                  } -->
+                </fieldset>
+                <!-- <div class="app-fxLayout app-row app-center-v app-mb-4">
+                <mat-form-field class="app-fxFlex app-ml-3">
+                  <mat-label>{{ 'field.signature' | translate}}</mat-label>
+                  <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
+                  <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
+                </mat-form-field>
+              </div> -->
+              <fieldset class="app-center-v app-mb-4">
+                <legend>{{ 'fieldset.content' | translate }}</legend>
+                <div class="app-mb-4">
+                  <mat-form-field class="app-w-100">
+                    <mat-label>{{ 'field.incipit' | translate}}</mat-label>
+                    <input matInput [(ngModel)]="_letter.hiko.incipit" name="incipit"><span matSuffix></span>
+                    <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'incipit' }"></ng-container>
+                  </mat-form-field>
+                </div>
+                <div class="app-mb-4">
+                  <mat-form-field class="app-w-100">
+                    <mat-label>{{ 'field.explicit' | translate}}</mat-label>
+                    <input matInput [(ngModel)]="_letter.hiko.explicit" name="explicit"><span matSuffix></span>
+                    <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'explicit' }"></ng-container>
+                  </mat-form-field>
+                </div>
+                <div class="app-mb-4">
+                  <mat-form-field class="app-w-100">
+                    <mat-label>{{ 'field.abstract_cs' | translate}}</mat-label>
+                    <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.cs" name="abstract_cs" #abstract_cs></textarea>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <mat-form-field class="app-w-100">
+                    <mat-label>{{ 'field.abstract_en' | translate}}</mat-label>
+                    <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.en" name="abstract_en" #abstract_en></textarea>
+                  </mat-form-field>
+                </div>
+              </fieldset>
+              <fieldset class="app-mb-4">
+                <legend>{{ 'fieldset.copies' | translate }}</legend>
+                @for(copy of _letter.hiko.copies; track idx; let idx = $index){
+                  <fieldset>
+                    <legend> #{{ idx + 1 }}. </legend>
+                    @if (idx > 0) {
+                      <button mat-icon-button (click)="removeCopy(idx)"
+                        [matTooltip]="'action.remove_copy' | translate"><mat-icon>delete_forever</mat-icon></button>
+                      }
+                      <div class="app-fxLayout app-row app-center-v app-mb-4">
+                        <mat-form-field class="app-fxFlex">
+                          <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
+                          <input matInput [(ngModel)]="copy.repository.label" [name]="'copies_repository_' + idx"
+                            [matAutocomplete]="autoRepos" (focus)="getLocations(copy.repository.label, 'repository')"
+                            (change)="getLocations(copy.repository.label, 'repository')"
+                            (keyup)="getLocations(copy.repository.label, 'repository')"><span matSuffix></span>
+                            <ng-container matSuffix
+                            *ngTemplateOutlet="icons; context:{ field: 'copies_repository_' + idx }"></ng-container>
+                            <mat-autocomplete #autoRepos="matAutocomplete">
+                              @for(a of repositories; track idx; let idx = $index){
+                                <mat-option [value]="a.name">
+                                  {{a.name}}
+                                </mat-option>
+                              }
+                            </mat-autocomplete>
+                          </mat-form-field>
+                          <mat-form-field class="app-fxFlex app-ml-3">
+                            <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
+                            <input matInput [(ngModel)]="copy.archive.label" name="copies_archive" [matAutocomplete]="autoArchives"
+                              (change)="getLocations(copy.archive.label, 'archive')" (keyup)="getLocations(copy.archive.label, 'archive')"><span
+                            matSuffix></span>
+                            <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_archive_' + idx }"></ng-container>
+                            <mat-autocomplete #autoArchives="matAutocomplete">
+                              @for(a of archives; track idx; let idx = $index){
+                                <mat-option [value]="a.name">
+                                  {{a.name}}
+                                </mat-option>
+                              }
+                            </mat-autocomplete>
+                          </mat-form-field>
+                          <mat-form-field class="app-fxFlex app-ml-3">
+                            <mat-label>{{ 'field.copies_collection' | translate}}</mat-label>
+                            <input matInput [(ngModel)]="copy.collection.label" name="copies_collection" [matAutocomplete]="autoCollections"
+                              (change)="getLocations(copy.collection.label, 'collection')"
+                              (keyup)="getLocations(copy.collection.label, 'collection')"><span matSuffix></span>
+                              <ng-container matSuffix
+                              *ngTemplateOutlet="icons; context:{ field: 'copies_collection_' + idx }"></ng-container>
+                              <mat-autocomplete #autoCollections="matAutocomplete">
+                                @for( a of collections; track idx; let idx = $index){
+                                  <mat-option [value]="a.name">
+                                    {{a.name}}
+                                  </mat-option>
+                                }
+                              </mat-autocomplete>
+                            </mat-form-field>
+                            <mat-form-field class="app-fxFlex app-ml-3">
+                              <mat-label>{{ 'field.copies_signature' | translate}}</mat-label>
+                              <input matInput [(ngModel)]="copy.signature" name="copies_signature"><span matSuffix></span>
+                              <ng-container matSuffix
+                              *ngTemplateOutlet="icons; context:{ field: 'copies_signature_' + idx }"></ng-container>
+                            </mat-form-field>
+                          </div>
+                          <div class="app-fxLayout app-row app-center-v app-mb-4">
+                            <mat-form-field class="app-fxFlex">
+                              <mat-label>{{ 'field.manifestation_notes' | translate}}</mat-label>
+                              <textarea rows="2" matInput [(ngModel)]="copy.manifestation_notes" name="manifestation_notes"></textarea>
+                            </mat-form-field>
+                          </div>
+                          <div class="app-fxLayout app-row app-center-v app-mb-4">
+                            <mat-form-field class="app-fxFlex">
+                              <mat-label>{{ 'field.type' | translate}}</mat-label>
+                              <!-- <input matInput [(ngModel)]="copy.type" name="copies_type"><span matSuffix></span>
+                              <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_type_' + idx }"></ng-container> -->
+                              <mat-select [(ngModel)]="copy.type" name="copies_type">
+                                @for(a of config.copyValues.type; track $index){
+                                  <mat-option [value]="a">{{ 'copyValues.type.' + a | translate}}</mat-option>
+                                }
+                              </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="app-fxFlex app-ml-3">
+                              <mat-label>{{ 'field.preservation' | translate}}</mat-label>
+                              <!-- <input matInput [(ngModel)]="copy.preservation" name="copies_preservation"><span matSuffix></span>
+                              <ng-container matSuffix
+                              *ngTemplateOutlet="icons; context:{ field: 'copies_preservation_' + idx }"></ng-container> -->
+                              <mat-select [(ngModel)]="copy.preservation" name="copies_preservation">
+                                @for(a of config.copyValues.preservation; track $index){
+                                  <mat-option [value]="a">{{ 'copyValues.preservation.' + a | translate}}</mat-option>
+                                }
+                              </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="app-fxFlex app-ml-3">
+                              <mat-label>{{ 'field.copy' | translate}}</mat-label>
+                              <!-- <input matInput [(ngModel)]="copy.copy" name="copies_copy"><span matSuffix></span>
+                              <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_copy_' + idx }"></ng-container> -->
+                              <mat-select [(ngModel)]="copy.copy" name="copies_copy">
+                                @for(a of config.copyValues.copy; track $index){
+                                  <mat-option [value]="a">{{ 'copyValues.copy.' + a | translate}}</mat-option>
+                                }
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+                        </fieldset>
+                      }
+                      <button mat-flat-button color="primary" (click)="addCopy()" [matTooltip]="'action.add_copy' | translate"
+                        class="app-mt-4 app-mb-2">
+                        <mat-icon>queue</mat-icon>{{ 'action.add_copy' | translate }}
+                      </button>
+                    </fieldset>
+                    <div class="app-mb-4">
+                      <mat-form-field class="app-w-100">
+                        <mat-label>{{ 'field.notes_private' | translate}}</mat-label>
+                        <textarea rows="5" matInput [(ngModel)]="_letter.hiko.notes_private" name="notes_private"
+                        #notes_private></textarea>
+                      </mat-form-field>
+                    </div>
+                    <fieldset class="app-center-v app-mb-4">
+                      <legend>{{ 'fieldset.keywords' | translate }}</legend>
+                      <div class="app-mb-4">
+                        <button mat-flat-button color="primary" (click)="findKeywords()" class="app-mr-2">
+                          <mat-icon class="material-icons-outlined">tag</mat-icon>{{ 'action.find_keywords' | translate }}
+                        </button>
+                      </div>
+                      <div>{{ 'fieldset.detected_keywords' | translate }}</div>
+                      <div class="app-mb-4">
+                        @for(k of _letter.detected_keywords; track k.id; let idx = $index){
+                          <mat-checkbox [id]="k.id" [name]="k.id" type="checkbox" [(ngModel)]="k.selected">{{
+                          k.name }} ({{ k.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
+                        }
+                      </div>
+                      <div>{{ 'fieldset.user_keywords' | translate }}</div>
+                      <mat-chip-set>
+                        @for (keyword of keywords(); track keyword) {
+                          <mat-chip (removed)="removeKeyword(keyword.id)">
+                            {{keyword.name}} ({{ keyword.tenant === 'global' ? 'global' : 'local' }})
+                            <button matChipRemove [attr.aria-label]="'remove keyword'">
+                              <mat-icon>cancel</mat-icon>
+                            </button>
+                          </mat-chip>
+                        }
+                      </mat-chip-set>
+                      <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+                        <mat-label>{{ 'field.new_keyword' | translate }}</mat-label>
+                        <input matInput [(ngModel)]="keyword" name="keywords" [matAutocomplete]="autoKeywords"
+                          (focus)="checkKeywords($event, false)" (keyup)="checkKeywords($event, true)">
+                          <mat-autocomplete #autoKeywords="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addKeyword($event)">
+                            @for(a of keywords_db(); track idx; let idx = $index){
+                              <mat-option [value]="a">
+                                {{a.name}} ({{ a.tenant === 'global' ? 'global' : 'local' }})
+                              </mat-option>
+                            }
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </fieldset>
+                      <fieldset class="app-center-v app-mb-4">
+                        <legend>{{ 'fieldset.mentioned' | translate }}</legend>
+                        <div class="app-mb-4">
+                          <button mat-flat-button color="primary" (click)="findIdentities()" class="app-mr-2">
+                            <mat-icon class="material-icons-outlined">person</mat-icon>{{ 'action.find_mentioned' | translate }}
+                          </button>
+                        </div>
+                        <div>{{ 'fieldset.detected_mentioned' | translate }}</div>
+                        <div class="app-mb-4">
+                          @for(a of _letter.detected_mentioned; track a.id; let idx = $index){
+                            <mat-checkbox  [id]="a.id+''" [name]="a.id+''" type="checkbox" [(ngModel)]="a.selected">{{
+                            a.name }} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }})} ({{ a.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
+                          }
+                        </div>
+                        <div>{{ 'fieldset.user_mentioned' | translate }}</div>
+                        <mat-chip-set>
+                          @for (m of mentioned(); track keyword) {
+                            <mat-chip (removed)="removeMentioned(m.id)">
+                              {{m.name}} @if(m.birth_year){({{ m.birth_year }} - {{ m.death_year }})} ({{ m.tenant === 'global' ? 'global' : 'local' }})
+                              <button matChipRemove [attr.aria-label]="'remove mentioned'">
+                                <mat-icon>cancel</mat-icon>
+                              </button>
+                            </mat-chip>
+                          }
+                        </mat-chip-set>
+                        <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
+                          <mat-label>{{ 'field.new_mentioned' | translate }}</mat-label>
+                          <input matInput [(ngModel)]="mentioned1" name="mentioned1"  [matAutocomplete]="autoIdentities"
+                            (focus)="checkMentioned($event, false)" (keyup)="checkMentioned($event, true)">
+                            <mat-autocomplete #autoIdentities="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addMentioned($event)">
+                              @for(a of mentioned_db(); track idx; let idx = $index){
+                                <mat-option [value]="a">
+                                  {{a.name}} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }})} ({{ a.tenant === 'global' ? 'global' : 'local' }})
+                                </mat-option>
+                              }
+                            </mat-autocomplete>
+                          </mat-form-field>
+                        </fieldset>
+                        <!-- <mat-tab-group>
+                        <mat-tab label="HIKO">
+                          <div class="app-pt-4 app-pb-4 app-pr-4">
+                            @for(entity of _letter.entities; track entity.id; let idx = $index){
+                              <div>
+                                <mat-checkbox [id]="entity.id" [name]="entity.id" type="checkbox" [(ngModel)]="entity.selected">{{
+                                entity.name }} ({{ entity.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
+                              </div>
+                            }
+                          </div>
+                        </mat-tab>
+                        <mat-tab label="NameTag">
+                          <div class="app-pt-4 app-pb-4 app-pr-4">
+                            @for( entity of _letter.nametags; track idx; let idx = $index){
+                              <div>
+                                <mat-checkbox [id]="'nametag_' + idx" [name]="'nametag_' + idx" type="checkbox"
+                                [(ngModel)]="entity.selected">{{entity.text}} ({{ 'tags.' + entity.type | translate}})</mat-checkbox>
+                              </div>
+                            }
+                          </div>
+                        </mat-tab>
+                      </mat-tab-group> -->
+                    </div>
+                  }
 
-        <mat-form-field class="app-fxFlex app-ml-3">
-          <mat-label>{{ 'field.recipient_db' | translate}}</mat-label>
-          <input matInput [value]="displayFn(recipient)" name="recipient_db" [id]="'recipient_db_' + idx"
-            [matAutocomplete]="autoRecipient" (focus)="checkAuthors($event, true, recipients_db)"
-            (keyup)="checkAuthors($event, true, recipients_db)">
-          <mat-autocomplete #autoRecipient="matAutocomplete" [displayWith]="displayFn"
-            (optionSelected)="setRecipientDb($event, idx)">
-            @for(a of recipients_db(); track a.id; let idx = $index){
-            <mat-option [value]="a">
-              {{a.name}} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }})} ({{ a.tenant === 'global' ? 'global' : 'local' }})
-            </mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-        <mat-form-field class="app-fxFlex app-ml-3">
-          <mat-label>{{ 'field.salutation' | translate}}</mat-label>
-          <input matInput [(ngModel)]="recipient.salutation" name="salutation"><span matSuffix></span>
-          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'salutation' }"></ng-container>
-        </mat-form-field>
-      </div>
-    </fieldset>
-    }
-
-    <button mat-flat-button color="primary" (click)="addRecipient()" [matTooltip]="'action.add_recipient' | translate"
-      class="app-mt-4 app-mb-2">
-      <mat-icon>queue</mat-icon>{{ 'action.add_recipient' | translate }}
-    </button>
-  </fieldset>
-
-
-  <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
-    <legend>{{ 'fieldset.origin' | translate }}</legend>
-    <mat-form-field class="app-fxFlex">
-      <mat-label>{{ 'field.origin_marked' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.origin" name="origin" (change)="checkOriginDb()" /><span matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'origin' }"></ng-container>
-    </mat-form-field>
-
-    <mat-form-field class="app-fxFlex app-ml-3">
-      <mat-label>{{ 'field.origin_db' | translate }}</mat-label>
-      <input matInput [(ngModel)]="_letter.origins[0]" name="origin_db" id="origin_db" [matAutocomplete]="autoOrigin"
-        (focus)="checkPlaces(_letter.origin, false, origins_db)" (keyup)="checkPlaces($event, true, origins_db)">
-      <mat-autocomplete #autoOrigin="matAutocomplete" [displayWith]="displayFn">
-        @for(a of origins_db(); track idx; let idx = $index){
-        <mat-option [value]="a">
-          {{ a.display }}
-        </mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-  </fieldset>
-
-  <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
-    <legend>{{ 'fieldset.destination' | translate }}</legend>
-    <mat-form-field class="app-fxFlex">
-      <mat-label>{{ 'field.destination_marked' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.destination" name="destination" (change)="checkDestinationDb()"><span
-        matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'destination' }"></ng-container>
-    </mat-form-field>
-
-    <mat-form-field class="app-fxFlex app-ml-3">
-      <mat-label>{{ 'field.destination_db' | translate }}</mat-label>
-      <input matInput [(ngModel)]="_letter.destinations[0]" name="destination_db" id="destination_db"
-        [matAutocomplete]="autodestination" (focus)="checkPlaces(_letter.destination, false, destinations_db)"
-        (keyup)="checkPlaces($event, true, destinations_db)">
-      <mat-autocomplete #autodestination="matAutocomplete" [displayWith]="displayFn">
-        @for(a of destinations_db(); track idx; let idx = $index){
-        <mat-option [value]="a">{{ a.display }}
-        </mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-  </fieldset>
-
-  <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
-    <legend>{{ 'fieldset.date' | translate }}</legend>
-    <mat-form-field class="app-fxFlex app-calendar">
-      <mat-label>{{ 'field.date' | translate}}</mat-label>
-      <input matInput [matDatepicker]="dp2" [placeholder]="'field.date' | translate" [formControl]="datum"
-        (dateChange)="setDatum()">
-      <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
-      <mat-datepicker #dp2 (monthSelected)="setMonthAndYear($event, dp2, datum)"
-        (yearSelected)="setMonthAndYear($event, dp2, datum)" startView="multi-year"></mat-datepicker>
-    </mat-form-field>
-
-    <mat-form-field class="app-fxFlex app-ml-3">
-      <mat-label>{{ 'field.date_marked' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.hiko.date_marked" id="date_marked" name="date_marked"><span matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'date_marked' }"></ng-container>
-    </mat-form-field>
-  </fieldset>
-
-
-  <fieldset class="app-fxLayout app-row app-center-v app-mb-4">
-    <legend>{{ 'fieldset.languages' | translate }}</legend>
-    <mat-chip-set class="app-fxFlex">
-      @for (language of languages(); track language) {
-      <mat-chip (removed)="removeLang(language)">
-        {{language}}
-        <button matChipRemove [attr.aria-label]="'remove language'">
-          <mat-icon>cancel</mat-icon>
-        </button>
-      </mat-chip>
-      }
-    </mat-chip-set>
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-      <mat-label>{{ 'field.new_language' | translate }}</mat-label>
-      <input matInput [(ngModel)]="language" name="languages" id="languages" [matAutocomplete]="autoLanguages"
-        (focus)="checkLanguages($event)" (keyup)="checkLanguages($event)">
-      <mat-autocomplete #autoLanguages="matAutocomplete" [displayWith]="displayFn"
-        (optionSelected)="addLanguage($event)">
-        @for(a of languages_db(); track idx; let idx = $index){
-        <mat-option [value]="a">
-          {{a}}
-        </mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-
-
-    <!-- <legend>{{ 'field.languages' | translate }}</legend>
-    @for(copy of _letter.hiko.copies; track idx; let idx = $index){
-    <mat-form-field class="app-fxFlex app-ml-3">
-      <mat-label>{{ 'field.languages' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.hiko.languages" name="languages">
-    </mat-form-field>
-  } -->
-  </fieldset>
-
-  <!-- <div class="app-fxLayout app-row app-center-v app-mb-4">
-    
-    <mat-form-field class="app-fxFlex app-ml-3">
-      <mat-label>{{ 'field.signature' | translate}}</mat-label>
-      <input matInput [(ngModel)]="_letter.signature" name="signature"><span matSuffix></span>
-      <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'signature' }"></ng-container>
-    </mat-form-field>
-  </div> -->
-
-
-  <fieldset class="app-center-v app-mb-4">
-    <legend>{{ 'fieldset.content' | translate }}</legend>
-    <div class="app-mb-4">
-      <mat-form-field class="app-w-100">
-        <mat-label>{{ 'field.incipit' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.hiko.incipit" name="incipit"><span matSuffix></span>
-        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'incipit' }"></ng-container>
-      </mat-form-field>
-    </div>
-
-    <div class="app-mb-4">
-      <mat-form-field class="app-w-100">
-        <mat-label>{{ 'field.explicit' | translate}}</mat-label>
-        <input matInput [(ngModel)]="_letter.hiko.explicit" name="explicit"><span matSuffix></span>
-        <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'explicit' }"></ng-container>
-      </mat-form-field>
-    </div>
-
-    <div class="app-mb-4">
-      <mat-form-field class="app-w-100">
-        <mat-label>{{ 'field.abstract_cs' | translate}}</mat-label>
-        <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.cs" name="abstract_cs" #abstract_cs></textarea>
-      </mat-form-field>
-    </div>
-
-    <div>
-      <mat-form-field class="app-w-100">
-        <mat-label>{{ 'field.abstract_en' | translate}}</mat-label>
-        <textarea rows="5" matInput [(ngModel)]="_letter.hiko.abstract.en" name="abstract_en" #abstract_en></textarea>
-      </mat-form-field>
-    </div>
-  </fieldset>
-
-  <fieldset class="app-mb-4">
-    <legend>{{ 'fieldset.copies' | translate }}</legend>
-    @for(copy of _letter.hiko.copies; track idx; let idx = $index){
-    <fieldset>
-      <legend> #{{ idx + 1 }}. </legend>
-      <button *ngIf="idx > 0" mat-icon-button (click)="removeCopy(idx)"
-        [matTooltip]="'action.remove_copy' | translate"><mat-icon>delete_forever</mat-icon></button>
-      <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex">
-          <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
-          <input matInput [(ngModel)]="copy.repository.label" [name]="'copies_repository_' + idx"
-            [matAutocomplete]="autoRepos" (focus)="getLocations(copy.repository.label, 'repository')"
-            (change)="getLocations(copy.repository.label, 'repository')"
-            (keyup)="getLocations(copy.repository.label, 'repository')"><span matSuffix></span>
-          <ng-container matSuffix
-            *ngTemplateOutlet="icons; context:{ field: 'copies_repository_' + idx }"></ng-container>
-          <mat-autocomplete #autoRepos="matAutocomplete">
-            @for(a of repositories; track idx; let idx = $index){
-            <mat-option [value]="a.name">
-              {{a.name}}
-            </mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-
-        <mat-form-field class="app-fxFlex app-ml-3">
-          <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
-          <input matInput [(ngModel)]="copy.archive.label" name="copies_archive" [matAutocomplete]="autoArchives"
-            (change)="getLocations(copy.archive.label, 'archive')" (keyup)="getLocations(copy.archive.label, 'archive')"><span
-            matSuffix></span>
-          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_archive_' + idx }"></ng-container>
-          <mat-autocomplete #autoArchives="matAutocomplete">
-            @for(a of archives; track idx; let idx = $index){
-            <mat-option [value]="a.name">
-              {{a.name}}
-            </mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-
-        <mat-form-field class="app-fxFlex app-ml-3">
-          <mat-label>{{ 'field.copies_collection' | translate}}</mat-label>
-          <input matInput [(ngModel)]="copy.collection.label" name="copies_collection" [matAutocomplete]="autoCollections"
-            (change)="getLocations(copy.collection.label, 'collection')"
-            (keyup)="getLocations(copy.collection.label, 'collection')"><span matSuffix></span>
-          <ng-container matSuffix
-            *ngTemplateOutlet="icons; context:{ field: 'copies_collection_' + idx }"></ng-container>
-          <mat-autocomplete #autoCollections="matAutocomplete">
-            @for( a of collections; track idx; let idx = $index){
-            <mat-option [value]="a.name">
-              {{a.name}}
-            </mat-option>
-            }
-          </mat-autocomplete>
-        </mat-form-field>
-
-        <mat-form-field class="app-fxFlex app-ml-3">
-          <mat-label>{{ 'field.copies_signature' | translate}}</mat-label>
-          <input matInput [(ngModel)]="copy.signature" name="copies_signature"><span matSuffix></span>
-          <ng-container matSuffix
-            *ngTemplateOutlet="icons; context:{ field: 'copies_signature_' + idx }"></ng-container>
-        </mat-form-field>
-      </div>
-
-      <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex">
-          <mat-label>{{ 'field.manifestation_notes' | translate}}</mat-label>
-          <textarea rows="2" matInput [(ngModel)]="copy.manifestation_notes" name="manifestation_notes"></textarea>
-        </mat-form-field>
-      </div>
-
-      <div class="app-fxLayout app-row app-center-v app-mb-4">
-        <mat-form-field class="app-fxFlex">
-          <mat-label>{{ 'field.type' | translate}}</mat-label>
-          <!-- <input matInput [(ngModel)]="copy.type" name="copies_type"><span matSuffix></span>
-          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_type_' + idx }"></ng-container> -->
-          <mat-select [(ngModel)]="copy.type" name="copies_type">
-            @for(a of config.copyValues.type; track $index){
-            <mat-option [value]="a">{{ 'copyValues.type.' + a | translate}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="app-fxFlex app-ml-3">
-          <mat-label>{{ 'field.preservation' | translate}}</mat-label>
-          <!-- <input matInput [(ngModel)]="copy.preservation" name="copies_preservation"><span matSuffix></span>
-          <ng-container matSuffix
-            *ngTemplateOutlet="icons; context:{ field: 'copies_preservation_' + idx }"></ng-container> -->
-
-          <mat-select [(ngModel)]="copy.preservation" name="copies_preservation">
-            @for(a of config.copyValues.preservation; track $index){
-            <mat-option [value]="a">{{ 'copyValues.preservation.' + a | translate}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="app-fxFlex app-ml-3">
-          <mat-label>{{ 'field.copy' | translate}}</mat-label>
-          <!-- <input matInput [(ngModel)]="copy.copy" name="copies_copy"><span matSuffix></span>
-          <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_copy_' + idx }"></ng-container> -->
-
-          <mat-select [(ngModel)]="copy.copy" name="copies_copy">
-            @for(a of config.copyValues.copy; track $index){
-            <mat-option [value]="a">{{ 'copyValues.copy.' + a | translate}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </fieldset>
-    }
-    <button mat-flat-button color="primary" (click)="addCopy()" [matTooltip]="'action.add_copy' | translate"
-      class="app-mt-4 app-mb-2">
-      <mat-icon>queue</mat-icon>{{ 'action.add_copy' | translate }}
-    </button>
-  </fieldset>
-
-
-
-  <div class="app-mb-4">
-    <mat-form-field class="app-w-100">
-      <mat-label>{{ 'field.notes_private' | translate}}</mat-label>
-      <textarea rows="5" matInput [(ngModel)]="_letter.hiko.notes_private" name="notes_private"
-        #notes_private></textarea>
-    </mat-form-field>
-  </div>
-
-
-  <fieldset class="app-center-v app-mb-4">
-    <legend>{{ 'fieldset.keywords' | translate }}</legend>
-    <div class="app-mb-4">
-    <button mat-flat-button color="primary" (click)="findKeywords()" class="app-mr-2">
-      <mat-icon class="material-icons-outlined">tag</mat-icon>{{ 'action.find_keywords' | translate }}
-    </button>
-    </div>
-    <div>{{ 'fieldset.detected_keywords' | translate }}</div>
-    <div class="app-mb-4">
-      @for(k of _letter.detected_keywords; track k.id; let idx = $index){
-      <mat-checkbox [id]="k.id" [name]="k.id" type="checkbox" [(ngModel)]="k.selected">{{
-        k.name }} ({{ k.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
-      }
-    </div>
-    
-    <div>{{ 'fieldset.user_keywords' | translate }}</div>
-    <mat-chip-set>
-      @for (keyword of keywords(); track keyword) {
-      <mat-chip (removed)="removeKeyword(keyword.id)">
-        {{keyword.name}} ({{ keyword.tenant === 'global' ? 'global' : 'local' }})
-        <button matChipRemove [attr.aria-label]="'remove keyword'">
-          <mat-icon>cancel</mat-icon>
-        </button>
-      </mat-chip>
-      }
-    </mat-chip-set>
-
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-      <mat-label>{{ 'field.new_keyword' | translate }}</mat-label>
-      <input matInput [(ngModel)]="keyword" name="keywords" [matAutocomplete]="autoKeywords"
-        (focus)="checkKeywords($event, false)" (keyup)="checkKeywords($event, true)">
-      <mat-autocomplete #autoKeywords="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addKeyword($event)">
-        @for(a of keywords_db(); track idx; let idx = $index){
-        <mat-option [value]="a">
-          {{a.name}} ({{ a.tenant === 'global' ? 'global' : 'local' }})
-        </mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-  </fieldset>
-
-  
-  <fieldset class="app-center-v app-mb-4">
-    <legend>{{ 'fieldset.mentioned' | translate }}</legend>
-    <div class="app-mb-4">
-    <button mat-flat-button color="primary" (click)="findIdentities()" class="app-mr-2">
-      <mat-icon class="material-icons-outlined">person</mat-icon>{{ 'action.find_mentioned' | translate }}
-    </button>
-    </div>
-    <div>{{ 'fieldset.detected_mentioned' | translate }}</div>
-    <div class="app-mb-4">
-      @for(a of _letter.detected_mentioned; track a.id; let idx = $index){
-      <mat-checkbox  [id]="a.id+''" [name]="a.id+''" type="checkbox" [(ngModel)]="a.selected">{{
-        a.name }} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }})} ({{ a.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
-      }
-    </div>
-    
-    <div>{{ 'fieldset.user_mentioned' | translate }}</div>
-    <mat-chip-set>
-      @for (m of mentioned(); track keyword) {
-      <mat-chip (removed)="removeMentioned(m.id)">
-        {{m.name}} @if(m.birth_year){({{ m.birth_year }} - {{ m.death_year }})} ({{ m.tenant === 'global' ? 'global' : 'local' }})
-        <button matChipRemove [attr.aria-label]="'remove mentioned'">
-          <mat-icon>cancel</mat-icon>
-        </button>
-      </mat-chip>
-      }
-    </mat-chip-set>
-
-    <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
-      <mat-label>{{ 'field.new_mentioned' | translate }}</mat-label>
-      <input matInput [(ngModel)]="mentioned1" name="mentioned1"  [matAutocomplete]="autoIdentities"
-        (focus)="checkMentioned($event, false)" (keyup)="checkMentioned($event, true)">
-      <mat-autocomplete #autoIdentities="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addMentioned($event)">
-        @for(a of mentioned_db(); track idx; let idx = $index){
-        <mat-option [value]="a">
-          {{a.name}} @if(a.birth_year){({{ a.birth_year }} - {{ a.death_year }})} ({{ a.tenant === 'global' ? 'global' : 'local' }})
-        </mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-  </fieldset>
-
-
-  <!-- <mat-tab-group>
-    <mat-tab label="HIKO">
-      <div class="app-pt-4 app-pb-4 app-pr-4">
-        @for(entity of _letter.entities; track entity.id; let idx = $index){
-        <div>
-          <mat-checkbox [id]="entity.id" [name]="entity.id" type="checkbox" [(ngModel)]="entity.selected">{{
-            entity.name }} ({{ entity.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
-        </div>
-        }
-      </div>
-    </mat-tab>
-    <mat-tab label="NameTag">
-      <div class="app-pt-4 app-pb-4 app-pr-4">
-        @for( entity of _letter.nametags; track idx; let idx = $index){
-        <div>
-          <mat-checkbox [id]="'nametag_' + idx" [name]="'nametag_' + idx" type="checkbox"
-            [(ngModel)]="entity.selected">{{entity.text}} ({{ 'tags.' + entity.type | translate}})</mat-checkbox>
-        </div>
-        }
-      </div>
-    </mat-tab>
-  </mat-tab-group> -->
-</div>
-
-<ng-template #icons let-field="field">
-  <mat-icon class="app-suffix app-color-block" (click)="setField(field, 'block', $event)"
-    [matTooltip]="'action.set_block' | translate">menu_open</mat-icon>
-  <mat-icon class="app-suffix app-color-line" (click)="setField(field, 'line', $event)"
-    [matTooltip]="'action.set_line' | translate">menu_open</mat-icon>
-  <mat-icon class="app-suffix app-color-word" (click)="setField(field, 'word', $event)"
-    [matTooltip]="'action.set_word' | translate">menu_open</mat-icon>
-</ng-template>
+                  <ng-template #icons let-field="field">
+                    <mat-icon class="app-suffix app-color-block" (click)="setField(field, 'block', $event)"
+                    [matTooltip]="'action.set_block' | translate">menu_open</mat-icon>
+                    <mat-icon class="app-suffix app-color-line" (click)="setField(field, 'line', $event)"
+                    [matTooltip]="'action.set_line' | translate">menu_open</mat-icon>
+                    <mat-icon class="app-suffix app-color-word" (click)="setField(field, 'word', $event)"
+                    [matTooltip]="'action.set_word' | translate">menu_open</mat-icon>
+                  </ng-template>

@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,8 +14,7 @@ import { AppService } from 'src/app/app.service';
   templateUrl: './translation-dialog.component.html',
   styleUrls: ['./translation-dialog.component.scss'],
   standalone: true,
-  imports: [FormsModule, TranslateModule, NgIf,
-    MatButtonModule, MatIconModule, MatDialogModule, MatProgressSpinnerModule, MatProgressBarModule]
+  imports: [FormsModule, TranslateModule, MatButtonModule, MatIconModule, MatDialogModule, MatProgressSpinnerModule, MatProgressBarModule]
 })
 export class TranslationDialogComponent {
 

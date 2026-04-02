@@ -1,4 +1,4 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,11 +32,7 @@ export class Location {
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
   standalone: true,
-  imports: [FormsModule, AngularSplitModule, NgIf, NgFor, RouterModule, TranslateModule,
-    MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule,
-    MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule,
-    ReactiveFormsModule,
-    AsyncPipe]
+  imports: [FormsModule, AngularSplitModule, RouterModule, TranslateModule, MatTabsModule, MatButtonModule, MatFormFieldModule, MatSelectModule, MatTooltipModule, MatInputModule, MatIconModule, MatDialogModule, MatListModule, MatAutocompleteModule, ReactiveFormsModule, AsyncPipe]
 })
 export class SettingsComponent {
 

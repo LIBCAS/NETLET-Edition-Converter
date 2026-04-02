@@ -24,7 +24,7 @@ hr {
 
 fieldset {
   border: 1px solid var(--app-gray-4);
-  border-radius: var(--mdc-shape-small, 4px);
+  border-radius: var(--mat-shape-small, 4px);
   min-inline-size: auto;
 
   &:hover {
@@ -197,9 +197,9 @@ fieldset {
 
   .mat-mdc-icon-button {
     &.mat-mdc-button-base {
-      --mdc-icon-button-state-layer-size: var(--app-controlbar-height);
-      width: var(--mdc-icon-button-state-layer-size);
-      height: var(--mdc-icon-button-state-layer-size);
+      --mat-icon-button-state-layer-size: var(--app-controlbar-height);
+      width: var(--mat-icon-button-state-layer-size);
+      height: var(--mat-icon-button-state-layer-size);
     }
 
     &.app-active {
@@ -226,7 +226,7 @@ fieldset {
   input {
     @extend .app-pl-4, .app-pr-4, .app-ml-2;
     border: 1px solid;
-    border-color: var(--mdc-outlined-text-field-outline-color);
+    border-color: var(--mat-form-field-outlined-outline-color);
     height: var(--app-paginator-form-field-height);
     border-radius: 4px;
     min-width: 60px;
@@ -280,15 +280,15 @@ fieldset {
 
 .mat-mdc-snack-bar-container {
   &.app-snack-error {
-    --mdc-snackbar-container-color: var(--app-color-warning);
+    --mat-snackbar-container-color: var(--app-color-warning);
     --mat-mdc-snack-bar-button-color: #fff;
-    --mdc-snackbar-supporting-text-color: #fff;
+    --mat-snackbar-supporting-text-color: #fff;
   }
 
   &.app-snackbar-success {
-    --mdc-snackbar-container-color: var(--app-color-success);
+    --mat-snackbar-container-color: var(--app-color-success);
     --mat-mdc-snack-bar-button-color: #fff;
-    --mdc-snackbar-supporting-text-color: #fff;
+    --mat-snackbar-supporting-text-color: #fff;
   }
 
   .mat-mdc-snack-bar-action {
