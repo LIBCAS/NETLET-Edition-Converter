@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageTypeSpecifier;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

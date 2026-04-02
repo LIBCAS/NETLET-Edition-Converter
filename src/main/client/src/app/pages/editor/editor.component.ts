@@ -3,7 +3,7 @@ import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveF
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AppService } from 'src/app/app.service';
 import { AltoBlock, AltoLine, AltoString } from 'src/app/shared/alto';
-import { CopyHIKO, Keyword, Letter, LetterCopy, LetterHIKO, PlaceMeta } from 'src/app/shared/letter';
+import { CopyHIKO, Letter, LetterHIKO } from 'src/app/shared/letter';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -186,20 +186,20 @@ export class EditorComponent {
       this.letter.hiko.authors = [...t.authors];
     }
     if (this.letter.hiko.authors?.length === 0) {
-      this.letter.hiko.authors = [{ id: -1, marked: '', name: '', tenant: this.state.user.tenant }];
+      this.letter.hiko.authors = [{ id: -1, scope: 'local', marked: '', name: '' }];
     }
 
     if (t.recipients) {
       this.letter.hiko.recipients = [...t.recipients];
     }
     if (this.letter.hiko.recipients?.length === 0) {
-      this.letter.hiko.recipients = [{ id: -1, marked: '', name: '', tenant: this.state.user.tenant }];
+      this.letter.hiko.recipients = [{ id: -1, scope: 'local', marked: '', name: '' }];
     }
 
-    this.letter.origins.push({ name: t.origin_db?.name, marked: t.origin_db?.marked, id: t.origin_db?.id });
+    this.letter.origins.push({ name: t.origin_db?.name, marked: t.origin_db?.marked, id: t.origin_db?.id, scope: 'local' });
     this.letter.origin = t.origin_marked;
 
-    this.letter.destinations.push({ name: t.destination_db?.name, marked: t.destination_db?.marked, id: t.destination_db?.id });
+    this.letter.destinations.push({ name: t.destination_db?.name, marked: t.destination_db?.marked, id: t.destination_db?.id, scope: 'local' });
     this.letter.destination = t.destination_marked;
 
     if (t.keywords) {
@@ -210,7 +210,7 @@ export class EditorComponent {
 
     if (t.mentioned) {
       t.mentioned.forEach(m => {
-        this.letter.hiko.mentioned.push(m.id + '');
+        this.letter.hiko.mentioned.push(m);
         this.letter.user_mentioned.push(m);
       });
     }
@@ -284,34 +284,22 @@ export class EditorComponent {
     }
 
     text = this.processReplacements(text);
+
     if (data.field.startsWith('copies_')) {
+    /**
+     * Novy API format nedovoluje
+     * 
       // field format is copies_repository_0
       const parts = data.field.split('_');
       let idx: number = parseInt(parts[2]);
-      // if (!idx) {
-      //   if (this.letter.copies.length === 1) {
-      //     idx = 0
-      //   } else {
-      //     let p = prompt('Copy number?', '1');
-      //     idx = parseInt(p);
-      //     if (!idx ) {
-      //       return;
-      //     } else {
-      //       idx = idx - 1;
-      //     }
-      //   }
-      //     data.field = data.field +'_' + idx;
-
-      // }
-      // console.log(idx, this.letter.copies)
       this.letter.hiko.copies[idx][parts[1] as keyof CopyHIKO] = text;
+
+     */
     } else if (data.append && this.letter[data.field as keyof Letter]) {
       this.letter[data.field as keyof Letter] += ' ' + text;
     } else {
       this.letter[data.field as keyof Letter] = text;
     }
-    // this.letterForm.controls[field].setValue(text);
-
     setTimeout(() => {
 
       const el: HTMLInputElement = document.querySelector('input[name="' + data.field + '"]');
@@ -545,7 +533,7 @@ export class EditorComponent {
 
         if (!this.letter.hiko.copies) {
           this.letter.hiko.copies = [];
-          const copy = new LetterCopy();
+          const copy = new CopyHIKO();
           copy.repository = this.letter['copies_repository'];
           copy.archive = this.letter['copies_archive'];
           copy.collection = this.letter['copies_collection'];
@@ -745,7 +733,7 @@ export class EditorComponent {
       'languages', 'local_keywords', 'global_keywords', 'keywords',
 
       'incipit', 'explicit', 'notes_private', 'notes_public', 'related_resources', 'copies',
-      'copyright', 'status', 'approval', 'action', 'abstract', 'content', 'content_stripped'];
+      'copyright', 'status', 'approval', 'action', 'abstract', 'content'];
 
     fields.forEach(f => {
       this.mergeHIKOField(res, letter, overwrite, f);
@@ -758,75 +746,6 @@ export class EditorComponent {
     letter.hiko.mentioned = mentioned;
     letter.origins = [...origins, ...global_origins];
     letter.destinations = [...destinations, ...global_destinations];
-
-    // letter.hiko = {
-    //   id: res.id,
-    //   uuid: res.uuid,
-    //   created_at: res.created_at,
-    //   updated_at: res.updated_at,
-
-
-    //   date: res.date_computed,
-    //   date_computed: res.date_computed,
-    //   date_year: res.date_year,
-    //   date_month: res.date_month,
-    //   date_day: res.date_day,
-    //   date_is_range: res.date_is_range,
-    //   date_marked: res.date_marked,
-    //   range_day: res.range_day,
-    //   range_month: res.range_month,
-    //   range_year: res.range_year,
-    //   date_inferred: res.date_inferred,
-    //   date_uncertain: res.date_uncertain,
-    //   date_note: res.date_note,
-    //   date_approximate: res.date_approximate,
-    //   authors: authors,
-    //   author_uncertain: res.author_uncertain,
-    //   author_inferred: res.author_inferred,
-    //   author_note: res.author_note,
-
-    //   recipients: recipients,
-    //   recipient_uncertain: res.recipient_uncertain,
-    //   recipient_inferred: res.recipient_inferred,
-    //   recipient_note: res.recipient_note,
-
-    //   mentioned: mentioned,
-    //   people_mentioned_note: res.people_mentioned_note,
-
-    //   origins: origins,
-    //   origin_inferred: res.origin_inferred,
-    //   origin_uncertain: res.origin_uncertain,
-    //   origin_note: res.origin_note,
-
-    //   destinations: destinations,
-    //   destination_inferred: res.destination_inferred,
-    //   destination_uncertain: res.destination_uncertain,
-    //   destination_note: res.destination_note,
-
-    //   languages: res.languages,
-
-    //   local_keywords: res.local_keywords,
-    //   global_keywords: res.global_keywords,
-    //   keywords: res.keywords,
-
-    //   incipit: res.incipit,
-    //   explicit: res.explicit,
-    //   notes_private: res.notes_private,
-    //   notes_public: res.notes_public,
-    //   related_resources: res.related_resources,
-    //   copies: res.copies,
-    //   copyright: res.copyright,
-
-
-    //   status: res.status,
-    //   approval: res.approval,
-    //   action: res.action,
-
-    //   abstract: res.abstract,
-
-    //   content: res.content_stripped,
-    //   content_stripped: res.content_stripped
-    // };
   }
 
   doImportFromHIKO(new_letter: boolean, overwrite: boolean, id: string) {
@@ -865,13 +784,12 @@ export class EditorComponent {
 
     if (this.letter.date) {
       const d: Date = new Date(this.letter.date);
-      this.letter.hiko.date_computed = this.letter.date;
+      this.letter.hiko.dates.date = this.letter.date;
       this.letter.hiko.date_year = d.getFullYear();
       this.letter.hiko.date_month = d.getMonth() + 1;
       this.letter.hiko.date_day = d.getUTCDate();
     }
 
-    this.letter.hiko.content_stripped = this.letter.hiko.content;
 
     if (this.letter.hiko.authors.length > 0 && this.letter.hiko.authors[0].id > -1) {
       //this.letter.hiko.authors[0].marked = this.letter.author;
@@ -890,22 +808,19 @@ export class EditorComponent {
 
     if (this.letter.origins.length > 0 && this.letter.origins[0].id > -1) {
       this.letter.origins[0].marked = this.letter.origin;
-      this.letter.hiko.local_origins = this.letter.origins.filter(o => o.tenant !== 'global').map(o => { return { id: o.id, marked: o.marked } });
-      this.letter.hiko.global_origins = this.letter.origins.filter(o => o.tenant === 'global').map(o => { return { id: o.id, marked: o.marked } });
+      this.letter.hiko.origins = this.letter.origins;
 
     } else {
-      this.letter.hiko.local_origins = [];
-      this.letter.hiko.global_origins = [];
+      this.letter.hiko.origins = [];
     }
 
     if (this.letter.destinations.length > 0 && this.letter.destinations[0].id > -1) {
       this.letter.destinations[0].marked = this.letter.destination;
-      this.letter.hiko.local_destinations = this.letter.destinations.filter(o => o.tenant !== 'global').map(o => { return { id: o.id, marked: o.marked } });
-      this.letter.hiko.global_destinations = this.letter.destinations.filter(o => o.tenant === 'global').map(o => { return { id: o.id, marked: o.marked } });
+
+      this.letter.hiko.destinations = this.letter.destinations;
 
     } else {
-      this.letter.hiko.local_destinations = [];
-      this.letter.hiko.global_destinations = [];
+      this.letter.hiko.destinations = [];
     }
 
     if (this.letter.letter_number) {
@@ -913,20 +828,15 @@ export class EditorComponent {
     }
 
 
-    this.letter.hiko.local_keywords = [
-      ...this.letter.detected_keywords.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }),
-      ...this.letter.user_keywords.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id })
-    ];
-    this.letter.hiko.global_keywords = [
-      ...this.letter.detected_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id }),
-      ...this.letter.user_keywords.filter(o => o.tenant === 'global' && o.selected).map(o => { return o.table_id })
+    this.letter.hiko.keywords = [
+      ...this.letter.detected_keywords,
+      ...this.letter.user_keywords
     ];
 
     console.log(this.letter.detected_mentioned)
-    console.log(this.letter.detected_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }))
     this.letter.hiko.mentioned = [
-      ...this.letter.detected_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id }),
-      ...this.letter.user_mentioned.filter(o => o.tenant !== 'global' && o.selected).map(o => { return o.table_id })
+      ...this.letter.detected_mentioned,
+      ...this.letter.user_mentioned
     ];
     console.log(this.letter.hiko.mentioned)
 

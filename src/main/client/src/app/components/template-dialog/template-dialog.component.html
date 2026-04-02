@@ -235,10 +235,10 @@
         <div class="app-fxLayout app-row app-center-v app-mb-4">
           <mat-form-field class="app-fxFlex" appearance="outline">
             <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
-            <input matInput [(ngModel)]="copy.repository" [name]="'copies_repository'" [matAutocomplete]="autoRepos"
-              (focus)="getLocations(copy.repository, 'repository')"
-              (change)="getLocations(copy.repository, 'repository')"
-              (keyup)="getLocations(copy.repository, 'repository')">
+            <input matInput [(ngModel)]="copy.repository.label" [name]="'copies_repository'" [matAutocomplete]="autoRepos"
+              (focus)="getLocations(copy.repository.label, 'repository')"
+              (change)="getLocations(copy.repository.label, 'repository')"
+              (keyup)="getLocations(copy.repository.label, 'repository')">
             <mat-autocomplete #autoRepos="matAutocomplete">
               @for(a of repositories; track idx; let idx = $index){
               <mat-option [value]="a.name">
@@ -250,8 +250,8 @@
 
           <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
             <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
-            <input matInput [(ngModel)]="copy.archive" name="copies_archive" [matAutocomplete]="autoArchives"
-              (change)="getLocations(copy.archive, 'archive')" (keyup)="getLocations(copy.archive, 'archive')">
+            <input matInput [(ngModel)]="copy.archive.label" name="copies_archive" [matAutocomplete]="autoArchives"
+              (change)="getLocations(copy.archive.label, 'archive')" (keyup)="getLocations(copy.archive.label, 'archive')">
             <mat-autocomplete #autoArchives="matAutocomplete">
               @for(a of archives; track idx; let idx = $index){
               <mat-option [value]="a.name">
@@ -263,9 +263,9 @@
 
           <mat-form-field class="app-fxFlex app-ml-3" appearance="outline">
             <mat-label>{{ 'field.copies_collection' | translate}}</mat-label>
-            <input matInput [(ngModel)]="copy.collection" name="copies_collection" [matAutocomplete]="autoCollections"
-              (change)="getLocations(copy.collection, 'collection')"
-              (keyup)="getLocations(copy.collection, 'collection')">
+            <input matInput [(ngModel)]="copy.collection.label" name="copies_collection" [matAutocomplete]="autoCollections"
+              (change)="getLocations(copy.collection.label, 'collection')"
+              (keyup)="getLocations(copy.collection.label, 'collection')">
             <mat-autocomplete #autoCollections="matAutocomplete">
               @for( a of collections; track idx; let idx = $index){
               <mat-option [value]="a.name">

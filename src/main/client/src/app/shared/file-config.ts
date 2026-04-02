@@ -1,5 +1,5 @@
 import { AltoBlock, AltoLine, AltoString } from "./alto";
-import { AutorDb, CopyHIKO, Identity, Keyword, Letter, PlaceMeta } from "./letter";
+import { CopyHIKO, Identity, Keyword, Letter, Place, PlaceHIKO } from "./letter";
 
 export interface Sort { label: string; field: string; dir: string; entity?: string[] };
 
@@ -21,10 +21,10 @@ export class FileTemplate {
 
 
   origin_marked: string;
-  origin_db: { id: number; marked?: string; name?: string } = {id: -1, name: null};
+  origin_db: Place;
 
   destination_marked: string;
-  destination_db: { id: number; marked?: string; name?: string } = {id: -1, name: null};
+  destination_db: Place;
 
   keywords: Keyword[] = [];
   mentioned: Identity[] = [];
@@ -33,18 +33,6 @@ export class FileTemplate {
   languages: string[] = [];
 
   copies: CopyHIKO[] = [];
-  
-    // preservation: string;
-    // type: string;
-    // copy: string;
-    // manifestation_notes: string;
-    // l_number: string;
-    // repository: string;
-    // archive: string;
-    // collection: string;
-    // ms_manifestation: string;
-    // signature: string;
-    // location_note: string;
 
 
   notes_private: string;

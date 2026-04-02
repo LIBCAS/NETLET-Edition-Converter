@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { AppState } from 'src/app/app-state';
 import { AppService } from 'src/app/app.service';
-import { Keyword, Letter, LetterHIKO } from 'src/app/shared/letter';
+import { Keyword, Letter, LetterHIKO, Identity } from 'src/app/shared/letter';
 import { AppConfiguration } from 'src/app/app-configuration';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { InfoUsageDialogComponent } from '../info-usage-dialog/info-usage-dialog.component';
@@ -55,11 +55,11 @@ export class AnalyzeDialogComponent {
   nametag: string;
   nametags: { pos: number[], text: string, type: string, selected: boolean }[];
 
-  authors_db: { id: number, marked?: string, name?: string }[] = [];
-  author_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1};
+  authors_db: Identity[] = [];
+  author_db: Identity;
   noauthor = {marked:'', id:-1};
-  recipients_db: { id: number, marked?: string, name?: string }[] = [];
-  recipient_db: { id: number, marked?: string, name?: string } = {marked:'', id:-1};
+  recipients_db: Identity[] = [];
+  recipient_db: Identity;
   norecipient = {marked:'', id:-1};
   
     
@@ -335,8 +335,8 @@ export class AnalyzeDialogComponent {
         this.data.letter[k] = this._letterAnalyzed[k];
         // this.data.letter.hiko.authors = [{id: this.author_db.id, marked: this._letter.author, name: this.author_db.name}];
         // this.data.letter.hiko.recipients = [{id: this.recipient_db.id, marked: this._letter.recipient, name: this.recipient_db.name}];
-        this.data.letter.origins = [{id: this.origin_db.id, marked: this._letter.origin, name: this.origin_db.name}];
-        this.data.letter.destinations = [{id: this.destination_db.id, marked: this._letter.destination, name: this.destination_db.name}];
+        this.data.letter.origins = [{id: this.origin_db.id, scope: 'local', marked: this._letter.origin, name: this.origin_db.name}];
+        this.data.letter.destinations = [{id: this.destination_db.id, scope: 'local', marked: this._letter.destination, name: this.destination_db.name}];
       }
     });
 

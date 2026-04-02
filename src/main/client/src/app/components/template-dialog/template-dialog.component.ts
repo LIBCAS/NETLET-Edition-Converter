@@ -91,10 +91,10 @@ export class TemplateDialogComponent {
       this.selectedTemplate.recipients = [];
     }
     if (!this.selectedTemplate.origin_db) {
-      this.selectedTemplate.origin_db = { id: -1, name: null };
+      this.selectedTemplate.origin_db = { id: -1, scope: 'local', name: null };
     }
     if (!this.selectedTemplate.destination_db) {
-      this.selectedTemplate.destination_db = { id: -1, name: null };
+      this.selectedTemplate.destination_db = { id: -1, scope: 'local', name: null };
     }
     if (!this.selectedTemplate.keywords) {
       this.selectedTemplate.keywords = [];
@@ -266,7 +266,7 @@ export class TemplateDialogComponent {
   }
 
   addAuthor() {
-    this.selectedTemplate.authors.push({ id: -1, marked: '', name: '', tenant: this.state.user.tenant });
+    this.selectedTemplate.authors.push({ id: -1, scope: 'local', marked: '', name: '', tenant: this.state.user.tenant });
   }
 
   removeAuthor(idx: number) {
@@ -274,7 +274,7 @@ export class TemplateDialogComponent {
   }
 
   addRecipient() {
-    this.selectedTemplate.recipients.push({ id: -1, marked: '', name: '', tenant: this.state.user.tenant });
+    this.selectedTemplate.recipients.push({ id: -1, scope: 'local', marked: '', name: '', tenant: this.state.user.tenant });
   }
 
   removeRecipient(idx: number) {

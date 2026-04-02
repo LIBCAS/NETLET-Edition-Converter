@@ -11,7 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from 'src/app/app.service';
-import { Identity, Keyword, Letter, LetterCopy, NameTag, PlaceMeta } from 'src/app/shared/letter';
+import { Identity, Keyword, Letter, NameTag, LetterSelection, Place, CopyHIKO } from 'src/app/shared/letter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslationDialogComponent } from '../translation-dialog/translation-dialog.component';
 import { AnalyzeDialogComponent } from '../analyze-dialog/analyze-dialog.component';
@@ -142,10 +142,10 @@ export class LetterFieldsComponent {
     
   
     origins_db = signal<{ id: number, marked?: string, name?: string, tenant?: string, display?: string }[]>([]);
-    origin_db: { id: number, marked?: string, name?: string, tenant?: string, display?: string } = {marked:'', id:-1, name: ''};
+    origin_db: Place;
     noorigin = {marked:'', id:-1, name: ''};
     destinations_db = signal<{ id: number, marked?: string, name?: string, tenant?: string, display?: string }[]>([]);
-    destination_db: { id: number, marked?: string, name?: string, tenant?: string, display?: string } = {marked:'', id:-1, name: ''};
+    destination_db: Place;
     nodestination = {marked:'', id:-1, name: ''};
 
   // entities: Keyword[] = [];
@@ -570,7 +570,7 @@ export class LetterFieldsComponent {
     const blocks: AltoBlock[] = this.state.selection ? 
       this.state.getBlocksFromSelection(this.state.selection) : this.state.alto.Layout.Page.PrintSpace.TextBlock;
 
-    const page = this._letter.selection.find(s => s.page === this.state.currentPage);
+    const page = this._letter.selection.find((s: LetterSelection) => s.page === this.state.currentPage);
     if (page) {
       
       if (!this.state.selection) {
@@ -602,7 +602,7 @@ export class LetterFieldsComponent {
           text: this.state.getBlockText(blocks)
         });
       }
-      this._letter.selection.sort((s1, s2) =>  s1.page - s2.page);
+      this._letter.selection.sort((s1: LetterSelection, s2: LetterSelection) =>  s1.page - s2.page);
     }
 
     this._letter.hiko.content = this.getTextFromSelection(this._letter.selection);
@@ -704,12 +704,12 @@ export class LetterFieldsComponent {
   setDatum() {
     //console.log(this.datum.value.format("YYYY-MM-DD"))
     this._letter.date = this.datum.value.format("YYYY-MM-DD");
-    this._letter.hiko.date = this.datum.value.format("YYYY-MM-DD");
+    this._letter.hiko.dates.date = this.datum.value.format("YYYY-MM-DD");
     // console.log(this._letter.date)
   }
 
   addAuthor() {
-    this._letter.hiko.authors.push({ id: -1, marked: '', name: '', tenant: this.state.user.tenant });
+    this._letter.hiko.authors.push({ id: -1, scope: 'local', marked: '', name: '' });
   }
 
   removeAuthor(idx: number) {
@@ -717,7 +717,7 @@ export class LetterFieldsComponent {
   }
 
   addRecipient() {
-    this._letter.hiko.recipients.push({ id: -1, marked: '', name: '', tenant: this.state.user.tenant });
+    this._letter.hiko.recipients.push({ id: -1, scope: 'local', marked: '', name: '' });
   }
 
   removeRecipient(idx: number) {
@@ -726,7 +726,7 @@ export class LetterFieldsComponent {
 
   addCopy() {
     const copyTemplate = this._letter.template.copies[0];
-    const copy = new LetterCopy();
+    const copy = new CopyHIKO();
     
 
           copy.preservation = copyTemplate.preservation;

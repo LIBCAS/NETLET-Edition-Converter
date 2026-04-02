@@ -308,10 +308,10 @@
       <div class="app-fxLayout app-row app-center-v app-mb-4">
         <mat-form-field class="app-fxFlex">
           <mat-label>{{ 'field.copies_repository' | translate }}</mat-label>
-          <input matInput [(ngModel)]="copy.repository" [name]="'copies_repository_' + idx"
-            [matAutocomplete]="autoRepos" (focus)="getLocations(copy.repository, 'repository')"
-            (change)="getLocations(copy.repository, 'repository')"
-            (keyup)="getLocations(copy.repository, 'repository')"><span matSuffix></span>
+          <input matInput [(ngModel)]="copy.repository.label" [name]="'copies_repository_' + idx"
+            [matAutocomplete]="autoRepos" (focus)="getLocations(copy.repository.label, 'repository')"
+            (change)="getLocations(copy.repository.label, 'repository')"
+            (keyup)="getLocations(copy.repository.label, 'repository')"><span matSuffix></span>
           <ng-container matSuffix
             *ngTemplateOutlet="icons; context:{ field: 'copies_repository_' + idx }"></ng-container>
           <mat-autocomplete #autoRepos="matAutocomplete">
@@ -325,8 +325,8 @@
 
         <mat-form-field class="app-fxFlex app-ml-3">
           <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
-          <input matInput [(ngModel)]="copy.archive" name="copies_archive" [matAutocomplete]="autoArchives"
-            (change)="getLocations(copy.archive, 'archive')" (keyup)="getLocations(copy.archive, 'archive')"><span
+          <input matInput [(ngModel)]="copy.archive.label" name="copies_archive" [matAutocomplete]="autoArchives"
+            (change)="getLocations(copy.archive.label, 'archive')" (keyup)="getLocations(copy.archive.label, 'archive')"><span
             matSuffix></span>
           <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_archive_' + idx }"></ng-container>
           <mat-autocomplete #autoArchives="matAutocomplete">
@@ -340,9 +340,9 @@
 
         <mat-form-field class="app-fxFlex app-ml-3">
           <mat-label>{{ 'field.copies_collection' | translate}}</mat-label>
-          <input matInput [(ngModel)]="copy.collection" name="copies_collection" [matAutocomplete]="autoCollections"
-            (change)="getLocations(copy.collection, 'collection')"
-            (keyup)="getLocations(copy.collection, 'collection')"><span matSuffix></span>
+          <input matInput [(ngModel)]="copy.collection.label" name="copies_collection" [matAutocomplete]="autoCollections"
+            (change)="getLocations(copy.collection.label, 'collection')"
+            (keyup)="getLocations(copy.collection.label, 'collection')"><span matSuffix></span>
           <ng-container matSuffix
             *ngTemplateOutlet="icons; context:{ field: 'copies_collection_' + idx }"></ng-container>
           <mat-autocomplete #autoCollections="matAutocomplete">

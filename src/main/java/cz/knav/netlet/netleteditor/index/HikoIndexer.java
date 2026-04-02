@@ -37,8 +37,7 @@ public class HikoIndexer {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
-                .replace("{tenant}", t)
-                + "/letter";
+                .replace("{tenant}", t);
 
         String id = new JSONObject(data).optString("id", "");
         try (HttpClient httpclient = HttpClient
@@ -46,7 +45,7 @@ public class HikoIndexer {
                 .build()) {
             HttpRequest request;
             if (!id.isBlank()) {
-                url += "/" + id;
+                url += "/letter/" + id;
                 LOGGER.log(Level.INFO, "Save letter tenant {0} -> {1}", new Object[]{tenant, url});
                 request = HttpRequest.newBuilder()
                         .uri(new URI(url))
@@ -56,7 +55,7 @@ public class HikoIndexer {
                         .PUT(HttpRequest.BodyPublishers.ofString(data))
                         .build();
             } else {
-                url += "s";
+                url += "/letters";
                 LOGGER.log(Level.INFO, "Save letter tenant {0} -> {1}", new Object[]{tenant, url});
                 request = HttpRequest.newBuilder()
                         .uri(new URI(url))
