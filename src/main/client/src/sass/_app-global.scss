@@ -188,10 +188,10 @@ fieldset {
   color: var(--app-gray-9);
 
   .mat-mdc-icon-button {
-    @extend .app-clean-radius !optional;
+    @extend .app-clean-radius;
 
     .mat-mdc-button-persistent-ripple {
-      @extend .app-clean-radius !optional;
+      @extend .app-clean-radius;
     }
   }
 

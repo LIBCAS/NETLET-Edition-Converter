@@ -299,7 +299,7 @@
                           </mat-form-field>
                           <mat-form-field class="app-fxFlex app-ml-3">
                             <mat-label>{{ 'field.copies_archive' | translate}}</mat-label>
-                            <input matInput [(ngModel)]="copy.archive.label" name="copies_archive" [matAutocomplete]="autoArchives"
+                            <input matInput [(ngModel)]="copy.archive.label" [name]="'copies_archive_' + idx" [matAutocomplete]="autoArchives"
                               (change)="getLocations(copy.archive.label, 'archive')" (keyup)="getLocations(copy.archive.label, 'archive')"><span
                             matSuffix></span>
                             <ng-container matSuffix *ngTemplateOutlet="icons; context:{ field: 'copies_archive_' + idx }"></ng-container>
@@ -313,7 +313,7 @@
                           </mat-form-field>
                           <mat-form-field class="app-fxFlex app-ml-3">
                             <mat-label>{{ 'field.copies_collection' | translate}}</mat-label>
-                            <input matInput [(ngModel)]="copy.collection.label" name="copies_collection" [matAutocomplete]="autoCollections"
+                            <input matInput [(ngModel)]="copy.collection.label" [name]="'copies_collection_' + idx" [matAutocomplete]="autoCollections"
                               (change)="getLocations(copy.collection.label, 'collection')"
                               (keyup)="getLocations(copy.collection.label, 'collection')"><span matSuffix></span>
                               <ng-container matSuffix

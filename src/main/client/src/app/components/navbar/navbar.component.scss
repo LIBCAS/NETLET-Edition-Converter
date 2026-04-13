@@ -1,6 +1,18 @@
 .mat-toolbar {
   //height: $app-navbar-height;
 
+  .app-navbar {
+
+    .mat-icon {
+      color: var(--app-color-lightnes);
+    }
+
+    .mat-mdc-icon-button {
+      color: var(--app-color-lightnes);
+    }
+  }
+
+
   .app-logo {
     height: 34px;
   }
@@ -18,10 +30,12 @@
     padding-left: 16px;
     padding-right: 16px;
 
-    &:hover, &.active {
+    &:hover,
+    &.active {
       color: inherit;
       //background-color: $app-navbar-active-item-color;
     }
   }
+
 
 }

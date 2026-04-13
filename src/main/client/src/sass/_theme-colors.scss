@@ -204,6 +204,7 @@ $tertiary-palette: map.merge(map.get($_palettes, tertiary), $_rest);
   ))
  }
 
+
  html {
   // Must specify color-scheme for theme mixin to automatically work
   color-scheme: light dark;
@@ -215,7 +216,7 @@ $tertiary-palette: map.merge(map.get($_palettes, tertiary), $_rest);
       tertiary: $tertiary-palette,
     ),
     typography: Roboto,
-    density: 0,
+    density: -2,
   ));
 
   // Use high contrast values when users prefer contrast

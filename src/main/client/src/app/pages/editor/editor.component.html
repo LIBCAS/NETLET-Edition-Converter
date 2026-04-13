@@ -27,7 +27,7 @@
               <div class="app-fxFlex">
                 <button mat-icon-button (click)="changeView('fields')" [class.app-active]="view == 'fields'"
                   [matTooltip]="'Fields' | translate"><mat-icon color="primary">text_fields</mat-icon></button>
-                  <button mat-icon-button (click)="changeView('letters')" [class.app-active]="view == 'letters'"
+                <button mat-icon-button (click)="changeView('letters')" [class.app-active]="view == 'letters'"
                     [matTooltip]="'Letters' | translate"><mat-icon color="primary">mark_as_unread</mat-icon></button>
                     <!-- <button mat-icon-button (click)="changeView('search')" [class.app-active]="view == 'search'" [matTooltip]="'Search' | translate"><mat-icon color="primary">search</mat-icon></button> -->
                   </div>
@@ -91,10 +91,10 @@
                                                 </div>
                                               </div>
                                               @for(l of letters; track idx; let idx = $index){
-                                                <mat-list-item [class.app-selected]="l.id === currentLetterId" [class.app-exported-to-hiko]="l.exported_to_hiko" [class.app-has-hiko]="l.hiko_id" (click)="selectResult(l, false, idx)"
+                                                <mat-list-item [class.app-selected]="l.id === currentLetterId" [class.app-exported-to-hiko]="l.exported_to_hiko" [class.app-has-hiko]="l.hiko_id  && l.hiko.version === 'v2'" (click)="selectResult(l, false, idx)"
                                                   class="app-result app-pt-4 app-pb-4">
                                                   <div matListItemTitle [class.app-ignore]="ignored[l.id]">
-                                                    @if (l.hiko_id) { <div class="app-hiko-id" >({{ l.hiko_id }})</div> }
+                                                    @if (l.hiko_id && l.hiko.version === 'v2') { <div class="app-hiko-id" >({{ l.hiko_id }})</div> }
                                                     {{'Page(s)' | translate}}: {{ l.page_number }} @if (l.end_page_number) {
                                                     - {{
                                                     l.end_page_number }}

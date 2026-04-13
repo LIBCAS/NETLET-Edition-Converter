@@ -237,7 +237,7 @@ export class EditorComponent {
     if (t.copies) {
       this.letter.hiko.copies = [...t.copies];
     }
-    
+
     this.letter.hiko.content = '';
     this.view = 'fields';
   }
@@ -283,15 +283,13 @@ export class EditorComponent {
     text = this.processReplacements(text);
 
     if (data.field.startsWith('copies_')) {
-    /**
-     * Novy API format nedovoluje
-     * 
-      // field format is copies_repository_0
-      const parts = data.field.split('_');
-      let idx: number = parseInt(parts[2]);
-      this.letter.hiko.copies[idx][parts[1] as keyof CopyHIKO] = text;
-
-     */
+        // field format is copies_repository_0
+        const parts = data.field.split('_');
+        let idx: number = parseInt(parts[2]);
+        console.log(this.letter.hiko.copies, parts[1], idx)
+        this.letter.hiko.copies[idx][parts[1] as keyof CopyHIKO].label = text;
+    } else if (data.field.startsWith('authorg')) {
+      this.letter.hiko.authors[0].marked = text;
     } else if (data.append && this.letter[data.field as keyof Letter]) {
       this.letter[data.field as keyof Letter] += ' ' + text;
     } else {
@@ -516,24 +514,25 @@ export class EditorComponent {
           this.letter.template = this.state.fileConfig.templates[0];
         }
 
-        if (!this.letter.hiko) {
+        if (!this.letter.hiko || this.letter.hiko.version !== 'v2') {
           this.letter.hiko = new LetterHIKO();
+          this.letter.hiko_id = null;
         }
 
         if (!this.letter.hiko.authors) {
-          this.letter.hiko.authors = [];
+          this.letter.hiko.authors = [{ id: -1, scope: 'local', marked: '', name: '' }];
         }
 
         if (!this.letter.hiko.recipients) {
-          this.letter.hiko.recipients = [];
+          this.letter.hiko.recipients = [{ id: -1, scope: 'local', marked: '', name: '' }];
         }
 
         if (!this.letter.hiko.copies) {
           this.letter.hiko.copies = [];
           const copy = new CopyHIKO();
-          copy.repository = this.letter['copies_repository'];
-          copy.archive = this.letter['copies_archive'];
-          copy.collection = this.letter['copies_collection'];
+          copy.repository.label = this.letter['copies_repository'];
+          copy.archive.label = this.letter['copies_archive'];
+          copy.collection.label = this.letter['copies_collection'];
           if (this.letter.letter_number) {
             copy.l_number = this.letter.letter_number;
           }
@@ -898,6 +897,9 @@ export class EditorComponent {
 
   changeView(view: string) {
     this.view = view;
+    if (this.view === 'letters') {
+      this.router.navigate(['..'], { relativeTo: this.route });
+    }
   }
 
   regenerateAlto() {

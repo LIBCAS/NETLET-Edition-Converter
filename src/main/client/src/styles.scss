@@ -1,8 +1,9 @@
 // --- STYLES ---
 @use '@angular/material' as mat;
 
-// @import 'sass/app-theme';
-@use 'sass/theme-colors';
+@use 'sass/app-theme';
+//@use 'sass/theme-colors';
+@use 'sass/theme';
 @use 'sass/app-variables';
 @use "sass/app-mixins";
 @use "sass/app-gaps";

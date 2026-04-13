@@ -328,7 +328,7 @@ export class LetterFieldsComponent {
     });
   }
 
-  wordCount(str: string) {
+  wordCount(str: string): number {
     if (!str) {
       return 0;
     }
@@ -355,7 +355,7 @@ export class LetterFieldsComponent {
     const brackets: string = this.brackets(prompt);
     if (brackets) {
       let ex = brackets.replace('words', this.wordCount(this._letter.hiko.content) + '');
-      const val = Math.max(3, Math.floor(eval(ex)));
+      const val = Math.max(3, Math.floor(window.eval(ex)));
       prompt = prompt.replaceAll('{' + brackets + '}', val + '');
     }
     return prompt;
@@ -493,7 +493,7 @@ export class LetterFieldsComponent {
     const brackets: string = this.brackets(prompt);
     if (brackets) {
       let ex = brackets.replace('words', this.wordCount(this._letter.hiko.content) + '');
-      const val = Math.max(3, Math.floor(eval(ex)));
+      const val = Math.max(3, Math.floor(window.eval(ex)));
       prompt = prompt.replaceAll('{' + brackets + '}', val + '');
     }
 
