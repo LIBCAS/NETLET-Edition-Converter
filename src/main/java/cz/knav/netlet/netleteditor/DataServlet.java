@@ -401,7 +401,7 @@ public class DataServlet extends HttpServlet {
                     json.put("msg", "sync succes");
                     
                 } catch (Exception ex) {
-                    LOGGER.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, "{0}", ex);
                     json.put("error", ex.toString());
                 }
                 return json;

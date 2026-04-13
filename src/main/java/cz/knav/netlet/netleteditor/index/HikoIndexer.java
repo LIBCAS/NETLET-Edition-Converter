@@ -69,7 +69,7 @@ public class HikoIndexer {
             HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
             ret = new JSONObject(response.body());
         } catch (URISyntaxException | IOException | InterruptedException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Error saving letter", ex);
         }
 
         Date end = new Date();
@@ -93,7 +93,7 @@ public class HikoIndexer {
 
             client.commit("identities");
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Error indexing identities", ex);
             ret.put("error", ex);
         }
         Date end = new Date();
@@ -112,12 +112,14 @@ public class HikoIndexer {
             if ("all".equals(type) || "identities".equals(type)) {
                 JSONObject identities = new JSONObject();
                 indexTenantIdentities(client, identities, tenant);
+                indexTenantIdentities(client, identities, "global");
                 ret.put("identities", identities);
                 client.commit("identities");
             }
 
             if ("all".equals(type) || "keywords".equals(type)) {
                 JSONObject keywords = new JSONObject();
+                indexTenantKeywords(client, keywords, tenant);
                 indexGlobalKeywords(client, keywords, tenant);
                 ret.put("keywords", keywords);
                 client.commit("keywords");
@@ -127,6 +129,7 @@ public class HikoIndexer {
 
                 JSONObject locations = new JSONObject();
                 indexTenantLocations(client, locations, tenant);
+                indexTenantLocations(client, locations, "global");
                 ret.put("locations", locations);
                 client.commit("locations");
             }
@@ -135,12 +138,13 @@ public class HikoIndexer {
 
                 JSONObject places = new JSONObject();
                 indexTenantPlaces(client, places, tenant);
+                indexGlobalPlaces();
                 ret.put("places", places);
                 client.commit("places");
             }
 
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Error indexing tenant", ex);
             ret.put("error", ex);
         }
         Date end = new Date();
@@ -152,12 +156,19 @@ public class HikoIndexer {
 
     private void indexTenantIdentities(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
+        if (tenant.equals("global")) {
+            t = "brezina"; //jakykoli
+        }
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(t);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
-                .replace("{tenant}", t)
-                + "/identities?per_page=100";
+                .replace("{tenant}", t);
+        if (tenant.equals("global")) {
+            url += "/global-identities?per_page=100";
+        } else {
+            url += "/identities?per_page=100";
+        } 
         int tindexed = 0;
         LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1}", new Object[]{tenant, url});
         try (HttpClient httpclient = HttpClient
@@ -253,7 +264,7 @@ public class HikoIndexer {
 
             client.commit("places");
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Error indexing places", ex);
             ret.put("error", ex);
         }
         Date end = new Date();
@@ -342,7 +353,7 @@ public class HikoIndexer {
 
             client.commit("places");
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Error indexing global places", ex);
             ret.put("error", ex);
         }
         Date end = new Date();
@@ -433,7 +444,7 @@ public class HikoIndexer {
 
             client.commit("locations");
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Error indexing locations", ex);
             ret.put("error", ex);
         }
         Date end = new Date();
@@ -444,13 +455,21 @@ public class HikoIndexer {
     }
 
     private void indexTenantLocations(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
+        
         String t = tenant;
+        if (tenant.equals("global")) {
+            t = "brezina"; //jakykoli
+        }
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(t);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
-                .replace("{tenant}", t)
-                + "/locations?per_page=100";
+                .replace("{tenant}", t);
+        if (tenant.equals("global")) {
+            url += "/global-locations?per_page=100";
+        } else {
+            url += "/locations?per_page=100";
+        } 
         int tindexed = 0;
         LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1}", new Object[]{tenant, url});
         try (HttpClient httpclient = HttpClient
@@ -503,7 +522,7 @@ public class HikoIndexer {
             JSONArray tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").names();
             indexGlobalKeywords(client, ret, tenants.getString(0));
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Error indexing global keywords", ex);
             ret.put("error", ex);
         }
         Date end = new Date();
@@ -557,7 +576,7 @@ public class HikoIndexer {
 
             client.commit("keywords");
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, "Error indexing keywords", ex);
             ret.put("error", ex);
         }
         Date end = new Date();
