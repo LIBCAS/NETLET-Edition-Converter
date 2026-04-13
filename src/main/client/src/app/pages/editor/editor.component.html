@@ -51,22 +51,22 @@
                             }
                             <button [disabled]="!letter" mat-icon-button (click)="saveLetter()"
                               [matTooltip]="'action.save' | translate"><mat-icon>save</mat-icon></button>
-                              <button mat-icon-button [disabled]="selectedResult === 0" (click)="prevLetter()"
-                                [matTooltip]="'action.previous_letter' | translate"><mat-icon>navigate_before</mat-icon></button>
-                                <button mat-icon-button [disabled]="selectedResult === letters.length - 1" (click)="nextLetter()"
-                                  [matTooltip]="'action.next_letter' | translate"><mat-icon>navigate_next</mat-icon></button>
-                                  <!-- <button mat-icon-button (click)="toggleIgnoreAndNext()" [matTooltip]="'ignore' | translate"><mat-icon>gpp_bad</mat-icon></button> -->
-                                  <button class="app-color-warning" [disabled]="!letter" mat-icon-button (click)="removeLetter()"
-                                    [matTooltip]="'action.remove' | translate"><mat-icon>delete_forever</mat-icon></button>
-                                    <button [disabled]="!letter" mat-icon-button (click)="templateFromLetter()"
-                                      [matTooltip]="'action.template_from_letter' | translate"><mat-icon>dynamic_feed</mat-icon></button>
-                                      <button class="app-hiko" mat-icon-button (click)="importFromHIKO()"
-                                        [matTooltip]="'action.import_from_hiko' | translate"><mat-icon>file_open</mat-icon></button>
-                                        <button class="app-hiko" [disabled]="!letter" mat-icon-button (click)="exportToHIKO()"
-                                          [matTooltip]="'action.export_to_hiko' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
-                                          <button class="app-hiko" [disabled]="!letter?.hiko_id" mat-icon-button (click)="viewLetterInHIKO()"
-                                            [matTooltip]="'action.view_in_hiko' | translate"><mat-icon>open_in_new_off</mat-icon></button>
-                                            <!-- <button mat-icon-button (click)="regenerateAlto()" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button> -->
+                            <button mat-icon-button [disabled]="selectedResult === 0" (click)="prevLetter()"
+                              [matTooltip]="'action.previous_letter' | translate"><mat-icon>navigate_before</mat-icon></button>
+                            <button mat-icon-button [disabled]="selectedResult === letters.length - 1" (click)="nextLetter()"
+                              [matTooltip]="'action.next_letter' | translate"><mat-icon>navigate_next</mat-icon></button>
+                              <!-- <button mat-icon-button (click)="toggleIgnoreAndNext()" [matTooltip]="'ignore' | translate"><mat-icon>gpp_bad</mat-icon></button> -->
+                            <button class="app-color-warning" [disabled]="!letter" mat-icon-button (click)="removeLetter()"
+                              [matTooltip]="'action.remove' | translate"><mat-icon>delete_forever</mat-icon></button>
+                            <button [disabled]="!letter" mat-icon-button (click)="templateFromLetter()"
+                              [matTooltip]="'action.template_from_letter' | translate"><mat-icon>dynamic_feed</mat-icon></button>
+                            <button class="app-hiko" mat-icon-button (click)="importFromHIKO()"
+                              [matTooltip]="'action.import_from_hiko' | translate"><mat-icon>file_open</mat-icon></button>
+                            <button class="app-hiko" [disabled]="!letter" mat-icon-button (click)="exportToHIKO()"
+                              [matTooltip]="'action.export_to_hiko' | translate"><mat-icon>forward_to_inbox</mat-icon></button>
+                            <button class="app-hiko" [disabled]="!letter?.hiko_id" mat-icon-button (click)="viewLetterInHIKO()"
+                              [matTooltip]="'action.view_in_hiko' | translate"><mat-icon>open_in_new_off</mat-icon></button>
+                                <!-- <button mat-icon-button (click)="regenerateAlto()" [matTooltip]="'action.regenerate' | translate"><mat-icon>scanner</mat-icon></button> -->
                                           </div>
                                         </div>
                                         @if (state.loading()) {
@@ -91,7 +91,7 @@
                                                 </div>
                                               </div>
                                               @for(l of letters; track idx; let idx = $index){
-                                                <mat-list-item [class.app-selected]="l.id === currentLetterId" [class.app-exported-to-hiko]="l.exported_to_hiko" [class.app-has-hiko]="l.hiko_id  && l.hiko.version === 'v2'" (click)="selectResult(l, false, idx)"
+                                                <mat-list-item [class.app-selected]="l.id === currentLetterId" [class.app-exported-to-hiko]="l.exported_to_hiko  && l.hiko.version === 'v2'" [class.app-has-hiko]="l.hiko_id  && l.hiko.version === 'v2'" (click)="selectResult(l, false, idx)"
                                                   class="app-result app-pt-4 app-pb-4">
                                                   <div matListItemTitle [class.app-ignore]="ignored[l.id]">
                                                     @if (l.hiko_id && l.hiko.version === 'v2') { <div class="app-hiko-id" >({{ l.hiko_id }})</div> }

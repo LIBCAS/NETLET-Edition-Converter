@@ -517,6 +517,7 @@ export class EditorComponent {
         if (!this.letter.hiko || this.letter.hiko.version !== 'v2') {
           this.letter.hiko = new LetterHIKO();
           this.letter.hiko_id = null;
+          this.letter.exported_to_hiko = false;
         }
 
         if (!this.letter.hiko.authors) {

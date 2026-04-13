@@ -1,5 +1,6 @@
 // --- GLOBAL ---
 @use 'app-mixins' as *;
+@use 'app-gaps' as *;
 a {
   cursor: pointer;
   color: var(--app-color-primary);
