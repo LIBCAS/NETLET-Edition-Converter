@@ -52,6 +52,7 @@ Managed external dictionaries
 <schema name="keywords" version="1.6">
   
     <field name="id" type="string" indexed="true" stored="true" docValues="true" />
+    <field name="scope" type="string" indexed="true" stored="true"  />
     <!-- doc values are enabled by default for primitive types such as long so we don't index the version field  -->
     <field name="_version_" type="long" indexed="false" stored="false"/>
     <field name="_text_" type="text_general" indexed="true" stored="false" multiValued="true"/>
@@ -61,17 +62,29 @@ Managed external dictionaries
     <field name="table" type="string" indexed="true" stored="true"  />
     <field name="table_id" type="string" indexed="true" stored="true"  />
     <field name="tenant" type="string" indexed="true" stored="true"  />
-    <field name="name" type="text_cz" indexed="true" stored="true" multiValued="false" />
-    <field name="name_en" type="text_general" indexed="true" stored="true" multiValued="false" />
+    <field name="name_cs" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="name_en" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="name_cs_txt" type="text_cz" indexed="true" stored="true" multiValued="false" />
+    <field name="name_en_txt" type="text_general" indexed="true" stored="true" multiValued="false" />
     <field name="name_lower" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
     <field name="name_sort" type="icu_sort_cs" indexed="true" stored="true" multiValued="false" />
     <field name="type" type="string" indexed="true" stored="true"  />
 
+    <field name="category_id" type="pint" indexed="true" stored="true"  />
+    <field name="category_cs" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="category_en" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="category_cs_txt" type="text_cz" indexed="true" stored="true" multiValued="false" />
+    <field name="category_en_txt" type="text_general" indexed="true" stored="true" multiValued="false" />
+
     <field name="key_tagger_cs" type="tag_cs" indexed="true" stored="true" multiValued="true" />
     <field name="key_tagger_en" type="tag_en_K" indexed="true" stored="true" multiValued="true" />
   
-  <copyField source="name" dest="name_lower"/>
-  <copyField source="name" dest="name_sort"/>
+  <copyField source="name_cs" dest="name_lower"/>
+  <copyField source="name_cs" dest="name_sort"/>
+  <copyField source="name_cs" dest="name_cs_txt"/>
+  <copyField source="name_cs" dest="name_en_txt"/>
+  <copyField source="category_cs" dest="category_cs_txt"/>
+  <copyField source="category_en" dest="category_en_txt"/>
 	
 
     <!-- uncomment the following to ignore any fields that don't already match an existing 

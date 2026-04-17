@@ -27,6 +27,39 @@ import org.json.JSONObject;
 public class HikoIndexer {
 
     public static final Logger LOGGER = Logger.getLogger(HikoIndexer.class.getName());
+    
+    JSONObject globalKeywordCategories = new JSONObject();
+    JSONObject globalProfessionCategories = new JSONObject();
+    
+    private void initKeywordCategories(String tenant, boolean isGlobal) throws URISyntaxException, IOException, InterruptedException {
+        String t = tenant;
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+        }
+        String url = Options.getInstance().getJSONObject("hiko").getString("api")
+                .replace("{tenant}", t);
+        if (isGlobal) {
+            url += "/global-keyword-categories?per_page=100";
+        } else {
+            url += "/keyword-categories?per_page=100";
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(url))
+                .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
+                .GET()
+                .build();
+
+        try (HttpClient httpclient = HttpClient
+                .newBuilder()
+                .build()) {
+            HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
+            JSONArray docs = new JSONObject(response.body()).getJSONArray("data");
+            for (int i = 0; i < docs.length(); i++) {
+                JSONObject d = docs.getJSONObject(i);
+                globalKeywordCategories.put((isGlobal ? "global" : tenant) + "-" + d.getInt("id"), d);
+            }
+        }
+    }
 
     public JSONObject saveLetter(String data, String tenant, String token) {
         Date start = new Date();
@@ -246,7 +279,7 @@ public class HikoIndexer {
                     }
 
                 }
-                url = resp.optString("next_page_url", null);
+                url = resp.getJSONObject("links").optString("next", null);
                 Thread.sleep(1000);
             }
         }
@@ -334,7 +367,7 @@ public class HikoIndexer {
                     }
 
                 }
-                url = resp.optString("next_page_url", null);
+                url = resp.getJSONObject("links").optString("next", null);
                 Thread.sleep(1000);
             }
         } catch (Exception ex) {
@@ -423,7 +456,7 @@ public class HikoIndexer {
                     }
 
                 }
-                url = resp.optString("next_page_url", null);
+                url = resp.getJSONObject("links").optString("next", null);
                 Thread.sleep(1000);
             }
         } catch (Exception ex) {
@@ -506,7 +539,7 @@ public class HikoIndexer {
                     }
 
                 }
-                url = resp.optString("next_page_url", null);
+                url = resp.getJSONObject("links").optString("next", null);
                 Thread.sleep(1000);
             }
             client.commit("locations");
@@ -537,6 +570,7 @@ public class HikoIndexer {
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
+        initKeywordCategories(tenant, true);
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t)
                 + "/global-keywords?per_page=100";
@@ -556,7 +590,7 @@ public class HikoIndexer {
                 JSONObject resp = new JSONObject(response.body());
                 JSONArray docs = resp.getJSONArray("data");
                 processKeywords(client, ret, "global", docs, t);
-                url = resp.optString("next_page_url", null);
+                url = resp.getJSONObject("links").optString("next", null);
                 Thread.sleep(1000);
             }
             client.commit("keywords");
@@ -591,6 +625,7 @@ public class HikoIndexer {
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
+        initKeywordCategories(tenant, false);
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t)
                 + "/keywords?per_page=100";
@@ -610,7 +645,7 @@ public class HikoIndexer {
                 JSONObject resp = new JSONObject(response.body());
                 JSONArray docs = resp.getJSONArray("data");
                 processKeywords(client, ret, tenant, docs, t);
-                url = resp.optString("next_page_url", null);
+                url = resp.getJSONObject("links").optString("next", null);
                 Thread.sleep(1000);
             }
             client.commit("keywords");
@@ -632,9 +667,17 @@ public class HikoIndexer {
             doc.addField("table_id", rs.getInt("id"));
             doc.addField("tenant", tenant);
             doc.addField("type", rs.optString("type"));
+            if (rs.has("category_id")) {
+                int category_id = rs.optInt("category_id");
+                doc.addField("category_id", category_id);
+                if (globalKeywordCategories.has(tenant + "-" + category_id)) {
+                    doc.addField("category_cs", globalKeywordCategories.getJSONObject(tenant + "-" + category_id).getJSONObject("name").getString("cs"));
+                    doc.addField("category_en", globalKeywordCategories.getJSONObject(tenant + "-" + category_id).getJSONObject("name").getString("en"));
+                }
+            }
 
             JSONObject name = rs.getJSONObject("name");
-            doc.addField("name", name.getString("cs"));
+            doc.addField("name_cs", name.getString("cs"));
             doc.addField("name_en", name.getString("en"));
 
             doc.addField("key_tagger_cs", name.getString("cs"));
