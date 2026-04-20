@@ -60,6 +60,36 @@ public class HikoIndexer {
             }
         }
     }
+    
+    private void initProfessionCategories(String tenant, boolean isGlobal) throws URISyntaxException, IOException, InterruptedException {
+        String t = tenant;
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+        }
+        String url = Options.getInstance().getJSONObject("hiko").getString("api")
+                .replace("{tenant}", t);
+        if (isGlobal) {
+            url += "/global-profession-categories?per_page=100";
+        } else {
+            url += "/profession-categories?per_page=100";
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(url))
+                .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
+                .GET()
+                .build();
+
+        try (HttpClient httpclient = HttpClient
+                .newBuilder()
+                .build()) {
+            HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
+            JSONArray docs = new JSONObject(response.body()).getJSONArray("data");
+            for (int i = 0; i < docs.length(); i++) {
+                JSONObject d = docs.getJSONObject(i);
+                globalProfessionCategories.put((isGlobal ? "global" : tenant) + "-" + d.getInt("id"), d);
+            }
+        }
+    }
 
     public JSONObject saveLetter(String data, String tenant, String token) {
         Date start = new Date();
@@ -239,9 +269,34 @@ public class HikoIndexer {
                     if (rs.optString("surname").length() > 2) {
                         doc.addField("key_tagger_cs", rs.optString("surname"));
                     }
-//                    if (rs.optString("forename").length() > 2) {
-//                        doc.addField("key_tagger_cs", rs.optString("forename"));
-//                    }
+                    
+    /**
+     *         
+      "professions": [
+        {
+          "id": 221,
+          "scope": "global",
+          "reference": "global-221",
+          "name": {
+            "cs": "pedagog (i odborný), učitel (bez specifikace) ",
+            "en": " pedagogue"
+          },
+          "category_id": 10
+        }
+      ]
+     */        
+                JSONArray professions = rs.optJSONArray("professions");
+                if (professions != null) {
+                    for (int k = 0; k < professions.length(); k++) {
+                        JSONObject p = professions.getJSONObject(k);
+                        doc.addField("professions", p.toString());
+                        doc.addField("professions_cs", p.getJSONObject("name").optString("cs"));
+                        doc.addField("professions_en", p.getJSONObject("name").optString("en"));
+                        doc.addField("professions_category", p.optInt("category_id"));
+                    }
+                }
+      
+      
                     JSONArray anja = rs.optJSONArray("alternative_names");
                     if (anja != null) {
                         for (int k = 0; k < anja.length(); k++) {
@@ -687,6 +742,152 @@ public class HikoIndexer {
 
         }
         client.commit("keywords");
+        LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, docs.length()});
+    }
+    
+    
+    
+
+    public JSONObject indexGlobalProfessions() throws URISyntaxException, IOException, InterruptedException {
+        Date start = new Date();
+        JSONObject ret = new JSONObject();
+        LOGGER.log(Level.INFO, "Indexing HIKO global Professions");
+        try (SolrClient client = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) {
+            JSONArray tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").names();
+            indexGlobalProfessions(client, ret, tenants.getString(0));
+        } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
+            LOGGER.log(Level.SEVERE, "Error indexing global Professions", ex);
+            ret.put("error", ex);
+        }
+        Date end = new Date();
+        ret.put("ellapsed time", DurationFormatUtils.formatDuration(end.getTime() - start.getTime(), "HH:mm:ss.S"));
+        LOGGER.log(Level.INFO, "Indexing HIKO Professions FINISHED");
+        return ret;
+
+    }
+
+    private void indexGlobalProfessions(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
+        String t = tenant;
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+        }
+        initProfessionCategories(tenant, true);
+        String url = Options.getInstance().getJSONObject("hiko").getString("api")
+                .replace("{tenant}", t)
+                + "/global-professions?per_page=100";
+        int tindexed = 0;
+        LOGGER.log(Level.INFO, "Indexing Professions tenant {0} -> {1}", new Object[]{tenant, url});
+        try (HttpClient httpclient = HttpClient
+                .newBuilder()
+                .build()) {
+            while (url != null) {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(url))
+                        .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+                HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
+                JSONObject resp = new JSONObject(response.body());
+                JSONArray docs = resp.getJSONArray("data");
+                processProfessions(client, ret, "global", docs, t);
+                url = resp.getJSONObject("links").optString("next", null);
+                Thread.sleep(1000);
+            }
+            client.commit("professions");
+            LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, tindexed});
+        }
+    }
+
+    public JSONObject indexProfessions() throws URISyntaxException, IOException, InterruptedException {
+        Date start = new Date();
+        JSONObject ret = new JSONObject();
+        LOGGER.log(Level.INFO, "Indexing HIKO Professions");
+        try (SolrClient client = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) {
+            Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
+            for (String tenant : tenants) {
+                indexTenantProfessions(client, ret, tenant);
+            }
+
+            client.commit("professions");
+        } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
+            LOGGER.log(Level.SEVERE, "Error indexing Professions", ex);
+            ret.put("error", ex);
+        }
+        Date end = new Date();
+        ret.put("ellapsed time", DurationFormatUtils.formatDuration(end.getTime() - start.getTime(), "HH:mm:ss.S"));
+        LOGGER.log(Level.INFO, "Indexing HIKO Professions FINISHED");
+        return ret;
+
+    }
+
+    private void indexTenantProfessions(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
+        String t = tenant;
+        if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
+            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+        }
+        initKeywordCategories(tenant, false);
+        String url = Options.getInstance().getJSONObject("hiko").getString("api")
+                .replace("{tenant}", t)
+                + "/professions?per_page=100";
+        int tindexed = 0;
+        LOGGER.log(Level.INFO, "Indexing keywords tenant {0} -> {1}", new Object[]{tenant, url});
+        try (HttpClient httpclient = HttpClient
+                .newBuilder()
+                .build()) {
+            while (url != null) {
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI(url))
+                        .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+                HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
+                JSONObject resp = new JSONObject(response.body());
+                JSONArray docs = resp.getJSONArray("data");
+                processProfessions(client, ret, tenant, docs, t);
+                url = resp.getJSONObject("links").optString("next", null);
+                Thread.sleep(1000);
+            }
+            client.commit("professions");
+            LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, tindexed});
+        }
+    }
+
+    private void processProfessions(SolrClient client, JSONObject ret, String tenant, JSONArray docs, String table) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
+
+        for (int i = 0; i < docs.length(); i++) {
+            JSONObject rs = docs.getJSONObject(i);
+
+            SolrInputDocument doc = new SolrInputDocument();
+
+            String id = tenant + "_" + rs.getInt("id");
+
+            doc.addField("id", id);
+            doc.addField("table", table);
+            doc.addField("table_id", rs.getInt("id"));
+            doc.addField("tenant", tenant);
+            doc.addField("type", rs.optString("type"));
+            if (rs.has("category_id")) {
+                int category_id = rs.optInt("category_id");
+                doc.addField("category_id", category_id);
+                if (globalProfessionCategories.has(tenant + "-" + category_id)) {
+                    doc.addField("category_cs", globalProfessionCategories.getJSONObject(tenant + "-" + category_id).getJSONObject("name").getString("cs"));
+                    doc.addField("category_en", globalProfessionCategories.getJSONObject(tenant + "-" + category_id).getJSONObject("name").getString("en"));
+                }
+            }
+
+            JSONObject name = rs.getJSONObject("name");
+            doc.addField("name_cs", name.getString("cs"));
+            doc.addField("name_en", name.getString("en"));
+
+            doc.addField("key_tagger_cs", name.getString("cs"));
+            doc.addField("key_tagger_en", name.getString("en"));
+
+            client.add("professions", doc);
+
+        }
+        client.commit("professions");
         LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, docs.length()});
     }
 }

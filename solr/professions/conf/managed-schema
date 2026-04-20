@@ -49,9 +49,10 @@
 Managed external dictionaries
 -->
 
-<schema name="identities" version="1.6">
+<schema name="professions" version="1.6">
   
     <field name="id" type="string" indexed="true" stored="true" docValues="true" />
+    <field name="scope" type="string" indexed="true" stored="true"  />
     <!-- doc values are enabled by default for primitive types such as long so we don't index the version field  -->
     <field name="_version_" type="long" indexed="false" stored="false"/>
     <field name="_text_" type="text_general" indexed="true" stored="false" multiValued="true"/>
@@ -59,32 +60,31 @@ Managed external dictionaries
     <field name="indextime" type="pdate" indexed="true" stored="true" default="NOW"  />
     
     <field name="table" type="string" indexed="true" stored="true"  />
-    <field name="table_id" type="pint" indexed="true" stored="true"  />
+    <field name="table_id" type="string" indexed="true" stored="true"  />
     <field name="tenant" type="string" indexed="true" stored="true"  />
-    <field name="name" type="text_cz" indexed="true" stored="true" multiValued="false" />
+    <field name="name_cs" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="name_en" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="name_cs_txt" type="text_cz" indexed="true" stored="true" multiValued="false" />
+    <field name="name_en_txt" type="text_general" indexed="true" stored="true" multiValued="false" />
     <field name="name_lower" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
     <field name="name_sort" type="icu_sort_cs" indexed="true" stored="true" multiValued="false" />
-    <field name="surname" type="text_cs" indexed="true" stored="true" multiValued="false" />
-    <field name="forename" type="text_cs" indexed="true" stored="true" multiValued="false" />
-    <field name="alternative_names" type="text_cs" indexed="true" stored="true" multiValued="true" />
     <field name="type" type="string" indexed="true" stored="true"  />
 
-    
-    <field name="professions" type="string" indexed="true" stored="true" multiValued="true" />
-    <field name="professions_cs" type="text_cs" indexed="true" stored="true" multiValued="true" />
-    <field name="professions_en" type="text_general" indexed="true" stored="true" multiValued="true" />
-    <field name="professions_category" type="pint" indexed="true" stored="true" multiValued="true" />
-
-    <field name="nationality" type="string" indexed="false" stored="true"  />
-    <field name="gender" type="string" indexed="false" stored="true"  />
-    <field name="birth_year" type="string" indexed="false" stored="true"  />
-    <field name="death_year" type="string" indexed="false" stored="true"  />
+    <field name="category_id" type="pint" indexed="true" stored="true"  />
+    <field name="category_cs" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="category_en" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="category_cs_txt" type="text_cz" indexed="true" stored="true" multiValued="false" />
+    <field name="category_en_txt" type="text_general" indexed="true" stored="true" multiValued="false" />
 
     <field name="key_tagger_cs" type="tag_cs" indexed="true" stored="true" multiValued="true" />
     <field name="key_tagger_en" type="tag_en_K" indexed="true" stored="true" multiValued="true" />
   
-  <copyField source="name" dest="name_lower"/>
-  <copyField source="name" dest="name_sort"/>
+  <copyField source="name_cs" dest="name_lower"/>
+  <copyField source="name_cs" dest="name_sort"/>
+  <copyField source="name_cs" dest="name_cs_txt"/>
+  <copyField source="name_cs" dest="name_en_txt"/>
+  <copyField source="category_cs" dest="category_cs_txt"/>
+  <copyField source="category_en" dest="category_en_txt"/>
 	
 
     <!-- uncomment the following to ignore any fields that don't already match an existing 
@@ -495,29 +495,12 @@ Managed external dictionaries
       <filter class="solr.CzechStemFilterFactory"/>
     </analyzer>
   </fieldType>
+
   
-    <dynamicField name="*_txt_cz" type="text_cs"  indexed="true"  stored="true"/>
-    <dynamicField name="*_cze" type="text_cs"  indexed="true"  stored="true"/>
-    <fieldType name="text_cs" class="solr.TextField" positionIncrementGap="100">
-      <analyzer type="index">
-        <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_cz.txt"  />
-        <!-- in this example, we will only use synonyms at query time
-        <filter class="solr.SynonymFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
-        -->
-        <filter class="solr.HunspellStemFilterFactory" dictionary="hunspell/cs_CZ.dic" affix="hunspell/cs_CZ.aff" ignoreCase="true" />
-        <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
-        <filter class="solr.LowerCaseFilterFactory"/>
-      </analyzer>
-      <analyzer type="query">
-        <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_cz.txt"  />
-        <filter class="solr.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
-        <filter class="solr.HunspellStemFilterFactory" dictionary="hunspell/cs_CZ.dic" affix="hunspell/cs_CZ.aff" ignoreCase="true" />
-        <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
-        <filter class="solr.LowerCaseFilterFactory"/>
-      </analyzer>
-    </fieldType>
+    <fieldType name="icu_sort_cs" class="solr.ICUCollationField"  locale="cs" strength="tertiary">
+  </fieldType>
+
+  
 	
 	<fieldType name="tag_cs" class="solr.TextField" postingsFormat="FST50" omitNorms="true" omitTermFreqAndPositions="true">
       <analyzer type="index">
@@ -526,7 +509,6 @@ Managed external dictionaries
         <filter class="solr.HunspellStemFilterFactory" dictionary="hunspell/cs_CZ.dic" affix="hunspell/cs_CZ.aff" ignoreCase="true" />
         <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
         <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.WordDelimiterGraphFilterFactory"/>
         <filter class="solr.ConcatenateGraphFilterFactory" preservePositionIncrements="false" />
       </analyzer>
       <analyzer type="query">
@@ -561,6 +543,8 @@ Managed external dictionaries
         <filter class="solr.PorterStemFilterFactory"/>
       </analyzer>
     </fieldType>
+
+    
 	
 	<fieldType name="tag_en_K" class="solr.TextField" postingsFormat="FST50" omitNorms="true" omitTermFreqAndPositions="true">
       <analyzer type="index">
@@ -585,31 +569,7 @@ Managed external dictionaries
 		<filter class="solr.KStemFilterFactory"/>
       </analyzer>
     </fieldType>
-	
-	<fieldType name="tag_en_S" class="solr.TextField" postingsFormat="FST50" omitNorms="true" omitTermFreqAndPositions="true">
-      <analyzer type="index">
-        <tokenizer class="solr.StandardTokenizerFactory"/>
-		<filter class="solr.ASCIIFoldingFilterFactory" />
-        <filter class="solr.EnglishPossessiveFilterFactory"  />
-        <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.EnglishMinimalStemFilterFactory"/>
-        <filter class="solr.ConcatenateGraphFilterFactory" preservePositionIncrements="false" />
-      </analyzer>
-      <analyzer type="query">
-        <tokenizer class="solr.StandardTokenizerFactory"/>
-		<filter class="solr.ASCIIFoldingFilterFactory" />
-        <filter class="solr.EnglishPossessiveFilterFactory"  />
-        <filter class="solr.LowerCaseFilterFactory"/>
-		<!--
-		<filter class="solr.KStemFilterFactory"/>
-		-->
-		<!--
-        <filter class="solr.PorterStemFilterFactory"/>
-	     -->
-		<filter class="solr.EnglishMinimalStemFilterFactory"/>
-      </analyzer>
-    </fieldType>
-
+    
     <!-- Similarity is the scoring routine for each document vs. a query.
        A custom Similarity or SimilarityFactory may be specified here, but 
        the default is fine for most applications.  
@@ -620,15 +580,5 @@ Managed external dictionaries
        <str name="paramkey">param value</str>
      </similarity>
     -->
-    <fieldType name="icu_sort_cs" class="solr.ICUCollationField"  locale="cs" strength="tertiary">
-        <!--
-      <analyzer>
-        <tokenizer class="solr.KeywordTokenizerFactory"/>
-        <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.TrimFilterFactory" />
-        <filter class="solr.ICUCollationKeyFilterFactory" locale="cs" strength="primary"/>
-      </analyzer>
-        -->
-    </fieldType>
 
 </schema>
