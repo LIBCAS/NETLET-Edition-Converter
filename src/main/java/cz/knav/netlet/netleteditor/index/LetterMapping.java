@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.Http2SolrClient;
+import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,7 +48,7 @@ public class LetterMapping {
                     .build();
             HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray docs = new JSONObject(response.body()).getJSONObject("response").getJSONArray("docs");
-            try (SolrClient client = new Http2SolrClient.Builder(Options.getInstance().getString("solr")).build()) {
+            try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) {
                 for (int i = 0; i < docs.length(); i++) {
                     transformDoc(docs.getJSONObject(i), client);
                     ret.put("transformed", i + 1);

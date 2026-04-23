@@ -10,6 +10,7 @@ import cz.knav.netlet.netleteditor.alto.AltoPrintSpace;
 import cz.knav.netlet.netleteditor.alto.AltoString;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -17,14 +18,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrQuery.SortClause;
+import org.apache.solr.client.solrj.request.SolrQuery;
+import org.apache.solr.client.solrj.request.SolrQuery.SortClause;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.beans.DocumentObjectBinder;
-import org.apache.solr.client.solrj.impl.Http2SolrClient;
-import org.apache.solr.client.solrj.impl.NoOpResponseParser;
+import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 import org.apache.solr.client.solrj.request.QueryRequest;
+import org.apache.solr.client.solrj.response.InputStreamResponseParser;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.NamedList;
@@ -45,7 +47,7 @@ public class Indexer {
         try {
             if (_solr == null) {
                 String url = Options.getInstance().getString("solr");
-                _solr = new Http2SolrClient.Builder(url).build();
+                _solr = new HttpJdkSolrClient.Builder(url).build();
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -157,7 +159,7 @@ public class Indexer {
             if (!onlyBox) {
                 q = al.getTextContent();
             }
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery(q)
                     .addFilterQuery("filename:\"" + params.getString("filename") + "\"")
                     .addFilterQuery(String.format("WIDTH:[%d TO %d]", ab.WIDTH - 10, ab.WIDTH + 10))
@@ -193,13 +195,12 @@ public class Indexer {
             String jsonResponse;
 
             QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "pdfs");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            
+            qreq.setResponseParser(new InputStreamResponseParser("json"));
+
+            NamedList<Object> resp = solr.request(qreq, "pdfs");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -234,7 +235,7 @@ public class Indexer {
     public static JSONObject getLetters(String filename, String sort) {
         JSONObject ret = new JSONObject();
         try {
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery("*")
                     .addFilterQuery("filename:\"" + filename + "\"")
                     .setFields("*,hiko:[json],ai:[json],selection:[json]")
@@ -246,16 +247,11 @@ public class Indexer {
                 query.setSort(new SortClause(sort.split(" ")[0], sort.split(" ")[1]));
             }
             query.set("wt", "json");
-            String jsonResponse;
 
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "letters");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "letters");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) { 
             LOGGER.log(Level.SEVERE, null, ex);
@@ -267,7 +263,7 @@ public class Indexer {
     public static JSONObject getLettersTotals() {
         JSONObject ret = new JSONObject();
         try {
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery("*")
                     .setRows(0)
                     .setFacet(true)
@@ -276,16 +272,12 @@ public class Indexer {
                     .setFacetMinCount(0)
                     .setFacetLimit(1000);
             query.set("wt", "json");
-            String jsonResponse;
+            
 
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "letters");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "letters");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -297,7 +289,7 @@ public class Indexer {
     public static JSONObject getTenants() {
         JSONObject ret = new JSONObject();
         try {
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery("*")
                     .setRows(0)
                     .setFacet(true)
@@ -306,16 +298,12 @@ public class Indexer {
                     .setFacetMinCount(0)
                     .setFacetLimit(1000);
             query.set("wt", "json");
-            String jsonResponse;
+            
 
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "identities");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "letters");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -329,7 +317,7 @@ public class Indexer {
         JSONObject ret = new JSONObject();
         try {
 
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             
             UpdateResponse r = solr.deleteById("letters", id);
             solr.commit("letters");
@@ -346,22 +334,17 @@ public class Indexer {
         JSONObject ret = new JSONObject();
         try {
 
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery("*")
                     .addFilterQuery("id:\"" + id + "\"")
                     .setFields("*,hiko:[json],ai:[json],selection:[json],detected_keywords:[json],user_keywords:[json],detected_mentioned:[json],user_mentioned:[json]")
                     .setRows(1);
             query.set("wt", "json");
-            String jsonResponse;
 
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "letters");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "letters");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -391,7 +374,7 @@ public class Indexer {
                 data.put("id", id);
             }
             
-            Http2SolrClient solr = (Http2SolrClient) getClient(); 
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient(); 
             SolrInputDocument idoc = new SolrInputDocument();
             idoc.setField("id", id);
             if (data.has("hiko_id")) {
@@ -454,7 +437,7 @@ public class Indexer {
         JSONObject ret = new JSONObject();
         try {
 
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery(name)
                     .setFields("*");
             query.set("qf", "name_lower^5 name^2 alternative_names");
@@ -473,16 +456,12 @@ public class Indexer {
             }
             query.set("defType", "edismax");
             query.set("wt", "json");
-            String jsonResponse;
+            
 
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "identities");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "identities");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -495,7 +474,7 @@ public class Indexer {
         JSONObject ret = new JSONObject();
         try {
 
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery("name_lower:" + prefix + "*")
                     .setFields("*")
                     .setSort(SolrQuery.SortClause.asc("name_sort"))
@@ -504,15 +483,12 @@ public class Indexer {
             query.addFilterQuery("tenant:global OR tenant:"+tenant);
             
             query.set("wt", "json");
-            String jsonResponse;
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "identities");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            
+
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "identities");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -525,7 +501,7 @@ public class Indexer {
         JSONObject ret = new JSONObject();
         try {
 
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery("name:" + prefix + "*")
                     .setFields("id,table_id,name,name_en,tenant")
                     .setSort(SolrQuery.SortClause.asc("name_sort"))
@@ -535,15 +511,12 @@ public class Indexer {
 //            }
             query.addFilterQuery("tenant:global OR tenant:"+tenant);
             query.set("wt", "json");
-            String jsonResponse;
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "keywords");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            
+
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "keywords");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -556,7 +529,7 @@ public class Indexer {
         JSONObject ret = new JSONObject();
         try {
 
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery("name_lower:" + prefix + "* OR acronyms:" + prefix + "*")
                     .setFields("id,tenant,name,type,acronyms")
                     .setRows(1000);
@@ -568,16 +541,11 @@ public class Indexer {
             }
             
             query.set("wt", "json");
-            String jsonResponse;
 
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "locations");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "locations");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -590,7 +558,7 @@ public class Indexer {
         JSONObject ret = new JSONObject();
         try {
 
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery()
                     .setFields("id:table_id,idSolr:id,name,tenant")
                     .setSort("name_sort",SolrQuery.ORDER.asc );
@@ -615,16 +583,11 @@ public class Indexer {
             query.set("hl.tag.post", "");
             query.set("wt", "json");
             query.setSort("name_sort", SolrQuery.ORDER.asc);
-            String jsonResponse;
 
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "places");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "places");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -638,23 +601,19 @@ public class Indexer {
         JSONObject ret = new JSONObject();
         try {
 
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery("*")
                     .setRows(1000);
             if (tenant != null && !tenant.isBlank()) {
                 query.addFilterQuery("tenant:"+tenant);
             }
             query.set("wt", "json");
-            String jsonResponse;
+            
 
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "places");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "places");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -667,23 +626,19 @@ public class Indexer {
         JSONObject ret = new JSONObject();
         try {
 
-            Http2SolrClient solr = (Http2SolrClient) getClient();
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
             SolrQuery query = new SolrQuery("*")
                     .setRows(1000);
             if (tenant != null && !tenant.isBlank()) {
                 query.addFilterQuery("tenant:"+tenant);
             }
             query.set("wt", "json");
-            String jsonResponse;
+            
 
-            QueryRequest qreq = new QueryRequest(query);
-            // qreq.setPath();
-            NoOpResponseParser dontMessWithSolr = new NoOpResponseParser();
-            dontMessWithSolr.setWriterType("json");
-            solr.setParser(dontMessWithSolr);
-            NamedList<Object> qresp = solr.request(qreq, "letter_place");
-            jsonResponse = (String) qresp.get("response");
-            ret = new JSONObject(jsonResponse);
+            QueryRequest qreq = new QueryRequest(query);qreq.setResponseParser(new InputStreamResponseParser("json"));
+            NamedList<Object> resp = solr.request(qreq, "letter_place");
+            InputStream is = (InputStream) resp.get("stream");
+            ret = new JSONObject(IOUtils.toString(is, "UTF-8"));
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -696,7 +651,7 @@ public class Indexer {
         JSONObject ret = new JSONObject();
         try {
             String id = data.optString("id", null);
-            Http2SolrClient solr = (Http2SolrClient) getClient(); 
+            HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient(); 
             SolrInputDocument idoc = new SolrInputDocument();
             idoc.setField("id", id);
             idoc.setField("name", data.optString("name"));
