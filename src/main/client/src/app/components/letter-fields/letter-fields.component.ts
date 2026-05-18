@@ -11,7 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppService } from 'src/app/app.service';
-import { Identity, Keyword, Letter, NameTag, LetterSelection, Place, CopyHIKO } from 'src/app/shared/letter';
+import { Identity, Keyword, Letter, NameTag, LetterSelection, Place, CopyHIKO, RefHIKO } from 'src/app/shared/letter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslationDialogComponent } from '../translation-dialog/translation-dialog.component';
 import { AnalyzeDialogComponent } from '../analyze-dialog/analyze-dialog.component';
@@ -307,6 +307,10 @@ export class LetterFieldsComponent {
     } else {
       return ''
     }
+  }
+
+  displayCopy(a: any) {
+      return a?.label ? a.label : '';
   }
 
   // 
@@ -647,7 +651,7 @@ export class LetterFieldsComponent {
   }
 
   getLocations(e: string, type: string) {
-    this.service.getLocations(e, this.state.user.tenant ? this.state.user.tenant : '', type).subscribe((resp: any) => {
+    this.service.getLocations(e ? e : '', this.state.user.tenant ? this.state.user.tenant : '', type).subscribe((resp: any) => {
       this.locations_db = resp.locations;
       switch(type) {
         case 'repository': this.repositories = this.locations_db.filter(l => l.type === 'repository'); break;
@@ -658,6 +662,12 @@ export class LetterFieldsComponent {
       // this.archives = this.locations_db.filter(l => l.type === 'archive');
       // this.collections = this.locations_db.filter(l => l.type === 'collection');
     });
+  }
+
+  setLocationDb(e: any, obj: RefHIKO) {
+    const repo = e.option.value;
+    obj.label = repo.name;
+    obj.id = repo.id;
   }
 
   getImgUrl(selection: any) {

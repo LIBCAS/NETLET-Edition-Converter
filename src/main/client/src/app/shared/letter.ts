@@ -66,30 +66,20 @@ export interface Keyword extends KeywordHIKO {
   selected?: boolean
 };
 
+export class RefHIKO {
+      id: number;
+      scope: string;
+      reference?: string;
+      value?: string;
+      label: string;
+    };
+
 export class CopyHIKO {
   [key: string]: any;
     id: number;
-    repository: {
-      id: number;
-      scope: string;
-      reference?: string;
-      value?: string;
-      label: string;
-    } = {id: null, scope: 'local', label: ''}
-    archive: {
-      id: number;
-      scope: string;
-      reference?: string;
-      value?: string;
-      label: string;
-    } = {id: null, scope: 'local', label: ''}
-    collection: {
-      id: number;
-      scope: string;
-      reference?: string;
-      value?: string;
-      label: string;
-    } = {id: null, scope: 'local', label: ''}
+    repository: RefHIKO = {id: null, scope: 'local', label: ''}
+    archive: RefHIKO = {id: null, scope: 'local', label: ''}
+    collection: RefHIKO = {id: null, scope: 'local', label: ''}
     copy: string;
     l_number: string;
     location_note: string;
@@ -103,6 +93,7 @@ export class CopyHIKO {
 export class LetterHIKO {
 
     [key: string]: any;
+    id: number;
   version: string = 'v2'; // v2 .
   dates: {
     date: string; // "?",

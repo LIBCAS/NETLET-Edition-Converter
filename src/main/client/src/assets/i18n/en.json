@@ -107,6 +107,7 @@
     "copies_collection": "Collection",
     "copies_signature": "Signature",
     "manifestation_notes": "Manifestation notes",
+    "location_note": "Location note",
     "template": "Template",
     "locations": "Repositories",
     "places_meta": "Places",

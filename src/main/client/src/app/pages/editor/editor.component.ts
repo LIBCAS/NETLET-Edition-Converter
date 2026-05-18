@@ -676,45 +676,35 @@ export class EditorComponent {
     }
   }
 
-  mergeFromHIKO(res: any, letter: Letter, overwrite: boolean) {
+  mergeFromHIKO(res: LetterHIKO, letter: Letter, overwrite: boolean) {
 
     letter.hiko_id = res.id;
 
     if (overwrite || !letter.date) {
-      letter.date = res.date_computed;
+      letter.date = `${res.date_year}-${res.date_month - 1}-${res.date_day}`;
+    }
+    letter.hiko = res;
+    // letter.hiko.authors = res.authors;
+    // letter.hiko.recipients = res.recipients;
+    // letter.hiko.mentioned = res.mentioned;
+    // letter.origins = [...res.origins];
+    // letter.destinations = [...res.destinations];
+
+    if (!letter.hiko.copies) {
+      letter.hiko.copies = [new CopyHIKO()];
     }
 
-
-    const authors = res.identities.filter((i: any) => i.pivot.role === "author").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
-    // if (authors.length > 0) {
-    //   letter.author = authors[0].marked;
-    // }
-
-    const recipients = res.identities.filter((i: any) => i.pivot.role === "recipient").map((ident: any) => { return { id: ident.id, name: ident.name, salutation: ident.pivot.salutation, marked: ident.pivot.marked } });
-    // if (recipients.length > 0) {
-    //   letter.recipient = recipients[0].marked;
-    //   letter.salutation = recipients[0].salutation;
-    // }
-
-    const mentioned = res.identities.filter((i: any) => i.pivot.role === "mentioned").map((ident: any) => { return { id: ident.id, name: ident.name, marked: ident.pivot.marked } });
-
-    const origins = res.places.filter((i: any) => i.pivot.role === "origin").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked, tenant: this.state.user.tenant } });
-    if (origins.length > 0) {
-      letter.origin = origins[0].marked;
-    }
-    const global_origins = res.global_places.filter((i: any) => i.pivot.role === "origin").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked, tenant: 'global' } });
-    if (global_origins.length > 0) {
-      letter.origin = global_origins[0].marked;
-    }
-
-    const destinations = res.places.filter((i: any) => i.pivot.role === "destination").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked, tenant: this.state.user.tenant } });
-    if (destinations.length > 0) {
-      letter.destination = destinations[0].marked;
-    }
-    const global_destinations = res.global_places.filter((i: any) => i.pivot.role === "destination").map((place: any) => { return { id: place.id, name: place.name, marked: place.pivot.marked, tenant: 'global' } });
-    if (global_destinations.length > 0) {
-      letter.destination = global_destinations[0].marked;
-    }
+    letter.hiko.copies.forEach(copy => {
+      if (!copy.repository) {
+        copy.repository = {id: null, scope: 'local', label: ''}; 
+      }
+      if (!copy.archive) {
+        copy.archive = {id: null, scope: 'local', label: ''}; 
+      }
+      if (!copy.collection) {
+        copy.collection = {id: null, scope: 'local', label: ''}; 
+      }
+    });
 
     const fields = ['id',
       'uuid',
@@ -736,13 +726,8 @@ export class EditorComponent {
       this.mergeHIKOField(res, letter, overwrite, f);
     });
 
-    this.mergeHIKOField(res, letter, overwrite, 'date', 'date_computed');
+    //this.mergeHIKOField(res, letter, overwrite, 'date', 'date_computed');
 
-    letter.hiko.authors = authors;
-    letter.hiko.recipients = recipients;
-    letter.hiko.mentioned = mentioned;
-    letter.origins = [...origins, ...global_origins];
-    letter.destinations = [...destinations, ...global_destinations];
   }
 
   doImportFromHIKO(new_letter: boolean, overwrite: boolean, id: string) {
@@ -758,7 +743,7 @@ export class EditorComponent {
         if (new_letter) {
 
           const letter = new Letter();
-          this.mergeFromHIKO(res, letter, true);
+          this.mergeFromHIKO(res.data, letter, true);
 
           letter.id = this.state.selectedFile.filename.substring(0, 3) + new Date().getTime();
           letter.tenant = this.state.user.tenant;
@@ -769,7 +754,7 @@ export class EditorComponent {
           this.letter = letter;
           this.letters.push(letter);
         } else {
-          this.mergeFromHIKO(res, this.letter, overwrite);
+          this.mergeFromHIKO(res.data, this.letter, overwrite);
         }
         this.view = 'fields';
       });
