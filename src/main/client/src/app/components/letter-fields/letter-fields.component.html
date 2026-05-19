@@ -404,14 +404,14 @@
                       <div class="app-mb-4">
                         @for(k of _letter.detected_keywords; track k.id; let idx = $index){
                           <mat-checkbox [id]="k.id" [name]="k.id" type="checkbox" [(ngModel)]="k.selected">{{
-                          k.name }} ({{ k.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
+                          k.name_cs }} ({{ k.tenant === 'global' ? 'global' : 'local' }})</mat-checkbox>
                         }
                       </div>
                       <div>{{ 'fieldset.user_keywords' | translate }}</div>
                       <mat-chip-set>
                         @for (keyword of keywords(); track keyword) {
                           <mat-chip (removed)="removeKeyword(keyword.id)">
-                            {{keyword.name}} ({{ keyword.tenant === 'global' ? 'global' : 'local' }})
+                            {{keyword.name_cs}} ({{ keyword.tenant === 'global' ? 'global' : 'local' }})
                             <button matChipRemove [attr.aria-label]="'remove keyword'">
                               <mat-icon>cancel</mat-icon>
                             </button>
@@ -425,7 +425,7 @@
                           <mat-autocomplete #autoKeywords="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addKeyword($event)">
                             @for(a of keywords_db(); track idx; let idx = $index){
                               <mat-option [value]="a">
-                                {{a.name}} ({{ a.tenant === 'global' ? 'global' : 'local' }})
+                                {{a.name_cs}} ({{ a.tenant === 'global' ? 'global' : 'local' }})
                               </mat-option>
                             }
                           </mat-autocomplete>

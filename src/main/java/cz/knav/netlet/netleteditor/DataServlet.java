@@ -42,7 +42,7 @@ import org.json.JSONObject;
  */
 @WebServlet(name = "DataServlet", urlPatterns = {"/data/*"})
 public class DataServlet extends HttpServlet {
-    
+
     public static final Logger LOGGER = Logger.getLogger(DataServlet.class.getName());
 
     /**
@@ -69,7 +69,7 @@ public class DataServlet extends HttpServlet {
                 if (json != null) {
                     response.getWriter().println(json.toString(2));
                 }
-                
+
             } else {
                 response.getWriter().print("actionNameParam -> " + actionNameParam);
             }
@@ -88,7 +88,7 @@ public class DataServlet extends HttpServlet {
             response.getWriter().print(e1.toString());
         }
     }
-    
+
     enum Actions {
         UPLOAD {
             @Override
@@ -200,7 +200,7 @@ public class DataServlet extends HttpServlet {
                 }
                 ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
                 ret.put("totals", Indexer.getLettersTotals().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("filename"));
-                
+
                 JSONArray fs = PDFThumbsGenerator.getDocuments().getJSONArray(("dirs"));
                 for (int i = 0; i < fs.length(); i++) {
                     String tenant = fs.getJSONObject(i).getJSONObject("config").getString("tenant");
@@ -231,7 +231,7 @@ public class DataServlet extends HttpServlet {
                 int page = Integer.parseInt(request.getParameter("page"));
                 boolean keepOrder = Boolean.parseBoolean(request.getParameter("keepOrder"));
                 File f = Storage.altoPageFile(filename, page);
-                
+
                 if (f.exists()) {
                     String xml = FileUtils.readFileToString(f, "UTF-8");
                     if (keepOrder) {
@@ -251,7 +251,7 @@ public class DataServlet extends HttpServlet {
                 JSONObject ret = new JSONObject();
                 String filename = request.getParameter("filename");
                 File f = Storage.configFile(filename);
-                
+
                 if (f.exists()) {
                     String json = FileUtils.readFileToString(f, "UTF-8");
                     ret = new JSONObject(json);
@@ -274,7 +274,7 @@ public class DataServlet extends HttpServlet {
                 try {
                     if (request.getMethod().equals("POST")) {
                         JSONObject js = new JSONObject(IOUtils.toString(request.getInputStream(), "UTF-8"));
-                        
+
                         String filename = request.getParameter("filename");
                         File f = Storage.configFile(filename);
                         FileUtils.writeStringToFile(f, js.toString(), "UTF-8");
@@ -286,7 +286,7 @@ public class DataServlet extends HttpServlet {
                 }
                 return ret;
             }
-            
+
         },
         REMOVE_LETTER {
             @Override
@@ -301,7 +301,7 @@ public class DataServlet extends HttpServlet {
                 }
                 return ret;
             }
-            
+
         },
         GET_LETTER {
             @Override
@@ -316,12 +316,12 @@ public class DataServlet extends HttpServlet {
                 }
                 return ret;
             }
-            
+
         },
         GET_LETTERS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject ret = new JSONObject();
                 try {
                     String id = request.getParameter("filename");
@@ -332,7 +332,7 @@ public class DataServlet extends HttpServlet {
                     ret.put("error", ex);
                 }
                 return ret;
-                
+
             }
         },
         SAVE_LETTER {
@@ -342,7 +342,7 @@ public class DataServlet extends HttpServlet {
                 try {
                     if (request.getMethod().equals("POST")) {
                         JSONObject js = new JSONObject(IOUtils.toString(request.getInputStream(), "UTF-8"));
-                        
+
                         String filename = request.getParameter("filename");
                         ret = Indexer.saveLetter(filename, js);
                     }
@@ -352,14 +352,14 @@ public class DataServlet extends HttpServlet {
                 }
                 return ret;
             }
-            
+
         },
         INDEX {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
                 String filename = request.getParameter("filename");
-                
+
                 ret = Indexer.indexPdfFile(filename);
                 return ret;
             }
@@ -367,12 +367,12 @@ public class DataServlet extends HttpServlet {
         INDEX_SIMPLE_KEYWORDS {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     Indexer indexer = new Indexer();
                     json.put("keywords", indexer.indexKeywords());
-                    
+
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
@@ -383,7 +383,7 @@ public class DataServlet extends HttpServlet {
         INDEX_HIKO {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     // HikoKeywordsIndexer hi = new HikoKeywordsIndexer(); 
@@ -397,9 +397,9 @@ public class DataServlet extends HttpServlet {
                     if (user != null) {
                         utenant = user.optString("tenant");
                     }
-                    json.put("sync", hi.indexTenant(utenant, req.getParameter("type")));                    
+                    json.put("sync", hi.indexTenant(utenant, req.getParameter("type")));
                     json.put("msg", "sync succes");
-                    
+
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, "{0}", ex);
                     json.put("error", ex.toString());
@@ -410,7 +410,7 @@ public class DataServlet extends HttpServlet {
         INDEX_HIKO_IDENTITIES {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     HikoKeywordsIndexer hi = new HikoKeywordsIndexer();
@@ -428,7 +428,7 @@ public class DataServlet extends HttpServlet {
         FIND_TAGS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     if (request.getMethod().equals("POST")) {
@@ -444,7 +444,7 @@ public class DataServlet extends HttpServlet {
                                 SolrTaggerAnalyzer.findIdentities(filteredText, "key_tagger_cs", request.getParameter("tenant"))
                                         .getJSONObject("response").getJSONArray("docs"));
                     }
-                    
+
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
@@ -455,36 +455,40 @@ public class DataServlet extends HttpServlet {
         FIND_KEYWORDS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
                         json = SolrTaggerAnalyzer.findKeywords(text, "key_tagger_cs", request.getParameter("tenant"));
                     }
-                    
+
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
                 }
-                return json;                
+                return json;
             }
         },
         FIND_IDENTITIES {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
-                        JSONObject nametag = NameTag.recognize(text);
-                        String filteredText = NameTag.persons(nametag);
-                        json = SolrTaggerAnalyzer.findIdentities(filteredText, "key_tagger_cs", request.getParameter("tenant"));
-                        // json = SolrTaggerAnalyzer.findIdentities(text, "key_tagger_cs", request.getParameter("tenant"));
+//                        JSONObject nametag = NameTag.recognize(text);
+//                        String filteredText = NameTag.persons(nametag);
+//                        System.out.println(filteredText);
+//                        if (!filteredText.isBlank()) {
+//                            json = SolrTaggerAnalyzer.findIdentities(filteredText, "key_tagger_cs", request.getParameter("tenant"));
+//                        }
+                        
+                        json = SolrTaggerAnalyzer.findIdentities(text, "key_tagger_cs", request.getParameter("tenant"));
                         //json.put("nametags", nametags);
                     }
-                    
+
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, "error processing identities", ex);
                     json.put("error", ex.toString());
@@ -496,27 +500,27 @@ public class DataServlet extends HttpServlet {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
-                
+
                 if (request.getMethod().equals("POST")) {
                     JSONObject js = new JSONObject(IOUtils.toString(request.getInputStream(), "UTF-8"));
                     ret = Indexer.findSimilar(js);
                 }
-                
+
                 return ret;
             }
         },
         TRANSLATE {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
-                        
+
                         json = Translator.translate(text);
                     }
-                    
+
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
@@ -527,15 +531,15 @@ public class DataServlet extends HttpServlet {
         TRANSLATE_TO_EN {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     if (request.getMethod().equals("POST")) {
                         String text = IOUtils.toString(request.getInputStream(), "UTF-8");
-                        
+
                         json = Translator.translate(text, "cs", "en");
                     }
-                    
+
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
                     json.put("error", ex.toString());
@@ -553,7 +557,7 @@ public class DataServlet extends HttpServlet {
                 } else {
                     text = request.getParameter("text");
                 }
-                
+
                 List<LanguageResult> langs = Translator.detectLanguages(text);
                 String src_lang = langs.get(0).getLanguage();
                 // String src_lang = detectLang(text);
@@ -562,7 +566,7 @@ public class DataServlet extends HttpServlet {
                 for (LanguageResult l : langs) {
                     ret.append("languages", l.getLanguage());
                 }
-                
+
                 return ret;
             }
         },
@@ -575,7 +579,7 @@ public class DataServlet extends HttpServlet {
                     ret = Annotator.annotate(data.getString("text"), data.getString("prompt"), data.optString("gptModel"));
                     // return ret.put("response", Annotator.annotateMock(text));
                 }
-                
+
                 return ret;
             }
         },
@@ -588,17 +592,17 @@ public class DataServlet extends HttpServlet {
                     if ("gemini".equals(data.optString("gptModel"))) {
                         ret = GeminiAnalyzer.analyze(data.getString("filename"),
                                 data.getJSONArray("selection"));
-                        
+
                     } else {
                         ret = Annotator.analyzeImages(data.getString("filename"),
                                 data.getJSONArray("selection"),
                                 data.getString("prompt"),
                                 data.optString("gptModel"));
-                        
+
                     }
                     // return ret.put("response", Annotator.annotateMock(text));
                 }
-                
+
                 return ret;
             }
         },
@@ -626,7 +630,7 @@ public class DataServlet extends HttpServlet {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
-                
+
                 if (request.getMethod().equals("POST")) {
                     String p = IOUtils.toString(request.getInputStream(), "UTF-8");
                     Options.getInstance().savePrompt(p);
@@ -639,7 +643,7 @@ public class DataServlet extends HttpServlet {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
-                
+
                 if (request.getMethod().equals("POST")) {
                     JSONObject p = new JSONObject(IOUtils.toString(request.getInputStream(), "UTF-8"));
                     ret = Indexer.saveLocation(p);
@@ -659,7 +663,14 @@ public class DataServlet extends HttpServlet {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
-                ret.put("keywords", Indexer.getKeywords(request.getParameter("prefix"), request.getParameter("tenant")).getJSONObject("response").getJSONArray("docs"));
+
+                String lang = request.getParameter("lang");
+                if (lang == null) {
+                    lang = "cs";
+                }
+                ret.put("keywords", Indexer.getKeywords(request.getParameter("prefix"), 
+                        request.getParameter("tenant"),
+                        lang).getJSONObject("response").getJSONArray("docs"));
                 return ret;
             }
         },
@@ -694,7 +705,7 @@ public class DataServlet extends HttpServlet {
                         Boolean.parseBoolean(request.getParameter("extended")));
                 ret.put("places", places.getJSONObject("response").getJSONArray("docs"));
                 ret.put("hl", places.getJSONObject("highlighting"));
-                
+
                 return ret;
             }
         },
@@ -709,7 +720,7 @@ public class DataServlet extends HttpServlet {
                     ret.put("letter_place",
                             Indexer.getLetterPlace(request.getParameter("tenant"))
                                     .getJSONObject("response").getJSONArray("docs"));
-                    
+
                 }
                 ret.put("tenants", Indexer.getTenants().getJSONObject("facet_counts").getJSONObject("facet_fields").getJSONObject("tenant"));
                 return ret;
@@ -742,7 +753,7 @@ public class DataServlet extends HttpServlet {
                 }
                 return ret;
             }
-            
+
         },
         GET_LETTER_HIKO {
             @Override
@@ -757,14 +768,14 @@ public class DataServlet extends HttpServlet {
                 }
                 return ret;
             }
-            
+
         },
         SAVE_LETTER_HIKO {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
                 try {
-                    
+
                     JSONObject user = LoginController.getUser(request);
                     String token = LoginController.getUserToken(request);
                     if (user != null) {
@@ -780,12 +791,12 @@ public class DataServlet extends HttpServlet {
                 }
                 return ret;
             }
-            
+
         },
         INDEX_IDENTITIES {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
@@ -800,11 +811,11 @@ public class DataServlet extends HttpServlet {
         INDEX_PLACES {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
-                    json.put("global", hi.indexGlobalPlaces());                    
+                    json.put("global", hi.indexGlobalPlaces());
                     json.put("places", hi.indexPlaces());
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, null, ex);
@@ -816,7 +827,7 @@ public class DataServlet extends HttpServlet {
         INDEX_LOCATIONS {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
@@ -831,7 +842,7 @@ public class DataServlet extends HttpServlet {
         INDEX_KEYWORDS {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
@@ -847,7 +858,7 @@ public class DataServlet extends HttpServlet {
         INDEX_PROFESSIONS {
             @Override
             JSONObject doPerform(HttpServletRequest req, HttpServletResponse response) throws Exception {
-                
+
                 JSONObject json = new JSONObject();
                 try {
                     HikoIndexer hi = new HikoIndexer();
@@ -873,23 +884,23 @@ public class DataServlet extends HttpServlet {
                 }
                 return ret;
             }
-            
+
         },
         CHECK_FILE_EXISTS {
             @Override
             JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception {
                 JSONObject ret = new JSONObject();
                 String name = request.getParameter("name");
-                
+
                 String pdfDir = Storage.pdfDir(name);
                 String fileName = pdfDir + File.separator + name;
-                
+
                 File uploadedFile = new File(fileName);
                 ret.put("exists", uploadedFile.exists());
                 return ret;
             }
         };
-        
+
         abstract JSONObject doPerform(HttpServletRequest request, HttpServletResponse response) throws Exception;
     }
 

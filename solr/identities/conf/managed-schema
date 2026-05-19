@@ -85,6 +85,8 @@ Managed external dictionaries
   
   <copyField source="name" dest="name_lower"/>
   <copyField source="name" dest="name_sort"/>
+  <copyField source="name" dest="key_tagger_cs"/>
+  <copyField source="alternative_names" dest="key_tagger_cs"/>
 	
 
     <!-- uncomment the following to ignore any fields that don't already match an existing 

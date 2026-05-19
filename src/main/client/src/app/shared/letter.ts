@@ -60,8 +60,8 @@ export interface KeywordHIKO {
 };
 
 export interface Keyword extends KeywordHIKO {
-  table_id: string;
-  tenant: string;
+  table_id?: string;
+  tenant?: string;
   name?: string;
   selected?: boolean
 };

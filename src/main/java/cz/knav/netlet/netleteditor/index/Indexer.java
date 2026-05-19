@@ -497,13 +497,13 @@ public class Indexer {
         return ret;
     }
     
-    public static JSONObject getKeywords(String prefix, String tenant) {
+    public static JSONObject getKeywords(String prefix, String tenant, String lang) {
         JSONObject ret = new JSONObject();
         try {
-
+            
             HttpJdkSolrClient solr = (HttpJdkSolrClient) getClient();
-            SolrQuery query = new SolrQuery("name:" + prefix + "*")
-                    .setFields("id,table_id,name,name_en,tenant")
+            SolrQuery query = new SolrQuery("name_"+lang+":" + prefix + "*")
+                    .setFields("id,table_id,name_cs,name_en,tenant")
                     .setSort(SolrQuery.SortClause.asc("name_sort"))
                     .setRows(10);
 //            if (!tenant.isBlank()) {

@@ -834,7 +834,7 @@
   
   <requestHandler name="/tag" class="solr.TaggerRequestHandler" >
     <lst name="defaults">
-      <str name="field">key_tagger_eng</str>
+      <str name="field">key_tagger_cs</str>
     </lst>
   </requestHandler>
 

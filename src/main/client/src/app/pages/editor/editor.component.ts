@@ -706,6 +706,10 @@ export class EditorComponent {
       }
     });
 
+    letter.user_mentioned = letter.hiko.mentioned;
+    letter.user_keywords = letter.hiko.keywords;
+    letter.user_keywords.map(k => {k.name = k.name_cs})
+
     const fields = ['id',
       'uuid',
       'created_at',

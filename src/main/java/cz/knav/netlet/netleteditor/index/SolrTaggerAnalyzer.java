@@ -8,6 +8,7 @@ package cz.knav.netlet.netleteditor.index;
 import cz.knav.netlet.netleteditor.Options;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,7 +53,10 @@ public class SolrTaggerAnalyzer {
 
             UpdateResponse rsp = req.process(solr, collection);
             NamedList nlr = rsp.getResponse();
-            ret = new JSONObject((String) nlr.get("response"));
+            
+            String resp = IOUtils.toString((InputStream)nlr.get("stream"), StandardCharsets.UTF_8);
+            //String resp = (String) nlr.get("stream");
+            ret = new JSONObject(resp);
 
 //            NamedList<Object> resp = solr.request(req, collection);
 //            InputStream is = (InputStream) resp.get("stream");
@@ -100,7 +104,7 @@ public class SolrTaggerAnalyzer {
             query.addFilterQuery("type:person");
             ret = processQuery(text, query, "identities");
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error getting keywords", ex);
+            LOGGER.log(Level.SEVERE, "Error getting identities", ex);
             ret.put("error", ex);
         }
         return ret;
