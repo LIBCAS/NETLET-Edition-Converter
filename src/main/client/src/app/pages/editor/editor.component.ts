@@ -639,6 +639,12 @@ export class EditorComponent {
       this.letter.endPage = this.state.currentPage;
     }
 
+    if (this.letter.hiko) {
+      this.letter.hiko.version = 'v2';
+      this.letter.hiko_id = this.letter.hiko.id;
+    }
+    
+
     this.service.saveLetter(this.state.selectedFile.filename, this.letter).subscribe((res: any) => {
       this.ui.showInfoSnackBar('Letter saved successfully');
       this.refreshLetters('');
@@ -684,6 +690,7 @@ export class EditorComponent {
       letter.date = `${res.date_year}-${res.date_month - 1}-${res.date_day}`;
     }
     letter.hiko = res;
+    letter.hiko.version = 'v2';
     // letter.hiko.authors = res.authors;
     // letter.hiko.recipients = res.recipients;
     // letter.hiko.mentioned = res.mentioned;
