@@ -66,7 +66,8 @@ Managed external dictionaries
     <field name="name_en" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="name_cs_txt" type="text_cz" indexed="true" stored="true" multiValued="false" />
     <field name="name_en_txt" type="text_general" indexed="true" stored="true" multiValued="false" />
-    <field name="name_lower" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
+    <field name="name_lower_cs" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
+    <field name="name_lower_en" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
     <field name="name_sort" type="icu_sort_cs" indexed="true" stored="true" multiValued="false" />
     <field name="type" type="string" indexed="true" stored="true"  />
 
@@ -75,16 +76,21 @@ Managed external dictionaries
     <field name="category_en" type="string" indexed="true" stored="true" multiValued="false" />
     <field name="category_cs_txt" type="text_cz" indexed="true" stored="true" multiValued="false" />
     <field name="category_en_txt" type="text_general" indexed="true" stored="true" multiValued="false" />
+    <field name="category_lower_cs" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
+    <field name="category_lower_en" type="text_lowercase" indexed="true" stored="true" multiValued="false" />
 
     <field name="key_tagger_cs" type="tag_cs" indexed="true" stored="true" multiValued="true" />
     <field name="key_tagger_en" type="tag_en_K" indexed="true" stored="true" multiValued="true" />
   
-  <copyField source="name_cs" dest="name_lower"/>
+  <copyField source="name_cs" dest="name_lower_cs"/>
+  <copyField source="name_en" dest="name_lower_en"/>
   <copyField source="name_cs" dest="name_sort"/>
   <copyField source="name_cs" dest="name_cs_txt"/>
   <copyField source="name_cs" dest="name_en_txt"/>
   <copyField source="category_cs" dest="category_cs_txt"/>
   <copyField source="category_en" dest="category_en_txt"/>
+  <copyField source="category_cs" dest="category_lower_cs"/>
+  <copyField source="category_en" dest="category_lower_en"/>
 	
 
     <!-- uncomment the following to ignore any fields that don't already match an existing 

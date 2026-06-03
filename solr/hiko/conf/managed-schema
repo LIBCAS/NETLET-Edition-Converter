@@ -64,6 +64,7 @@ Managed external dictionaries
   <field name="tenant" type="string" indexed="true" stored="true" />
   <field name="letter_id" type="int" indexed="true" stored="true" />
   <field name="status" type="string" indexed="true" stored="true" />
+  <field name="period" type="string" indexed="true" stored="true" />
 
   <!-- Fields from places -->
   <field name="place_id" type="int" indexed="true" stored="true" multiValued="true" />
