@@ -49,7 +49,7 @@
 Managed external dictionaries
 -->
 
-<schema name="letter_place" version="1.6">
+<schema name="hiko" version="1.6">
 
   <field name="id" type="string" indexed="true" stored="true" docValues="true" />
   <!-- doc values are enabled by default for primitive types such as long so we don't index the
@@ -133,6 +133,18 @@ Managed external dictionaries
   <field name="destination_id" type="string" indexed="true" stored="true" multiValued="true" />
   <field name="destination_name" type="string" indexed="true" stored="true" multiValued="true" />
 
+  <field name="incipit" type="string" indexed="true" stored="true"  />
+  <field name="explicit" type="string" indexed="true" stored="true"  />
+  <field name="languages" type="string" indexed="true" stored="true" multiValued="true" />
+
+  <field name="abstract" type="string_big" indexed="false" stored="true"  />
+  <field name="abstract_cs" type="text_cz" indexed="true" stored="false" />
+  <field name="abstract_en" type="text_general" indexed="true" stored="false" />
+  <field name="content" type="string_big" indexed="false" stored="true"  />
+
+  <field name="full_text_cs" type="text_cz" indexed="true" stored="false" multiValued="true" />
+  <field name="full_text_en" type="text_general" indexed="true" stored="false" multiValued="true" />
+
   <!-- uncomment the following to ignore any fields that don't already match an existing 
         field name or dynamic field, rather than reporting them as an error. 
         alternately, change the type="ignored" to some other type e.g. "text" if you want 
@@ -145,6 +157,11 @@ Managed external dictionaries
 
   <copyField source="date_computed" dest="date_computed_range" />
   <copyField source="date_computed" dest="date_computed_s" />
+  <copyField source="abstract_cs" dest="full_text_cs" />
+  <copyField source="abstract_en" dest="full_text_en" />
+  <copyField source="content" dest="full_text_cs" />
+  <copyField source="content" dest="full_text_en" />
+
   <!-- Field to use to determine and enforce document uniqueness.
       Unless this field is marked with required="false", it will be a required field
     -->
@@ -366,6 +383,13 @@ Managed external dictionaries
       <filter class="solr.LowerCaseFilterFactory" />
     </analyzer>
   </fieldType>
+
+  
+	<fieldType name="string_big" class="solr.TextField" omitNorms="true" sortMissingLast="true">
+		<analyzer>
+		  <tokenizer class="solr.KeywordTokenizerFactory"/>
+		</analyzer>
+	</fieldType>
 
   <!-- A text field with defaults appropriate for English: it
          tokenizes with StandardTokenizer, removes English stop words
