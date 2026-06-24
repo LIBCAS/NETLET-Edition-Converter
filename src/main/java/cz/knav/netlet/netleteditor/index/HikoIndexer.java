@@ -7,7 +7,11 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -200,8 +204,8 @@ public class HikoIndexer {
             if ("all".equals(type) || "places".equals(type)) {
 
                 JSONObject places = new JSONObject();
-                indexTenantPlaces(client, places, tenant);
                 indexGlobalPlaces();
+                indexTenantPlaces(client, places, tenant);
                 ret.put("places", places);
                 client.commit("places");
             }
@@ -215,6 +219,17 @@ public class HikoIndexer {
         LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1} FINISHED", new Object[]{tenant, type});
         return ret;
 
+    }
+    
+    public static String normalize(String input) {
+        if (input == null) {
+            return "";
+        }
+        String result = input.toLowerCase(Locale.ROOT);
+        result = Normalizer.normalize(result, Normalizer.Form.NFD);
+        result = result.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        result = result.replaceAll("[^a-z0-9]", "");
+        return result;
     }
 
     private void indexTenantIdentities(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
@@ -264,8 +279,11 @@ public class HikoIndexer {
                     doc.addField("gender", rs.optString("gender"));
                     doc.addField("birth_year", rs.optString("birth_year"));
                     doc.addField("death_year", rs.optString("death_year"));
+                    
+                    String normalized = normalize(rs.optString("name", "") + rs.optString("birth_year", "") + rs.optString("death_year", ""));
+                    doc.addField("name_normalized", normalized);
 
-                    doc.addField("key_tagger_cs", rs.optString("name"));
+                    doc.addField("key_tagger_cs", rs.optString("name")); 
                     if (rs.optString("surname").length() > 2) {
                         doc.addField("key_tagger_cs", rs.optString("surname"));
                     }
@@ -353,20 +371,20 @@ public class HikoIndexer {
 
     }
 
-    private void indexTenantPlaces(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
+    public void indexTenantPlaces(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
             t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t)
-                + "/places?per_page=100";
+                + "/places";
         int tindexed = 0;
-        LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1}", new Object[]{tenant, url});
         try (HttpClient httpclient = HttpClient
                 .newBuilder()
                 .build()) {
             while (url != null) {
+                LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1}", new Object[]{tenant, url});
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(new URI(url))
                         .header("Authorization", Options.getInstance().getJSONObject("hiko").getString("bearer"))
@@ -376,25 +394,27 @@ public class HikoIndexer {
                 HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
                 JSONObject resp = new JSONObject(response.body());
                 JSONArray docs = resp.getJSONArray("data");
+                List<SolrInputDocument> idocs = new ArrayList();
                 for (int i = 0; i < docs.length(); i++) {
                     JSONObject rs = docs.getJSONObject(i);
-
                     SolrInputDocument doc = processPlace(rs, tenant);
-
-                    client.add("places", doc);
+                    idocs.add(doc);
                     ret.put(tenant, tindexed++);
-                    if (tindexed % 500 == 0) {
-                        client.commit("places");
-                        LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, tindexed});
-                    }
-
                 }
+                if (!idocs.isEmpty()) {  
+                    client.add("places", idocs);
+                    client.commit("places");
+                    idocs.clear();
+                    LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, tindexed});
+                }
+                ret.put(tenant, tindexed);
                 url = resp.getJSONObject("links").optString("next", null);
                 Thread.sleep(1000);
             }
         } catch (Exception ex) {
             ret.put(tenant, ex.toString());
-            LOGGER.log(Level.SEVERE, "Error in tenant {0} -> {1}", new Object[]{tenant, ex.toString()});
+            LOGGER.log(Level.SEVERE, "Error in tenant {0}", tenant);
+            LOGGER.log(Level.SEVERE, "Error is {0}", ex);
         }
     }
 
@@ -445,7 +465,6 @@ public class HikoIndexer {
                     JSONObject rs = docs.getJSONObject(i);
 
                     SolrInputDocument doc = processPlace(rs, "global");
-
                     client.add("places", doc);
                     ret.put("global_" + tenant, tindexed++);
                     if (tindexed % 500 == 0) {

@@ -68,6 +68,8 @@ Managed external dictionaries
     <field name="forename" type="text_cs" indexed="true" stored="true" multiValued="false" />
     <field name="alternative_names" type="text_cs" indexed="true" stored="true" multiValued="true" />
     <field name="type" type="string" indexed="true" stored="true"  />
+    <field name="name_normalized" type="string" indexed="true" stored="true" multiValued="false" />
+    <field name="name_str" type="string" indexed="true" stored="true" multiValued="false" />
 
     
     <field name="professions" type="string" indexed="true" stored="true" multiValued="true" />
@@ -83,6 +85,7 @@ Managed external dictionaries
     <field name="key_tagger_cs" type="tag_cs" indexed="true" stored="true" multiValued="true" />
     <field name="key_tagger_en" type="tag_en_K" indexed="true" stored="true" multiValued="true" />
   
+  <copyField source="name" dest="name_str"/>
   <copyField source="name" dest="name_lower"/>
   <copyField source="name" dest="name_sort"/>
   <copyField source="name" dest="key_tagger_cs"/>

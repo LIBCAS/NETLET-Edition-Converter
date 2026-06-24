@@ -126,6 +126,7 @@ Managed external dictionaries
   <field name="professions_category_recipient_en" type="string" indexed="true" stored="true" multiValued="true" />
   <field name="professions_category_mentioned_en" type="string" indexed="true" stored="true" multiValued="true" />
 
+  <field name="place_names" type="string" indexed="true" stored="true" multiValued="true" />
   <field name="origin" type="pint" indexed="true" stored="true"  />
   <field name="destination" type="pint" indexed="true" stored="true"  />
   <field name="origin_id" type="string" indexed="true" stored="true" multiValued="true" />
