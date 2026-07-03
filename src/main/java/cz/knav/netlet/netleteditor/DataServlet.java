@@ -4,7 +4,6 @@ import cz.knav.netlet.netleteditor.index.Annotator;
 import cz.knav.netlet.netleteditor.index.DbIndexer;
 import cz.knav.netlet.netleteditor.index.GeminiAnalyzer;
 import cz.knav.netlet.netleteditor.index.HikoIndexer;
-import static cz.knav.netlet.netleteditor.index.HikoIndexer.LOGGER;
 import cz.knav.netlet.netleteditor.index.HikoKeywordsIndexer;
 import cz.knav.netlet.netleteditor.index.Indexer;
 import cz.knav.netlet.netleteditor.index.LetterMapping;
@@ -26,13 +25,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 import org.apache.tika.language.detect.LanguageResult;
 import org.json.JSONArray;
@@ -395,6 +392,7 @@ public class DataServlet extends HttpServlet {
           JSONObject ret = new JSONObject();
           JSONObject user = LoginController.getUser(req);
           ret.put("user", user);
+          json.put("global-keywords", hi.indexGlobalKeywords());
           json.put("keywords", hi.indexKeywords());
           json.put("locations", hi.indexLocations());
           json.put("professions", hi.indexProfessions());
@@ -808,7 +806,7 @@ public class DataServlet extends HttpServlet {
         JSONObject json = new JSONObject();
         try {
           HikoIndexer hi = new HikoIndexer();
-          json.put("identities", hi.indexIdentities(req.getParameter("tenant")));
+          json.put("identities", hi.indexIdentities(req.getParameter("tenant"))); 
         } catch (Exception ex) {
           LOGGER.log(Level.SEVERE, "Error indexing identities", ex);
           json.put("error", ex.toString());

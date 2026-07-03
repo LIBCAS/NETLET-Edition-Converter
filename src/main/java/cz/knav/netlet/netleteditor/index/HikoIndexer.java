@@ -149,16 +149,17 @@ public class HikoIndexer {
         Date start = new Date();
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO identities");
-        try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) {
-            Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
-            for (String tenant : tenants) {
-                if (rtenant == null || rtenant.equals(tenant)) {
-                    indexTenantIdentities(client, ret, tenant);
-                }
-
-            }
-
-            client.commit("identities");
+        try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) { 
+          if(rtenant == null){
+            indexTenantIdentities(client, ret, "global");
+          } 
+          Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
+          for (String tenant : tenants) {
+              if (rtenant == null || rtenant.equals(tenant)) {
+                  indexTenantIdentities(client, ret, tenant);
+              }
+          }
+          client.commit("identities");
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
             LOGGER.log(Level.SEVERE, "Error indexing identities", ex);
             ret.put("error", ex);
