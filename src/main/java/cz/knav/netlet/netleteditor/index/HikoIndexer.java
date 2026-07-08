@@ -150,7 +150,7 @@ public class HikoIndexer {
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO identities");
         try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) { 
-          if(rtenant == null){
+          if(rtenant == null || "global".equals(rtenant)){
             indexTenantIdentities(client, ret, "global");
           } 
           Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
@@ -168,7 +168,6 @@ public class HikoIndexer {
         ret.put("ellapsed time", DurationFormatUtils.formatDuration(end.getTime() - start.getTime(), "HH:mm:ss.S"));
         LOGGER.log(Level.INFO, "Indexing HIKO identities FINISHED");
         return ret;
-
     }
 
     public JSONObject indexTenant(String tenant, String type) throws URISyntaxException, IOException, InterruptedException {
@@ -244,12 +243,12 @@ public class HikoIndexer {
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t);
         if (tenant.equals("global")) {
-            url += "/global-identities?per_page=100";
+            url += "/global-identities";
         } else {
-            url += "/identities?per_page=100";
+            url += "/identities";
         }
         int tindexed = 0;
-        LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1}", new Object[]{tenant, url});
+        
         try (HttpClient httpclient = HttpClient
                 .newBuilder()
                 .build()) {
@@ -260,9 +259,15 @@ public class HikoIndexer {
                         .header("Accept", "application/json")
                         .GET()
                         .build();
+                LOGGER.log(Level.INFO, "Indexing tenant {0} -> {1}", new Object[]{tenant, url});
                 HttpResponse<String> response = httpclient.send(request, HttpResponse.BodyHandlers.ofString());
                 JSONObject resp = new JSONObject(response.body());
-                JSONArray docs = resp.getJSONArray("data");
+                JSONArray docs = resp.optJSONArray("data");
+                if (docs == null) {
+                  LOGGER.log(Level.INFO, "Url {0} return no data", new Object[]{url});
+                  url = null;
+                  continue;
+                }
                 for (int i = 0; i < docs.length(); i++) {
                     JSONObject rs = docs.getJSONObject(i);
 
@@ -306,6 +311,15 @@ public class HikoIndexer {
                             doc.addField("professions_category", p.optInt("category_id"));
                         }
                     }
+                    
+                    JSONArray rnja = rs.optJSONArray("related_names");
+                    if (rnja != null) {
+                        for (int k = 0; k < rnja.length(); k++) {
+                            JSONObject ans = rnja.getJSONObject(k);
+                            String name = ans.optString("surname", "") + " " + ans.optString("forename", "");
+                            doc.addField("related_names", name);
+                        }
+                    } 
 
                     JSONArray anja = rs.optJSONArray("alternative_names");
                     if (anja != null) {
@@ -338,10 +352,10 @@ public class HikoIndexer {
 
                     client.add("identities", doc);
                     ret.put(tenant, tindexed++);
-                    if (tindexed % 500 == 0) {
+                    
                         client.commit("identities");
                         LOGGER.log(Level.INFO, "Tenant {0} -> {1} docs", new Object[]{tenant, tindexed});
-                    }
+                    
 
                 }
                 url = resp.getJSONObject("links").optString("next", null);
