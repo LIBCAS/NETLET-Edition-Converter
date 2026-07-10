@@ -38,7 +38,7 @@ public class HikoIndexer {
     private void initKeywordCategories(String tenant, boolean isGlobal) throws URISyntaxException, IOException, InterruptedException {
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t);
@@ -68,7 +68,7 @@ public class HikoIndexer {
     private void initProfessionCategories(String tenant, boolean isGlobal) throws URISyntaxException, IOException, InterruptedException {
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t);
@@ -101,7 +101,7 @@ public class HikoIndexer {
         LOGGER.log(Level.INFO, "Saving letter in hiko");
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t);
@@ -153,7 +153,7 @@ public class HikoIndexer {
           if(rtenant == null || "global".equals(rtenant)){
             indexTenantIdentities(client, ret, "global");
           } 
-          Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
+          Set<String> tenants = Options.getInstance().getJSONObject("test_mappings").keySet();
           for (String tenant : tenants) {
               if (rtenant == null || rtenant.equals(tenant)) {
                   indexTenantIdentities(client, ret, tenant);
@@ -238,7 +238,7 @@ public class HikoIndexer {
             t = "brezina"; //jakykoli
         }
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(t);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(t);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t);
@@ -369,7 +369,7 @@ public class HikoIndexer {
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO places");
         try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) {
-            Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
+            Set<String> tenants = Options.getInstance().getJSONObject("test_mappings").keySet();
             for (String tenant : tenants) {
                 indexTenantPlaces(client, ret, tenant);
             }
@@ -389,7 +389,7 @@ public class HikoIndexer {
     public void indexTenantPlaces(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t)
@@ -438,7 +438,7 @@ public class HikoIndexer {
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO global PLACES");
         try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) {
-            JSONArray tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").names();
+            JSONArray tenants = Options.getInstance().getJSONObject("test_mappings").names();
             indexGlobalPlaces(client, ret, tenants.getString(0));
 
             client.commit("places");
@@ -456,7 +456,7 @@ public class HikoIndexer {
     private void indexGlobalPlaces(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(tenant);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t)
@@ -531,7 +531,7 @@ public class HikoIndexer {
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO locations");
         try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) {
-            Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
+            Set<String> tenants = Options.getInstance().getJSONObject("test_mappings").keySet();
             for (String tenant : tenants) {
                 indexTenantLocations(client, ret, tenant);
             }
@@ -555,7 +555,7 @@ public class HikoIndexer {
             t = "brezina"; //jakykoli
         }
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(t);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(t);
         }
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
                 .replace("{tenant}", t);
@@ -613,7 +613,7 @@ public class HikoIndexer {
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO global keywords");
         try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) {
-            JSONArray tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").names();
+            JSONArray tenants = Options.getInstance().getJSONObject("test_mappings").names();
             indexGlobalKeywords(client, ret, tenants.getString(0));
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
             LOGGER.log(Level.SEVERE, "Error indexing global keywords", ex);
@@ -629,7 +629,7 @@ public class HikoIndexer {
     private void indexGlobalKeywords(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(tenant);
         }
         initKeywordCategories(tenant, true);
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
@@ -664,7 +664,7 @@ public class HikoIndexer {
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO keywords");
         try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) {
-            Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
+            Set<String> tenants = Options.getInstance().getJSONObject("test_mappings").keySet();
             for (String tenant : tenants) {
                 indexTenantKeywords(client, ret, tenant);
             }
@@ -684,7 +684,7 @@ public class HikoIndexer {
     private void indexTenantKeywords(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(tenant);
         }
         initKeywordCategories(tenant, false);
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
@@ -756,7 +756,7 @@ public class HikoIndexer {
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO global Professions");
         try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) {
-            JSONArray tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").names();
+            JSONArray tenants = Options.getInstance().getJSONObject("test_mappings").names();
             indexGlobalProfessions(client, ret, tenants.getString(0));
         } catch (URISyntaxException | InterruptedException | IOException | SolrServerException ex) {
             LOGGER.log(Level.SEVERE, "Error indexing global Professions", ex);
@@ -772,7 +772,7 @@ public class HikoIndexer {
     private void indexGlobalProfessions(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(tenant);
         }
         initProfessionCategories(tenant, true);
         String url = Options.getInstance().getJSONObject("hiko").getString("api")
@@ -807,7 +807,7 @@ public class HikoIndexer {
         JSONObject ret = new JSONObject();
         LOGGER.log(Level.INFO, "Indexing HIKO Professions");
         try (SolrClient client = new HttpJdkSolrClient.Builder(Options.getInstance().getString("solr")).build()) {
-            Set<String> tenants = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").keySet();
+            Set<String> tenants = Options.getInstance().getJSONObject("test_mappings").keySet();
             for (String tenant : tenants) {
                 indexTenantProfessions(client, ret, tenant);
             }
@@ -827,7 +827,7 @@ public class HikoIndexer {
     private void indexTenantProfessions(SolrClient client, JSONObject ret, String tenant) throws URISyntaxException, IOException, InterruptedException, SolrServerException {
         String t = tenant;
         if (Options.getInstance().getJSONObject("hiko").optBoolean("isECTest", true)) {
-            t = Options.getInstance().getJSONObject("hiko").getJSONObject("test_mappings").getString(tenant);
+            t = Options.getInstance().getJSONObject("test_mappings").getString(tenant);
         }
         initKeywordCategories(tenant, false);
         String url = Options.getInstance().getJSONObject("hiko").getString("api")

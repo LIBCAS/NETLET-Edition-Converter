@@ -151,7 +151,8 @@
     "hiko": {
         "api": ".historicka-korespondence.cz/api/v2/",
         "bearer": "",
-        "isECTest": false,
+        "isECTest": false
+    },
         "test_mappings": {
             "brezina": "hiko-test",
             "deml": "hiko-test2",
@@ -169,5 +170,4 @@
             "tgm": "hiko-test14",
             "ucenci": "hiko-test15"
         }
-    }
 }
